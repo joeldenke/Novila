@@ -102,8 +102,8 @@ där pluginet `firebase@firebase` inte alltid installeras.
   Modulens egen `build.gradle.kts` innehåller bara `namespace`, beroenden och det som är unikt för modulen.
 - Bygget ska vara kompatibelt med Isolated Projects: aldrig `allprojects {}`, `subprojects {}`,
   `rootProject.<…>` eller `project(":x")` för att läsa eller ändra en annan modul. Behövs en fil i roten,
-  använd `project.isolated.rootProject.projectDirectory`. Workflowen *Isolated Projects* kontrollerar detta när byggfiler
-  ändras och varje vecka (den är långsam, så den körs inte på varje PR).
+  använd `project.isolated.rootProject.projectDirectory`. Workflowen *Isolated Projects* kontrollerar detta, men körs bara
+  manuellt från Actions-fliken (den är långsam och har hängt sig på AGP 9.x). Kör den efter ändringar i bygglogiken.
 - Nya moduler: lägg till `include(...)` i `settings.gradle.kts`, beroende via `projects.<…>` (typsäkra accessorer).
 - Nya Gradle-plugins deklareras med `apply false` i rotens `build.gradle.kts`, så att alla moduler delar en classloader.
 

@@ -2,29 +2,18 @@
 # with it on (dry run, nothing is built). Real builds keep it off: it is experimental in Gradle 9.x
 # and full AGP support comes with AGP 10.
 #
-# Configuring with Isolated Projects is slow and only build logic can break it, so this runs when
-# build files change, weekly (to catch plugin updates from Dependabot), and on demand. It is not a
-# required check.
+# Manual only (Actions tab → Isolated Projects → Run workflow): the dry run is slow and has hung
+# for over 20 minutes on AGP 9.x, so it never runs on its own. Run it after changing build logic.
 name: Isolated Projects
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - "**/*.gradle.kts"
-      - "build-logic/**"
-      - "gradle/**"
-      - "gradle.properties"
-      - ".github/workflows/isolated-projects.yml"
-  schedule:
-    - cron: "17 5 * * 1" # Mondays, after Dependabot's weekly run
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: isolated-projects-${{ github.event.pull_request.number || github.ref }}
+  group: isolated-projects-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
