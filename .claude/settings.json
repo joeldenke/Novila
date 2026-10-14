@@ -16,5 +16,9 @@
   "enabledPlugins": {
     "android-skills@android-skills": true,
     "firebase@firebase": true
-  }
+  },
+  "enabledMcpjsonServers": [
+    "gcloud",
+    "firebase"
+  ]
 }
