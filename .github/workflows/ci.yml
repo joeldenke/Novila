@@ -1,10 +1,15 @@
-# Runs on every PR to main: formatting, lint, unit and screenshot tests, coverage and a debug build.
+# Runs on every PR to main: formatting, lint, unit and screenshot tests, coverage and a debug build,
+# as parallel jobs. "Lint, test and build" collects them and is the required status check in branch
+# protection, so nothing red can be merged.
 # Release builds (R8, release signing) only run on merge to main, in distribute.yml.
-# Make this a required status check in branch protection so nothing red can be merged.
+# Isolated Projects compatibility has its own workflow, isolated-projects.yml.
 name: CI
 
 on:
   pull_request:
+    branches: [main]
+  # Runs on main write the Gradle cache that PR runs restore (PR runs may only read it).
+  push:
     branches: [main]
   # Lets screenshots.yml start CI on the commit it pushes (pushes by GITHUB_TOKEN trigger nothing).
   workflow_dispatch:
@@ -17,26 +22,57 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  check:
-    name: Lint, test and build
+  format:
+    name: Format
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-gradle-build
+      - name: Spotless (ktlint)
+        run: |
+          set -o pipefail
+          ./gradlew spotlessCheck 2>&1 | tee build.log
+      - name: Annotate failures
+        if: failure()
+        uses: ./.github/actions/annotate-gradle-failures
+
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-
-      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+      - uses: ./.github/actions/setup-gradle-build
+      - name: Android lint
+        run: |
+          set -o pipefail
+          ./gradlew lintDebug --continue 2>&1 | tee build.log
+      - name: Annotate failures
+        if: failure()
+        uses: ./.github/actions/annotate-gradle-failures
+      - name: Upload lint reports on failure
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          distribution: temurin
-          java-version: 21
+          name: lint-reports
+          path: "**/build/reports/lint-results-*"
+          retention-days: 7
 
-      - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          # MIT-licensed cache, free for private repositories too.
-          cache-provider: basic
-
-      - name: Format, lint, tests and build
+          persist-credentials: false
+      - uses: ./.github/actions/setup-gradle-build
+      - name: Unit and screenshot tests, coverage
         run: |
           set -o pipefail
           # Screenshot tests compare against committed references once they exist.
@@ -46,8 +82,8 @@ jobs:
           else
             echo "::notice title=No reference screenshots::Comment /record-screenshots on the PR to record them."
           fi
-          ./gradlew spotlessCheck lintDebug testDebugUnitTest $screenshots assembleDebug :app:koverXmlReportDebug \
-            -Pnovila.composeReports=true --continue 2>&1 | tee build.log
+          ./gradlew testDebugUnitTest $screenshots :app:koverXmlReportDebug -Pnovila.composeReports=true \
+            --continue 2>&1 | tee build.log
 
       - name: Coverage summary
         if: success()
@@ -69,7 +105,7 @@ jobs:
           PY
 
       # Stability and skippability of every composable. See the jetpack-compose-performance skill.
-      - name: Upload Compose compiler reports
+      - name: Upload Compose compiler reports and coverage
         if: success()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
@@ -79,52 +115,52 @@ jobs:
             app/build/reports/kover/
           retention-days: 14
 
-      # Isolated Projects is still experimental in Gradle 9.x and full AGP support comes with
-      # AGP 10, so it stays off for real builds. Configuring every module with it on keeps the
-      # build logic compatible (no allprojects/subprojects, no cross-project access).
-      - name: Isolated Projects compatibility
-        run: |
-          set -o pipefail
-          ./gradlew assembleDebug --dry-run -Dorg.gradle.unsafe.isolated-projects=true 2>&1 | tee -a build.log
-
-      # Surface the key failure lines as annotations, readable in the PR and the GitHub mobile app
-      # without downloading logs.
       - name: Annotate failures
         if: failure()
-        run: |
-          # Max 10 error annotations per step: compiler errors first, then Gradle's summary.
-          { grep -E '^e: ' build.log; grep -A3 '^\* What went wrong' build.log | grep -vE '^\* What went wrong|^--$|^\s*$'; } \
-            | grep -v '^> Task ' | awk '!seen[$0]++' | head -10 \
-            | while IFS= read -r line; do echo "::error title=Gradle::${line}"; done || true
-          find . -path '*/build/reports/lint-results-*.txt' -not -path './build-logic/*' | while IFS= read -r f; do
-            grep -E ': Error: ' "$f" | head -20 | while IFS= read -r l; do echo "::error title=Lint::${l}"; done
-          done || true
-          # One annotation per failed test with its first message line, so the cause shows in the PR.
-          find . -path '*/build/test-results/*' -name '*.xml' -print0 2>/dev/null \
-            | xargs -0 -r python3 -I -c '
-          import sys, xml.etree.ElementTree as ET
-          for path in sys.argv[1:]:
-              for case in ET.parse(path).getroot().iter("testcase"):
-                  for failure in case.findall("failure") + case.findall("error"):
-                      text = (failure.get("message") or failure.text or "").strip().splitlines()
-                      causes = [l.strip() for l in (failure.text or "").splitlines() if l.strip().startswith("Caused by")]
-                      detail = " | ".join(([text[0]] if text else []) + causes[-1:])[:300]
-                      name = case.get("classname", "") + "." + case.get("name", "")
-                      print("::error title=Test failed::" + name + ": " + detail)
-          ' | head -10 || true
-          grep -qE 'Task :spotless[A-Za-z]*Check FAILED' build.log \
-            && echo "::error title=Formatting::Run ./gradlew spotlessApply, or see the Spotless diff in the log." || true
-          find . -path '*/build/outputs/roborazzi/*_compare.png' | head -10 | while IFS= read -r f; do
-            echo "::error title=Screenshot changed::${f##*/} (diff in the reports artifact; comment /record-screenshots if intended)"
-          done || true
+        uses: ./.github/actions/annotate-gradle-failures
 
-      - name: Upload reports on failure
+      - name: Upload test reports on failure
         if: failure()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: reports
+          name: test-reports
           path: |
-            **/build/reports/
+            **/build/reports/tests/
             **/build/test-results/
             **/build/outputs/roborazzi/
           retention-days: 7
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-gradle-build
+      - name: Debug build
+        run: |
+          set -o pipefail
+          ./gradlew assembleDebug 2>&1 | tee build.log
+      - name: Annotate failures
+        if: failure()
+        uses: ./.github/actions/annotate-gradle-failures
+
+  # The single required check: green only when every job above is green.
+  check:
+    name: Lint, test and build
+    if: always()
+    needs: [format, lint, test, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: All jobs passed
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          failed=$(jq -r 'to_entries[] | select(.value.result != "success") | "\(.key): \(.value.result)"' <<<"$RESULTS")
+          if [ -n "$failed" ]; then
+            while IFS= read -r line; do echo "::error title=CI job not green::$line"; done <<<"$failed"
+            exit 1
+          fi

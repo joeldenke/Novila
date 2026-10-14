@@ -1,0 +1,46 @@
+# Checks that the build stays compatible with Gradle Isolated Projects: configures every module
+# with it on (dry run, nothing is built). Real builds keep it off: it is experimental in Gradle 9.x
+# and full AGP support comes with AGP 10.
+#
+# Configuring with Isolated Projects is slow and only build logic can break it, so this runs when
+# build files change, weekly (to catch plugin updates from Dependabot), and on demand. It is not a
+# required check.
+name: Isolated Projects
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "**/*.gradle.kts"
+      - "build-logic/**"
+      - "gradle/**"
+      - "gradle.properties"
+      - ".github/workflows/isolated-projects.yml"
+  schedule:
+    - cron: "17 5 * * 1" # Mondays, after Dependabot's weekly run
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: isolated-projects-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  isolated-projects:
+    name: Isolated Projects compatibility
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-gradle-build
+      - name: Configure all modules with Isolated Projects
+        run: |
+          set -o pipefail
+          ./gradlew assembleDebug --dry-run -Dorg.gradle.unsafe.isolated-projects=true 2>&1 | tee build.log
+      - name: Annotate failures
+        if: failure()
+        uses: ./.github/actions/annotate-gradle-failures
