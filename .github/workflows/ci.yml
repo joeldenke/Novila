@@ -39,6 +39,14 @@ jobs:
           set -o pipefail
           ./gradlew lintDebug testDebugUnitTest assembleDebug --continue 2>&1 | tee build.log
 
+      # Isolated Projects is still experimental in Gradle 9.x and full AGP support comes with
+      # AGP 10, so it stays off for real builds. Configuring every module with it on keeps the
+      # build logic compatible (no allprojects/subprojects, no cross-project access).
+      - name: Isolated Projects compatibility
+        run: |
+          set -o pipefail
+          ./gradlew assembleDebug --dry-run -Dorg.gradle.unsafe.isolated-projects=true 2>&1 | tee -a build.log
+
       # Surface the key failure lines as annotations, readable in the PR and the GitHub mobile app
       # without downloading logs.
       - name: Annotate failures
@@ -48,10 +56,10 @@ jobs:
           { grep -E '^e: ' build.log; grep -A3 '^\* What went wrong' build.log | grep -vE '^\* What went wrong|^--$|^\s*$'; } \
             | grep -v '^> Task ' | awk '!seen[$0]++' | head -10 \
             | while IFS= read -r line; do echo "::error title=Gradle::${line}"; done || true
-          for f in app/build/reports/lint-results-*.txt; do
-            [ -f "$f" ] && grep -E ': Error: ' "$f" | head -20 | while IFS= read -r l; do echo "::error title=Lint::${l}"; done
+          find . -path '*/build/reports/lint-results-*.txt' -not -path './build-logic/*' | while IFS= read -r f; do
+            grep -E ': Error: ' "$f" | head -20 | while IFS= read -r l; do echo "::error title=Lint::${l}"; done
           done || true
-          find app/build/test-results -name '*.xml' -exec grep -l '<failure' {} + 2>/dev/null \
+          find . -path '*/build/test-results/*' -name '*.xml' -exec grep -l '<failure' {} + 2>/dev/null \
             | while IFS= read -r f; do echo "::error title=Test failed::${f##*/}"; done || true
 
       - name: Upload reports on failure
@@ -60,6 +68,6 @@ jobs:
         with:
           name: reports
           path: |
-            app/build/reports/
-            app/build/test-results/
+            **/build/reports/
+            **/build/test-results/
           retention-days: 7

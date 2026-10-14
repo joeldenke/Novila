@@ -13,8 +13,14 @@ CI är därför den enda sanningen om att något bygger och fungerar.
 - En delad `HealthViewModel` (`StateFlow`); skärmarna i `feature/*` är tillståndslösa
 
 ## Struktur
-- `designsystem/theme` – `NovilaTheme`: färger, typografi, former och spacing-tokens
-- `designsystem/component` – `Novila*`-komponenter som wrappar Material 3
+Moduler:
+- `:app` – appen: navigation, features, data och `ui/common`
+- `:core:designsystem` – `se.novila.designsystem`, enda modulen som använder Material 3 direkt
+  - `theme` – `NovilaTheme`: färger, typografi, former och spacing-tokens
+  - `component` – `Novila*`-komponenter som wrappar Material 3
+- `build-logic` – inkluderat bygge med convention plugins (`novila.android.*`), se `build-logic/README.md`
+
+I `:app`:
 - `navigation` – rutter (`NavKey`), `NavigationState`, `Navigator`
 - `feature/<flik>` – en skärm per flik, med `@Preview`
 - `ui/common` – delade hälsokort och listlayout
@@ -33,11 +39,11 @@ CI är därför den enda sanningen om att något bygger och fungerar.
   Samma körning bygger även release (R8), signerad bara om release-nyckeln finns i GitHub-hemligheterna.
 
 ## Kvalitet
-- **Lint-policy:** `app/lint.xml` sätter projektets regler och orsaker. Höj inte lint-fel till varningar
+- **Lint-policy:** `lint.xml` i roten sätter projektets regler och orsaker. Höj inte lint-fel till varningar
   och lägg inte till `@SuppressLint` utan att fråga ägaren.
 - **Kodstil:** `.editorconfig`. Inga wildcard-importer, trailing commas, max 120 tecken.
 - **Lär av CI:** när CI hittar en ny typ av misstag, gör tre saker i samma PR. Fixa felet,
-  lägg till regeln i `app/lint.xml` (eller i `ArchitectureTest` om lint inte kan fånga det),
+  lägg till regeln i `lint.xml` (eller i `ArchitectureTest` om lint inte kan fånga det),
   och lägg till en rad under *Kända fallgropar* nedan.
 
 ### Kända fallgropar
@@ -80,9 +86,19 @@ där pluginet `firebase@firebase` inte alltid installeras.
 - CI använder aldrig MCP. CI autentiserar via Workload Identity Federation (`google-github-actions/auth`),
   aldrig med servicekonto-nycklar. Ändra GCP/Firebase-setupen via `scripts/bootstrap-firebase.sh` och håll den idempotent.
 
+## Gradle-bygget
+- Varje modul använder convention plugins: `novila.android.application` eller `novila.android.library`,
+  plus `novila.android.compose` för Compose. SDK-nivåer, Java-nivå och lint-policy sätts bara där.
+  Modulens egen `build.gradle.kts` innehåller bara `namespace`, beroenden och det som är unikt för modulen.
+- Bygget ska vara kompatibelt med Isolated Projects: aldrig `allprojects {}`, `subprojects {}`,
+  `rootProject.<…>` eller `project(":x")` för att läsa eller ändra en annan modul. Behövs en fil i roten,
+  använd `project.isolated.rootProject.projectDirectory`. CI kontrollerar detta i steget *Isolated Projects compatibility*.
+- Nya moduler: lägg till `include(...)` i `settings.gradle.kts`, beroende via `projects.<…>` (typsäkra accessorer).
+- Nya Gradle-plugins deklareras med `apply false` i rotens `build.gradle.kts`, så att alla moduler delar en classloader.
+
 ## Regler
 - **Designsystem:** feature-kod använder bara `se.novila.designsystem` och aldrig `androidx.compose.material3`
-  direkt. Saknas en komponent, lägg till en `Novila*`-wrapper i `designsystem/component`.
+  direkt. Saknas en komponent, lägg till en `Novila*`-wrapper i `:core:designsystem` (`component/`).
   Använd `NovilaTheme.colors/typography/spacing/shapes`, aldrig hårdkodade färger eller dp-värden i features.
 - **Inga hårdkodade texter:** all text som visas eller läses upp ska komma från `strings.xml`.
   Engelska i `values/`, svenska i `values-sv/`. Symboler och enheter markeras `translatable="false"`.

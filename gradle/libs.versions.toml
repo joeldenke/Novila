@@ -35,8 +35,17 @@ junit = { module = "junit:junit", version.ref = "junit" }
 # AGP 9 ships built-in Kotlin with KGP 2.2.10 as the floor. A newer KGP goes on the
 # buildscript classpath (per AGP 9 release notes) and must match compose-compiler.
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+# Compile-time API for the convention plugins in build-logic. Only the public gradle-api
+# artifact, never AGP internals: AGP 10 plans to expose nothing else for compilation.
+android-gradle-api = { module = "com.android.tools.build:gradle-api", version.ref = "agp" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+
+# Convention plugins from build-logic (no version: they come from the included build).
+novila-android-application = { id = "novila.android.application" }
+novila-android-library = { id = "novila.android.library" }
+novila-android-compose = { id = "novila.android.compose" }
