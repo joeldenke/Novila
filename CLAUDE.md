@@ -66,7 +66,8 @@ Använd rätt skill innan du ändrar respektive område:
 `.claude/settings.json` aktiverar också Firebase-pluginet (`firebase@firebase`) med Firebase MCP-servern.
 - Den kräver inloggning (`firebase login --no-localhost`) och nätverksåtkomst till `*.googleapis.com`.
 - Använd den för setup och felsökning av Firebase-projektet, aldrig för att lägga till Firebase-SDK:er i appen.
-- CI använder aldrig MCP. CI ska autentisera via Workload Identity Federation (planerat, ersätter servicekonto-nyckeln).
+- CI använder aldrig MCP. CI autentiserar via Workload Identity Federation (`google-github-actions/auth`),
+  aldrig med servicekonto-nycklar. Ändra GCP/Firebase-setupen via `scripts/bootstrap-firebase.sh` och håll den idempotent.
 
 ## Regler
 - **Designsystem:** feature-kod använder bara `se.novila.designsystem` och aldrig `androidx.compose.material3`
