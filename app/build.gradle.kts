@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.novila.android.application)
     alias(libs.plugins.novila.android.compose)
+    alias(libs.plugins.novila.android.screenshot)
     alias(libs.plugins.kotlin.serialization)
 }
 
@@ -78,8 +79,20 @@ android {
     }
 }
 
+// Every @Preview in the app becomes a screenshot test. See novila.android.screenshot.
+roborazzi {
+    outputDir.set(layout.projectDirectory.dir("src/test/screenshots"))
+    generateComposePreviewRobolectricTests {
+        enable = true
+        packages = listOf("se.novila")
+        includePrivatePreviews = true
+    }
+}
+
 dependencies {
     implementation(projects.core.designsystem)
+    // Coverage report for the app includes the modules it depends on.
+    kover(projects.core.designsystem)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
@@ -89,6 +102,4 @@ dependencies {
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.kotlinx.serialization.core)
     implementation(libs.compose.ui)
-
-    testImplementation(libs.junit)
 }

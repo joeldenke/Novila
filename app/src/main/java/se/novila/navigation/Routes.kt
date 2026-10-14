@@ -7,8 +7,11 @@ import kotlinx.serialization.Serializable
 import se.novila.R
 
 @Serializable data object TodayRoute : NavKey
+
 @Serializable data object TrainingRoute : NavKey
+
 @Serializable data object SleepRoute : NavKey
+
 @Serializable data object NutritionRoute : NavKey
 
 /** Tabs in the bottom navigation bar, in display order. Each tab keeps its own back stack. */
