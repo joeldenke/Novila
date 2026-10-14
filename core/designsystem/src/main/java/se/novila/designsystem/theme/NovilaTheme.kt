@@ -33,14 +33,18 @@ fun NovilaTheme(
 /** Single entry point for design tokens in feature code. */
 object NovilaTheme {
     val colors: ColorScheme
-        @Composable @ReadOnlyComposable get() = MaterialTheme.colorScheme
+        @Composable @ReadOnlyComposable
+        get() = MaterialTheme.colorScheme
 
     val typography: Typography
-        @Composable @ReadOnlyComposable get() = MaterialTheme.typography
+        @Composable @ReadOnlyComposable
+        get() = MaterialTheme.typography
 
     val shapes: Shapes
-        @Composable @ReadOnlyComposable get() = MaterialTheme.shapes
+        @Composable @ReadOnlyComposable
+        get() = MaterialTheme.shapes
 
     val spacing: NovilaSpacing
-        @Composable @ReadOnlyComposable get() = LocalNovilaSpacing.current
+        @Composable @ReadOnlyComposable
+        get() = LocalNovilaSpacing.current
 }

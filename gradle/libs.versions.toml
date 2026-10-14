@@ -8,6 +8,12 @@ androidxLifecycle = "2.11.0"
 navigation3 = "1.2.0"
 kotlinxSerialization = "1.11.0"
 junit = "4.13.2"
+robolectric = "4.17"
+roborazzi = "1.76.0"
+composablePreviewScanner = "0.9.3"
+spotless = "8.10.4"
+ktlint = "1.8.0"
+kover = "0.9.11"
 
 # Android platform
 compileSdk = "37"
@@ -31,6 +37,14 @@ compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 
 junit = { module = "junit:junit", version.ref = "junit" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
+compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
+roborazzi = { module = "io.github.takahirom.roborazzi:roborazzi", version.ref = "roborazzi" }
+roborazzi-compose = { module = "io.github.takahirom.roborazzi:roborazzi-compose", version.ref = "roborazzi" }
+roborazzi-junit-rule = { module = "io.github.takahirom.roborazzi:roborazzi-junit-rule", version.ref = "roborazzi" }
+roborazzi-compose-preview-scanner-support = { module = "io.github.takahirom.roborazzi:roborazzi-compose-preview-scanner-support", version.ref = "roborazzi" }
+composable-preview-scanner = { module = "io.github.sergio-sastre.ComposablePreviewScanner:android", version.ref = "composablePreviewScanner" }
 
 # AGP 9 ships built-in Kotlin with KGP 2.2.10 as the floor. A newer KGP goes on the
 # buildscript classpath (per AGP 9 release notes) and must match compose-compiler.
@@ -38,14 +52,20 @@ kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", v
 # Compile-time API for the convention plugins in build-logic. Only the public gradle-api
 # artifact, never AGP internals: AGP 10 plans to expose nothing else for compilation.
 android-gradle-api = { module = "com.android.tools.build:gradle-api", version.ref = "agp" }
+compose-gradle-plugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 # Convention plugins from build-logic (no version: they come from the included build).
 novila-android-application = { id = "novila.android.application" }
 novila-android-library = { id = "novila.android.library" }
 novila-android-compose = { id = "novila.android.compose" }
+novila-android-unittest = { id = "novila.android.unittest" }
+novila-android-screenshot = { id = "novila.android.screenshot" }

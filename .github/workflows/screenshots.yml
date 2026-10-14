@@ -1,0 +1,132 @@
+# Records Roborazzi reference screenshots in CI, so they never have to be made locally.
+#
+#   - Comment `/record-screenshots` on a PR: records on the PR branch and pushes a commit there.
+#   - Or run it from the Actions tab on a branch. On the default branch it opens a PR instead,
+#     since main only accepts PRs.
+#
+# Only people with write access can trigger it, and only for branches in this repository (never
+# forks), because the job runs the branch's build with a token that can push.
+# GitHub only reads issue_comment workflows from the default branch, so the comment command works
+# once this file is on main.
+name: Record screenshots
+
+on:
+  issue_comment:
+    types: [created]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: screenshots-${{ github.event.issue.number || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  record:
+    name: Record screenshots
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.issue.pull_request &&
+       startsWith(github.event.comment.body, '/record-screenshots') &&
+       contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association))
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write # push the new reference images
+      pull-requests: write # react to the command, reply, open a PR from main
+      actions: write # start CI on the pushed commit
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PR_NUMBER: ${{ github.event.issue.number }}
+      COMMENT_ID: ${{ github.event.comment.id }}
+    steps:
+      - name: Resolve branch
+        id: target
+        run: |
+          if [ -n "$PR_NUMBER" ]; then
+            gh api "repos/$GITHUB_REPOSITORY/issues/comments/$COMMENT_ID/reactions" -f content=eyes > /dev/null
+            pr=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER")
+            if [ "$(jq -r '.head.repo.full_name' <<<"$pr")" != "$GITHUB_REPOSITORY" ]; then
+              echo "::error::Pull requests from forks can't record screenshots."
+              exit 1
+            fi
+            branch=$(jq -r '.head.ref' <<<"$pr")
+          else
+            branch="$GITHUB_REF_NAME"
+          fi
+          default=$(gh api "repos/$GITHUB_REPOSITORY" --jq .default_branch)
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+          echo "default=$default" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ steps.target.outputs.branch }}
+
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
+        with:
+          cache-provider: basic
+
+      - name: Record
+        run: ./gradlew recordRoborazziDebug --stacktrace
+
+      - name: Commit and push
+        id: push
+        env:
+          BRANCH: ${{ steps.target.outputs.branch }}
+          DEFAULT_BRANCH: ${{ steps.target.outputs.default }}
+        run: |
+          git add -A -- ':(glob)**/src/test/screenshots/**'
+          if git diff --cached --quiet; then
+            echo "changed=0" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          changed=$(git diff --cached --name-only | wc -l)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -q -m "Record screenshot references" -m "$(git diff --cached --name-only | sed 's/^/- /')"
+
+          target="$BRANCH"
+          if [ "$BRANCH" = "$DEFAULT_BRANCH" ]; then
+            target="screenshots/record-$GITHUB_RUN_ID"
+          fi
+          git push origin "HEAD:refs/heads/$target"
+          if [ "$target" != "$BRANCH" ]; then
+            PR_NUMBER=$(gh api "repos/$GITHUB_REPOSITORY/pulls" -f head="$target" -f base="$DEFAULT_BRANCH" \
+              -f title="Record screenshot references" \
+              -f body="Reference screenshots recorded by run $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID." \
+              --jq .number)
+            echo "pr=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+          fi
+          echo "changed=$changed" >> "$GITHUB_OUTPUT"
+          echo "target=$target" >> "$GITHUB_OUTPUT"
+
+      # Commits pushed with GITHUB_TOKEN trigger no workflows, so start CI on the new head ourselves.
+      - name: Start CI on the new commit
+        if: steps.push.outputs.changed != '0'
+        env:
+          TARGET: ${{ steps.push.outputs.target }}
+        run: gh workflow run ci.yml --ref "$TARGET"
+
+      - name: Reply
+        if: always() && (env.PR_NUMBER != '' || steps.push.outputs.pr != '')
+        env:
+          CHANGED: ${{ steps.push.outputs.changed }}
+          OPENED_PR: ${{ steps.push.outputs.pr }}
+          OUTCOME: ${{ job.status }}
+        run: |
+          run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          if [ "$OUTCOME" != "success" ]; then
+            body="Recording screenshots failed. See the [run]($run_url)."
+          elif [ "${CHANGED:-0}" = "0" ]; then
+            body="Screenshots recorded: no changes, the references are up to date. ([run]($run_url))"
+          else
+            body="Recorded $CHANGED screenshot file(s) and pushed them. CI is running on the new commit. ([run]($run_url))"
+          fi
+          number="${PR_NUMBER:-$OPENED_PR}"
+          gh api "repos/$GITHUB_REPOSITORY/issues/$number/comments" -f body="$body" > /dev/null

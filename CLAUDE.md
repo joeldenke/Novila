@@ -30,7 +30,8 @@ I `:app`:
 - **Commit-meddelanden, branchnamn, PR-titlar och PR-beskrivningar skrivs på engelska.**
   PR-titeln (vid squash: commit-rubriken) blir en rad i testarnas release notes, så skriv den som en tydlig
   sammanfattning. `scripts/release-notes.sh` listar allt på `main` sedan förra lyckade distributionen.
-- `CI`-workflowen måste vara grön innan PR:en är klar: `./gradlew lintDebug testDebugUnitTest assembleDebug`.
+- `CI`-workflowen måste vara grön innan PR:en är klar:
+  `./gradlew spotlessCheck lintDebug testDebugUnitTest verifyRoborazziDebug assembleDebug`.
   Release-bygget (R8) körs inte på PR:er. Ändrar du `proguard-rules.pro` eller R8-känslig kod,
   säg det i PR-beskrivningen. Fel syns då först vid merge.
 - Kan din miljö inte nå Google Maven: pusha och följ körningen (`gh pr checks`, `gh run view --log-failed`)
@@ -89,12 +90,23 @@ där pluginet `firebase@firebase` inte alltid installeras.
 ## Gradle-bygget
 - Varje modul använder convention plugins: `novila.android.application` eller `novila.android.library`,
   plus `novila.android.compose` för Compose. SDK-nivåer, Java-nivå och lint-policy sätts bara där.
+  Tester: `novila.android.unittest` (JUnit, Robolectric, Compose UI-tester, Kover) och
+  `novila.android.screenshot` (Roborazzi, varje `@Preview` blir ett skärmdumpstest).
   Modulens egen `build.gradle.kts` innehåller bara `namespace`, beroenden och det som är unikt för modulen.
 - Bygget ska vara kompatibelt med Isolated Projects: aldrig `allprojects {}`, `subprojects {}`,
   `rootProject.<…>` eller `project(":x")` för att läsa eller ändra en annan modul. Behövs en fil i roten,
   använd `project.isolated.rootProject.projectDirectory`. CI kontrollerar detta i steget *Isolated Projects compatibility*.
 - Nya moduler: lägg till `include(...)` i `settings.gradle.kts`, beroende via `projects.<…>` (typsäkra accessorer).
 - Nya Gradle-plugins deklareras med `apply false` i rotens `build.gradle.kts`, så att alla moduler delar en classloader.
+
+## Tester och kodstil
+- **Logik:** rena Kotlin-tester i `src/test`. **UI:** Compose UI-tester med `createComposeRule()` på Robolectric
+  (`@RunWith(RobolectricTestRunner::class)`), också i `src/test`. Ingen emulator behövs.
+- **Skärmdumpar:** varje `@Preview` i `:app` testas mot referensbilder i `app/src/test/screenshots`.
+  Ändrar du UI med flit: kommentera `/record-screenshots` på PR:en. Workflowen `Record screenshots` tar nya bilder,
+  pushar dem till branchen och startar CI. Ta aldrig fram referensbilder lokalt; de ska renderas i CI.
+- **Kodstil:** Spotless med ktlint (`android_studio`-stil) kontrolleras i CI. `./gradlew spotlessApply` rättar.
+- **Täckning:** Kover, sammanfattning i CI-körningens summary. **Compose-stabilitet:** artefakten `compose-reports`.
 
 ## Regler
 - **Designsystem:** feature-kod använder bara `se.novila.designsystem` och aldrig `androidx.compose.material3`

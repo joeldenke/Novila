@@ -1,4 +1,4 @@
-# Runs on every PR to main: lint, unit tests and a debug build.
+# Runs on every PR to main: formatting, lint, unit and screenshot tests, coverage and a debug build.
 # Release builds (R8, release signing) only run on merge to main, in distribute.yml.
 # Make this a required status check in branch protection so nothing red can be merged.
 name: CI
@@ -6,12 +6,14 @@ name: CI
 on:
   pull_request:
     branches: [main]
+  # Lets screenshots.yml start CI on the commit it pushes (pushes by GITHUB_TOKEN trigger nothing).
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.event.pull_request.number }}
+  group: ci-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -34,10 +36,48 @@ jobs:
           # MIT-licensed cache, free for private repositories too.
           cache-provider: basic
 
-      - name: Lint, unit tests and build
+      - name: Format, lint, tests and build
         run: |
           set -o pipefail
-          ./gradlew lintDebug testDebugUnitTest assembleDebug --continue 2>&1 | tee build.log
+          # Screenshot tests compare against committed references once they exist.
+          screenshots=""
+          if git ls-files -- '*/src/test/screenshots/*.png' | grep -q .; then
+            screenshots=verifyRoborazziDebug
+          else
+            echo "::notice title=No reference screenshots::Comment /record-screenshots on the PR to record them."
+          fi
+          ./gradlew spotlessCheck lintDebug testDebugUnitTest $screenshots assembleDebug :app:koverXmlReportDebug \
+            -Pnovila.composeReports=true --continue 2>&1 | tee build.log
+
+      - name: Coverage summary
+        if: success()
+        run: |
+          python3 - >> "$GITHUB_STEP_SUMMARY" <<'PY'
+          import glob, xml.etree.ElementTree as ET
+          reports = glob.glob("app/build/reports/kover/*.xml")
+          if not reports:
+              print("::warning title=Coverage::No Kover XML report found")
+              raise SystemExit
+          counters = {c.get("type"): c for c in ET.parse(reports[0]).getroot().findall("counter")}
+          print("### Coverage (app + core modules, debug unit tests)\n\n| Metric | Covered |\n|---|---|")
+          for kind in ("LINE", "BRANCH", "INSTRUCTION"):
+              c = counters.get(kind)
+              if c is not None:
+                  covered, missed = int(c.get("covered")), int(c.get("missed"))
+                  total = covered + missed
+                  print(f"| {kind.title()} | {100 * covered / total:.1f}% ({covered}/{total}) |" if total else f"| {kind.title()} | n/a |")
+          PY
+
+      # Stability and skippability of every composable. See the jetpack-compose-performance skill.
+      - name: Upload Compose compiler reports
+        if: success()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: compose-reports
+          path: |
+            **/build/compose-reports/
+            app/build/reports/kover/
+          retention-days: 14
 
       # Isolated Projects is still experimental in Gradle 9.x and full AGP support comes with
       # AGP 10, so it stays off for real builds. Configuring every module with it on keeps the
@@ -61,6 +101,11 @@ jobs:
           done || true
           find . -path '*/build/test-results/*' -name '*.xml' -exec grep -l '<failure' {} + 2>/dev/null \
             | while IFS= read -r f; do echo "::error title=Test failed::${f##*/}"; done || true
+          grep -qE 'Task :spotless[A-Za-z]*Check FAILED' build.log \
+            && echo "::error title=Formatting::Run ./gradlew spotlessApply, or see the Spotless diff in the log." || true
+          find . -path '*/build/outputs/roborazzi/*_compare.png' | head -10 | while IFS= read -r f; do
+            echo "::error title=Screenshot changed::${f##*/} (diff in the reports artifact; comment /record-screenshots if intended)"
+          done || true
 
       - name: Upload reports on failure
         if: failure()
@@ -70,4 +115,5 @@ jobs:
           path: |
             **/build/reports/
             **/build/test-results/
+            **/build/outputs/roborazzi/
           retention-days: 7

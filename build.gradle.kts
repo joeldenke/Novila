@@ -15,4 +15,23 @@ plugins {
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.roborazzi) apply false
+    alias(libs.plugins.kover) apply false
+    alias(libs.plugins.spotless)
+}
+
+// Formatting and ktlint for every Kotlin file in the repo, configured from .editorconfig.
+// Runs on the root project only and just reads files, so it stays Isolated Projects safe.
+spotless {
+    val ktlintVersion = libs.versions.ktlint.get()
+    kotlin {
+        target("**/*.kt")
+        targetExclude("**/build/**")
+        ktlint(ktlintVersion)
+    }
+    kotlinGradle {
+        target("**/*.gradle.kts")
+        targetExclude("**/build/**")
+        ktlint(ktlintVersion)
+    }
 }
