@@ -146,7 +146,8 @@ fun moodText(mood: Int): String =
 @Composable
 @ReadOnlyComposable
 private fun currentLocale(): Locale =
-    ConfigurationCompat.getLocales(LocalConfiguration.current)[0] ?: Locale.getDefault()
+    // Read from LocalConfiguration (observable) so text updates when the app language changes.
+    ConfigurationCompat.getLocales(LocalConfiguration.current)[0] ?: Locale.ROOT
 
 /** Localized weekday and date, e.g. "Tue 13 Oct" / "tis 13 okt". */
 @Composable
