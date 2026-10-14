@@ -1,0 +1,34 @@
+name: Annotate Gradle failures
+description: >-
+  Turns the key failure lines in build.log, lint reports, test results and screenshot diffs into
+  annotations, readable in the PR and the GitHub mobile app without downloading logs.
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        # Max 10 error annotations per step: compiler errors first, then Gradle's summary.
+        { grep -E '^e: ' build.log; grep -A3 '^\* What went wrong' build.log | grep -vE '^\* What went wrong|^--$|^\s*$'; } \
+          | grep -v '^> Task ' | awk '!seen[$0]++' | head -10 \
+          | while IFS= read -r line; do echo "::error title=Gradle::${line}"; done || true
+        find . -path '*/build/reports/lint-results-*.txt' -not -path './build-logic/*' | while IFS= read -r f; do
+          grep -E ': Error: ' "$f" | head -20 | while IFS= read -r l; do echo "::error title=Lint::${l}"; done
+        done || true
+        # One annotation per failed test with its first message line, so the cause shows in the PR.
+        find . -path '*/build/test-results/*' -name '*.xml' -print0 2>/dev/null \
+          | xargs -0 -r python3 -I -c '
+        import sys, xml.etree.ElementTree as ET
+        for path in sys.argv[1:]:
+            for case in ET.parse(path).getroot().iter("testcase"):
+                for failure in case.findall("failure") + case.findall("error"):
+                    text = (failure.get("message") or failure.text or "").strip().splitlines()
+                    causes = [l.strip() for l in (failure.text or "").splitlines() if l.strip().startswith("Caused by")]
+                    detail = " | ".join(([text[0]] if text else []) + causes[-1:])[:300]
+                    name = case.get("classname", "") + "." + case.get("name", "")
+                    print("::error title=Test failed::" + name + ": " + detail)
+        ' | head -10 || true
+        grep -qE 'Task :spotless[A-Za-z]*Check FAILED' build.log \
+          && echo "::error title=Formatting::Run ./gradlew spotlessApply, or see the Spotless diff in the log." || true
+        find . -path '*/build/outputs/roborazzi/*_compare.png' | head -10 | while IFS= read -r f; do
+          echo "::error title=Screenshot changed::${f##*/} (diff in the reports artifact; comment /record-screenshots if intended)"
+        done || true

@@ -30,8 +30,9 @@ I `:app`:
 - **Commit-meddelanden, branchnamn, PR-titlar och PR-beskrivningar skrivs på engelska.**
   PR-titeln (vid squash: commit-rubriken) blir en rad i testarnas release notes, så skriv den som en tydlig
   sammanfattning. `scripts/release-notes.sh` listar allt på `main` sedan förra lyckade distributionen.
-- `CI`-workflowen måste vara grön innan PR:en är klar:
-  `./gradlew spotlessCheck lintDebug testDebugUnitTest verifyRoborazziDebug assembleDebug`.
+- `CI`-workflowen måste vara grön innan PR:en är klar. Den kör jobben Format (`spotlessCheck`), Lint (`lintDebug`),
+  Tests (`testDebugUnitTest verifyRoborazziDebug`) och Build (`assembleDebug`) parallellt; kontrollen
+  *Lint, test and build* samlar dem och är den som krävs. Gemensamma steg ligger i `.github/actions/`.
   Release-bygget (R8) körs inte på PR:er. Ändrar du `proguard-rules.pro` eller R8-känslig kod,
   säg det i PR-beskrivningen. Fel syns då först vid merge.
 - Kan din miljö inte nå Google Maven: pusha och följ körningen (`gh pr checks`, `gh run view --log-failed`)
@@ -101,7 +102,8 @@ där pluginet `firebase@firebase` inte alltid installeras.
   Modulens egen `build.gradle.kts` innehåller bara `namespace`, beroenden och det som är unikt för modulen.
 - Bygget ska vara kompatibelt med Isolated Projects: aldrig `allprojects {}`, `subprojects {}`,
   `rootProject.<…>` eller `project(":x")` för att läsa eller ändra en annan modul. Behövs en fil i roten,
-  använd `project.isolated.rootProject.projectDirectory`. CI kontrollerar detta i steget *Isolated Projects compatibility*.
+  använd `project.isolated.rootProject.projectDirectory`. Workflowen *Isolated Projects* kontrollerar detta när byggfiler
+  ändras och varje vecka (den är långsam, så den körs inte på varje PR).
 - Nya moduler: lägg till `include(...)` i `settings.gradle.kts`, beroende via `projects.<…>` (typsäkra accessorer).
 - Nya Gradle-plugins deklareras med `apply false` i rotens `build.gradle.kts`, så att alla moduler delar en classloader.
 
