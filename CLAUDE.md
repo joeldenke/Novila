@@ -22,7 +22,8 @@ CI är därför den enda sanningen om att något bygger och fungerar.
 ## Arbetsflöde
 - Pusha aldrig direkt till `main`. Skapa en branch och öppna en PR.
 - **Commit-meddelanden, branchnamn, PR-titlar och PR-beskrivningar skrivs på engelska.**
-  PR-titeln blir release notes för testarna, så skriv den som en tydlig sammanfattning.
+  PR-titeln (vid squash: commit-rubriken) blir en rad i testarnas release notes, så skriv den som en tydlig
+  sammanfattning. `scripts/release-notes.sh` listar allt på `main` sedan förra lyckade distributionen.
 - `CI`-workflowen måste vara grön innan PR:en är klar: `./gradlew lintDebug testDebugUnitTest assembleDebug`.
   Release-bygget (R8) körs inte på PR:er. Ändrar du `proguard-rules.pro` eller R8-känslig kod,
   säg det i PR-beskrivningen. Fel syns då först vid merge.
