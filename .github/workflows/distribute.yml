@@ -1,15 +1,17 @@
 # Builds a signed release (R8) and sends it to testers via Firebase App Distribution
 # when a PR is merged to main (or when run manually from the Actions tab).
 #
+# Authenticates to Google Cloud with Workload Identity Federation: no JSON key is stored.
+# scripts/bootstrap-firebase.sh creates the Google side and sets the Firebase/GCP variables.
 # Requires, under repo Settings → Secrets and variables → Actions:
-#   Secret   FIREBASE_SERVICE_ACCOUNT        JSON key for a service account with the
-#                                            "Firebase App Distribution Admin" role
 #   Secret   NOVILA_RELEASE_KEYSTORE_BASE64  base64 of the release keystore (.jks)
 #   Secret   NOVILA_RELEASE_STORE_PASSWORD   keystore password
 #   Secret   NOVILA_RELEASE_KEY_PASSWORD     key password
 #   Variable NOVILA_RELEASE_KEY_ALIAS        key alias, e.g. "novila"
 #   Variable FIREBASE_APP_ID                 e.g. 1:1234567890:android:abc123 (for se.novila)
-#   Variable FIREBASE_TESTER_GROUPS          Firebase group alias(es), e.g. "testers"
+#   Variable FIREBASE_TESTER_GROUPS          Firebase group alias(es), e.g. "testare"
+#   Variable GCP_WORKLOAD_IDENTITY_PROVIDER  projects/<number>/locations/global/workloadIdentityPools/github/providers/novila
+#   Variable GCP_SERVICE_ACCOUNT             github-distribute@<project>.iam.gserviceaccount.com
 name: Distribute to testers
 
 on:
@@ -36,22 +38,28 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: firebase
+    permissions:
+      contents: read
+      id-token: write # lets the job request a GitHub OIDC token for Workload Identity Federation
     steps:
       - name: Check configuration
         env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           NOVILA_RELEASE_KEYSTORE_BASE64: ${{ secrets.NOVILA_RELEASE_KEYSTORE_BASE64 }}
           NOVILA_RELEASE_STORE_PASSWORD: ${{ secrets.NOVILA_RELEASE_STORE_PASSWORD }}
           NOVILA_RELEASE_KEY_PASSWORD: ${{ secrets.NOVILA_RELEASE_KEY_PASSWORD }}
           NOVILA_RELEASE_KEY_ALIAS: ${{ vars.NOVILA_RELEASE_KEY_ALIAS }}
           FIREBASE_APP_ID: ${{ vars.FIREBASE_APP_ID }}
           FIREBASE_TESTER_GROUPS: ${{ vars.FIREBASE_TESTER_GROUPS }}
+          GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          GCP_SERVICE_ACCOUNT: ${{ vars.GCP_SERVICE_ACCOUNT }}
         run: |
           missing=0
-          for name in FIREBASE_SERVICE_ACCOUNT NOVILA_RELEASE_KEYSTORE_BASE64 NOVILA_RELEASE_STORE_PASSWORD \
-                      NOVILA_RELEASE_KEY_PASSWORD NOVILA_RELEASE_KEY_ALIAS FIREBASE_APP_ID FIREBASE_TESTER_GROUPS; do
+          for name in NOVILA_RELEASE_KEYSTORE_BASE64 NOVILA_RELEASE_STORE_PASSWORD NOVILA_RELEASE_KEY_PASSWORD \
+                      NOVILA_RELEASE_KEY_ALIAS FIREBASE_APP_ID FIREBASE_TESTER_GROUPS \
+                      GCP_WORKLOAD_IDENTITY_PROVIDER GCP_SERVICE_ACCOUNT; do
             [ -n "${!name}" ] || { echo "::error title=Missing configuration::$name is not set"; missing=1; }
           done
+          [ "$missing" = 0 ] || echo "::error::Firebase/GCP variables come from scripts/bootstrap-firebase.sh"
           exit $missing
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -117,22 +125,24 @@ jobs:
         with:
           node-version: 22
 
+      # Exchanges the GitHub OIDC token for short-lived Google credentials and exports
+      # GOOGLE_APPLICATION_CREDENTIALS, which firebase-tools picks up.
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+
       - name: Upload to Firebase App Distribution
         env:
-          SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           APP_ID: ${{ vars.FIREBASE_APP_ID }}
           GROUPS: ${{ vars.FIREBASE_TESTER_GROUPS }}
         run: |
-          creds="$RUNNER_TEMP/firebase-sa.json"
-          printf '%s' "$SA" > "$creds"
-          chmod 600 "$creds"
-          export GOOGLE_APPLICATION_CREDENTIALS="$creds"
           npx --yes "firebase-tools@${FIREBASE_TOOLS_VERSION}" appdistribution:distribute \
             app/build/outputs/apk/release/app-release.apk \
             --app "$APP_ID" \
             --groups "$GROUPS" \
             --release-notes-file release-notes.txt
-          rm -f "$creds"
 
       - name: Remove keystore
         if: always()
