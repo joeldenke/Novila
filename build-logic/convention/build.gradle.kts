@@ -20,8 +20,9 @@ kotlin {
 
 dependencies {
     // compileOnly: the root build puts AGP on the classpath (apply false), so every module shares
-    // one copy. Other plugins (Compose compiler) are applied by id and need no compile dependency.
-    compileOnly(libs.android.gradle.plugin)
+    // one copy. Compiles against AGP's public API only. Other plugins (Compose compiler) are
+    // applied by id and need no compile dependency.
+    compileOnly(libs.android.gradle.api)
 }
 
 tasks {

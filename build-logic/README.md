@@ -15,5 +15,5 @@ Plugins are small and composable: a Compose library applies `novila.android.libr
 `novila.android.compose`. One-off settings stay in that module's `build.gradle.kts`.
 
 Versions come from the root catalog (`gradle/libs.versions.toml`), which `settings.gradle.kts`
-here imports as `libs`. AGP is a `compileOnly` dependency; the root build puts the real plugins
+here imports as `libs`. AGP's public `gradle-api` is a `compileOnly` dependency (never AGP internals, which AGP 10 will hide); the root build puts the real plugins
 on the classpath with `apply false`, so every module shares one copy.
