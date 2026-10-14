@@ -6,17 +6,17 @@ import java.io.File
 
 /**
  * Cheap guard rails enforced in CI:
- * - Only the design system may use Material 3 directly; features use Novila components.
+ * - Only :core:designsystem may use Material 3 directly; the app uses Novila components.
+ *   (It gets Material 3 transitively because NovilaTheme exposes M3 types, so the compiler
+ *   alone can't enforce this.)
  * - UI text comes from string resources, never string literals.
  */
 class ArchitectureTest {
     // Gradle runs unit tests with the module directory as working directory.
     private val sources = File("src/main/java/se/novila")
-    private val designSystem = File(sources, "designsystem")
 
     private fun featureFiles(): List<File> = sources.walkTopDown()
         .filter { it.isFile && it.extension == "kt" }
-        .filterNot { it.startsWith(designSystem) }
         .toList()
 
     @Test fun `sources are found`() {

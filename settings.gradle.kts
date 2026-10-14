@@ -1,4 +1,6 @@
 pluginManagement {
+    // Convention plugins (novila.android.*). See build-logic/README.md.
+    includeBuild("build-logic")
     repositories {
         google {
             content {
@@ -28,4 +30,8 @@ dependencyResolutionManagement {
 
 rootProject.name = "Novila"
 
+// Type-safe module references: implementation(projects.core.designsystem).
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 include(":app")
+include(":core:designsystem")
