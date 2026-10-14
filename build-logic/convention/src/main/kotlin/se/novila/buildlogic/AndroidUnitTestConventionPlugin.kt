@@ -47,6 +47,9 @@ class AndroidUnitTestConventionPlugin : Plugin<Project> {
             // Real Skia rendering instead of no-op drawing: required for screenshots, and makes
             // layout/drawing tests meaningful.
             test.systemProperty("robolectric.graphicsMode", "NATIVE")
+            // Robolectric 4.17 reaches into jdk.internal.access for SDK 36+ on JDK 17+; without this
+            // every Robolectric test fails with IllegalAccessException (robolectric#11434).
+            test.jvmArgs("--add-exports=java.base/jdk.internal.access=ALL-UNNAMED")
         }
     }
 }
