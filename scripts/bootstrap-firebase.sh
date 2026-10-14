@@ -9,7 +9,7 @@
 #
 # It sets up:
 #   1. The Google Cloud project (created if missing) and the APIs it needs
-#   2. Firebase on that project and an Android app for se.novila
+#   2. Firebase on that project and an Android app for se.novila.debug
 #   3. The App Distribution group "testare" with the given testers (default: you)
 #   4. A service account that may only distribute builds
 #   5. Workload Identity Federation so the "Distribute to testers" workflow in
@@ -26,8 +26,8 @@ GITHUB_REPO="joeldenke/Novila"
 # Numeric repo id survives renames and transfers, unlike the name.
 GITHUB_REPO_ID="1419684243"
 GITHUB_ENVIRONMENT="firebase"
-ANDROID_PACKAGE="se.novila"
-ANDROID_DISPLAY_NAME="Novila"
+ANDROID_PACKAGE="se.novila.debug"
+ANDROID_DISPLAY_NAME="Novila (debug)"
 TESTER_GROUP="testare"
 POOL_ID="github"
 PROVIDER_ID="novila"

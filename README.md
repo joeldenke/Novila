@@ -10,12 +10,12 @@ och Firebase App Distribution levererar appen till testarna.
 1. Claude jobbar i en branch och öppnar en PR.
 2. **CI** kör lint, enhetstester och ett debug-bygge. Måste vara grön.
 3. Du mergar PR:en från GitHub-appen.
-4. **Distribute to testers** bygger en signerad release (R8) och skickar den till Firebase-testarna.
+4. **Distribute to testers** skickar debug-appen till Firebase-testarna. Release-bygget (R8) byggs också som kontroll.
    Testarna får ett mejl, eller en notis i Firebase App Tester-appen.
 
 ## Engångssetup för Google Cloud och Firebase (går att göra från mobilen)
 Skriptet `scripts/bootstrap-firebase.sh` gör allt och kan köras om utan risk:
-GCP-projekt, Firebase, Android-appen `se.novila`, testgruppen `testare`,
+GCP-projekt, Firebase, Android-appen `se.novila.debug`, testgruppen `testare`,
 ett servicekonto som bara får distribuera, och Workload Identity Federation så att
 GitHub Actions loggar in utan JSON-nyckel.
 
@@ -30,7 +30,7 @@ GitHub Actions loggar in utan JSON-nyckel.
    Settings → Secrets and variables → Actions → Variables
    (eller kör `gh auth login` i Cloud Shell först, då sätter skriptet dem själv).
 
-4. Skapa release-nyckeln i [Cloud Shell](https://shell.cloud.google.com) (fungerar i mobilens webbläsare):
+4. Valfritt, behövs inte för testarna: skapa release-nyckeln i [Cloud Shell](https://shell.cloud.google.com) (fungerar i mobilens webbläsare):
    ```sh
    keytool -genkeypair -keystore novila-release.jks -alias novila \
      -keyalg RSA -keysize 4096 -validity 10000 -dname "CN=Novila"
