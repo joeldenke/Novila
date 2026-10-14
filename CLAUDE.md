@@ -28,7 +28,8 @@ CI är därför den enda sanningen om att något bygger och fungerar.
   säg det i PR-beskrivningen. Fel syns då först vid merge.
 - Kan din miljö inte nå Google Maven: pusha och följ körningen (`gh pr checks`, `gh run view --log-failed`)
   och rätta tills den är grön. Säg aldrig att något fungerar utan grönt CI.
-- När PR:en mergas bygger `Distribute to testers` en signerad release-APK (`se.novila`) och skickar den via Firebase App Distribution.
+- När PR:en mergas skickar `Distribute to testers` debug-APK:n (`se.novila.debug`) via Firebase App Distribution.
+  Samma körning bygger även release (R8), signerad bara om release-nyckeln finns i GitHub-hemligheterna.
 
 ## Kvalitet
 - **Lint-policy:** `app/lint.xml` sätter projektets regler och orsaker. Höj inte lint-fel till varningar
@@ -48,6 +49,8 @@ Misstag som redan har gjorts i det här repot. Gör dem inte igen.
 - **Insets:** ge `innerPadding` till listans `contentPadding` via `ScreenList`, aldrig `Modifier.padding(innerPadding)`.
 - **GitHub-loggar:** fullständiga Actions-loggar går inte att hämta härifrån. Läs CI-fel via annotations:
   `gh api repos/joeldenke/Novila/check-runs/<job-id>/annotations`.
+- **gcloud i molnsessioner:** miljön sätter `CLOUDSDK_AUTH_ACCESS_TOKEN`, som skriver över `gcloud auth login`.
+  Kör `unset CLOUDSDK_AUTH_ACCESS_TOKEN` efter inloggningen, annars svarar alla anrop `CREDENTIALS_MISSING`.
 - **GitHub API:** GraphQL och `gh pr create` fungerar inte här. Använd REST (`gh api repos/.../pulls`).
 
 ## Googles Android-skills
