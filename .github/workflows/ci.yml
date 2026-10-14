@@ -1,4 +1,5 @@
-# Runs on every PR to main: lint, unit tests, and debug + release (R8) builds.
+# Runs on every PR to main: lint, unit tests and a debug build.
+# Release builds (R8, release signing) only run on merge to main, in distribute.yml.
 # Make this a required status check in branch protection so nothing red can be merged.
 name: CI
 
@@ -36,7 +37,7 @@ jobs:
       - name: Lint, unit tests and build
         run: |
           set -o pipefail
-          ./gradlew lintDebug testDebugUnitTest assembleDebug assembleRelease --continue 2>&1 | tee build.log
+          ./gradlew lintDebug testDebugUnitTest assembleDebug --continue 2>&1 | tee build.log
 
       # Surface the key failure lines as annotations, readable in the PR and the GitHub mobile app
       # without downloading logs.

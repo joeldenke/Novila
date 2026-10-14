@@ -23,10 +23,12 @@ CI är därför den enda sanningen om att något bygger och fungerar.
 - Pusha aldrig direkt till `main`. Skapa en branch och öppna en PR.
 - **Commit-meddelanden, branchnamn, PR-titlar och PR-beskrivningar skrivs på engelska.**
   PR-titeln blir release notes för testarna, så skriv den som en tydlig sammanfattning.
-- `CI`-workflowen måste vara grön innan PR:en är klar: `./gradlew lintDebug testDebugUnitTest assembleDebug assembleRelease`.
+- `CI`-workflowen måste vara grön innan PR:en är klar: `./gradlew lintDebug testDebugUnitTest assembleDebug`.
+  Release-bygget (R8) körs inte på PR:er. Ändrar du `proguard-rules.pro` eller R8-känslig kod,
+  säg det i PR-beskrivningen. Fel syns då först vid merge.
 - Kan din miljö inte nå Google Maven: pusha och följ körningen (`gh pr checks`, `gh run view --log-failed`)
   och rätta tills den är grön. Säg aldrig att något fungerar utan grönt CI.
-- När PR:en mergas bygger `Distribute to testers` en debug-APK och skickar den via Firebase App Distribution.
+- När PR:en mergas bygger `Distribute to testers` en signerad release-APK (`se.novila`) och skickar den via Firebase App Distribution.
 
 ## Kvalitet
 - **Lint-policy:** `app/lint.xml` sätter projektets regler och orsaker. Höj inte lint-fel till varningar
@@ -81,7 +83,9 @@ Använd rätt skill innan du ändrar respektive område:
 - Ändra lagringsformat bara genom att höja versionen i `DayEntryCodec` och migrera gammal data.
 - Lägg till `contentDescription` på ikoner och emoji-knappar, eller `null` när de är dekorativa.
 - `versionCode` sätts av CI. Ändra `versionName`-prefixet (`0.1`) bara vid större milstolpar.
-- Signeringsnyckeln `app/debug.keystore` får inte bytas, då kan testare inte uppdatera.
+- Signering: `app/debug.keystore` är bara för debug-byggen. Release signeras med en hemlig nyckel
+  som enbart finns i GitHub-hemligheter. Lägg aldrig en release-nyckel eller dess lösenord i repot.
+  Byts nyckeln kan testare inte uppdatera.
 - Nya beroenden: lägg dem i versionskatalogen och motivera dem i PR-beskrivningen.
 - Hälsodata stannar på enheten. Inga nätverksanrop, analysverktyg eller Firebase-SDK:er i appen utan att ägaren ber om det.
 - Pinna GitHub Actions till commit-SHA med versionskommentar. Dependabot håller dem uppdaterade.
