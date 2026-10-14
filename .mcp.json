@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "firebase": {
+      "command": "bash",
+      "args": ["${CLAUDE_PROJECT_DIR:-.}/.claude/bin/firebase-mcp.sh"],
+      "env": {
+        "GOOGLE_APPLICATION_CREDENTIALS": "${HOME}/.config/novila/gcp-agent.json"
+      }
+    }
+  }
+}

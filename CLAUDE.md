@@ -26,8 +26,8 @@ CI är därför den enda sanningen om att något bygger och fungerar.
 - `CI`-workflowen måste vara grön innan PR:en är klar: `./gradlew lintDebug testDebugUnitTest assembleDebug`.
   Release-bygget (R8) körs inte på PR:er. Ändrar du `proguard-rules.pro` eller R8-känslig kod,
   säg det i PR-beskrivningen. Fel syns då först vid merge.
-- Kan din miljö inte nå Google Maven: pusha och följ körningen (`gh pr checks`, `gh run view --log-failed`)
-  och rätta tills den är grön. Säg aldrig att något fungerar utan grönt CI.
+- Kör `./gradlew lintDebug testDebugUnitTest assembleDebug` i sessionen innan push när miljön når Google Maven.
+  Annars: pusha och följ CI via annotations (se *Kända fallgropar*). Säg aldrig att något fungerar utan grönt CI.
 - När PR:en mergas bygger `Distribute to testers` en signerad release-APK (`se.novila`) och skickar den via Firebase App Distribution.
 
 ## Kvalitet
@@ -48,10 +48,25 @@ Misstag som redan har gjorts i det här repot. Gör dem inte igen.
 - **Insets:** ge `innerPadding` till listans `contentPadding` via `ScreenList`, aldrig `Modifier.padding(innerPadding)`.
 - **GitHub-loggar:** fullständiga Actions-loggar går inte att hämta härifrån. Läs CI-fel via annotations:
   `gh api repos/joeldenke/Novila/check-runs/<job-id>/annotations`.
+- **Firebase MCP-start:** `npx firebase-tools` hinner inte installeras inom MCP-timeouten (30 s).
+  `firebase-tools` ska vara förinstallerat via miljöns setup-skript, och `.claude/bin/firebase-mcp.sh` startar det.
+- **Plugins i molnet:** `enabledPlugins`/`extraKnownMarketplaces` i `.claude/settings.json` laddas inte i
+  molnsessioner. Lägg skills i `.claude/skills/` och MCP-servrar i `.mcp.json`.
 - **GitHub API:** GraphQL och `gh pr create` fungerar inte här. Använd REST (`gh api repos/.../pulls`).
 
-## Googles Android-skills
-Repot aktiverar pluginet `android-skills` från github.com/android/skills via `.claude/settings.json`.
+## Agentmiljö (Claude Code i molnet)
+Allt som behövs för att agenten ska kunna jobba ligger i repot, så ingenting behöver göras om per session:
+- **Skills:** Googles Android-skills är kopierade till `.claude/skills/` (se README där). Molnsessioner
+  installerar inte plugins från `settings.json`, därför ligger de i repot.
+- **Firebase MCP:** `.mcp.json` startar Firebase MCP-servern (`firebase-tools`), som autentiserar via
+  `GOOGLE_APPLICATION_CREDENTIALS`.
+- **Inloggning mot Google Cloud:** `.claude/hooks/session-start.sh` skriver miljövariabeln
+  `NOVILA_GCP_AGENT_KEY` till en privat fil. Både `gcloud`, Firebase CLI och MCP-servern använder den.
+  Nyckeln tillhör servicekontot `claude-agent` med minsta möjliga behörighet. Skriv aldrig ut den,
+  logga den inte och committa den aldrig.
+- **Miljön** (claude.ai/code → molnikonen → Novila) har nätverksnivå *Trusted*, som når Google Maven,
+  `*.googleapis.com` och GitHub. Då kan `./gradlew` köras lokalt i sessionen innan push.
+
 Använd rätt skill innan du ändrar respektive område:
 - `agp-9-upgrade` vid ändringar i Gradle-bygget, AGP-, Kotlin- eller KSP-versioner
 - `edge-to-edge` för alla nya skärmar, listor, FAB:ar och textfält
@@ -60,15 +75,13 @@ Använd rätt skill innan du ändrar respektive område:
 - `adaptive` för surfplattor och vikbara skärmar
 - `jetpack-compose-performance` vid prestandaproblem eller onödiga omkompositioner
 - `r8-analyzer` vid ändringar i `proguard-rules.pro` eller R8-problem
-- `android-permissions-security` innan nya behörigheter läggs till (t.ex. Health Connect, notiser)
+- `android-permissions-security` och `android-intent-security` innan nya behörigheter eller komponenter läggs till
 - `play-policy-insights` innan första Play-release. Appen hanterar hälsodata.
 - `glance-canonical-layouts` om appen får hemskärmswidgets
 
-## Firebase-pluginet
-`.claude/settings.json` aktiverar också Firebase-pluginet (`firebase@firebase`) med Firebase MCP-servern.
-- Den kräver inloggning (`firebase login --no-localhost`) och nätverksåtkomst till `*.googleapis.com`.
-- Använd den för setup och felsökning av Firebase-projektet, aldrig för att lägga till Firebase-SDK:er i appen.
-- CI använder aldrig MCP. CI ska autentisera via Workload Identity Federation (planerat, ersätter servicekonto-nyckeln).
+## Firebase
+- Firebase MCP används för setup och felsökning av projektet, aldrig för att lägga in Firebase-SDK:er i appen.
+- CI använder aldrig MCP eller agentnyckeln. CI ska autentisera via Workload Identity Federation.
 
 ## Regler
 - **Designsystem:** feature-kod använder bara `se.novila.designsystem` och aldrig `androidx.compose.material3`

@@ -39,10 +39,25 @@ och Firebase App Distribution levererar appen till testarna.
    installationer inte uppdateras. Radera sedan filen i Cloud Shell.
 8. Settings → Branches: skydda `main`, kräv PR och kräv att kontrollen **Lint, test and build** är grön.
 
-## Android-skills
-Googles officiella [Android-skills](https://github.com/android/skills) aktiveras automatiskt
-för Claude Code i det här repot via `.claude/settings.json`. Vilken skill som gäller för vad
-står i `CLAUDE.md`.
+## Agentmiljö (engångssetup)
+Claude Code i molnet läser allt från repot: Android-skills i `.claude/skills/`, Firebase MCP i `.mcp.json`
+och en SessionStart-hook som förbereder Google Cloud-inloggningen. Det enda som ligger utanför repot
+är miljön, som du ställer in en gång:
+
+1. Öppna claude.ai/code (eller Code-fliken i appen), tryck på molnikonen ovanför meddelanderutan,
+   välj **Add cloud environment** och döp den till **Novila**.
+2. **Network access:** *Trusted* (standard). Den når Google Maven, `*.googleapis.com` och GitHub.
+   **Setup script** (cachas, körs bara när miljön byggs):
+   ```bash
+   #!/bin/bash
+   npm install -g firebase-tools@15.33.0 || true
+   ```
+3. **Environment variables**, när servicekontot `claude-agent` finns:
+   ```
+   NOVILA_GCP_PROJECT=<projekt-id>
+   NOVILA_GCP_AGENT_KEY='<hela JSON-nyckeln på en rad>'
+   ```
+4. Starta alla Novila-sessioner i den miljön.
 
 ## Teknik
 Kotlin 2.4, AGP 9.4, Gradle 9.6, Jetpack Compose (BOM 2026.09), Navigation 3 och ett eget
