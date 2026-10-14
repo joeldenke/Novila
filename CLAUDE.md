@@ -28,6 +28,25 @@ CI är därför den enda sanningen om att något bygger och fungerar.
   och rätta tills den är grön. Säg aldrig att något fungerar utan grönt CI.
 - När PR:en mergas bygger `Distribute to testers` en debug-APK och skickar den via Firebase App Distribution.
 
+## Kvalitet
+- **Lint-policy:** `app/lint.xml` sätter projektets regler och orsaker. Höj inte lint-fel till varningar
+  och lägg inte till `@SuppressLint` utan att fråga ägaren.
+- **Kodstil:** `.editorconfig`. Inga wildcard-importer, trailing commas, max 120 tecken.
+- **Lär av CI:** när CI hittar en ny typ av misstag, gör tre saker i samma PR. Fixa felet,
+  lägg till regeln i `app/lint.xml` (eller i `ArchitectureTest` om lint inte kan fånga det),
+  och lägg till en rad under *Kända fallgropar* nedan.
+
+### Kända fallgropar
+Misstag som redan har gjorts i det här repot. Gör dem inte igen.
+- **Locale i composables:** använd aldrig `Locale.getDefault()` i en `@Composable` (lint `NonObservableLocale`).
+  Läs locale från `LocalConfiguration.current` via `ConfigurationCompat.getLocales(...)`.
+- **Kotlin-version i AGP 9:** lägg aldrig till `org.jetbrains.kotlin.android`, inte heller med `apply false`.
+  Kotlin-versionen höjs via `buildscript { classpath(libs.kotlin.gradle.plugin) }` och måste matcha `compose-compiler`.
+- **Insets:** ge `innerPadding` till listans `contentPadding` via `ScreenList`, aldrig `Modifier.padding(innerPadding)`.
+- **GitHub-loggar:** fullständiga Actions-loggar går inte att hämta härifrån. Läs CI-fel via annotations:
+  `gh api repos/joeldenke/Novila/check-runs/<job-id>/annotations`.
+- **GitHub API:** GraphQL och `gh pr create` fungerar inte här. Använd REST (`gh api repos/.../pulls`).
+
 ## Googles Android-skills
 Repot aktiverar pluginet `android-skills` från github.com/android/skills via `.claude/settings.json`.
 Använd rätt skill innan du ändrar respektive område:
@@ -41,6 +60,12 @@ Använd rätt skill innan du ändrar respektive område:
 - `android-permissions-security` innan nya behörigheter läggs till (t.ex. Health Connect, notiser)
 - `play-policy-insights` innan första Play-release. Appen hanterar hälsodata.
 - `glance-canonical-layouts` om appen får hemskärmswidgets
+
+## Firebase-pluginet
+`.claude/settings.json` aktiverar också Firebase-pluginet (`firebase@firebase`) med Firebase MCP-servern.
+- Den kräver inloggning (`firebase login --no-localhost`) och nätverksåtkomst till `*.googleapis.com`.
+- Använd den för setup och felsökning av Firebase-projektet, aldrig för att lägga till Firebase-SDK:er i appen.
+- CI använder aldrig MCP. CI ska autentisera via Workload Identity Federation (planerat, ersätter servicekonto-nyckeln).
 
 ## Regler
 - **Designsystem:** feature-kod använder bara `se.novila.designsystem` och aldrig `androidx.compose.material3`

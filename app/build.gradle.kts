@@ -70,8 +70,8 @@ android {
         abortOnError = true
         checkReleaseBuilds = true
         warningsAsErrors = false
-        // Dependency updates are handled by Dependabot; don't fail lint on them.
-        disable += setOf("GradleDependency", "AndroidGradlePluginVersion", "NewerVersionAvailable")
+        // Project lint policy (severities and reasons) lives in lint.xml.
+        lintConfig = file("lint.xml")
     }
 
     packaging {
