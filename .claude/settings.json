@@ -1,0 +1,20 @@
+{
+  "extraKnownMarketplaces": {
+    "android-skills": {
+      "source": {
+        "source": "github",
+        "repo": "android/skills"
+      }
+    },
+    "firebase": {
+      "source": {
+        "source": "github",
+        "repo": "firebase/firebase-tools"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "android-skills@android-skills": true,
+    "firebase@firebase": true
+  }
+}

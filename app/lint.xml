@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Project lint policy. Checks here are raised to errors because breaking them
+  conflicts with the rules in CLAUDE.md, or because they were mistakes we already made once.
+  Add a check here (with a reason) whenever CI catches a new class of mistake.
+-->
+<lint>
+    <!-- No hardcoded text; every string is localized (en + sv). -->
+    <issue id="HardcodedText" severity="error" />
+    <issue id="SetTextI18n" severity="error" />
+    <issue id="MissingTranslation" severity="error" />
+    <issue id="ExtraTranslation" severity="error" />
+    <issue id="StringFormatInvalid" severity="error" />
+    <issue id="StringFormatMatches" severity="error" />
+
+    <!-- Locale must be observable so text updates with per-app language. Caught in CI once. -->
+    <issue id="NonObservableLocale" severity="error" />
+    <issue id="DefaultLocale" severity="error" />
+
+    <!-- Compose correctness. -->
+    <issue id="ComposableNaming" severity="error" />
+    <issue id="ModifierParameter" severity="error" />
+    <issue id="UnrememberedMutableState" severity="error" />
+    <issue id="StateFlowValueCalledInComposition" severity="error" />
+    <issue id="CoroutineCreationDuringComposition" severity="error" />
+    <issue id="FlowOperatorInvokedInComposition" severity="error" />
+
+    <!-- Accessibility. -->
+    <issue id="ContentDescription" severity="error" />
+
+    <!-- Keep resources tidy. -->
+    <issue id="UnusedResources" severity="error" />
+
+    <!-- Dependency versions are managed by Dependabot, not lint. -->
+    <issue id="GradleDependency" severity="ignore" />
+    <issue id="AndroidGradlePluginVersion" severity="ignore" />
+    <issue id="NewerVersionAvailable" severity="ignore" />
+</lint>
