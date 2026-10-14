@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Not translated: brand, symbols and units. -->
+    <string name="app_name" translatable="false">Novila</string>
+    <string name="value_missing" translatable="false">–</string>
+    <string name="hours_value" translatable="false">%1$s h</string>
+    <string name="water_remove_label" translatable="false">−1</string>
+    <string name="summary_line" translatable="false">%1$s: %2$s</string>
+    <string name="mood_emoji_1" translatable="false">😞</string>
+    <string name="mood_emoji_2" translatable="false">🙁</string>
+    <string name="mood_emoji_3" translatable="false">😐</string>
+    <string name="mood_emoji_4" translatable="false">🙂</string>
+    <string name="mood_emoji_5" translatable="false">😄</string>
+
+    <!-- Navigation -->
+    <string name="nav_today">Today</string>
+    <string name="nav_training">Training</string>
+    <string name="nav_sleep">Sleep</string>
+    <string name="nav_nutrition">Nutrition</string>
+
+    <!-- Water -->
+    <string name="water_title">Water</string>
+    <string name="water_progress">%1$d of %2$d glasses</string>
+    <string name="water_add">+1 glass</string>
+    <string name="water_remove_description">Remove one glass</string>
+    <plurals name="glasses_count">
+        <item quantity="one">%d glass</item>
+        <item quantity="other">%d glasses</item>
+    </plurals>
+
+    <!-- Sleep -->
+    <string name="sleep_title">Sleep last night</string>
+
+    <!-- Mood -->
+    <string name="mood_title">Today\'s mood</string>
+    <string name="mood_1">Bad</string>
+    <string name="mood_2">Not great</string>
+    <string name="mood_3">Okay</string>
+    <string name="mood_4">Good</string>
+    <string name="mood_5">Great</string>
+
+    <!-- Today -->
+    <string name="summary_title">Summary</string>
+    <string name="history_title">Recent days</string>
+
+    <!-- Training -->
+    <string name="training_empty_title">Training is coming soon</string>
+    <string name="training_empty_body">Log workouts and see how they affect your sleep and energy.</string>
+</resources>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Navigation -->
+    <string name="nav_today">Idag</string>
+    <string name="nav_training">Träning</string>
+    <string name="nav_sleep">Sömn</string>
+    <string name="nav_nutrition">Kost</string>
+
+    <!-- Water -->
+    <string name="water_title">Vatten</string>
+    <string name="water_progress">%1$d av %2$d glas</string>
+    <string name="water_add">+1 glas</string>
+    <string name="water_remove_description">Ta bort ett glas</string>
+    <plurals name="glasses_count">
+        <item quantity="one">%d glas</item>
+        <item quantity="other">%d glas</item>
+    </plurals>
+
+    <!-- Sleep -->
+    <string name="sleep_title">Sömn i natt</string>
+
+    <!-- Mood -->
+    <string name="mood_title">Dagens mående</string>
+    <string name="mood_1">Dåligt</string>
+    <string name="mood_2">Sådär</string>
+    <string name="mood_3">Okej</string>
+    <string name="mood_4">Bra</string>
+    <string name="mood_5">Toppen</string>
+
+    <!-- Today -->
+    <string name="summary_title">Sammanfattning</string>
+    <string name="history_title">Senaste dagarna</string>
+
+    <!-- Training -->
+    <string name="training_empty_title">Träning kommer snart</string>
+    <string name="training_empty_body">Logga pass och se hur de påverkar din sömn och energi.</string>
+</resources>
