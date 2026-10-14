@@ -58,6 +58,9 @@ Misstag som redan har gjorts i det här repot. Gör dem inte igen.
 - **Robolectric på JDK 21:** Robolectric 4.17 kräver `--add-exports=java.base/jdk.internal.access=ALL-UNNAMED`,
   annars faller alla Robolectric-tester med `IllegalAccessException` i `AndroidInterceptors`. Flaggan sätts i
   `novila.android.unittest`; använd det pluginet i stället för egen testkonfiguration.
+- **Robolectric-SDK:** Robolectric-tester körs mot API 36 via `src/test/resources/robolectric.properties`.
+  På API 37 faller Compose UI-tester med `NoSuchMethodException: InputManager.getInstance()` (AndroidX Test).
+  Nya moduler med Robolectric-tester behöver samma fil.
 - **GitHub-loggar:** fullständiga Actions-loggar går inte att hämta härifrån. Läs CI-fel via annotations:
   `gh api repos/joeldenke/Novila/check-runs/<job-id>/annotations`.
 - **gcloud i molnsessioner:** miljön sätter `CLOUDSDK_AUTH_ACCESS_TOKEN`, som skriver över `gcloud auth login`.
