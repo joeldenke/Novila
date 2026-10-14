@@ -2,6 +2,9 @@
 agp = "9.4.0"
 kotlin = "2.4.21"
 composeBom = "2026.09.00"
+# Material 3 1.5 (beta) ahead of the BOM, for the expressive and adaptive components the
+# design system builds on (flexible app bars, button groups, unified bottom sheet state).
+material3 = "1.5.0-beta01"
 androidxCore = "1.19.1"
 androidxActivity = "1.13.0"
 androidxLifecycle = "2.11.0"
@@ -32,7 +35,7 @@ kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 compose-ui = { module = "androidx.compose.ui:ui" }
-compose-material3 = { module = "androidx.compose.material3:material3" }
+compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 

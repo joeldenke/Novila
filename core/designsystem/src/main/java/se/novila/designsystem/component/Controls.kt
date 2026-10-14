@@ -23,6 +23,8 @@ fun NovilaButton(
     FilledTonalButton(
         onClick = onClick,
         enabled = enabled,
+        // Material buttons default to a full pill; Novila buttons follow the theme's 14 dp radius.
+        shape = NovilaTheme.shapes.medium,
         modifier = modifier.semantics { if (contentDescription != null) this.contentDescription = contentDescription },
     ) {
         Text(text, style = NovilaTheme.typography.labelLarge)

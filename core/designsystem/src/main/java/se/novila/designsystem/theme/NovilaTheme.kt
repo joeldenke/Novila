@@ -1,28 +1,53 @@
 package se.novila.designsystem.theme
 
+import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Typography
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.platform.LocalContext
+
+private val LocalNovilaPillars = staticCompositionLocalOf { NovilaLightColors.pillars() }
+private val LocalNovilaAccent = staticCompositionLocalOf { NovilaLightAccent }
 
 /**
  * Root theme for the app. Wraps [MaterialTheme] so Material 3 components pick up Novila
- * tokens, and adds tokens Material doesn't have (spacing).
+ * tokens, and adds tokens Material doesn't have (pillar colors, the sun accent, spacing).
  *
- * Brand colors are fixed on purpose (no dynamic color) to keep a consistent identity.
+ * @param dynamicColor use the wallpaper colors on Android 12+ instead of the Skog & sol palette.
+ *   Off by default: only the brand palette is checked against WCAG 2.2 (ColorContrastTest).
  */
 @Composable
 fun NovilaTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit,
 ) {
-    CompositionLocalProvider(LocalNovilaSpacing provides NovilaSpacing()) {
+    val context = LocalContext.current
+    val colorScheme = when {
+        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ->
+            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+
+        darkTheme -> NovilaDarkColors
+
+        else -> NovilaLightColors
+    }
+    val pillars = remember(colorScheme) { colorScheme.pillars() }
+    CompositionLocalProvider(
+        LocalNovilaSpacing provides NovilaSpacing(),
+        LocalNovilaPillars provides pillars,
+        LocalNovilaAccent provides if (darkTheme) NovilaDarkAccent else NovilaLightAccent,
+    ) {
         MaterialTheme(
-            colorScheme = if (darkTheme) NovilaDarkColors else NovilaLightColors,
+            colorScheme = colorScheme,
             typography = NovilaTypography,
             shapes = NovilaShapes,
             content = content,
@@ -35,6 +60,16 @@ object NovilaTheme {
     val colors: ColorScheme
         @Composable @ReadOnlyComposable
         get() = MaterialTheme.colorScheme
+
+    /** Training (pine), sleep (lake blue) and nutrition (falu red), each a full color role. */
+    val pillars: NovilaPillarColors
+        @Composable @ReadOnlyComposable
+        get() = LocalNovilaPillars.current
+
+    /** The midsummer sun, for at most one main call to action per screen. */
+    val accent: NovilaAccentColors
+        @Composable @ReadOnlyComposable
+        get() = LocalNovilaAccent.current
 
     val typography: Typography
         @Composable @ReadOnlyComposable
