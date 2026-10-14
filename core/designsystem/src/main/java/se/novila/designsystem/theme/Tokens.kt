@@ -2,10 +2,8 @@ package se.novila.designsystem.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Shapes
-import androidx.compose.material3.Typography
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -25,18 +23,14 @@ data class NovilaSpacing(
 
 internal val LocalNovilaSpacing = staticCompositionLocalOf { NovilaSpacing() }
 
+/**
+ * Corner radii from one base of 14 dp, restrained for Nordic calm: chips and small controls
+ * 10 dp, cards and buttons 14 dp, hero cards 18 dp, sheets and dialogs 26 dp.
+ */
 internal val NovilaShapes = Shapes(
     extraSmall = RoundedCornerShape(6.dp),
     small = RoundedCornerShape(10.dp),
-    medium = RoundedCornerShape(16.dp),
-    large = RoundedCornerShape(24.dp),
-    extraLarge = RoundedCornerShape(32.dp),
+    medium = RoundedCornerShape(14.dp),
+    large = RoundedCornerShape(18.dp),
+    extraLarge = RoundedCornerShape(26.dp),
 )
-
-internal val NovilaTypography: Typography = Typography().run {
-    copy(
-        headlineSmall = headlineSmall.copy(fontWeight = FontWeight.SemiBold),
-        titleLarge = titleLarge.copy(fontWeight = FontWeight.SemiBold),
-        titleMedium = titleMedium.copy(fontWeight = FontWeight.SemiBold),
-    )
-}

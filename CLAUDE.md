@@ -6,7 +6,7 @@ CI är därför den enda sanningen om att något bygger och fungerar.
 
 ## Stack
 - Kotlin 2.4 via AGP 9:s inbyggda Kotlin (ingen `kotlin-android` i modulerna)
-- Jetpack Compose med eget designsystem ovanpå Material 3, compileSdk/targetSdk 37, minSdk 26
+- Jetpack Compose med eget designsystem ovanpå Material 3 1.5 (beta), compileSdk/targetSdk 37, minSdk 26
 - Navigation 3 (`androidx.navigation3`) med en back stack per flik: Idag, Träning, Sömn, Kost
 - Alla versioner i `gradle/libs.versions.toml`. Hårdkoda aldrig versioner i byggfiler.
 - Data lokalt i SharedPreferences via `HealthStore`, kodat av `DayEntryCodec` (versionerat format)
@@ -115,6 +115,11 @@ där pluginet `firebase@firebase` inte alltid installeras.
 - **Designsystem:** feature-kod använder bara `se.novila.designsystem` och aldrig `androidx.compose.material3`
   direkt. Saknas en komponent, lägg till en `Novila*`-wrapper i `:core:designsystem` (`component/`).
   Använd `NovilaTheme.colors/typography/spacing/shapes`, aldrig hårdkodade färger eller dp-värden i features.
+- **Designspråk "Skog & sol":** nordiskt lugn. Typsnittet är Hanken Grotesk (Google Font, inbakad i
+  `:core:designsystem`, licens i `assets/licenses`). Ladda aldrig ner typsnitt i runtime.
+  Varje del har sin färg via `NovilaTheme.pillars`: träning = gran (primary), sömn = sjö (secondary),
+  kost = falurött (tertiary). Solen (`NovilaTheme.accent`) används för högst en huvudknapp per skärm.
+  Hörnradie från basen 14 dp via `NovilaTheme.shapes`. Nya färgpar läggs till i `ColorContrastTest` (WCAG 2.2).
 - **Inga hårdkodade texter:** all text som visas eller läses upp ska komma från `strings.xml`.
   Engelska i `values/`, svenska i `values-sv/`. Symboler och enheter markeras `translatable="false"`.
 - `ArchitectureTest` bevakar båda reglerna i CI.
