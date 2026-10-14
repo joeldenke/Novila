@@ -8,14 +8,14 @@ och Firebase App Distribution levererar appen till testarna.
 
 ## Så fungerar flödet
 1. Claude jobbar i en branch och öppnar en PR.
-2. **CI** kör lint, enhetstester och bygger debug + release. Måste vara grön.
+2. **CI** kör lint, enhetstester och ett debug-bygge. Måste vara grön.
 3. Du mergar PR:en från GitHub-appen.
-4. **Distribute to testers** bygger appen och skickar den till Firebase-testarna.
+4. **Distribute to testers** bygger en signerad release (R8) och skickar den till Firebase-testarna.
    Testarna får ett mejl, eller en notis i Firebase App Tester-appen.
 
 ## Engångssetup för Google Cloud och Firebase (går att göra från mobilen)
 Skriptet `scripts/bootstrap-firebase.sh` gör allt och kan köras om utan risk:
-GCP-projekt, Firebase, Android-appen `se.novila.debug`, testgruppen `testare`,
+GCP-projekt, Firebase, Android-appen `se.novila`, testgruppen `testare`,
 ett servicekonto som bara får distribuera, och Workload Identity Federation så att
 GitHub Actions loggar in utan JSON-nyckel.
 
@@ -29,9 +29,23 @@ GitHub Actions loggar in utan JSON-nyckel.
 3. Skriptet skriver ut fyra variabler. Lägg in dem i GitHub-repot under
    Settings → Secrets and variables → Actions → Variables
    (eller kör `gh auth login` i Cloud Shell först, då sätter skriptet dem själv).
-4. Settings → Branches: skydda `main`, kräv PR och kräv att kontrollen **Lint, test and build** är grön.
 
-Inga hemligheter behövs. Jobbet får bara logga in om det körs i repot `joeldenke/Novila`
+4. Skapa release-nyckeln i [Cloud Shell](https://shell.cloud.google.com) (fungerar i mobilens webbläsare):
+   ```sh
+   keytool -genkeypair -keystore novila-release.jks -alias novila \
+     -keyalg RSA -keysize 4096 -validity 10000 -dname "CN=Novila"
+   base64 -w0 novila-release.jks
+   ```
+   Lägg in i GitHub:
+   - Secret `NOVILA_RELEASE_KEYSTORE_BASE64` = utskriften från `base64`
+   - Secret `NOVILA_RELEASE_STORE_PASSWORD` och `NOVILA_RELEASE_KEY_PASSWORD` = lösenorden du valde
+   - Variable `NOVILA_RELEASE_KEY_ALIAS` = `novila`
+
+   Spara `.jks`-filen och lösenorden i en lösenordshanterare. Tappar du nyckeln kan befintliga
+   installationer inte uppdateras. Radera sedan filen i Cloud Shell.
+5. Settings → Branches: skydda `main`, kräv PR och kräv att kontrollen **Lint, test and build** är grön.
+
+Ingen JSON-nyckel behövs för Firebase. Jobbet får bara logga in om det körs i repot `joeldenke/Novila`
 och i GitHub-environmentet `firebase`.
 
 ## Android-skills
