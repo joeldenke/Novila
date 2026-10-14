@@ -70,7 +70,7 @@ där pluginet `firebase@firebase` inte alltid installeras.
 - Båda kräver inloggning: `gcloud auth login --update-adc` räcker för båda (Firebase använder ADC),
   annars `firebase login --no-localhost`. Servrarna läses in när sessionen startar.
 - Versionerna är pinnade och samma `firebase-tools` som i `distribute.yml`. Höj dem tillsammans.
-- Använd den för setup och felsökning av Firebase-projektet, aldrig för att lägga till Firebase-SDK:er i appen.
+- Använd MCP för setup och felsökning av Firebase-projektet, aldrig för att lägga till Firebase-SDK:er i appen.
 - CI använder aldrig MCP. CI autentiserar via Workload Identity Federation (`google-github-actions/auth`),
   aldrig med servicekonto-nycklar. Ändra GCP/Firebase-setupen via `scripts/bootstrap-firebase.sh` och håll den idempotent.
 
