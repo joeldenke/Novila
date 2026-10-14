@@ -1,6 +1,7 @@
-# Sends the debug app (se.novila.debug) to testers via Firebase App Distribution when a PR
-# is merged to main (or when run manually from the Actions tab). The release build (R8) is
-# built too, so R8 problems show up at merge; it is signed only when the release key exists.
+# Sends the debug app (se.novila.debug) to testers via Firebase App Distribution on every
+# push to main, i.e. every merged PR (or when run manually from the Actions tab). The release
+# build (R8) is built too, so R8 problems show up at merge; it is signed only when the release
+# key exists. Release notes list every change since the last successful distribution.
 #
 # Authenticates to Google Cloud with Workload Identity Federation: no JSON key is stored.
 # scripts/bootstrap-firebase.sh creates the Google side and prints the Firebase/GCP variables.
@@ -17,8 +18,7 @@
 name: Distribute to testers
 
 on:
-  pull_request:
-    types: [closed]
+  push:
     branches: [main]
   workflow_dispatch:
 
@@ -36,12 +36,12 @@ env:
 jobs:
   distribute:
     name: Build and distribute
-    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: firebase
     permissions:
       contents: read
+      actions: read # finds the last successful distribution for the release notes
       id-token: write # lets the job request a GitHub OIDC token for Workload Identity Federation
     steps:
       - name: Check configuration
@@ -73,7 +73,7 @@ jobs:
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
+          fetch-depth: 0 # full history, so the release notes can list everything since the last build
           persist-credentials: false
 
       - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
@@ -122,19 +122,15 @@ jobs:
             | grep -v '^> Task ' | awk '!seen[$0]++' | head -10 \
             | while IFS= read -r line; do echo "::error title=Gradle::${line}"; done || true
 
+      # Lists what landed on main since the last build testers got. Only successful runs on main
+      # count, so a failed distribution's changes roll into the next one.
       - name: Write release notes
-        # The PR title goes through env, never inline in the script (prevents script injection).
         env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          PR_TITLE: ${{ github.event.pull_request.title }}
-          SHA: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          if [ -n "$PR_NUMBER" ]; then
-            printf 'PR #%s: %s\n' "$PR_NUMBER" "$PR_TITLE" > release-notes.txt
-          else
-            printf 'Manual build\n' > release-notes.txt
-          fi
-          printf 'Commit %s\n' "${SHA:0:7}" >> release-notes.txt
+          prev=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/distribute.yml/runs?branch=main&status=success&per_page=1" \
+            --jq '.workflow_runs[0].head_sha // empty' || true)
+          scripts/release-notes.sh "$GITHUB_SHA" "$prev" > release-notes.txt
           cat release-notes.txt
 
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
