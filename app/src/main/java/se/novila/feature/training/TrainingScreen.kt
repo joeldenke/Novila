@@ -22,6 +22,7 @@ fun TrainingScreen(
                 icon = painterResource(R.drawable.ic_training),
                 title = stringResource(R.string.training_empty_title),
                 body = stringResource(R.string.training_empty_body),
+                role = NovilaTheme.pillars.training,
             )
         }
     }

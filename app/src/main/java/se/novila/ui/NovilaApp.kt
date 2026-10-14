@@ -16,6 +16,7 @@ import se.novila.designsystem.component.NovilaNavigationBar
 import se.novila.designsystem.component.NovilaNavigationBarItem
 import se.novila.designsystem.component.NovilaScaffold
 import se.novila.designsystem.component.NovilaTopAppBar
+import se.novila.designsystem.theme.NovilaColorRole
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.nutrition.NutritionScreen
 import se.novila.feature.sleep.SleepScreen
@@ -57,6 +58,7 @@ fun NovilaApp(vm: HealthViewModel = viewModel()) {
                             onClick = { navigator.navigate(destination.route) },
                             icon = painterResource(destination.icon),
                             label = stringResource(destination.label),
+                            role = destination.role(),
                         )
                     }
                 }
@@ -82,4 +84,12 @@ fun NovilaApp(vm: HealthViewModel = viewModel()) {
             )
         }
     }
+}
+
+/** Each tab shows its part's color. Today has no part of its own and uses the brand pine. */
+@Composable
+private fun TopLevelDestination.role(): NovilaColorRole = when (this) {
+    TopLevelDestination.Today, TopLevelDestination.Training -> NovilaTheme.pillars.training
+    TopLevelDestination.Sleep -> NovilaTheme.pillars.sleep
+    TopLevelDestination.Nutrition -> NovilaTheme.pillars.nutrition
 }

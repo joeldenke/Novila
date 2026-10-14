@@ -62,6 +62,9 @@ Misstag som redan har gjorts i det här repot. Gör dem inte igen.
 - **Robolectric-SDK:** Robolectric-tester körs mot API 36 via `src/test/resources/robolectric.properties`.
   På API 37 faller Compose UI-tester med `NoSuchMethodException: InputManager.getInstance()` (AndroidX Test).
   Nya moduler med Robolectric-tester behöver samma fil.
+- **Designspråket måste användas:** tokens som `NovilaTheme.pillars` och `accent` fanns men användes inte, så appen såg
+  generisk ut. Komponenterna tar en `role`: ge den delens pillar (`NovilaTheme.pillars.sleep` osv.), och använd
+  `NovilaAccentButton` för skärmens huvudåtgärd.
 - **GitHub-loggar:** fullständiga Actions-loggar går inte att hämta härifrån. Läs CI-fel via annotations:
   `gh api repos/joeldenke/Novila/check-runs/<job-id>/annotations`.
 - **gcloud i molnsessioner:** miljön sätter `CLOUDSDK_AUTH_ACCESS_TOKEN`, som skriver över `gcloud auth login`.
