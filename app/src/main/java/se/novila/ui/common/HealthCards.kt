@@ -18,12 +18,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import se.novila.DayEntry
 import se.novila.MAX_SLEEP_HOURS
 import se.novila.R
 import se.novila.WATER_GOAL
+import se.novila.designsystem.component.NovilaAccentButton
 import se.novila.designsystem.component.NovilaButton
 import se.novila.designsystem.component.NovilaCard
 import se.novila.designsystem.component.NovilaChoiceChip
@@ -62,40 +64,53 @@ fun ScreenList(
 
 @Composable
 fun WaterCard(today: DayEntry, onAdd: () -> Unit, onRemove: () -> Unit) {
-    NovilaCard(title = stringResource(R.string.water_title)) {
+    val nutrition = NovilaTheme.pillars.nutrition
+    NovilaCard(
+        title = stringResource(R.string.water_title),
+        icon = painterResource(R.drawable.ic_nutrition),
+        role = nutrition,
+    ) {
         NovilaText(
             stringResource(R.string.water_progress, today.waterGlasses, WATER_GOAL),
             style = NovilaTheme.typography.headlineSmall,
         )
-        NovilaProgressBar(progress = today.waterProgress)
+        NovilaProgressBar(progress = today.waterProgress, role = nutrition)
         Row(horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s)) {
             NovilaButton(
                 text = stringResource(R.string.water_remove_label),
                 onClick = onRemove,
                 enabled = today.waterGlasses > 0,
                 contentDescription = stringResource(R.string.water_remove_description),
+                role = nutrition,
             )
-            NovilaButton(text = stringResource(R.string.water_add), onClick = onAdd)
+            // Logging a glass is the screen's main action, so it gets the sun.
+            NovilaAccentButton(text = stringResource(R.string.water_add), onClick = onAdd)
         }
     }
 }
 
 @Composable
 fun SleepCard(hours: Float, onChange: (Float) -> Unit) {
-    NovilaCard(title = stringResource(R.string.sleep_title)) {
+    val sleep = NovilaTheme.pillars.sleep
+    NovilaCard(
+        title = stringResource(R.string.sleep_title),
+        icon = painterResource(R.drawable.ic_sleep),
+        role = sleep,
+    ) {
         NovilaText(hoursText(hours), style = NovilaTheme.typography.headlineSmall)
         NovilaSlider(
             value = hours,
             onValueChange = onChange,
             valueRange = 0f..MAX_SLEEP_HOURS,
             steps = (MAX_SLEEP_HOURS * 2).toInt() - 1, // half-hour steps
+            role = sleep,
         )
     }
 }
 
 @Composable
 fun MoodCard(mood: Int, onChange: (Int) -> Unit) {
-    NovilaCard(title = stringResource(R.string.mood_title)) {
+    NovilaCard(title = stringResource(R.string.mood_title), icon = painterResource(R.drawable.ic_today)) {
         Row(horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.xs)) {
             Mood.entries.forEach { option ->
                 NovilaChoiceChip(

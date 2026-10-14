@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -12,6 +13,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
+import se.novila.designsystem.theme.NovilaColorRole
 import se.novila.designsystem.theme.NovilaTheme
 
 /** App-level scaffold. Content receives padding that already includes system bar insets. */
@@ -66,13 +68,21 @@ fun RowScope.NovilaNavigationBarItem(
     icon: Painter,
     label: String,
     modifier: Modifier = Modifier,
+    role: NovilaColorRole = NovilaTheme.pillars.training,
 ) {
     NavigationBarItem(
         selected = selected,
         onClick = onClick,
         // The label already describes the item, so the icon is decorative.
         icon = { NovilaIcon(painter = icon, contentDescription = null) },
-        label = { Text(label) },
+        label = { Text(label, style = NovilaTheme.typography.labelMedium) },
+        colors = NavigationBarItemDefaults.colors(
+            selectedIconColor = role.onContainer,
+            indicatorColor = role.container,
+            selectedTextColor = NovilaTheme.colors.onSurface,
+            unselectedIconColor = NovilaTheme.colors.onSurfaceVariant,
+            unselectedTextColor = NovilaTheme.colors.onSurfaceVariant,
+        ),
         modifier = modifier,
     )
 }
