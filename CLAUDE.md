@@ -39,7 +39,8 @@ CI är därför den enda sanningen om att något bygger och fungerar.
 ### Kända fallgropar
 Misstag som redan har gjorts i det här repot. Gör dem inte igen.
 - **Locale i composables:** använd aldrig `Locale.getDefault()` i en `@Composable` (lint `NonObservableLocale`).
-  Läs locale från `LocalConfiguration.current` via `ConfigurationCompat.getLocales(...)`.
+  Läs den direkt med `LocalConfiguration.current.locales[0]`. Lint underkänner även
+  `ConfigurationCompat.getLocales(...)` och fallbacks som `Locale.ROOT`.
 - **Kotlin-version i AGP 9:** lägg aldrig till `org.jetbrains.kotlin.android`, inte heller med `apply false`.
   Kotlin-versionen höjs via `buildscript { classpath(libs.kotlin.gradle.plugin) }` och måste matcha `compose-compiler`.
 - **Insets:** ge `innerPadding` till listans `contentPadding` via `ScreenList`, aldrig `Modifier.padding(innerPadding)`.

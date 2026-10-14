@@ -20,7 +20,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.core.os.ConfigurationCompat
 import se.novila.DayEntry
 import se.novila.MAX_SLEEP_HOURS
 import se.novila.R
@@ -146,8 +145,8 @@ fun moodText(mood: Int): String =
 @Composable
 @ReadOnlyComposable
 private fun currentLocale(): Locale =
-    // Read from LocalConfiguration (observable) so text updates when the app language changes.
-    ConfigurationCompat.getLocales(LocalConfiguration.current)[0] ?: Locale.ROOT
+    // Read straight from LocalConfiguration (observable) so text updates when the app language changes.
+    LocalConfiguration.current.locales[0]
 
 /** Localized weekday and date, e.g. "Tue 13 Oct" / "tis 13 okt". */
 @Composable
