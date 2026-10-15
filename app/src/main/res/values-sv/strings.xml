@@ -85,6 +85,28 @@
     <string name="exercise_mobility">Rörlighet och stretch</string>
     <string name="exercise_other">Kondition</string>
 
+    <!-- Övningsillustrationer -->
+    <string name="move_squat">Knäböj</string>
+    <string name="move_push_up">Armhävning</string>
+    <string name="move_glute_bridge">Höftlyft</string>
+    <string name="move_split_squat">Statiska utfall</string>
+    <string name="move_jumping_jack">Stjärnhopp</string>
+    <string name="move_works">Tränar %1$s</string>
+    <string name="move_also">Även %1$s</string>
+    <string name="move_figure_description">%1$s. Tränar %2$s.</string>
+    <string name="muscle_chest">bröst</string>
+    <string name="muscle_shoulders">axlar</string>
+    <string name="muscle_biceps">biceps</string>
+    <string name="muscle_triceps">triceps</string>
+    <string name="muscle_abs">mage</string>
+    <string name="muscle_upper_back">övre rygg</string>
+    <string name="muscle_lats">breda ryggmuskler</string>
+    <string name="muscle_lower_back">ländrygg</string>
+    <string name="muscle_glutes">säte</string>
+    <string name="muscle_quads">framsida lår</string>
+    <string name="muscle_hamstrings">baksida lår</string>
+    <string name="muscle_calves">vader</string>
+
     <!-- Health Connect -->
     <string name="movement_title">Dagens rörelse</string>
     <string name="movement_steps">Steg</string>

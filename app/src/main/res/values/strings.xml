@@ -93,6 +93,29 @@
     <string name="exercise_mobility">Mobility and stretching</string>
     <string name="exercise_other">Cardio</string>
 
+    <!-- Exercise illustrations -->
+    <string name="move_squat">Squat</string>
+    <string name="move_push_up">Push-up</string>
+    <string name="move_glute_bridge">Glute bridge</string>
+    <string name="move_split_squat">Split squat</string>
+    <string name="move_jumping_jack">Jumping jacks</string>
+    <string name="move_works">Works %1$s</string>
+    <string name="move_also">Also %1$s</string>
+    <string name="move_figure_description">%1$s. Works %2$s.</string>
+    <string name="muscle_chest">chest</string>
+    <string name="muscle_shoulders">shoulders</string>
+    <string name="muscle_biceps">biceps</string>
+    <string name="muscle_triceps">triceps</string>
+    <string name="muscle_abs">abs</string>
+    <string name="muscle_upper_back">upper back</string>
+    <string name="muscle_lats">lats</string>
+    <string name="muscle_lower_back">lower back</string>
+    <string name="muscle_glutes">glutes</string>
+    <string name="muscle_quads">quads</string>
+    <string name="muscle_hamstrings">hamstrings</string>
+    <string name="muscle_calves">calves</string>
+    <string name="list_separator" translatable="false">", "</string>
+
     <!-- Health Connect -->
     <string name="kcal_value" translatable="false">%1$s kcal</string>
     <string name="movement_title">Today\'s movement</string>

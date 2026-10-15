@@ -46,6 +46,17 @@ internal object NovilaPalette {
     val Falu90 = Color(0xFFFFDAD1)
     val Falu95 = Color(0xFFFADDD6)
 
+    // Lake tones for the anatomy figure's body.
+    val Lake85 = Color(0xFFC2D4EC)
+    val Lake22 = Color(0xFF22344D)
+    val Lake16 = Color(0xFF1A283C)
+
+    // Ember: the sun's warmth, deep enough to mark working muscles on the lake blue body.
+    val Ember40 = Color(0xFFBC4C08)
+    val Ember80 = Color(0xFFFF9A52)
+    val Ember90 = Color(0xFFF8D3B4)
+    val Ember20 = Color(0xFF5C3218)
+
     // Midsummer sun: a fill with dark text, never a text color on light surfaces (1.8:1 on white).
     val Sun = Color(0xFFF2B705)
     val SunDark = Color(0xFFF7C948)
@@ -250,3 +261,41 @@ internal val NovilaDarkHero = with(NovilaPalette) {
 
 internal val NovilaLightSurfaces = with(NovilaPalette) { NovilaSurfaceColors(card = Birch100, cardOutline = Birch87) }
 internal val NovilaDarkSurfaces = with(NovilaPalette) { NovilaSurfaceColors(card = Night11, cardOutline = Night14) }
+
+/**
+ * The anatomy figure in exercise illustrations: a calm lake blue [body] (parts on the far side in
+ * [bodyShade]) with an [outline], and the muscles an exercise trains in warm ember. Main muscles are
+ * filled with [musclePrimary]; supporting muscles get a [muscleSecondary] fill edged in [musclePrimary],
+ * so the two read apart by shape as well as color.
+ */
+@Immutable
+data class NovilaAnatomyColors(
+    val body: Color,
+    val bodyShade: Color,
+    val outline: Color,
+    val shadow: Color,
+    val musclePrimary: Color,
+    val muscleSecondary: Color,
+)
+
+internal val NovilaLightAnatomy = with(NovilaPalette) {
+    NovilaAnatomyColors(
+        body = Lake95,
+        bodyShade = Lake85,
+        outline = Lake40,
+        shadow = Lake40.copy(alpha = 0.14f),
+        musclePrimary = Ember40,
+        muscleSecondary = Ember90,
+    )
+}
+
+internal val NovilaDarkAnatomy = with(NovilaPalette) {
+    NovilaAnatomyColors(
+        body = Lake22,
+        bodyShade = Lake16,
+        outline = Lake80,
+        shadow = Lake80.copy(alpha = 0.12f),
+        musclePrimary = Ember80,
+        muscleSecondary = Ember20,
+    )
+}

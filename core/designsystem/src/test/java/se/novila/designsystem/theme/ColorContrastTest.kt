@@ -19,6 +19,10 @@ class ColorContrastTest {
         "dark" to (NovilaDarkColors to NovilaDarkAccent),
     )
     private val heroes = mapOf("light" to NovilaLightHero, "dark" to NovilaDarkHero)
+    private val anatomy = mapOf(
+        "light" to (NovilaLightSurfaces to NovilaLightAnatomy),
+        "dark" to (NovilaDarkSurfaces to NovilaDarkAnatomy),
+    )
     private val surfaces = mapOf(
         "light" to (NovilaLightColors to NovilaLightSurfaces),
         "dark" to (NovilaDarkColors to NovilaDarkSurfaces),
@@ -87,6 +91,17 @@ class ColorContrastTest {
                 "nutrition" to (hero.nutrition to ground),
             )
         }
+    }
+
+    @Test fun `anatomy muscles and outline stand out`() = assertPairs(NON_TEXT, anatomy) { (card, figure) ->
+        listOf(
+            "musclePrimary/body" to (figure.musclePrimary to figure.body),
+            "musclePrimary/bodyShade" to (figure.musclePrimary to figure.bodyShade),
+            "musclePrimary/muscleSecondary" to (figure.musclePrimary to figure.muscleSecondary),
+            "outline/body" to (figure.outline to figure.body),
+            "outline/bodyShade" to (figure.outline to figure.bodyShade),
+            "outline/card" to (figure.outline to card.card),
+        )
     }
 
     private fun <T> assertPairs(
