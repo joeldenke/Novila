@@ -66,8 +66,8 @@ class HealthViewModel(app: Application) : AndroidViewModel(app) {
         _state.value = read()
     }
 
-    fun addWater() = update { it.withWater(+1) }
-    fun removeWater() = update { it.withWater(-1) }
+    fun changePortions(group: FoodGroup, delta: Int) = update { it.withPortions(group, delta) }
+    fun changeTreats(delta: Int) = update { it.withTreats(delta) }
     fun setSleep(hours: Float) = update { it.withSleep(hours) }
     fun setMood(mood: Int) = update { it.withMood(mood) }
 }

@@ -13,11 +13,8 @@ data class DayEntry(
     val waterGlasses: Int = 0,
     val sleepHours: Float = 0f,
     val mood: Int = 0,
+    val food: FoodLog = FoodLog(),
 ) {
-    val waterProgress: Float get() = (waterGlasses.toFloat() / WATER_GOAL).coerceIn(0f, 1f)
-
-    fun withWater(delta: Int) = copy(waterGlasses = (waterGlasses + delta).coerceAtLeast(0))
-
     /** Rounds to the nearest half hour within 0–12 h. */
     fun withSleep(hours: Float) =
         copy(sleepHours = (Math.round(hours * 2) / 2f).coerceIn(0f, MAX_SLEEP_HOURS))
@@ -26,23 +23,29 @@ data class DayEntry(
 }
 
 /**
- * Simple versioned text format ("v1;water;sleep;mood") without Android dependencies,
- * so it can be unit tested and migrated if the format changes.
+ * Simple versioned text format without Android dependencies, so it can be unit tested and migrated.
+ * v2: "v2;water;sleep;mood;vegetables;meals;protein;wholeGrain;treats".
+ * v1 ("v1;water;sleep;mood", before food logging) is still read, with nothing eaten logged.
  */
 object DayEntryCodec {
-    private const val VERSION = "v1"
+    private const val VERSION = "v2"
 
-    fun encode(entry: DayEntry): String =
-        listOf(VERSION, entry.waterGlasses, entry.sleepHours, entry.mood).joinToString(";")
+    fun encode(entry: DayEntry): String {
+        val food = with(entry.food) { listOf(vegetables, meals, protein, wholeGrain, treats) }
+        return (listOf(VERSION, entry.waterGlasses, entry.sleepHours, entry.mood) + food).joinToString(";")
+    }
 
     fun decode(date: LocalDate, raw: String?): DayEntry {
         val parts = raw?.split(';') ?: return DayEntry(date)
-        if (parts.size != 4 || parts[0] != VERSION) return DayEntry(date)
+        val valid = (parts.size == 4 && parts[0] == "v1") || (parts.size == 9 && parts[0] == VERSION)
+        if (!valid) return DayEntry(date)
+        fun int(index: Int) = parts.getOrNull(index)?.toIntOrNull() ?: 0
         return DayEntry(
             date = date,
-            waterGlasses = parts[1].toIntOrNull() ?: 0,
+            waterGlasses = int(1),
             sleepHours = parts[2].toFloatOrNull() ?: 0f,
-            mood = parts[3].toIntOrNull() ?: 0,
+            mood = int(3),
+            food = FoodLog(vegetables = int(4), meals = int(5), protein = int(6), wholeGrain = int(7), treats = int(8)),
         )
     }
 }

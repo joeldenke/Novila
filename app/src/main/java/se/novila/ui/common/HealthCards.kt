@@ -8,29 +8,22 @@ import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import se.novila.DayEntry
 import se.novila.MAX_SLEEP_HOURS
 import se.novila.R
-import se.novila.WATER_GOAL
 import se.novila.designsystem.component.NovilaAccentButton
-import se.novila.designsystem.component.NovilaButton
 import se.novila.designsystem.component.NovilaCard
-import se.novila.designsystem.component.NovilaChoiceChip
-import se.novila.designsystem.component.NovilaProgressBar
+import se.novila.designsystem.component.NovilaLevelPicker
 import se.novila.designsystem.component.NovilaSlider
 import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
@@ -40,6 +33,7 @@ import se.novila.movement.TodayMovement
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
 import java.util.Locale
 
 /**
@@ -68,33 +62,6 @@ fun ScreenList(
 }
 
 @Composable
-fun WaterCard(today: DayEntry, onAdd: () -> Unit, onRemove: () -> Unit) {
-    val nutrition = NovilaTheme.pillars.nutrition
-    NovilaCard(
-        title = stringResource(R.string.water_title),
-        icon = painterResource(R.drawable.ic_nutrition),
-        role = nutrition,
-    ) {
-        NovilaText(
-            stringResource(R.string.water_progress, today.waterGlasses, WATER_GOAL),
-            style = NovilaTheme.typography.headlineSmall,
-        )
-        NovilaProgressBar(progress = today.waterProgress, role = nutrition)
-        Row(horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s)) {
-            NovilaButton(
-                text = stringResource(R.string.water_remove_label),
-                onClick = onRemove,
-                enabled = today.waterGlasses > 0,
-                contentDescription = stringResource(R.string.water_remove_description),
-                role = nutrition,
-            )
-            // Logging a glass is the screen's main action, so it gets the sun.
-            NovilaAccentButton(text = stringResource(R.string.water_add), onClick = onAdd)
-        }
-    }
-}
-
-@Composable
 fun SleepCard(hours: Float, onChange: (Float) -> Unit) {
     val sleep = NovilaTheme.pillars.sleep
     NovilaCard(
@@ -113,19 +80,17 @@ fun SleepCard(hours: Float, onChange: (Float) -> Unit) {
     }
 }
 
+/** How the user feels today, on a calm five-step scale from bad to great. */
 @Composable
 fun MoodCard(mood: Int, onChange: (Int) -> Unit) {
-    NovilaCard(title = stringResource(R.string.mood_title), icon = painterResource(R.drawable.ic_today)) {
-        Row(horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.xs)) {
-            Mood.entries.forEach { option ->
-                NovilaChoiceChip(
-                    label = stringResource(option.emoji),
-                    selected = mood == option.value,
-                    onClick = { onChange(option.value) },
-                    contentDescription = stringResource(option.label),
-                )
-            }
-        }
+    NovilaCard(title = stringResource(R.string.mood_title)) {
+        NovilaLevelPicker(
+            levels = Mood.entries.map { stringResource(it.label) },
+            selected = mood,
+            onSelect = onChange,
+            hint = stringResource(R.string.mood_hint),
+            role = NovilaTheme.pillars.training,
+        )
     }
 }
 
@@ -196,38 +161,12 @@ private fun MovementBody(text: String) {
     NovilaText(text, style = NovilaTheme.typography.bodyMedium, color = NovilaTheme.colors.onSurfaceVariant)
 }
 
-/** One row per day: date followed by the given values, aligned in columns. */
-@Composable
-fun HistoryRow(day: DayEntry, vararg values: String) {
-    Row(
-        Modifier.fillMaxWidth().padding(vertical = NovilaTheme.spacing.xs),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.l),
-    ) {
-        NovilaText(
-            day.date.format(rememberShortDateFormatter()),
-            style = NovilaTheme.typography.bodyMedium,
-            modifier = Modifier.weight(1f),
-        )
-        values.forEach { NovilaText(it, style = NovilaTheme.typography.bodyMedium) }
-    }
-}
-
 @Composable
 @ReadOnlyComposable
 fun hoursText(hours: Float): String {
     val value = formatHours(hours, currentLocale()) ?: return stringResource(R.string.value_missing)
     return stringResource(R.string.hours_value, value)
 }
-
-@Composable
-@ReadOnlyComposable
-fun glassesText(count: Int): String = pluralStringResource(R.plurals.glasses_count, count, count)
-
-@Composable
-@ReadOnlyComposable
-fun moodText(mood: Int): String =
-    Mood.of(mood)?.let { stringResource(it.emoji) } ?: stringResource(R.string.value_missing)
 
 /** Step count with the locale's digit grouping, e.g. "8,412" / "8 412". */
 @Composable
@@ -251,9 +190,18 @@ private fun currentLocale(): Locale =
     // Read straight from LocalConfiguration (observable) so text updates when the app language changes.
     LocalConfiguration.current.locales[0]
 
-/** Localized weekday and date, e.g. "Tue 13 Oct" / "tis 13 okt". */
+/** Short weekday per day for chart axes, e.g. "Mon" / "Mån". */
 @Composable
-private fun rememberShortDateFormatter(): DateTimeFormatter = rememberDateFormatter("EEEdMMM")
+fun weekdayLabels(days: List<DayEntry>): List<String> {
+    val locale = currentLocale()
+    return remember(days, locale) {
+        days.map { day ->
+            day.date.dayOfWeek.getDisplayName(TextStyle.SHORT, locale)
+                .trimEnd('.')
+                .replaceFirstChar { it.titlecase(locale) }
+        }
+    }
+}
 
 /** Full weekday and date with a capital first letter, e.g. "Wednesday, October 14" / "Onsdag 14 oktober". */
 @Composable
@@ -271,15 +219,11 @@ private fun rememberDateFormatter(skeleton: String): DateTimeFormatter {
     }
 }
 
-private enum class Mood(val value: Int, val emoji: Int, val label: Int) {
-    Bad(1, R.string.mood_emoji_1, R.string.mood_1),
-    NotGreat(2, R.string.mood_emoji_2, R.string.mood_2),
-    Okay(3, R.string.mood_emoji_3, R.string.mood_3),
-    Good(4, R.string.mood_emoji_4, R.string.mood_4),
-    Great(5, R.string.mood_emoji_5, R.string.mood_5),
-    ;
-
-    companion object {
-        fun of(value: Int): Mood? = entries.firstOrNull { it.value == value }
-    }
+/** Mood levels 1–5, in order from bad to great. */
+private enum class Mood(val label: Int) {
+    Bad(R.string.mood_1),
+    NotGreat(R.string.mood_2),
+    Okay(R.string.mood_3),
+    Good(R.string.mood_4),
+    Great(R.string.mood_5),
 }
