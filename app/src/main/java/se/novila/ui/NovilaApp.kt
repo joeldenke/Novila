@@ -1,10 +1,13 @@
 package se.novila.ui
 
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.health.connect.client.PermissionController
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -22,6 +25,8 @@ import se.novila.feature.nutrition.NutritionScreen
 import se.novila.feature.sleep.SleepScreen
 import se.novila.feature.today.TodayScreen
 import se.novila.feature.training.TrainingScreen
+import se.novila.healthconnect.HealthConnectSource
+import se.novila.healthconnect.MOVEMENT_PERMISSIONS
 import se.novila.navigation.Navigator
 import se.novila.navigation.NutritionRoute
 import se.novila.navigation.SleepRoute
@@ -45,6 +50,14 @@ fun NovilaApp(vm: HealthViewModel = viewModel()) {
     )
     val navigator = remember(navigationState) { Navigator(navigationState) }
     val state by vm.state.collectAsStateWithLifecycle()
+    val movement by vm.movement.collectAsStateWithLifecycle()
+
+    // Health Connect's own permission dialog. It links to HealthDataInfoActivity for the details.
+    val context = LocalContext.current
+    val healthPermissions = rememberLauncherForActivityResult(
+        remember { PermissionController.createRequestPermissionResultContract() },
+        vm::onMovementPermissionsResult,
+    )
     val current = TopLevelDestination.of(navigationState.topLevelRoute)
 
     NovilaTheme {
@@ -73,6 +86,7 @@ fun NovilaApp(vm: HealthViewModel = viewModel()) {
                         today = state.today,
                         history = state.history,
                         hour = state.hour,
+                        movement = movement,
                         onMood = vm::setMood,
                         onOpenTraining = { navigator.navigate(TrainingRoute) },
                         onOpenSleep = { navigator.navigate(SleepRoute) },
@@ -81,7 +95,13 @@ fun NovilaApp(vm: HealthViewModel = viewModel()) {
                     )
                 }
                 entry<TrainingRoute> {
-                    TrainingScreen(innerPadding)
+                    TrainingScreen(
+                        movement = movement,
+                        onConnectHealth = { healthPermissions.launch(MOVEMENT_PERMISSIONS) },
+                        onOpenHealthSettings = { HealthConnectSource.openSettings(context) },
+                        onInstallHealth = { HealthConnectSource.openInstall(context) },
+                        contentPadding = innerPadding,
+                    )
                 }
                 entry<SleepRoute> {
                     SleepScreen(state.today, state.history, vm::setSleep, innerPadding)

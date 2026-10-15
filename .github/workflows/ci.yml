@@ -1,5 +1,5 @@
-# Runs on every PR to main: formatting, lint, unit and screenshot tests, coverage and a debug build,
-# as parallel jobs. "Lint, test and build" collects them and is the required status check in branch
+# Runs on every PR to main: formatting, lint, unit and screenshot tests, coverage and a debug build
+# with its badging check, as parallel jobs. "Lint, test and build" collects them and is the required status check in branch
 # protection, so nothing red can be merged.
 # Release builds (R8, release signing) only run on merge to main, in distribute.yml.
 # Isolated Projects compatibility has its own workflow, isolated-projects.yml.
@@ -139,10 +139,40 @@ jobs:
         with:
           persist-credentials: false
       - uses: ./.github/actions/setup-gradle-build
-      - name: Debug build
+      # Badging: permissions, SDK levels, features, exported components and queries of the APK testers
+      # get, compared with the reviewed app/badging/debug-badging.txt. A library or manifest change
+      # that adds any of these fails here until the file is updated in the PR. See Badging.kt.
+      - name: Debug build and badging check
         run: |
           set -o pipefail
-          ./gradlew assembleDebug 2>&1 | tee build.log
+          ./gradlew assembleDebug :app:checkDebugBadging 2>&1 | tee build.log
+      - name: Show badging diff
+        if: failure() && hashFiles('app/build/outputs/badging/debug-badging.txt') != ''
+        run: |
+          generated=app/build/outputs/badging/debug-badging.txt
+          golden=app/badging/debug-badging.txt
+          [ -f "$golden" ] || golden=/dev/null
+          diff=$(diff -u "$golden" "$generated" | tail -n +3 | grep -E '^[+-]' || true)
+          [ -n "$diff" ] || exit 0
+          {
+            echo "### Badging changed"
+            echo
+            echo "Review the lines below. If the change is intended, comment \`/record-badging\` on the PR."
+            echo
+            echo '```diff'
+            echo "$diff"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          # One annotation with the whole diff, readable in the PR without opening the log.
+          message=$(printf '%s' "$diff" | sed -e 's/%/%25/g' | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/%0A/g')
+          echo "::error title=Badging changed (comment /record-badging if intended)::$message"
+      - name: Upload badging on failure
+        if: failure() && hashFiles('app/build/outputs/badging/debug-badging.txt') != ''
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: badging
+          path: app/build/outputs/badging/
+          retention-days: 7
       - name: Annotate failures
         if: failure()
         uses: ./.github/actions/annotate-gradle-failures

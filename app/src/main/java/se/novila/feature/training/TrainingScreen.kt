@@ -9,14 +9,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import se.novila.R
 import se.novila.designsystem.component.NovilaEmptyState
 import se.novila.designsystem.theme.NovilaTheme
+import se.novila.movement.MovementState
+import se.novila.ui.common.MovementCard
 import se.novila.ui.common.ScreenList
+import se.novila.ui.preview.PreviewData
 
 @Composable
 fun TrainingScreen(
+    movement: MovementState,
+    onConnectHealth: () -> Unit,
+    onOpenHealthSettings: () -> Unit,
+    onInstallHealth: () -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
+        item(key = "movement") {
+            MovementCard(movement, onConnectHealth, onOpenHealthSettings, onInstallHealth)
+        }
         item(key = "empty") {
             NovilaEmptyState(
                 icon = painterResource(R.drawable.ic_training),
@@ -28,8 +38,23 @@ fun TrainingScreen(
     }
 }
 
+@Composable
+private fun TrainingScreenContent(movement: MovementState) {
+    NovilaTheme {
+        TrainingScreen(
+            movement = movement,
+            onConnectHealth = {},
+            onOpenHealthSettings = {},
+            onInstallHealth = {},
+            contentPadding = PaddingValues(),
+        )
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
-private fun TrainingScreenPreview() {
-    NovilaTheme { TrainingScreen(contentPadding = PaddingValues()) }
-}
+private fun TrainingScreenPreview() = TrainingScreenContent(PreviewData.movement)
+
+@Preview(showBackground = true)
+@Composable
+private fun TrainingScreenConnectPreview() = TrainingScreenContent(MovementState.NeedsPermission())

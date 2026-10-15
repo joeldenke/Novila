@@ -1,11 +1,15 @@
 package se.novila.buildlogic
 
 import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 
-/** `novila.android.application`: SDK levels, Java level and lint policy for the app module. */
+/**
+ * `novila.android.application`: SDK levels, Java level and lint policy for the app module, plus the
+ * badging check of the built APK (see Badging.kt).
+ */
 class AndroidApplicationConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
@@ -28,6 +32,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                     lintConfig = lintPolicy
                 }
             }
+            extensions.configure<ApplicationAndroidComponentsExtension> { configureBadging(this) }
         }
     }
 }

@@ -7,7 +7,7 @@ blocks, which Isolated Projects forbids.
 
 | Plugin id | Use it for | What it sets |
 |---|---|---|
-| `novila.android.application` | `:app` | AGP application, compileSdk/minSdk/targetSdk, Java 17, lint policy |
+| `novila.android.application` | `:app` | AGP application, compileSdk/minSdk/targetSdk, Java 17, lint policy, badging tasks (`Badging.kt`) |
 | `novila.android.library` | every Android library module | AGP library, compileSdk/minSdk, Java 17, lint policy |
 | `novila.android.compose` | modules with Compose UI | Compose compiler, Compose BOM, preview tooling, compiler reports with `-Pnovila.composeReports=true` |
 | `novila.android.unittest` | modules with unit tests | JUnit, Robolectric (native graphics, merged resources), Compose UI tests, Kover |

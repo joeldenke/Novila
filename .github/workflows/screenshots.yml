@@ -1,6 +1,9 @@
-# Records Roborazzi reference screenshots in CI, so they never have to be made locally.
+# Records reference files in CI, so they never have to be made locally:
+#   - Roborazzi reference screenshots (`/record-screenshots`)
+#   - the APK's badging, app/badging/debug-badging.txt (`/record-badging`), after a deliberate change
+#     to permissions, SDK levels or exported components. The pushed diff is what reviewers check.
 #
-#   - Comment `/record-screenshots` on a PR: records on the PR branch and pushes a commit there.
+#   - Comment the command on a PR: records on the PR branch and pushes a commit there.
 #   - Or run it from the Actions tab on a branch. On the default branch it opens a PR instead,
 #     since main only accepts PRs.
 #
@@ -8,12 +11,18 @@
 # forks), because the job runs the branch's build with a token that can push.
 # GitHub only reads issue_comment workflows from the default branch, so the comment command works
 # once this file is on main.
-name: Record screenshots
+name: Record references
 
 on:
   issue_comment:
     types: [created]
   workflow_dispatch:
+    inputs:
+      what:
+        description: What to record
+        type: choice
+        options: [screenshots, badging]
+        default: screenshots
 
 permissions:
   contents: read
@@ -24,22 +33,24 @@ concurrency:
 
 jobs:
   record:
-    name: Record screenshots
+    name: Record ${{ inputs.what || (startsWith(github.event.comment.body, '/record-badging') && 'badging') || 'screenshots' }}
     if: >-
       github.event_name == 'workflow_dispatch' ||
       (github.event.issue.pull_request &&
-       startsWith(github.event.comment.body, '/record-screenshots') &&
+       (startsWith(github.event.comment.body, '/record-screenshots') ||
+        startsWith(github.event.comment.body, '/record-badging')) &&
        contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association))
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
-      contents: write # push the new reference images
+      contents: write # push the new reference files
       pull-requests: write # react to the command, reply, open a PR from main
       actions: write # start CI on the pushed commit
     env:
       GH_TOKEN: ${{ github.token }}
       PR_NUMBER: ${{ github.event.issue.number }}
       COMMENT_ID: ${{ github.event.comment.id }}
+      WHAT: ${{ inputs.what || (startsWith(github.event.comment.body, '/record-badging') && 'badging') || 'screenshots' }}
     steps:
       - name: Resolve branch
         id: target
@@ -73,7 +84,12 @@ jobs:
           cache-provider: basic
 
       - name: Record
-        run: ./gradlew recordRoborazziDebug --stacktrace
+        run: |
+          if [ "$WHAT" = badging ]; then
+            ./gradlew :app:updateDebugBadging --stacktrace
+          else
+            ./gradlew recordRoborazziDebug --stacktrace
+          fi
 
       - name: Commit and push
         id: push
@@ -81,7 +97,13 @@ jobs:
           BRANCH: ${{ steps.target.outputs.branch }}
           DEFAULT_BRANCH: ${{ steps.target.outputs.default }}
         run: |
-          git add -A -- ':(glob)**/src/test/screenshots/**'
+          if [ "$WHAT" = badging ]; then
+            git add -A -- ':(glob)**/badging/*-badging.txt'
+            title="Record badging"
+          else
+            git add -A -- ':(glob)**/src/test/screenshots/**'
+            title="Record screenshot references"
+          fi
           if git diff --cached --quiet; then
             echo "changed=0" >> "$GITHUB_OUTPUT"
             exit 0
@@ -89,17 +111,17 @@ jobs:
           changed=$(git diff --cached --name-only | wc -l)
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -q -m "Record screenshot references" -m "$(git diff --cached --name-only | sed 's/^/- /')"
+          git commit -q -m "$title" -m "$(git diff --cached --name-only | sed 's/^/- /')"
 
           target="$BRANCH"
           if [ "$BRANCH" = "$DEFAULT_BRANCH" ]; then
-            target="screenshots/record-$GITHUB_RUN_ID"
+            target="$WHAT/record-$GITHUB_RUN_ID"
           fi
           git push origin "HEAD:refs/heads/$target"
           if [ "$target" != "$BRANCH" ]; then
             PR_NUMBER=$(gh api "repos/$GITHUB_REPOSITORY/pulls" -f head="$target" -f base="$DEFAULT_BRANCH" \
-              -f title="Record screenshot references" \
-              -f body="Reference screenshots recorded by run $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID." \
+              -f title="$title" \
+              -f body="References ($WHAT) recorded by run $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID." \
               --jq .number)
             echo "pr=$PR_NUMBER" >> "$GITHUB_OUTPUT"
           fi
@@ -122,11 +144,11 @@ jobs:
         run: |
           run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
           if [ "$OUTCOME" != "success" ]; then
-            body="Recording screenshots failed. See the [run]($run_url)."
+            body="Recording $WHAT failed. See the [run]($run_url)."
           elif [ "${CHANGED:-0}" = "0" ]; then
-            body="Screenshots recorded: no changes, the references are up to date. ([run]($run_url))"
+            body="Recorded $WHAT: no changes, the references are up to date. ([run]($run_url))"
           else
-            body="Recorded $CHANGED screenshot file(s) and pushed them. CI is running on the new commit. ([run]($run_url))"
+            body="Recorded $CHANGED $WHAT file(s) and pushed them. CI is running on the new commit. ([run]($run_url))"
           fi
           number="${PR_NUMBER:-$OPENED_PR}"
           gh api "repos/$GITHUB_REPOSITORY/issues/$number/comments" -f body="$body" > /dev/null

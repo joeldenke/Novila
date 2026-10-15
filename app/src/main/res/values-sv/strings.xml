@@ -44,4 +44,25 @@
     <!-- Training -->
     <string name="training_empty_title">Träning kommer snart</string>
     <string name="training_empty_body">Logga pass och se hur de påverkar din sömn och energi.</string>
+
+    <!-- Health Connect -->
+    <string name="movement_title">Dagens rörelse</string>
+    <string name="movement_steps">Steg</string>
+    <string name="movement_active_calories">Aktiva kalorier</string>
+    <string name="movement_source">Från Health Connect. Novila läser bara och sparar ingenting.</string>
+    <string name="movement_connect_body">Se dagens steg och aktiva kalorier från din klocka eller telefon via Health Connect. Novila läser dem bara och datan stannar i telefonen.</string>
+    <string name="movement_connect">Anslut Health Connect</string>
+    <string name="movement_denied_body">Åtkomst nekades. Du kan tillåta den för Novila i Health Connect.</string>
+    <string name="movement_open_settings">Öppna Health Connect</string>
+    <string name="movement_install_body">Health Connect behöver installeras eller uppdateras för att visa dina steg och aktiva kalorier.</string>
+    <string name="movement_install">Hämta Health Connect</string>
+    <string name="health_info_title">Health Connect i Novila</string>
+    <string name="health_info_read_title">Vad Novila läser</string>
+    <string name="health_info_read_body">Dagens steg och aktiva kalorier. Novila skriver aldrig till Health Connect och läser inget annat.</string>
+    <string name="health_info_why_title">Varför</string>
+    <string name="health_info_why_body">För att visa hur mycket du har rört dig i dag, på Idag och under Träning.</string>
+    <string name="health_info_where_title">Vart datan tar vägen</string>
+    <string name="health_info_where_body">Ingenstans. Novila läser siffrorna när appen är öppen och visar dem bara. De sparas inte av Novila, skickas inte över internet och delas inte med någon.</string>
+    <string name="health_info_revoke_title">Ändra eller stäng av åtkomst</string>
+    <string name="health_info_revoke_body">Du kan när som helst stänga av Novilas åtkomst i Health Connect.</string>
 </resources>

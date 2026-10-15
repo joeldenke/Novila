@@ -100,6 +100,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.health.connect.client)
     implementation(libs.kotlinx.serialization.core)
     implementation(libs.compose.ui)
 }

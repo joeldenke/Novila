@@ -9,6 +9,8 @@ androidxCore = "1.19.1"
 androidxActivity = "1.13.0"
 androidxLifecycle = "2.11.0"
 navigation3 = "1.2.0"
+# Health Connect: read-only steps and active calories, see HealthConnectSource.
+healthConnect = "1.1.0"
 kotlinxSerialization = "1.11.0"
 junit = "4.13.2"
 robolectric = "4.17"
@@ -31,6 +33,7 @@ androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-ru
 
 androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }
 androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "navigation3" }
+androidx-health-connect-client = { module = "androidx.health.connect:connect-client", version.ref = "healthConnect" }
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerialization" }
 
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }

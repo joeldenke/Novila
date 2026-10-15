@@ -1,0 +1,33 @@
+package: name='se.novila.debug' versionCode='1' versionName='0.1.1-debug' platformBuildVersionName='17' platformBuildVersionCode='37' compileSdkVersion='37' compileSdkVersionCodename='17'
+minSdkVersion:'26'
+targetSdkVersion:'37'
+uses-permission: name='android.permission.health.READ_STEPS'
+uses-permission: name='android.permission.health.READ_ACTIVE_CALORIES_BURNED'
+uses-permission: name='se.novila.debug.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'
+application-label:'Novila'
+application-label-sv:'Novila'
+application: label='Novila' icon=''
+application-debuggable
+launchable-activity: name='se.novila.MainActivity'  label='' icon=''
+uses-library-not-required:'androidx.window.extensions'
+uses-library-not-required:'androidx.window.sidecar'
+feature-group: label=''
+  uses-feature: name='android.hardware.faketouch'
+  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
+main
+other-activities
+other-receivers
+other-services
+supports-screens: 'small' 'normal' 'large' 'xlarge'
+supports-any-density: 'true'
+locales: '--_--' 'sv'
+densities: '160' '240' '320'
+native-code: 'arm64-v8a' 'armeabi-v7a' 'x86' 'x86_64'
+exported-activity: name='se.novila.MainActivity' permission='none'
+exported-activity: name='se.novila.healthconnect.HealthDataInfoActivity' permission='none'
+exported-activity: name='androidx.compose.ui.tooling.PreviewActivity' permission='none'
+exported-activity: name='androidx.activity.ComponentActivity' permission='none'
+exported-activity-alias: name='se.novila.ViewPermissionUsageActivity' permission='android.permission.START_VIEW_PERMISSION_USAGE'
+exported-service: name='androidx.health.platform.client.impl.sdkservice.HealthDataSdkService' permission='none'
+exported-receiver: name='androidx.profileinstaller.ProfileInstallReceiver' permission='android.permission.DUMP'
+queries-package: 'com.google.android.apps.healthdata'
