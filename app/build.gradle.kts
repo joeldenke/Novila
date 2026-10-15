@@ -102,5 +102,6 @@ dependencies {
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.androidx.health.connect.client)
     implementation(libs.kotlinx.serialization.core)
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.compose.ui)
 }

@@ -73,9 +73,17 @@
     <string name="food_add">Lägg till %1$s</string>
     <string name="food_remove">Ta bort %1$s</string>
 
-    <!-- Training -->
-    <string name="training_empty_title">Träning kommer snart</string>
-    <string name="training_empty_body">Logga pass och se hur de påverkar din sömn och energi.</string>
+    <!-- Träningsprogram -->
+    <string name="program_title">Veckans program</string>
+    <string name="program_summary">%1$d minuter konditionsträning, styrka två dagar och lite rörlighet.</string>
+    <string name="program_basis">Bygger på WHO:s råd om fysisk aktivitet och dina senaste pass. Konditionstiden ökar med högst en tiondel i veckan.</string>
+    <string name="exercise_walking">Rask promenad</string>
+    <string name="exercise_running">Löpning</string>
+    <string name="exercise_cycling">Cykling</string>
+    <string name="exercise_swimming">Simning</string>
+    <string name="exercise_strength">Styrka, helkropp</string>
+    <string name="exercise_mobility">Rörlighet och stretch</string>
+    <string name="exercise_other">Kondition</string>
 
     <!-- Health Connect -->
     <string name="movement_title">Dagens rörelse</string>

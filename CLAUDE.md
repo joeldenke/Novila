@@ -27,6 +27,10 @@ I `:app`:
 - `movement` – rörelsedata oberoende av källa: `MovementSource` (källa), `MovementCache` (cache) och
   `MovementRepository` (det enda UI:t läser). Källa och cache väljs på ett ställe, i `HealthViewModel`.
 - `healthconnect` – Health Connect som `MovementSource`, behörigheter och integritetsskärmen
+- `exercise` – träningspass oberoende av källa: `Exercise`, `ExerciseSource` och `TrainingProgramGenerator`, som bygger
+  veckans program (WHO:s råd: 150–300 min kondition och styrka två dagar, högst +10 % kondition per vecka)
+- `googlehealth` – Google Health API (REST v4) som `ExerciseSource`: läser `users/me/dataTypes/exercise/dataPoints`.
+  Ännu inte inkopplad i `HealthViewModel`, se *Google Health API* under Regler.
 
 ## Arbetsflöde
 - Pusha aldrig direkt till `main`. Skapa en branch och öppna en PR.
@@ -98,11 +102,15 @@ Använd rätt skill innan du ändrar respektive område:
 - `play-policy-insights` innan första Play-release. Appen hanterar hälsodata.
 - `glance-canonical-layouts` om appen får hemskärmswidgets
 
-## Google Cloud- och Firebase-MCP
-`.mcp.json` startar två MCP-servrar, godkända i `.claude/settings.json`. De fungerar även i molnsessioner,
+## Google Cloud-, Firebase- och Developer Knowledge-MCP
+`.mcp.json` startar tre MCP-servrar, godkända i `.claude/settings.json`. De fungerar även i molnsessioner,
 där pluginet `firebase@firebase` inte alltid installeras.
 - `gcloud` (`@google-cloud/gcloud-mcp`) kör gcloud-kommandon med den inloggade användaren.
 - `firebase` (`firebase-tools mcp`) för Firebase-projekt, appar och App Distribution.
+- `google-developer-knowledge` (`https://developerknowledge.googleapis.com/mcp`) söker i Googles aktuella
+  utvecklardokumentation (Android, Health API, Firebase m.m.). Använd den före minnet när du rör Googles API:er.
+  Kräver en API-nyckel för *Developer Knowledge API* i miljövariabeln `GOOGLE_DEVELOPER_KNOWLEDGE_API_KEY`
+  (miljöns hemligheter i molnsessioner). Lägg aldrig nyckeln i repot.
 - Båda kräver inloggning: `gcloud auth login --update-adc` räcker för båda (Firebase använder ADC),
   annars `firebase login --no-localhost`. Servrarna läses in när sessionen startar.
 - Versionerna är pinnade och samma `firebase-tools` som i `distribute.yml`. Höj dem tillsammans.
@@ -172,5 +180,10 @@ där pluginet `firebase@firebase` inte alltid installeras.
   behörigheter utan att ägaren ber om det. `HealthConnectManifestTest` håller manifestet och `MOVEMENT_PERMISSIONS`
   i synk. `HealthDataInfoActivity` (integritetsskärmen Health Connect länkar till) är obligatorisk och ska
   beskriva exakt vad appen läser; ändras läsningen ändras texten.
+- **Google Health API:** `GoogleHealthExerciseSource` läser bara träningspass (scope
+  `googlehealth.activity_and_fitness.readonly`, restricted: kräver Googles verifiering före publik release). Den är inte
+  inkopplad än. Att koppla in den kräver ägarens ok och, i samma PR: Google-inloggning som `AccessTokenProvider`,
+  behörigheten `INTERNET` (ny rad i badging), uppdaterad integritetsskärm och Play-deklaration, och skillen
+  `android-permissions-security`. Svaren tolkas i `GoogleHealthJson`; okända fält ignoreras.
 - Hälsodata stannar på enheten. Inga nätverksanrop, analysverktyg eller Firebase-SDK:er i appen utan att ägaren ber om det.
 - Pinna GitHub Actions till commit-SHA med versionskommentar. Dependabot håller dem uppdaterade.

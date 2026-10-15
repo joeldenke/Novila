@@ -80,9 +80,18 @@
     <string name="food_add">Add %1$s</string>
     <string name="food_remove">Remove %1$s</string>
 
-    <!-- Training -->
-    <string name="training_empty_title">Training is coming soon</string>
-    <string name="training_empty_body">Log workouts and see how they affect your sleep and energy.</string>
+    <!-- Training program -->
+    <string name="program_title">This week\'s program</string>
+    <string name="program_summary">%1$d minutes of cardio, strength on two days and some mobility.</string>
+    <string name="program_basis">Based on WHO\'s activity guidelines and your recent workouts. Cardio time rises by at most a tenth a week.</string>
+    <string name="minutes_value" translatable="false">%1$d min</string>
+    <string name="exercise_walking">Brisk walk</string>
+    <string name="exercise_running">Run</string>
+    <string name="exercise_cycling">Cycling</string>
+    <string name="exercise_swimming">Swimming</string>
+    <string name="exercise_strength">Strength, full body</string>
+    <string name="exercise_mobility">Mobility and stretching</string>
+    <string name="exercise_other">Cardio</string>
 
     <!-- Health Connect -->
     <string name="kcal_value" translatable="false">%1$s kcal</string>

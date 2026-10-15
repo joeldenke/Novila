@@ -19,6 +19,7 @@
   },
   "enabledMcpjsonServers": [
     "gcloud",
-    "firebase"
+    "firebase",
+    "google-developer-knowledge"
   ]
 }
