@@ -1,5 +1,6 @@
 package se.novila.designsystem.component
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -66,7 +67,11 @@ fun NovilaCard(
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = NovilaTheme.shapes.medium,
-        colors = CardDefaults.cardColors(containerColor = NovilaTheme.colors.surfaceContainerLow),
+        colors = CardDefaults.cardColors(
+            containerColor = NovilaTheme.surfaces.card,
+            contentColor = NovilaTheme.colors.onSurface,
+        ),
+        border = BorderStroke(1.dp, NovilaTheme.surfaces.cardOutline),
     ) {
         Column(
             modifier = Modifier.padding(NovilaTheme.spacing.l),

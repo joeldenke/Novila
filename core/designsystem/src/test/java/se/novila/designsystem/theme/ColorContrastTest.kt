@@ -18,6 +18,11 @@ class ColorContrastTest {
         "light" to (NovilaLightColors to NovilaLightAccent),
         "dark" to (NovilaDarkColors to NovilaDarkAccent),
     )
+    private val heroes = mapOf("light" to NovilaLightHero, "dark" to NovilaDarkHero)
+    private val surfaces = mapOf(
+        "light" to (NovilaLightColors to NovilaLightSurfaces),
+        "dark" to (NovilaDarkColors to NovilaDarkSurfaces),
+    )
 
     @Test fun `text on its role meets 4,5 to 1`() = assertAll(TEXT) { scheme, accent ->
         listOf(
@@ -60,6 +65,42 @@ class ColorContrastTest {
             "sleep" to (pillars.sleep.color to pillars.sleep.container),
             "nutrition" to (pillars.nutrition.color to pillars.nutrition.container),
         )
+    }
+
+    @Test fun `text on cards meets 4,5 to 1`() = assertPairs(TEXT, surfaces) { (scheme, card) ->
+        listOf(
+            "onSurface/card" to (scheme.onSurface to card.card),
+            "onSurfaceVariant/card" to (scheme.onSurfaceVariant to card.card),
+        )
+    }
+
+    @Test fun `hero text meets 4,5 to 1 across its gradient`() = assertPairs(TEXT, heroes) { hero ->
+        listOf("content/start" to (hero.content to hero.start), "content/end" to (hero.content to hero.end))
+    }
+
+    @Test fun `hero sun and progress stand out across its gradient`() = assertPairs(NON_TEXT, heroes) { hero ->
+        listOf(hero.start, hero.end).flatMap { ground ->
+            listOf(
+                "sun" to (hero.sun to ground),
+                "training" to (hero.training to ground),
+                "sleep" to (hero.sleep to ground),
+                "nutrition" to (hero.nutrition to ground),
+            )
+        }
+    }
+
+    private fun <T> assertPairs(
+        minimum: Double,
+        themes: Map<String, T>,
+        pairs: (T) -> List<Pair<String, Pair<Color, Color>>>,
+    ) {
+        val failures = themes.flatMap { (mode, theme) ->
+            pairs(theme).mapNotNull { (name, colors) ->
+                val ratio = contrast(colors.first, colors.second)
+                if (ratio < minimum) "$mode $name: ${"%.2f".format(ratio)}:1" else null
+            }
+        }
+        assertTrue("Below $minimum:1 -> $failures", failures.isEmpty())
     }
 
     private fun assertAll(

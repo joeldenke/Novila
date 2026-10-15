@@ -5,7 +5,8 @@
     <string name="value_missing" translatable="false">–</string>
     <string name="hours_value" translatable="false">%1$s h</string>
     <string name="water_remove_label" translatable="false">−1</string>
-    <string name="summary_line" translatable="false">%1$s: %2$s</string>
+    <string name="balance_value" translatable="false">%1$d</string>
+    <string name="water_fraction" translatable="false">%1$d/%2$d</string>
     <string name="mood_emoji_1" translatable="false">😞</string>
     <string name="mood_emoji_2" translatable="false">🙁</string>
     <string name="mood_emoji_3" translatable="false">😐</string>
@@ -40,7 +41,17 @@
     <string name="mood_5">Great</string>
 
     <!-- Today -->
-    <string name="summary_title">Summary</string>
+    <string name="greeting_morning">Good morning</string>
+    <string name="greeting_afternoon">Good afternoon</string>
+    <string name="greeting_evening">Good evening</string>
+    <string name="balance_title">Today\'s balance</string>
+    <string name="balance_unit">of 100</string>
+    <string name="tip_log_sleep">Log last night\'s sleep to complete your balance.</string>
+    <plurals name="tip_drink_water">
+        <item quantity="one">%d more glass of water to reach today\'s goal.</item>
+        <item quantity="other">%d more glasses of water to reach today\'s goal.</item>
+    </plurals>
+    <string name="tip_goals_met">Water and sleep are on target. Nice work!</string>
     <string name="history_title">Recent days</string>
 
     <!-- Training -->

@@ -128,6 +128,8 @@ där pluginet `firebase@firebase` inte alltid installeras.
   Varje del har sin färg via `NovilaTheme.pillars`: träning = gran (primary), sömn = sjö (secondary),
   kost = falurött (tertiary). Solen (`NovilaTheme.accent`) används för högst en huvudknapp per skärm.
   Hörnradie från basen 14 dp via `NovilaTheme.shapes`. Nya färgpar läggs till i `ColorContrastTest` (WCAG 2.2).
+  Förlagan är riktning D i designkanvasen *Novila designriktningar*. Idag är en dashboard: hälsning, `NovilaHeroCard`
+  (granen med solen, `NovilaTheme.hero`) och en `NovilaStatTile` per del. Kort är vita med hårfin kant (`NovilaTheme.surfaces`).
 - **Inga hårdkodade texter:** all text som visas eller läses upp ska komma från `strings.xml`.
   Engelska i `values/`, svenska i `values-sv/`. Symboler och enheter markeras `translatable="false"`.
 - `ArchitectureTest` bevakar båda reglerna i CI.
