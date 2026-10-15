@@ -32,7 +32,19 @@ enum class BodyPart(val sided: Boolean) {
 }
 
 /** Points on the body that exercises plant on the floor, see [ExerciseMotion.contacts]. */
-enum class Landmark { LeftToe, RightToe, LeftHeel, RightHeel, LeftHand, RightHand, UpperBack, Head }
+enum class Landmark {
+    LeftToe,
+    RightToe,
+    LeftHeel,
+    RightHeel,
+    LeftHand,
+    RightHand,
+    LeftKnee,
+    RightKnee,
+    Belly,
+    UpperBack,
+    Head,
+}
 
 /** The half widths of a body part's oval cross-section: to the side and front to back. */
 data class Radii(val lateral: Float, val depth: Float) {
@@ -99,6 +111,9 @@ object Skeleton {
         Landmark.RightHeel to 0.02f,
         Landmark.LeftHand to 0.02f,
         Landmark.RightHand to 0.02f,
+        Landmark.LeftKnee to 0.036f,
+        Landmark.RightKnee to 0.036f,
+        Landmark.Belly to 0.06f,
         Landmark.UpperBack to 0.06f,
         Landmark.Head to 0.06f,
     )
@@ -111,6 +126,8 @@ object Skeleton {
         val pelvis = Vec3.ZERO
 
         val waist = pelvis + root * Vec3(0f, LOWER_TORSO, 0f)
+        // The middle of the lower torso; with its contact radius it is the belly or the lower back.
+        landmarks[Landmark.Belly] = pelvis + root * Vec3(0f, 0.045f, 0f)
         segments += Segment(
             BodyPart.LowerTorso,
             null,
@@ -165,6 +182,7 @@ object Skeleton {
         for (side in Side.entries) {
             val left = side == Side.Left
             val shank = leg(side, if (left) pose.leftLeg else pose.rightLeg, root, shape, segments)
+            landmarks[if (left) Landmark.LeftKnee else Landmark.RightKnee] = shank.start
             segments += foot(side, shank.end, if (left) pose.leftFoot else pose.rightFoot, g, landmarks)
             val hand =
                 arm(side, if (left) pose.leftArm else pose.rightArm, pose.flatHands, waist, chest, shape, segments)

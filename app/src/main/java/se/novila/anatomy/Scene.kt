@@ -105,6 +105,7 @@ object SceneBuilder {
         camera: Camera,
         highlights: Map<MuscleGroup, Emphasis>,
         contacts: Set<Landmark> = emptySet(),
+        shadowUnder: Set<Landmark> = contacts,
     ): Scene {
         val depths = body.segments.associateWith { segment ->
             (camera.view(segment.start).z + camera.view(segment.end).z) / 2f
@@ -114,7 +115,7 @@ object SceneBuilder {
             val shade = ((nearest - depths.getValue(segment)) / SHADE_DEPTH).coerceIn(0f, 1f)
             listOf(Layer.Part(silhouette(segment, camera), segment.part, shade)) + muscles(segment, camera, highlights)
         }
-        return Scene(layers, shadow(body, camera, contacts))
+        return Scene(layers, shadow(body, camera, contacts, shadowUnder))
     }
 
     /** Silhouette half width on screen: the widest the oval cross-section reaches across the projected axis. */
@@ -230,10 +231,10 @@ object SceneBuilder {
         return listOf(tip) + left + tail + right.asReversed()
     }
 
-    private fun shadow(body: PosedBody, camera: Camera, contacts: Set<Landmark>): FloorShadow? {
+    private fun shadow(body: PosedBody, camera: Camera, contacts: Set<Landmark>, under: Set<Landmark>): FloorShadow? {
         if (contacts.isEmpty()) return null
         val floor = floorHeight(body, contacts)
-        val points = contacts.map { body.landmarks.getValue(it) }
+        val points = under.map { body.landmarks.getValue(it) }
         val cx = points.map { it.x }.average().toFloat()
         val cz = points.map { it.z }.average().toFloat()
         val reach = points.maxOf { sqrt((it.x - cx).pow(2) + (it.z - cz).pow(2)) } + SHADOW_MARGIN

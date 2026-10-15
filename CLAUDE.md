@@ -28,10 +28,12 @@ I `:app`:
   `MovementRepository` (det enda UI:t läser). Källa och cache väljs på ett ställe, i `HealthViewModel`.
 - `healthconnect` – Health Connect som `MovementSource`, behörigheter och integritetsskärmen
 - `exercise` – träningspass oberoende av källa: `Exercise`, `ExerciseSource` och `TrainingProgramGenerator`, som bygger
-  veckans program (WHO:s råd: 150–300 min kondition och styrka två dagar, högst +10 % kondition per vecka)
+  veckans program (WHO:s råd: 150–300 min kondition och styrka två dagar, högst +10 % kondition per vecka).
+  `StrengthSessions` fyller styrkedagarna med övningar, set, repetitioner och vila efter nivå.
 - `anatomy` – kroppsagnostiska övningsillustrationer i ren Kotlin: `Pose`/`Movement` (ledvinklar per keyframe),
   `Skeleton` (framåtkinematik, `BodyShape`), `MuscleMap`, `SceneBuilder` (ortografisk `Camera`, siluetter och de
   muskelband som syns), `ViewSelector` (varje övnings bästa vy) och `ExerciseLibrary`. `AnatomyFigure` ritar i Compose.
+  Se `docs/anatomy.md`. `tools/anatomy/anatomy.sh` testar, renderar och löser vinklar utan Gradle.
 - `googlehealth` – Google Health API (REST v4) som `ExerciseSource`: läser `users/me/dataTypes/exercise/dataPoints`.
   Ännu inte inkopplad i `HealthViewModel`, se *Google Health API* under Regler.
 
@@ -90,6 +92,9 @@ Misstag som redan har gjorts i det här repot. Gör dem inte igen.
 - **gcloud i molnsessioner:** miljön sätter `CLOUDSDK_AUTH_ACCESS_TOKEN`, som skriver över `gcloud auth login`.
   Kör `unset CLOUDSDK_AUTH_ACCESS_TOKEN` efter inloggningen, annars svarar alla anrop `CREDENTIALS_MISSING`.
 - **GitHub API:** GraphQL och `gh pr create` fungerar inte här. Använd REST (`gh api repos/.../pulls`).
+
+## Repots egna skills
+- `add-exercise` (`.claude/skills/add-exercise`) när en övning läggs till eller ändras, eller styrkepassen byter övningar.
 
 ## Googles Android-skills
 Repot aktiverar pluginet `android-skills` från github.com/android/skills via `.claude/settings.json`.
@@ -159,9 +164,9 @@ där pluginet `firebase@firebase` inte alltid installeras.
 - **Inga emojis i UI:t.** Novila ska kännas som en professionell hälsoapp: använd vektorikoner och ritade komponenter
   (t.ex. `NovilaLevelPicker` för mående), aldrig emoji-tecken.
 - **Övningsillustrationer:** en övning är data (keyframes med ledvinklar i `ExerciseLibrary`), aldrig video eller
-  handritad animation, så samma rörelse fungerar för varje kropp och kamera. Ny övning: lös vinklarna så att planterade
-  händer och fötter står still, och sätt den `camera` som `ViewSelector` väljer. `AnatomyTest` kontrollerar båda och
-  säger vilken kamera som gäller. Figuren färgas bara med `NovilaTheme.anatomy` (sjöblå kropp, glödande muskler) och
+  handritad animation, så samma rörelse fungerar för varje kropp och kamera. Ny eller ändrad övning: följ skillen
+  `add-exercise` (lösta vinklar, kamera från `ViewSelector`, texter på båda språken). `AnatomyTest` kontrollerar att
+  planterade händer och fötter står still och säger vilken kamera som gäller. Figuren färgas bara med `NovilaTheme.anatomy` (sjöblå kropp, glödande muskler) och
   spelar ett bestämt antal repetitioner, aldrig i loop.
 - **Rörelse:** lugn och engångs. Animationer spelas när innehållet visas (`NovilaReveal`, diagram som ritar in sig)
   via `NovilaMotion` i `:core:designsystem`. Inga oändliga animationer: de får skärmdumpstesterna att hänga.

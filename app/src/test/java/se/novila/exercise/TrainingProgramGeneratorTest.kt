@@ -32,7 +32,7 @@ class TrainingProgramGeneratorTest {
                 PlannedSession(DayOfWeek.FRIDAY, ExerciseType.Walking, 30),
                 PlannedSession(DayOfWeek.SUNDAY, ExerciseType.Walking, 30),
             ),
-            program.sessions,
+            program.sessions.map { it.copy(exercises = emptyList()) },
         )
     }
 

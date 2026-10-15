@@ -15,6 +15,8 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import se.novila.HealthViewModel
+import se.novila.R
+import se.novila.anatomy.ExerciseLibrary
 import se.novila.designsystem.component.NovilaNavigationBar
 import se.novila.designsystem.component.NovilaNavigationBarItem
 import se.novila.designsystem.component.NovilaScaffold
@@ -24,9 +26,11 @@ import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.nutrition.NutritionScreen
 import se.novila.feature.sleep.SleepScreen
 import se.novila.feature.today.TodayScreen
+import se.novila.feature.training.ExerciseDetailScreen
 import se.novila.feature.training.TrainingScreen
 import se.novila.healthconnect.HealthConnectSource
 import se.novila.healthconnect.MOVEMENT_PERMISSIONS
+import se.novila.navigation.ExerciseRoute
 import se.novila.navigation.Navigator
 import se.novila.navigation.NutritionRoute
 import se.novila.navigation.SleepRoute
@@ -35,6 +39,7 @@ import se.novila.navigation.TopLevelDestination
 import se.novila.navigation.TrainingRoute
 import se.novila.navigation.rememberNavigationState
 import se.novila.navigation.toEntries
+import se.novila.ui.common.moveName
 
 @Composable
 fun NovilaApp(vm: HealthViewModel = viewModel()) {
@@ -59,12 +64,22 @@ fun NovilaApp(vm: HealthViewModel = viewModel()) {
         vm::onMovementPermissionsResult,
     )
     val current = TopLevelDestination.of(navigationState.topLevelRoute)
+    val currentRoute = navigationState.backStacks[navigationState.topLevelRoute]?.lastOrNull()
 
     NovilaTheme {
         NovilaScaffold(
             // Today is a dashboard with its own greeting header instead of a title bar.
             topBar = {
-                if (current != TopLevelDestination.Today) NovilaTopAppBar(title = stringResource(current.label))
+                when {
+                    currentRoute is ExerciseRoute -> NovilaTopAppBar(
+                        title = moveName(currentRoute.exerciseId),
+                        navigationIcon = painterResource(R.drawable.ic_back),
+                        navigationLabel = stringResource(R.string.navigate_back),
+                        onNavigate = navigator::goBack,
+                    )
+
+                    current != TopLevelDestination.Today -> NovilaTopAppBar(title = stringResource(current.label))
+                }
             },
             bottomBar = {
                 NovilaNavigationBar {
@@ -102,8 +117,19 @@ fun NovilaApp(vm: HealthViewModel = viewModel()) {
                         onConnectHealth = { healthPermissions.launch(MOVEMENT_PERMISSIONS) },
                         onOpenHealthSettings = { HealthConnectSource.openSettings(context) },
                         onInstallHealth = { HealthConnectSource.openInstall(context) },
+                        onOpenExercise = { navigator.navigate(ExerciseRoute(it)) },
                         contentPadding = innerPadding,
                     )
+                }
+                entry<ExerciseRoute> { route ->
+                    ExerciseLibrary.byId(route.exerciseId)?.let { motion ->
+                        ExerciseDetailScreen(
+                            motion = motion,
+                            planned = state.program.sessions.flatMap { it.exercises }
+                                .firstOrNull { it.exerciseId == route.exerciseId },
+                            contentPadding = innerPadding,
+                        )
+                    }
                 }
                 entry<SleepRoute> {
                     SleepScreen(state.today, state.history, vm::setSleep, innerPadding)
