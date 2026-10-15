@@ -28,7 +28,7 @@ import se.novila.designsystem.component.NovilaStatTile
 import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.greetingFor
-import se.novila.healthconnect.MovementState
+import se.novila.movement.MovementState
 import se.novila.sleepProgress
 import se.novila.tip
 import se.novila.ui.common.HistoryRow

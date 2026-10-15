@@ -24,6 +24,9 @@ I `:app`:
 - `navigation` – rutter (`NavKey`), `NavigationState`, `Navigator`
 - `feature/<flik>` – en skärm per flik, med `@Preview`
 - `ui/common` – delade hälsokort och listlayout
+- `movement` – rörelsedata oberoende av källa: `MovementSource` (källa), `MovementCache` (cache) och
+  `MovementRepository` (det enda UI:t läser). Källa och cache väljs på ett ställe, i `HealthViewModel`.
+- `healthconnect` – Health Connect som `MovementSource`, behörigheter och integritetsskärmen
 
 ## Arbetsflöde
 - Pusha aldrig direkt till `main`. Skapa en branch och öppna en PR.
@@ -154,7 +157,9 @@ där pluginet `firebase@firebase` inte alltid installeras.
   Byts nyckeln kan testare inte uppdatera.
 - Nya beroenden: lägg dem i versionskatalogen och motivera dem i PR-beskrivningen.
 - **Health Connect:** appen läser bara dagens steg och aktiva kalorier (`READ_STEPS`,
-  `READ_ACTIVE_CALORIES_BURNED`), i förgrunden. Inget skrivs, inget sparas och ingen historik eller bakgrundsläsning.
+  `READ_ACTIVE_CALORIES_BURNED`), i förgrunden. Inget skrivs, ingen historik eller bakgrundsläsning, och cachen ligger
+  bara i minnet (`InMemoryMovementCache`). En cache på disk ändrar vad integritetsskärmen och Play-deklarationen
+  ska säga, så den kräver ägarens ok. Ny källa: implementera `MovementSource` och byt den i `HealthViewModel`.
   Varje datatyp måste motiveras i Play Consoles *Health apps declaration*, så lägg inte till typer eller
   behörigheter utan att ägaren ber om det. `HealthConnectManifestTest` håller manifestet och `MOVEMENT_PERMISSIONS`
   i synk. `HealthDataInfoActivity` (integritetsskärmen Health Connect länkar till) är obligatorisk och ska

@@ -9,7 +9,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import se.novila.healthconnect.HealthConnectSource
 import se.novila.healthconnect.MOVEMENT_PERMISSIONS
-import se.novila.healthconnect.MovementState
+import se.novila.movement.InMemoryMovementCache
+import se.novila.movement.MovementRepository
+import se.novila.movement.MovementState
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -25,14 +27,15 @@ class HealthViewModel(app: Application) : AndroidViewModel(app) {
     private val _state = MutableStateFlow(read())
     val state: StateFlow<HealthUiState> = _state.asStateFlow()
 
-    private val healthConnect = HealthConnectSource(app)
-    private val _movement = MutableStateFlow<MovementState>(MovementState.Unavailable)
-
-    /** Today's steps and active calories from Health Connect. Read live, never stored by the app. */
-    val movement: StateFlow<MovementState> = _movement.asStateFlow()
-
-    /** Set when the user declined Health Connect's dialog in this session. */
-    private var permissionDenied = false
+    /**
+     * Movement for the dashboard and Training. The data source and cache are chosen here and nowhere
+     * else: swap HealthConnectSource for another MovementSource, or the cache for a persistent one.
+     */
+    private val movementRepository = MovementRepository(
+        source = HealthConnectSource(app),
+        cache = InMemoryMovementCache(),
+    )
+    val movement: StateFlow<MovementState> = movementRepository.state
 
     private fun read(): HealthUiState {
         val days = store.lastDays(count = 7, today = LocalDate.now())
@@ -47,15 +50,14 @@ class HealthViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Health Connect only allows reads while the app is in the foreground, so this runs on resume. */
     private fun refreshMovement() {
-        viewModelScope.launch {
-            _movement.value = healthConnect.read(LocalDate.now(), permissionDenied)
-        }
+        viewModelScope.launch { movementRepository.refresh(LocalDate.now()) }
     }
 
     /** Result of Health Connect's permission dialog, with the permissions granted so far. */
     fun onMovementPermissionsResult(granted: Set<String>) {
-        permissionDenied = granted.none { it in MOVEMENT_PERMISSIONS }
-        refreshMovement()
+        viewModelScope.launch {
+            movementRepository.onPermissionResult(granted.any { it in MOVEMENT_PERMISSIONS }, LocalDate.now())
+        }
     }
 
     private fun update(change: (DayEntry) -> DayEntry) {

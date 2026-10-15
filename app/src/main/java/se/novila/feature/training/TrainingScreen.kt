@@ -9,7 +9,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import se.novila.R
 import se.novila.designsystem.component.NovilaEmptyState
 import se.novila.designsystem.theme.NovilaTheme
-import se.novila.healthconnect.MovementState
+import se.novila.movement.MovementState
 import se.novila.ui.common.MovementCard
 import se.novila.ui.common.ScreenList
 import se.novila.ui.preview.PreviewData

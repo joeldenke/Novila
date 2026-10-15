@@ -1,8 +1,8 @@
 package se.novila.ui.preview
 
 import se.novila.DayEntry
-import se.novila.healthconnect.MovementState
-import se.novila.healthconnect.TodayMovement
+import se.novila.movement.MovementState
+import se.novila.movement.TodayMovement
 import java.time.LocalDate
 
 /** Fixed sample data for Compose previews. */

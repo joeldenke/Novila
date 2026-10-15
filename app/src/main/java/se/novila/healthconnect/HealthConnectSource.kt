@@ -12,39 +12,44 @@ import androidx.health.connect.client.records.ActiveCaloriesBurnedRecord
 import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.request.AggregateRequest
 import androidx.health.connect.client.time.TimeRangeFilter
+import se.novila.movement.MovementSource
+import se.novila.movement.MovementState
+import se.novila.movement.TodayMovement
 import java.io.IOException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.math.roundToInt
 
 /**
- * Reads today's movement from Health Connect. Read-only and only while the app is open: nothing is
- * written to Health Connect, stored by the app or sent anywhere. Permissions are checked on every
- * read (never cached), since the user can revoke them in Health Connect at any time.
+ * [MovementSource] backed by Health Connect, where Google Fit, Fitbit, Samsung Health and others put
+ * their data. Read-only and only while the app is open: nothing is written to Health Connect or sent
+ * anywhere. Permissions are checked on every read (never cached), since the user can revoke them in
+ * Health Connect at any time.
  */
-class HealthConnectSource(private val context: Context) {
+class HealthConnectSource(private val context: Context) : MovementSource {
 
-    suspend fun read(date: LocalDate, denied: Boolean): MovementState {
+    override suspend fun read(date: LocalDate): Result<MovementState> {
         val sdkStatus = HealthConnectClient.getSdkStatus(context)
-        if (sdkStatus != HealthConnectClient.SDK_AVAILABLE) return accessState(sdkStatus, emptySet(), denied)!!
+        if (sdkStatus != HealthConnectClient.SDK_AVAILABLE) return Result.success(accessState(sdkStatus, emptySet())!!)
         return try {
             val client = HealthConnectClient.getOrCreate(context)
             val granted = client.permissionController.getGrantedPermissions()
-            accessState(sdkStatus, granted, denied) ?: MovementState.Connected(readDay(client, date, granted))
+            val state = accessState(sdkStatus, granted) ?: MovementState.Connected(readDay(client, date, granted))
+            Result.success(state)
         } catch (e: SecurityException) {
             // Revoked between the check and the read.
             Log.w(TAG, "Health Connect access revoked", e)
-            MovementState.NeedsPermission(denied)
+            Result.success(MovementState.NeedsPermission())
         } catch (e: RemoteException) {
             Log.w(TAG, "Health Connect not reachable", e)
-            MovementState.Unavailable
+            Result.failure(e)
         } catch (e: IOException) {
             Log.w(TAG, "Health Connect read failed", e)
-            MovementState.Unavailable
+            Result.failure(e)
         } catch (e: IllegalStateException) {
             // For example the rate limit, or Health Connect being updated.
             Log.w(TAG, "Health Connect read failed", e)
-            MovementState.Unavailable
+            Result.failure(e)
         }
     }
 

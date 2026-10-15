@@ -35,8 +35,8 @@ import se.novila.designsystem.component.NovilaSlider
 import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.formatHours
-import se.novila.healthconnect.MovementState
-import se.novila.healthconnect.TodayMovement
+import se.novila.movement.MovementState
+import se.novila.movement.TodayMovement
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
