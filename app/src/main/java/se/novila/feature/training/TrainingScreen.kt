@@ -24,9 +24,14 @@ fun TrainingScreen(
     onOpenHealthSettings: () -> Unit,
     onInstallHealth: () -> Unit,
     onOpenExercise: (String) -> Unit,
+    onStartWorkout: (DayOfWeek) -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
+    strengthMinutesToday: Int = 0,
 ) {
+    val strengthDays = program.sessions.filter { it.exercises.isNotEmpty() }
+    // The sun goes to the next strength day still to do: today's, unless it's done, or a later one.
+    val next = strengthDays.firstOrNull { it.day > today || (it.day == today && strengthMinutesToday == 0) }
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
         item(key = "movement") {
             MovementCard(movement, onConnectHealth, onOpenHealthSettings, onInstallHealth)
@@ -34,8 +39,16 @@ fun TrainingScreen(
         item(key = "program") {
             TrainingProgramCard(program, today)
         }
-        program.sessions.filter { it.exercises.isNotEmpty() }.forEach { session ->
-            item(key = "strength-${session.day}") { StrengthSessionCard(session, onOpenExercise) }
+        strengthDays.forEach { session ->
+            item(key = "strength-${session.day}") {
+                StrengthSessionCard(
+                    session = session,
+                    onOpenExercise = onOpenExercise,
+                    onStart = { onStartWorkout(session.day) },
+                    next = session == next,
+                    minutesDone = strengthMinutesToday.takeIf { session.day == today && it > 0 },
+                )
+            }
         }
         item(key = "exercises") {
             ExerciseLibraryCard(onOpenExercise)
@@ -54,6 +67,7 @@ private fun TrainingScreenContent(movement: MovementState) {
             onOpenHealthSettings = {},
             onInstallHealth = {},
             onOpenExercise = {},
+            onStartWorkout = {},
             contentPadding = PaddingValues(),
         )
     }

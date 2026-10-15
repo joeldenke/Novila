@@ -3,7 +3,7 @@
 # exercise code with the Kotlin compiler from Maven Central, then runs its tests, renders exercises
 # to a PNG or checks each exercise's camera. See docs/anatomy.md and .claude/skills/add-exercise.
 #
-#   tools/anatomy/anatomy.sh test                      unit tests for anatomy and exercise programs
+#   tools/anatomy/anatomy.sh test                      unit tests for anatomy, programs and session mode
 #   tools/anatomy/anatomy.sh render out.png [id ...]    contact sheet: one row per exercise
 #   tools/anatomy/anatomy.sh views [id ...]             best camera per exercise vs. the stored one
 #   tools/anatomy/anatomy.sh run Main.kt [args ...]     compile your own file (e.g. a pose solver) and run it
@@ -59,11 +59,13 @@ case "$command" in
       "$ROOT/app/src/test/java/se/novila/anatomy/AnatomyTest.kt"
       "$ROOT/app/src/test/java/se/novila/exercise/StrengthSessionsTest.kt"
       "$ROOT/app/src/test/java/se/novila/exercise/TrainingProgramGeneratorTest.kt"
+      "$ROOT/app/src/test/java/se/novila/exercise/WorkoutTest.kt"
     )
     # shellcheck disable=SC2046
     compile $(sources) "${tests[@]}"
     java -cp "$(classpath)" org.junit.runner.JUnitCore \
-      se.novila.anatomy.AnatomyTest se.novila.exercise.StrengthSessionsTest se.novila.exercise.TrainingProgramGeneratorTest
+      se.novila.anatomy.AnatomyTest se.novila.exercise.StrengthSessionsTest se.novila.exercise.TrainingProgramGeneratorTest \
+      se.novila.exercise.WorkoutTest
     ;;
   render)
     # shellcheck disable=SC2046

@@ -17,6 +17,9 @@ import se.novila.R
 /** How to do one exercise from the anatomy library, opened from the Training tab. */
 @Serializable data class ExerciseRoute(val exerciseId: String) : NavKey
 
+/** A guided strength session, set by set, from a strength day in the Training tab. */
+@Serializable data object WorkoutRoute : NavKey
+
 /** Tabs in the bottom navigation bar, in display order. Each tab keeps its own back stack. */
 enum class TopLevelDestination(
     val route: NavKey,

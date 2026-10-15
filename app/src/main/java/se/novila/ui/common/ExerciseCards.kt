@@ -25,6 +25,8 @@ import se.novila.anatomy.AnatomyFigure
 import se.novila.anatomy.ExerciseLibrary
 import se.novila.anatomy.ExerciseMotion
 import se.novila.anatomy.MuscleGroup
+import se.novila.designsystem.component.NovilaAccentButton
+import se.novila.designsystem.component.NovilaButton
 import se.novila.designsystem.component.NovilaCard
 import se.novila.designsystem.component.NovilaScaffold
 import se.novila.designsystem.component.NovilaText
@@ -130,9 +132,19 @@ fun ExerciseThumbnail(motion: ExerciseMotion, modifier: Modifier = Modifier) {
     )
 }
 
-/** A strength day in the program: one row per exercise with its sets, repetitions and rest. */
+/**
+ * A strength day in the program: one row per exercise with its sets, repetitions and rest, and a button
+ * that starts the guided session. The [next] strength day gets the sun, so a screen has only one.
+ * [minutesDone] shows that the session is already done today.
+ */
 @Composable
-fun StrengthSessionCard(session: PlannedSession, onOpenExercise: (String) -> Unit) {
+fun StrengthSessionCard(
+    session: PlannedSession,
+    onOpenExercise: (String) -> Unit,
+    onStart: () -> Unit,
+    next: Boolean,
+    minutesDone: Int? = null,
+) {
     val locale = LocalConfiguration.current.locales[0]
     NovilaCard(
         title = stringResource(R.string.strength_session_title, session.day.getDisplayName(TextStyle.FULL, locale)),
@@ -148,6 +160,18 @@ fun StrengthSessionCard(session: PlannedSession, onOpenExercise: (String) -> Uni
             ExerciseLibrary.byId(planned.exerciseId)?.let { motion ->
                 PlannedExerciseRow(motion, planned, onOpenExercise)
             }
+        }
+        val start = stringResource(R.string.workout_start)
+        when {
+            minutesDone != null -> NovilaText(
+                stringResource(R.string.workout_done_today, minutesDone),
+                style = NovilaTheme.typography.titleSmall,
+                color = NovilaTheme.pillars.training.color,
+            )
+
+            next -> NovilaAccentButton(start, onClick = onStart, modifier = Modifier.fillMaxWidth())
+
+            else -> NovilaButton(start, onClick = onStart, modifier = Modifier.fillMaxWidth())
         }
     }
 }
@@ -240,10 +264,10 @@ private fun ExerciseCardsContent() {
             ScreenList(contentPadding = padding) {
                 item(key = "session") {
                     StrengthSessionCard(
-                        PreviewData.program.sessions.first {
-                            it.exercises.isNotEmpty()
-                        },
+                        session = PreviewData.program.sessions.first { it.exercises.isNotEmpty() },
                         onOpenExercise = {},
+                        onStart = {},
+                        next = true,
                     )
                 }
                 item(key = "library") { ExerciseLibraryCard(onOpenExercise = {}) }
