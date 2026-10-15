@@ -68,7 +68,7 @@ internal fun Project.configureBadging(components: ApplicationAndroidComponentsEx
             description = "Fails when the ${variant.name} APK's badging differs from badging/$goldenName."
             golden.from(goldenDir.file(goldenName))
             generated.set(generate.flatMap { it.badging })
-            updateTask.set(update.name)
+            updateTask.set(update.map { it.path })
         }
     }
 }
@@ -106,7 +106,9 @@ abstract class GenerateBadgingTask : DefaultTask() {
             standardOutput = out
         }
         val manifest = manifestSummary(mergedManifest.get().asFile)
-        badging.get().asFile.writeText(out.toString(Charsets.UTF_8.name()).trimEnd() + "\n" + manifest)
+        // Trailing whitespace is trimmed so the file survives editors and copy-paste from CI annotations.
+        val dump = out.toString(Charsets.UTF_8.name()).lines().map { it.trimEnd() }.filter { it.isNotEmpty() }
+        badging.get().asFile.writeText(dump.joinToString("") { "$it\n" } + manifest)
     }
 }
 
