@@ -7,6 +7,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import se.novila.exercise.TrainingProgram
+import se.novila.exercise.TrainingProgramGenerator
 import se.novila.healthconnect.HealthConnectSource
 import se.novila.healthconnect.MOVEMENT_PERMISSIONS
 import se.novila.movement.InMemoryMovementCache
@@ -20,6 +22,8 @@ data class HealthUiState(
     val history: List<DayEntry>,
     /** Hour of day when the state was read, for the greeting. */
     val hour: Int,
+    /** This week's workouts, generated from recent ones. */
+    val program: TrainingProgram,
 )
 
 class HealthViewModel(app: Application) : AndroidViewModel(app) {
@@ -38,8 +42,17 @@ class HealthViewModel(app: Application) : AndroidViewModel(app) {
     val movement: StateFlow<MovementState> = movementRepository.state
 
     private fun read(): HealthUiState {
-        val days = store.lastDays(count = 7, today = LocalDate.now())
-        return HealthUiState(today = days.first(), history = days.drop(1), hour = LocalTime.now().hour)
+        val today = LocalDate.now()
+        val days = store.lastDays(count = 7, today = today)
+        // No ExerciseSource is connected yet (Google Health API needs sign-in first), so the program
+        // starts from scratch. Once one is, its recent workouts go in here.
+        val program = TrainingProgramGenerator.generate(history = emptyList(), today = today)
+        return HealthUiState(
+            today = days.first(),
+            history = days.drop(1),
+            hour = LocalTime.now().hour,
+            program = program,
+        )
     }
 
     /** Called on resume so "today" stays correct after midnight. */

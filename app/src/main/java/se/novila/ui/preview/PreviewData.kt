@@ -2,8 +2,13 @@ package se.novila.ui.preview
 
 import se.novila.DayEntry
 import se.novila.FoodLog
+import se.novila.exercise.Exercise
+import se.novila.exercise.ExerciseType
+import se.novila.exercise.TrainingProgramGenerator
 import se.novila.movement.MovementState
 import se.novila.movement.TodayMovement
+import java.time.DayOfWeek
+import java.time.Duration
 import java.time.LocalDate
 
 /** Fixed sample data for Compose previews: a realistic week with one rough day early on. */
@@ -19,6 +24,19 @@ internal object PreviewData {
     ) = DayEntry(date.minusDays(daysAgo), waterGlasses = water, sleepHours = sleep, mood = mood, food = food)
 
     val today = day(0, sleep = 7.5f, water = 5, mood = 4, food = FoodLog(3, 2, 2, 1))
+
+    /** A program for someone who runs a little and has just started with strength training. */
+    val program = TrainingProgramGenerator.generate(
+        history = (1L..4L).flatMap { week ->
+            val monday = date.minusWeeks(week).with(DayOfWeek.MONDAY)
+            listOf(
+                Exercise(ExerciseType.Running, monday.plusDays(1), Duration.ofMinutes(35)),
+                Exercise(ExerciseType.Running, monday.plusDays(5), Duration.ofMinutes(50)),
+                Exercise(ExerciseType.Strength, monday.plusDays(3), Duration.ofMinutes(30)),
+            )
+        },
+        today = date,
+    )
 
     val movement = MovementState.Connected(TodayMovement(steps = 8412, activeKilocalories = 312))
 

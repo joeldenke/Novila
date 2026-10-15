@@ -97,6 +97,8 @@ fun NovilaApp(vm: HealthViewModel = viewModel()) {
                 entry<TrainingRoute> {
                     TrainingScreen(
                         movement = movement,
+                        program = state.program,
+                        today = state.today.date.dayOfWeek,
                         onConnectHealth = { healthPermissions.launch(MOVEMENT_PERMISSIONS) },
                         onOpenHealthSettings = { HealthConnectSource.openSettings(context) },
                         onInstallHealth = { HealthConnectSource.openInstall(context) },

@@ -7,6 +7,13 @@
     "firebase": {
       "command": "npx",
       "args": ["-y", "firebase-tools@15.33.0", "mcp", "--dir", "."]
+    },
+    "google-developer-knowledge": {
+      "type": "http",
+      "url": "https://developerknowledge.googleapis.com/mcp",
+      "headers": {
+        "X-Goog-Api-Key": "${GOOGLE_DEVELOPER_KNOWLEDGE_API_KEY:-}"
+      }
     }
   }
 }
