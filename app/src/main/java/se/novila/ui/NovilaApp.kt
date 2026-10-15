@@ -28,6 +28,7 @@ import se.novila.feature.sleep.SleepScreen
 import se.novila.feature.today.TodayScreen
 import se.novila.feature.training.ExerciseDetailScreen
 import se.novila.feature.training.TrainingScreen
+import se.novila.feature.training.WorkoutScreen
 import se.novila.healthconnect.HealthConnectSource
 import se.novila.healthconnect.MOVEMENT_PERMISSIONS
 import se.novila.navigation.ExerciseRoute
@@ -37,6 +38,7 @@ import se.novila.navigation.SleepRoute
 import se.novila.navigation.TodayRoute
 import se.novila.navigation.TopLevelDestination
 import se.novila.navigation.TrainingRoute
+import se.novila.navigation.WorkoutRoute
 import se.novila.navigation.rememberNavigationState
 import se.novila.navigation.toEntries
 import se.novila.ui.common.moveName
@@ -56,6 +58,7 @@ fun NovilaApp(vm: HealthViewModel = viewModel()) {
     val navigator = remember(navigationState) { Navigator(navigationState) }
     val state by vm.state.collectAsStateWithLifecycle()
     val movement by vm.movement.collectAsStateWithLifecycle()
+    val workout by vm.workout.collectAsStateWithLifecycle()
 
     // Health Connect's own permission dialog. It links to HealthDataInfoActivity for the details.
     val context = LocalContext.current
@@ -76,6 +79,16 @@ fun NovilaApp(vm: HealthViewModel = viewModel()) {
                         navigationIcon = painterResource(R.drawable.ic_back),
                         navigationLabel = stringResource(R.string.navigate_back),
                         onNavigate = navigator::goBack,
+                    )
+
+                    currentRoute is WorkoutRoute -> NovilaTopAppBar(
+                        title = stringResource(R.string.workout_title),
+                        navigationIcon = painterResource(R.drawable.ic_back),
+                        navigationLabel = stringResource(R.string.navigate_back),
+                        onNavigate = {
+                            vm.stopWorkout()
+                            navigator.goBack()
+                        },
                     )
 
                     current != TopLevelDestination.Today -> NovilaTopAppBar(title = stringResource(current.label))
@@ -118,6 +131,23 @@ fun NovilaApp(vm: HealthViewModel = viewModel()) {
                         onOpenHealthSettings = { HealthConnectSource.openSettings(context) },
                         onInstallHealth = { HealthConnectSource.openInstall(context) },
                         onOpenExercise = { navigator.navigate(ExerciseRoute(it)) },
+                        onStartWorkout = { day ->
+                            vm.startWorkout(day)
+                            navigator.navigate(WorkoutRoute)
+                        },
+                        contentPadding = innerPadding,
+                        strengthMinutesToday = state.today.strengthMinutes,
+                    )
+                }
+                entry<WorkoutRoute> {
+                    WorkoutScreen(
+                        state = workout,
+                        onNext = vm::nextWorkoutStep,
+                        onFinish = {
+                            vm.finishWorkout()
+                            navigator.goBack()
+                        },
+                        onShowHow = { navigator.navigate(ExerciseRoute(it)) },
                         contentPadding = innerPadding,
                     )
                 }
@@ -140,7 +170,11 @@ fun NovilaApp(vm: HealthViewModel = viewModel()) {
             }
             NavDisplay(
                 entries = navigationState.toEntries(entryProvider),
-                onBack = { navigator.goBack() },
+                onBack = {
+                    // Leaving a session without finishing it discards it; nothing was saved yet.
+                    if (currentRoute is WorkoutRoute) vm.stopWorkout()
+                    navigator.goBack()
+                },
             )
         }
     }

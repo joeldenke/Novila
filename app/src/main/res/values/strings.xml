@@ -205,6 +205,25 @@
     <string name="exercise_tip_title">Keep in mind</string>
     <string name="exercise_safety">Stop if it hurts. If you have an injury or are unsure, ask a physiotherapist.</string>
     <string name="navigate_back">Back</string>
+    <string name="workout_start">Start the session</string>
+    <string name="workout_done_today">Done today: %1$d minutes. Well done!</string>
+    <string name="workout_title">Strength session</string>
+    <string name="workout_progress">Exercise %1$d of %2$d · set %3$d of %4$d</string>
+    <string name="workout_reps">%1$d repetitions</string>
+    <string name="workout_reps_per_side">%1$d repetitions per side</string>
+    <string name="workout_timer" translatable="false">%1$d:%2$02d</string>
+    <string name="workout_tempo">Follow the figure\'s calm pace.</string>
+    <string name="workout_hold">Hold until the timer runs out.</string>
+    <string name="workout_set_done">Set done</string>
+    <string name="workout_rest_title">Rest</string>
+    <string name="workout_next">Next: %1$s, set %2$d of %3$d</string>
+    <string name="workout_skip_rest">Skip the rest</string>
+    <string name="workout_skip_timer">Next</string>
+    <string name="workout_finished_title">Well done!</string>
+    <string name="workout_finished_body">You did %1$d exercises and %2$d sets in %3$d minutes. Next week\'s program builds on it.</string>
+    <string name="workout_save">Save the session</string>
+    <string name="workout_none">No session is running. Start one from a strength day under Training.</string>
+    <string name="workout_timer_description">%1$d seconds left</string>
     <string name="muscle_chest">chest</string>
     <string name="muscle_shoulders">shoulders</string>
     <string name="muscle_biceps">biceps</string>

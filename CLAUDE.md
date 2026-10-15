@@ -9,7 +9,7 @@ CI är därför den enda sanningen om att något bygger och fungerar.
 - Jetpack Compose med eget designsystem ovanpå Material 3 1.5 (beta), compileSdk/targetSdk 37, minSdk 26
 - Navigation 3 (`androidx.navigation3`) med en back stack per flik: Idag, Träning, Sömn, Kost
 - Alla versioner i `gradle/libs.versions.toml`. Hårdkoda aldrig versioner i byggfiler.
-- Data lokalt i SharedPreferences via `HealthStore`, kodat av `DayEntryCodec` (versionerat format, v2 sedan kostloggen)
+- Data lokalt i SharedPreferences via `HealthStore`, kodat av `DayEntryCodec` (versionerat format, v3 sedan passläget)
 - En delad `HealthViewModel` (`StateFlow`); skärmarna i `feature/*` är tillståndslösa
 
 ## Struktur
@@ -29,7 +29,9 @@ I `:app`:
 - `healthconnect` – Health Connect som `MovementSource`, behörigheter och integritetsskärmen
 - `exercise` – träningspass oberoende av källa: `Exercise`, `ExerciseSource` och `TrainingProgramGenerator`, som bygger
   veckans program (WHO:s råd: 150–300 min kondition och styrka två dagar, högst +10 % kondition per vecka).
-  `StrengthSessions` fyller styrkedagarna med övningar, set, repetitioner och vila efter nivå.
+  `StrengthSessions` fyller styrkedagarna med övningar, set, repetitioner och vila efter nivå. `Workout` är passläget
+  (set, vila och nedräkning) i ren Kotlin. Timern körs i `HealthViewModel`. Avklarade pass sparas som `strengthMinutes`
+  per dag och blir generatorns historik.
 - `anatomy` – kroppsagnostiska övningsillustrationer i ren Kotlin: `Pose`/`Movement` (ledvinklar per keyframe),
   `Skeleton` (framåtkinematik, `BodyShape`), `MuscleMap`, `SceneBuilder` (ortografisk `Camera`, siluetter och de
   muskelband som syns), `ViewSelector` (varje övnings bästa vy) och `ExerciseLibrary`. `AnatomyFigure` ritar i Compose.
