@@ -1,6 +1,8 @@
 package se.novila.ui.preview
 
 import se.novila.DayEntry
+import se.novila.healthconnect.MovementState
+import se.novila.healthconnect.TodayMovement
 import java.time.LocalDate
 
 /** Fixed sample data for Compose previews. */
@@ -8,6 +10,8 @@ internal object PreviewData {
     private val date: LocalDate = LocalDate.of(2026, 10, 14)
 
     val today = DayEntry(date, waterGlasses = 5, sleepHours = 7.5f, mood = 4)
+
+    val movement = MovementState.Connected(TodayMovement(steps = 8412, activeKilocalories = 312))
 
     val history: List<DayEntry> = (1..6).map { daysAgo ->
         DayEntry(

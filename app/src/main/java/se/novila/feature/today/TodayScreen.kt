@@ -28,6 +28,7 @@ import se.novila.designsystem.component.NovilaStatTile
 import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.greetingFor
+import se.novila.healthconnect.MovementState
 import se.novila.sleepProgress
 import se.novila.tip
 import se.novila.ui.common.HistoryRow
@@ -37,6 +38,7 @@ import se.novila.ui.common.glassesText
 import se.novila.ui.common.hoursText
 import se.novila.ui.common.longDateText
 import se.novila.ui.common.moodText
+import se.novila.ui.common.stepsText
 import se.novila.ui.preview.PreviewData
 
 /** The dashboard: greeting, today's balance, one tile per part, mood and recent days. */
@@ -45,6 +47,7 @@ fun TodayScreen(
     today: DayEntry,
     history: List<DayEntry>,
     hour: Int,
+    movement: MovementState,
     onMood: (Int) -> Unit,
     onOpenTraining: () -> Unit,
     onOpenSleep: () -> Unit,
@@ -56,7 +59,7 @@ fun TodayScreen(
         item(key = "header") { Header(today, greetingFor(hour)) }
         item(key = "balance") { BalanceCard(today) }
         item(key = "pillars") {
-            PillarTiles(today, onOpenTraining, onOpenSleep, onOpenNutrition)
+            PillarTiles(today, movement, onOpenTraining, onOpenSleep, onOpenNutrition)
         }
         item(key = "mood") { MoodCard(today.mood, onMood) }
         item(key = "history-title") {
@@ -111,6 +114,7 @@ private fun BalanceCard(today: DayEntry) {
 @Composable
 private fun PillarTiles(
     today: DayEntry,
+    movement: MovementState,
     onOpenTraining: () -> Unit,
     onOpenSleep: () -> Unit,
     onOpenNutrition: () -> Unit,
@@ -121,10 +125,12 @@ private fun PillarTiles(
         horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s),
     ) {
         val tile = Modifier.weight(1f).fillMaxHeight()
+        // Today's steps once Health Connect is connected, otherwise just the part's name.
+        val steps = (movement as? MovementState.Connected)?.today?.steps
         NovilaStatTile(
             icon = painterResource(R.drawable.ic_training),
-            value = stringResource(R.string.value_missing),
-            label = stringResource(R.string.nav_training),
+            value = stepsText(steps),
+            label = stringResource(if (steps != null) R.string.movement_steps else R.string.nav_training),
             role = pillars.training,
             onClick = onOpenTraining,
             modifier = tile,
@@ -156,6 +162,7 @@ private fun TodayScreenContent() {
                 today = PreviewData.today,
                 history = PreviewData.history,
                 hour = 8,
+                movement = PreviewData.movement,
                 onMood = {},
                 onOpenTraining = {},
                 onOpenSleep = {},

@@ -57,4 +57,26 @@
     <!-- Training -->
     <string name="training_empty_title">Training is coming soon</string>
     <string name="training_empty_body">Log workouts and see how they affect your sleep and energy.</string>
+
+    <!-- Health Connect -->
+    <string name="kcal_value" translatable="false">%1$s kcal</string>
+    <string name="movement_title">Today\'s movement</string>
+    <string name="movement_steps">Steps</string>
+    <string name="movement_active_calories">Active calories</string>
+    <string name="movement_source">From Health Connect. Novila only reads it and stores nothing.</string>
+    <string name="movement_connect_body">See today\'s steps and active calories from your watch or phone, via Health Connect. Novila only reads them and the data stays on your phone.</string>
+    <string name="movement_connect">Connect Health Connect</string>
+    <string name="movement_denied_body">Access was declined. You can allow it for Novila in Health Connect.</string>
+    <string name="movement_open_settings">Open Health Connect</string>
+    <string name="movement_install_body">Health Connect needs to be installed or updated to show your steps and active calories.</string>
+    <string name="movement_install">Get Health Connect</string>
+    <string name="health_info_title">Health Connect in Novila</string>
+    <string name="health_info_read_title">What Novila reads</string>
+    <string name="health_info_read_body">Today\'s steps and active calories burned. Novila never writes to Health Connect and never reads anything else.</string>
+    <string name="health_info_why_title">Why</string>
+    <string name="health_info_why_body">To show how much you have moved today on the Today dashboard and under Training.</string>
+    <string name="health_info_where_title">Where the data goes</string>
+    <string name="health_info_where_body">Nowhere. Novila reads the numbers while the app is open and only shows them. They are not saved by Novila, not sent over the internet and not shared with anyone.</string>
+    <string name="health_info_revoke_title">Change or turn off access</string>
+    <string name="health_info_revoke_body">You can turn off Novila\'s access at any time in Health Connect.</string>
 </resources>

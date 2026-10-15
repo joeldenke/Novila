@@ -31,7 +31,7 @@ I `:app`:
   PR-titeln (vid squash: commit-rubriken) blir en rad i testarnas release notes, så skriv den som en tydlig
   sammanfattning. `scripts/release-notes.sh` listar allt på `main` sedan förra lyckade distributionen.
 - `CI`-workflowen måste vara grön innan PR:en är klar. Den kör jobben Format (`spotlessCheck`), Lint (`lintDebug`),
-  Tests (`testDebugUnitTest verifyRoborazziDebug`) och Build (`assembleDebug`) parallellt; kontrollen
+  Tests (`testDebugUnitTest verifyRoborazziDebug`) och Build (`assembleDebug :app:checkDebugBadging`) parallellt; kontrollen
   *Lint, test and build* samlar dem och är den som krävs. Gemensamma steg ligger i `.github/actions/`.
   Release-bygget (R8) körs inte på PR:er. Ändrar du `proguard-rules.pro` eller R8-känslig kod,
   säg det i PR-beskrivningen. Fel syns då först vid merge.
@@ -47,6 +47,16 @@ I `:app`:
 - **Lär av CI:** när CI hittar en ny typ av misstag, gör tre saker i samma PR. Fixa felet,
   lägg till regeln i `lint.xml` (eller i `ArchitectureTest` om lint inte kan fånga det),
   och lägg till en rad under *Kända fallgropar* nedan.
+
+### Manifest och badging
+- `app/badging/debug-badging.txt` är den granskade bilden av APK:n: `aapt2 dump badging` (paket, SDK-nivåer,
+  behörigheter, features, locales) plus exporterade komponenter och `<queries>` från det sammanslagna manifestet.
+  Build-jobbet kör `checkDebugBadging` och fallerar på minsta skillnad, även när ett nytt bibliotek smyger in
+  en behörighet. Logiken finns i `build-logic` (`Badging.kt`).
+- Är ändringen avsiktlig: kommentera `/record-badging` på PR:en (workflowen `Record references`), eller kör
+  `./gradlew :app:updateDebugBadging`. Skriv i PR-beskrivningen varför varje ny rad behövs.
+- Uppdatera aldrig badging-filen bara för att få grönt. En ny behörighet eller exporterad komponent kräver
+  ägarens ok, och skillen `android-permissions-security` först.
 
 ### Kända fallgropar
 Misstag som redan har gjorts i det här repot. Gör dem inte igen.
@@ -114,7 +124,7 @@ där pluginet `firebase@firebase` inte alltid installeras.
 - **Logik:** rena Kotlin-tester i `src/test`. **UI:** Compose UI-tester med `createComposeRule()` på Robolectric
   (`@RunWith(RobolectricTestRunner::class)`), också i `src/test`. Ingen emulator behövs.
 - **Skärmdumpar:** varje `@Preview` i `:app` testas mot referensbilder i `app/src/test/screenshots`.
-  Ändrar du UI med flit: kommentera `/record-screenshots` på PR:en. Workflowen `Record screenshots` tar nya bilder,
+  Ändrar du UI med flit: kommentera `/record-screenshots` på PR:en. Workflowen `Record references` tar nya bilder,
   pushar dem till branchen och startar CI. Ta aldrig fram referensbilder lokalt; de ska renderas i CI.
 - **Kodstil:** Spotless med ktlint (`android_studio`-stil) kontrolleras i CI. `./gradlew spotlessApply` rättar.
 - **Täckning:** Kover, sammanfattning i CI-körningens summary. **Compose-stabilitet:** artefakten `compose-reports`.
@@ -143,5 +153,11 @@ där pluginet `firebase@firebase` inte alltid installeras.
   som enbart finns i GitHub-hemligheter. Lägg aldrig en release-nyckel eller dess lösenord i repot.
   Byts nyckeln kan testare inte uppdatera.
 - Nya beroenden: lägg dem i versionskatalogen och motivera dem i PR-beskrivningen.
+- **Health Connect:** appen läser bara dagens steg och aktiva kalorier (`READ_STEPS`,
+  `READ_ACTIVE_CALORIES_BURNED`), i förgrunden. Inget skrivs, inget sparas och ingen historik eller bakgrundsläsning.
+  Varje datatyp måste motiveras i Play Consoles *Health apps declaration*, så lägg inte till typer eller
+  behörigheter utan att ägaren ber om det. `HealthConnectManifestTest` håller manifestet och `MOVEMENT_PERMISSIONS`
+  i synk. `HealthDataInfoActivity` (integritetsskärmen Health Connect länkar till) är obligatorisk och ska
+  beskriva exakt vad appen läser; ändras läsningen ändras texten.
 - Hälsodata stannar på enheten. Inga nätverksanrop, analysverktyg eller Firebase-SDK:er i appen utan att ägaren ber om det.
 - Pinna GitHub Actions till commit-SHA med versionskommentar. Dependabot håller dem uppdaterade.

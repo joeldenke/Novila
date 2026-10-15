@@ -1,6 +1,7 @@
 package se.novila.ui.common
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.calculateEndPadding
@@ -34,6 +35,9 @@ import se.novila.designsystem.component.NovilaSlider
 import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.formatHours
+import se.novila.healthconnect.MovementState
+import se.novila.healthconnect.TodayMovement
+import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -125,6 +129,73 @@ fun MoodCard(mood: Int, onChange: (Int) -> Unit) {
     }
 }
 
+/**
+ * Today's steps and active calories from Health Connect, or what the user can do to see them.
+ * Shows nothing on devices without Health Connect.
+ */
+@Composable
+fun MovementCard(
+    movement: MovementState,
+    onConnect: () -> Unit,
+    onOpenSettings: () -> Unit,
+    onInstall: () -> Unit,
+) {
+    if (movement == MovementState.Unavailable) return
+    val training = NovilaTheme.pillars.training
+    NovilaCard(
+        title = stringResource(R.string.movement_title),
+        icon = painterResource(R.drawable.ic_training),
+        role = training,
+    ) {
+        when (movement) {
+            is MovementState.Connected -> MovementValues(movement.today)
+
+            is MovementState.NeedsPermission -> {
+                MovementBody(stringResource(R.string.movement_connect_body))
+                if (movement.denied) {
+                    MovementBody(stringResource(R.string.movement_denied_body))
+                    NovilaAccentButton(text = stringResource(R.string.movement_open_settings), onClick = onOpenSettings)
+                } else {
+                    NovilaAccentButton(text = stringResource(R.string.movement_connect), onClick = onConnect)
+                }
+            }
+
+            MovementState.NeedsInstall -> {
+                MovementBody(stringResource(R.string.movement_install_body))
+                NovilaAccentButton(text = stringResource(R.string.movement_install), onClick = onInstall)
+            }
+
+            MovementState.Unavailable -> Unit
+        }
+    }
+}
+
+@Composable
+private fun MovementValues(today: TodayMovement) {
+    Row(horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.xl)) {
+        MovementValue(stepsText(today.steps), stringResource(R.string.movement_steps))
+        MovementValue(kcalText(today.activeKilocalories), stringResource(R.string.movement_active_calories))
+    }
+    NovilaText(
+        stringResource(R.string.movement_source),
+        style = NovilaTheme.typography.bodySmall,
+        color = NovilaTheme.colors.onSurfaceVariant,
+    )
+}
+
+@Composable
+private fun MovementValue(value: String, label: String) {
+    Column(verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.xxs)) {
+        NovilaText(value, style = NovilaTheme.typography.headlineSmall)
+        NovilaText(label, style = NovilaTheme.typography.labelMedium, color = NovilaTheme.colors.onSurfaceVariant)
+    }
+}
+
+@Composable
+private fun MovementBody(text: String) {
+    NovilaText(text, style = NovilaTheme.typography.bodyMedium, color = NovilaTheme.colors.onSurfaceVariant)
+}
+
 /** One row per day: date followed by the given values, aligned in columns. */
 @Composable
 fun HistoryRow(day: DayEntry, vararg values: String) {
@@ -157,6 +228,22 @@ fun glassesText(count: Int): String = pluralStringResource(R.plurals.glasses_cou
 @ReadOnlyComposable
 fun moodText(mood: Int): String =
     Mood.of(mood)?.let { stringResource(it.emoji) } ?: stringResource(R.string.value_missing)
+
+/** Step count with the locale's digit grouping, e.g. "8,412" / "8 412". */
+@Composable
+fun stepsText(steps: Long?): String =
+    steps?.let { rememberIntegerFormat().format(it) } ?: stringResource(R.string.value_missing)
+
+@Composable
+fun kcalText(kilocalories: Int?): String = kilocalories?.let {
+    stringResource(R.string.kcal_value, rememberIntegerFormat().format(it))
+} ?: stringResource(R.string.value_missing)
+
+@Composable
+private fun rememberIntegerFormat(): NumberFormat {
+    val locale = currentLocale()
+    return remember(locale) { NumberFormat.getIntegerInstance(locale) }
+}
 
 @Composable
 @ReadOnlyComposable
