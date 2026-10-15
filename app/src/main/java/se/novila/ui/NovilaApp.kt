@@ -49,7 +49,10 @@ fun NovilaApp(vm: HealthViewModel = viewModel()) {
 
     NovilaTheme {
         NovilaScaffold(
-            topBar = { NovilaTopAppBar(title = stringResource(current.label)) },
+            // Today is a dashboard with its own greeting header instead of a title bar.
+            topBar = {
+                if (current != TopLevelDestination.Today) NovilaTopAppBar(title = stringResource(current.label))
+            },
             bottomBar = {
                 NovilaNavigationBar {
                     TopLevelDestination.entries.forEach { destination ->
@@ -66,7 +69,16 @@ fun NovilaApp(vm: HealthViewModel = viewModel()) {
         ) { innerPadding ->
             val entryProvider = entryProvider<NavKey> {
                 entry<TodayRoute> {
-                    TodayScreen(state.today, state.history, vm::setMood, innerPadding)
+                    TodayScreen(
+                        today = state.today,
+                        history = state.history,
+                        hour = state.hour,
+                        onMood = vm::setMood,
+                        onOpenTraining = { navigator.navigate(TrainingRoute) },
+                        onOpenSleep = { navigator.navigate(SleepRoute) },
+                        onOpenNutrition = { navigator.navigate(NutritionRoute) },
+                        contentPadding = innerPadding,
+                    )
                 }
                 entry<TrainingRoute> {
                     TrainingScreen(innerPadding)

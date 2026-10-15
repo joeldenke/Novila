@@ -34,6 +34,7 @@ import se.novila.designsystem.component.NovilaSlider
 import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.formatHours
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -165,10 +166,20 @@ private fun currentLocale(): Locale =
 
 /** Localized weekday and date, e.g. "Tue 13 Oct" / "tis 13 okt". */
 @Composable
-private fun rememberShortDateFormatter(): DateTimeFormatter {
+private fun rememberShortDateFormatter(): DateTimeFormatter = rememberDateFormatter("EEEdMMM")
+
+/** Full weekday and date with a capital first letter, e.g. "Wednesday, October 14" / "Onsdag 14 oktober". */
+@Composable
+fun longDateText(date: LocalDate): String {
     val locale = currentLocale()
-    return remember(locale) {
-        val pattern = android.text.format.DateFormat.getBestDateTimePattern(locale, "EEEdMMM")
+    return date.format(rememberDateFormatter("EEEEdMMMM")).replaceFirstChar { it.titlecase(locale) }
+}
+
+@Composable
+private fun rememberDateFormatter(skeleton: String): DateTimeFormatter {
+    val locale = currentLocale()
+    return remember(locale, skeleton) {
+        val pattern = android.text.format.DateFormat.getBestDateTimePattern(locale, skeleton)
         DateTimeFormatter.ofPattern(pattern, locale)
     }
 }

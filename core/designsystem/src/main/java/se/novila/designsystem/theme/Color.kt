@@ -18,9 +18,12 @@ import androidx.compose.ui.graphics.Color
 internal object NovilaPalette {
     // Pine
     val Pine10 = Color(0xFF0D3220)
+    val Pine15 = Color(0xFF1B3F2C)
+    val Pine17 = Color(0xFF1A2A1F)
     val Pine20 = Color(0xFF163724)
     val Pine25 = Color(0xFF253A2C)
     val Pine40 = Color(0xFF24533B)
+    val Pine45 = Color(0xFF3D6B3A)
     val Pine80 = Color(0xFF9BD1AE)
     val Pine90 = Color(0xFFCDEBD6)
     val Pine95 = Color(0xFFDDEBD9)
@@ -195,3 +198,55 @@ internal fun ColorScheme.pillars() = NovilaPillarColors(
 
 internal val NovilaLightAccent = NovilaAccentColors(sun = NovilaPalette.Sun, onSun = NovilaPalette.OnSun)
 internal val NovilaDarkAccent = NovilaAccentColors(sun = NovilaPalette.SunDark, onSun = NovilaPalette.OnSun)
+
+/**
+ * The pine hero card at the top of a dashboard: a vertical-ish gradient from [start] to [end],
+ * [content] for its text, the [sun] for its emblem and pillar-tinted progress segments on [track].
+ */
+@Immutable
+data class NovilaHeroColors(
+    val start: Color,
+    val end: Color,
+    val content: Color,
+    val track: Color,
+    val sun: Color,
+    val training: Color,
+    val sleep: Color,
+    val nutrition: Color,
+)
+
+/** Cards sit on the birch background as a lighter surface with a hairline outline. */
+@Immutable
+data class NovilaSurfaceColors(
+    val card: Color,
+    val cardOutline: Color,
+)
+
+internal val NovilaLightHero = with(NovilaPalette) {
+    NovilaHeroColors(
+        start = Pine15,
+        end = Pine45,
+        content = Birch100,
+        track = Birch100.copy(alpha = 0.25f),
+        sun = Sun,
+        training = Pine80,
+        sleep = Lake80,
+        nutrition = Falu80,
+    )
+}
+
+internal val NovilaDarkHero = with(NovilaPalette) {
+    NovilaHeroColors(
+        start = Pine17,
+        end = Pine25,
+        content = Night93,
+        track = Night93.copy(alpha = 0.18f),
+        sun = SunDark,
+        training = Pine80,
+        sleep = Lake80,
+        nutrition = Falu80,
+    )
+}
+
+internal val NovilaLightSurfaces = with(NovilaPalette) { NovilaSurfaceColors(card = Birch100, cardOutline = Birch87) }
+internal val NovilaDarkSurfaces = with(NovilaPalette) { NovilaSurfaceColors(card = Night11, cardOutline = Night14) }

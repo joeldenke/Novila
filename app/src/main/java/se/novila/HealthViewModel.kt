@@ -6,10 +6,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.time.LocalDate
+import java.time.LocalTime
 
 data class HealthUiState(
     val today: DayEntry,
     val history: List<DayEntry>,
+    /** Hour of day when the state was read, for the greeting. */
+    val hour: Int,
 )
 
 class HealthViewModel(app: Application) : AndroidViewModel(app) {
@@ -19,7 +22,7 @@ class HealthViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun read(): HealthUiState {
         val days = store.lastDays(count = 7, today = LocalDate.now())
-        return HealthUiState(today = days.first(), history = days.drop(1))
+        return HealthUiState(today = days.first(), history = days.drop(1), hour = LocalTime.now().hour)
     }
 
     /** Called on resume so "today" stays correct after midnight. */

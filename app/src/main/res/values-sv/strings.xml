@@ -28,7 +28,17 @@
     <string name="mood_5">Toppen</string>
 
     <!-- Today -->
-    <string name="summary_title">Sammanfattning</string>
+    <string name="greeting_morning">God morgon</string>
+    <string name="greeting_afternoon">God eftermiddag</string>
+    <string name="greeting_evening">God kväll</string>
+    <string name="balance_title">Dagens balans</string>
+    <string name="balance_unit">av 100</string>
+    <string name="tip_log_sleep">Logga nattens sömn så blir balansen komplett.</string>
+    <plurals name="tip_drink_water">
+        <item quantity="one">%d glas vatten kvar till dagens mål.</item>
+        <item quantity="other">%d glas vatten kvar till dagens mål.</item>
+    </plurals>
+    <string name="tip_goals_met">Vatten och sömn är i mål. Bra jobbat!</string>
     <string name="history_title">Senaste dagarna</string>
 
     <!-- Training -->

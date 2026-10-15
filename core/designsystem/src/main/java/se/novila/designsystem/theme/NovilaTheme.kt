@@ -17,6 +17,8 @@ import androidx.compose.ui.platform.LocalContext
 
 private val LocalNovilaPillars = staticCompositionLocalOf { NovilaLightColors.pillars() }
 private val LocalNovilaAccent = staticCompositionLocalOf { NovilaLightAccent }
+private val LocalNovilaHero = staticCompositionLocalOf { NovilaLightHero }
+private val LocalNovilaSurfaces = staticCompositionLocalOf { NovilaLightSurfaces }
 
 /**
  * Root theme for the app. Wraps [MaterialTheme] so Material 3 components pick up Novila
@@ -45,6 +47,8 @@ fun NovilaTheme(
         LocalNovilaSpacing provides NovilaSpacing(),
         LocalNovilaPillars provides pillars,
         LocalNovilaAccent provides if (darkTheme) NovilaDarkAccent else NovilaLightAccent,
+        LocalNovilaHero provides if (darkTheme) NovilaDarkHero else NovilaLightHero,
+        LocalNovilaSurfaces provides if (darkTheme) NovilaDarkSurfaces else NovilaLightSurfaces,
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
@@ -70,6 +74,16 @@ object NovilaTheme {
     val accent: NovilaAccentColors
         @Composable @ReadOnlyComposable
         get() = LocalNovilaAccent.current
+
+    /** The pine hero card with the sun, for the top of a dashboard. */
+    val hero: NovilaHeroColors
+        @Composable @ReadOnlyComposable
+        get() = LocalNovilaHero.current
+
+    /** Card surface and outline. */
+    val surfaces: NovilaSurfaceColors
+        @Composable @ReadOnlyComposable
+        get() = LocalNovilaSurfaces.current
 
     val typography: Typography
         @Composable @ReadOnlyComposable
