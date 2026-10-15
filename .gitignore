@@ -6,3 +6,6 @@ local.properties
 .idea/
 .DS_Store
 release-notes.txt
+
+# Python packages used by one-off tools; never commit them.
+*.whl
