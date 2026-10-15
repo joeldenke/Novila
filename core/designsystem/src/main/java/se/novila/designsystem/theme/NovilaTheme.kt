@@ -19,6 +19,7 @@ private val LocalNovilaPillars = staticCompositionLocalOf { NovilaLightColors.pi
 private val LocalNovilaAccent = staticCompositionLocalOf { NovilaLightAccent }
 private val LocalNovilaHero = staticCompositionLocalOf { NovilaLightHero }
 private val LocalNovilaSurfaces = staticCompositionLocalOf { NovilaLightSurfaces }
+private val LocalNovilaAnatomy = staticCompositionLocalOf { NovilaLightAnatomy }
 
 /**
  * Root theme for the app. Wraps [MaterialTheme] so Material 3 components pick up Novila
@@ -49,6 +50,7 @@ fun NovilaTheme(
         LocalNovilaAccent provides if (darkTheme) NovilaDarkAccent else NovilaLightAccent,
         LocalNovilaHero provides if (darkTheme) NovilaDarkHero else NovilaLightHero,
         LocalNovilaSurfaces provides if (darkTheme) NovilaDarkSurfaces else NovilaLightSurfaces,
+        LocalNovilaAnatomy provides if (darkTheme) NovilaDarkAnatomy else NovilaLightAnatomy,
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
@@ -84,6 +86,11 @@ object NovilaTheme {
     val surfaces: NovilaSurfaceColors
         @Composable @ReadOnlyComposable
         get() = LocalNovilaSurfaces.current
+
+    /** The anatomy figure in exercise illustrations: lake blue body, ember muscles. */
+    val anatomy: NovilaAnatomyColors
+        @Composable @ReadOnlyComposable
+        get() = LocalNovilaAnatomy.current
 
     val typography: Typography
         @Composable @ReadOnlyComposable

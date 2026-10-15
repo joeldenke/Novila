@@ -29,6 +29,9 @@ I `:app`:
 - `healthconnect` – Health Connect som `MovementSource`, behörigheter och integritetsskärmen
 - `exercise` – träningspass oberoende av källa: `Exercise`, `ExerciseSource` och `TrainingProgramGenerator`, som bygger
   veckans program (WHO:s råd: 150–300 min kondition och styrka två dagar, högst +10 % kondition per vecka)
+- `anatomy` – kroppsagnostiska övningsillustrationer i ren Kotlin: `Pose`/`Movement` (ledvinklar per keyframe),
+  `Skeleton` (framåtkinematik, `BodyShape`), `MuscleMap`, `SceneBuilder` (ortografisk `Camera`, siluetter och de
+  muskelband som syns), `ViewSelector` (varje övnings bästa vy) och `ExerciseLibrary`. `AnatomyFigure` ritar i Compose.
 - `googlehealth` – Google Health API (REST v4) som `ExerciseSource`: läser `users/me/dataTypes/exercise/dataPoints`.
   Ännu inte inkopplad i `HealthViewModel`, se *Google Health API* under Regler.
 
@@ -155,6 +158,11 @@ där pluginet `firebase@firebase` inte alltid installeras.
   Kort är vita med hårfin kant (`NovilaTheme.surfaces`).
 - **Inga emojis i UI:t.** Novila ska kännas som en professionell hälsoapp: använd vektorikoner och ritade komponenter
   (t.ex. `NovilaLevelPicker` för mående), aldrig emoji-tecken.
+- **Övningsillustrationer:** en övning är data (keyframes med ledvinklar i `ExerciseLibrary`), aldrig video eller
+  handritad animation, så samma rörelse fungerar för varje kropp och kamera. Ny övning: lös vinklarna så att planterade
+  händer och fötter står still, och sätt den `camera` som `ViewSelector` väljer. `AnatomyTest` kontrollerar båda och
+  säger vilken kamera som gäller. Figuren färgas bara med `NovilaTheme.anatomy` (sjöblå kropp, glödande muskler) och
+  spelar ett bestämt antal repetitioner, aldrig i loop.
 - **Rörelse:** lugn och engångs. Animationer spelas när innehållet visas (`NovilaReveal`, diagram som ritar in sig)
   via `NovilaMotion` i `:core:designsystem`. Inga oändliga animationer: de får skärmdumpstesterna att hänga.
 - **Kostpoäng:** `nutritionScore()` (0–100) viktar livsmedelsgrupper efter Livsmedelsverkets kostråd (`FoodGroup`) med
