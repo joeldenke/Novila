@@ -91,9 +91,109 @@
     <string name="move_glute_bridge">Höftlyft</string>
     <string name="move_split_squat">Statiska utfall</string>
     <string name="move_jumping_jack">Stjärnhopp</string>
-    <string name="move_works">Tränar %1$s</string>
-    <string name="move_also">Även %1$s</string>
+    <string name="move_calf_raise">Tåhävning</string>
+    <string name="move_plank">Planka</string>
+    <string name="move_mountain_climber">Bergsklättrare</string>
+    <string name="move_superman">Superman</string>
+    <string name="move_reverse_lunge">Utfall bakåt</string>
+    <string name="move_good_morning">Höftfällning</string>
+    <string name="move_bird_dog">Fågelhund</string>
+    <string name="move_crunch">Crunch</string>
+    <string-array name="move_squat_steps">
+        <item>Stå med fötterna höftbrett isär och tårna något utåt.</item>
+        <item>Skjut höften bakåt och böj knäna tills låren är ungefär parallella med golvet.</item>
+        <item>Pressa ifrån med hela foten och res dig upp.</item>
+    </string-array>
+    <string name="move_squat_tip">Håll hälarna i golvet och knäna i samma riktning som tårna.</string>
+    <string-array name="move_push_up_steps">
+        <item>Placera händerna strax bredare än axlarna, kroppen rak från huvud till hälar.</item>
+        <item>Böj armbågarna och sänk bröstet mot golvet.</item>
+        <item>Pressa upp tills armarna är raka.</item>
+    </string-array>
+    <string name="move_push_up_tip">Spänn magen så att höften inte sjunker. För tungt? Börja med knäna i golvet.</string>
+    <string-array name="move_glute_bridge_steps">
+        <item>Ligg på rygg med böjda knän och fötterna i golvet.</item>
+        <item>Spänn sätet och lyft höften tills kroppen är rak från knän till axlar.</item>
+        <item>Sänk långsamt tillbaka.</item>
+    </string-array>
+    <string name="move_glute_bridge_tip">Tryck ifrån med hälarna och undvik att svanka.</string>
+    <string-array name="move_split_squat_steps">
+        <item>Ställ ena foten ett långt steg framför den andra och stå på tå med den bakre.</item>
+        <item>Sänk dig rakt ner tills båda knäna är böjda ungefär 90 grader.</item>
+        <item>Pressa upp med den främre foten. Gör alla repetitioner och byt sedan ben.</item>
+    </string-array>
+    <string name="move_split_squat_tip">Håll överkroppen upprätt och det främre knät över foten.</string>
+    <string-array name="move_jumping_jack_steps">
+        <item>Stå med fötterna ihop och armarna längs sidorna.</item>
+        <item>Hoppa isär med fötterna samtidigt som armarna förs upp över huvudet.</item>
+        <item>Hoppa tillbaka och håll ett jämnt tempo.</item>
+    </string-array>
+    <string name="move_jumping_jack_tip">Landa mjukt på framfoten.</string>
+    <string-array name="move_calf_raise_steps">
+        <item>Stå rak med fötterna höftbrett isär. Håll gärna i en vägg för balansen.</item>
+        <item>Res dig upp på tå så högt du kan.</item>
+        <item>Sänk hälarna långsamt till golvet.</item>
+    </string-array>
+    <string name="move_calf_raise_tip">Gör det långsamt, särskilt på vägen ner.</string>
+    <string-array name="move_plank_steps">
+        <item>Placera händerna under axlarna och fötterna höftbrett isär.</item>
+        <item>Lyft kroppen så att den är rak från huvud till hälar.</item>
+        <item>Håll positionen och andas lugnt.</item>
+    </string-array>
+    <string name="move_plank_tip">Spänn mage och säte så att höften varken sjunker eller åker upp.</string>
+    <string-array name="move_mountain_climber_steps">
+        <item>Börja i hög planka med händerna under axlarna.</item>
+        <item>Dra ena knät mot bröstet och sätt tillbaka foten.</item>
+        <item>Växla ben i en jämn rytm.</item>
+    </string-array>
+    <string name="move_mountain_climber_tip">Håll höften låg och axlarna över händerna.</string>
+    <string-array name="move_superman_steps">
+        <item>Ligg på mage med armarna utsträckta framför dig.</item>
+        <item>Lyft armar, bröst och ben en bit från golvet samtidigt.</item>
+        <item>Håll en stund och sänk långsamt.</item>
+    </string-array>
+    <string name="move_superman_tip">Titta ner i golvet så att nacken blir lång. Det räcker att lyfta några centimeter.</string>
+    <string-array name="move_reverse_lunge_steps">
+        <item>Stå med fötterna höftbrett isär.</item>
+        <item>Ta ett långt steg bakåt och sänk dig tills båda knäna är böjda ungefär 90 grader.</item>
+        <item>Pressa ifrån med den främre foten tillbaka till stående. Gör alla repetitioner och byt sedan ben.</item>
+    </string-array>
+    <string name="move_reverse_lunge_tip">Låt det mesta av vikten vila på den främre foten.</string>
+    <string-array name="move_good_morning_steps">
+        <item>Stå med fötterna höftbrett isär och mjuka knän.</item>
+        <item>Skjut höften bakåt och fäll fram med rak rygg tills det sträcker i baksidan av låren.</item>
+        <item>Spänn sätet och res dig upp igen.</item>
+    </string-array>
+    <string name="move_good_morning_tip">Rör dig från höften, inte ryggen, och håll ryggen rak hela tiden.</string>
+    <string-array name="move_bird_dog_steps">
+        <item>Ställ dig på alla fyra med händerna under axlarna och knäna under höften.</item>
+        <item>Sträck fram ena armen och motsatt ben bakåt tills båda är i linje med ryggen.</item>
+        <item>Gå långsamt tillbaka och byt sida.</item>
+    </string-array>
+    <string name="move_bird_dog_tip">Håll ryggen stilla, som om ett glas vatten stod på den.</string>
+    <string-array name="move_crunch_steps">
+        <item>Ligg på rygg med böjda knän och fötterna i golvet.</item>
+        <item>Spänn magen och rulla upp axlarna från golvet med händerna mot knäna.</item>
+        <item>Sänk långsamt tillbaka.</item>
+    </string-array>
+    <string name="move_crunch_tip">Ländryggen ligger kvar mot golvet. Dra inte i nacken.</string>
     <string name="move_figure_description">%1$s. Tränar %2$s.</string>
+    <string name="dose_reps_per_side">%1$d × %2$d per sida</string>
+    <string name="dose_rest">Vila %1$d s</string>
+    <string name="strength_session_title">Styrka på %1$s</string>
+    <string name="strength_session_summary">Helkropp, ungefär %1$d minuter. Tryck på en övning för att se hur den görs.</string>
+    <string name="exercises_title">Alla övningar</string>
+    <string name="exercises_body">Övningar med kroppsvikt som du kan göra hemma, utan redskap.</string>
+    <string name="exercise_open">Visa hur man gör %1$s</string>
+    <string name="exercise_replay">Spela igen</string>
+    <string name="exercise_in_program">I ditt program: %1$s, %2$s</string>
+    <string name="exercise_muscles_title">Muskler</string>
+    <string name="exercise_primary_legend">Huvudmuskler: %1$s</string>
+    <string name="exercise_secondary_legend">Arbetar också: %1$s</string>
+    <string name="exercise_how_title">Så gör du</string>
+    <string name="exercise_tip_title">Tänk på</string>
+    <string name="exercise_safety">Avbryt om det gör ont. Har du en skada eller är osäker, fråga en fysioterapeut.</string>
+    <string name="navigate_back">Tillbaka</string>
     <string name="muscle_chest">bröst</string>
     <string name="muscle_shoulders">axlar</string>
     <string name="muscle_biceps">biceps</string>

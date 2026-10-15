@@ -7,8 +7,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.exercise.TrainingProgram
 import se.novila.movement.MovementState
+import se.novila.ui.common.ExerciseLibraryCard
 import se.novila.ui.common.MovementCard
 import se.novila.ui.common.ScreenList
+import se.novila.ui.common.StrengthSessionCard
 import se.novila.ui.common.TrainingProgramCard
 import se.novila.ui.preview.PreviewData
 import java.time.DayOfWeek
@@ -21,6 +23,7 @@ fun TrainingScreen(
     onConnectHealth: () -> Unit,
     onOpenHealthSettings: () -> Unit,
     onInstallHealth: () -> Unit,
+    onOpenExercise: (String) -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
@@ -30,6 +33,12 @@ fun TrainingScreen(
         }
         item(key = "program") {
             TrainingProgramCard(program, today)
+        }
+        program.sessions.filter { it.exercises.isNotEmpty() }.forEach { session ->
+            item(key = "strength-${session.day}") { StrengthSessionCard(session, onOpenExercise) }
+        }
+        item(key = "exercises") {
+            ExerciseLibraryCard(onOpenExercise)
         }
     }
 }
@@ -44,6 +53,7 @@ private fun TrainingScreenContent(movement: MovementState) {
             onConnectHealth = {},
             onOpenHealthSettings = {},
             onInstallHealth = {},
+            onOpenExercise = {},
             contentPadding = PaddingValues(),
         )
     }

@@ -14,10 +14,15 @@ import kotlin.math.sqrt
  * nothing at runtime.
  */
 object ViewSelector {
-    /** Around the body in 30° steps, from slightly above and at eye level (for exercises close to the floor). */
-    val CANDIDATES: List<Camera> = listOf(Camera.DEFAULT_PITCH, 0f).flatMap { pitch ->
-        listOf(0f, 30f, 60f, 90f, 120f, 150f, 180f, -150f, -120f, -90f, -60f, -30f).map { Camera(it, pitch) }
-    }
+    /**
+     * Around the body in 30° steps, each from slightly above, at eye level and slightly below (to see
+     * the front of a body facing the floor). Listed so that near ties go to a body facing right, seen
+     * from above.
+     */
+    val CANDIDATES: List<Camera> = listOf(0f, 30f, 60f, 90f, 120f, 150f, 180f, -150f, -120f, -90f, -60f, -30f)
+        .flatMap { yaw -> listOf(Camera.DEFAULT_PITCH, 0f, LOW_PITCH).map { Camera(yaw, it) } }
+
+    private const val LOW_PITCH = -8f
 
     // Calibrated on the library so a squat, push-up and bridge are seen from the side and jumping jacks
     // from the front, like in a physiotherapist's handout. Foreshortened limbs are the hardest to read.

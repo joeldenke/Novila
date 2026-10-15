@@ -46,7 +46,7 @@ object ExerciseLibrary {
         secondary = setOf(MuscleGroup.Shoulders, MuscleGroup.Abs),
         contacts = setOf(Landmark.LeftToe, Landmark.RightToe, Landmark.LeftHand, Landmark.RightHand),
         anchor = Landmark.LeftToe,
-        camera = Camera(90f),
+        camera = Camera(90f, pitch = -8f),
         peak = 0.54f,
     )
 
@@ -107,7 +107,157 @@ object ExerciseLibrary {
         repetitionMillis = 1400,
     )
 
-    val all: List<ExerciseMotion> = listOf(squat, pushUp, gluteBridge, splitSquat, jumpingJack)
+    val calfRaise = ExerciseMotion(
+        id = "calf_raise",
+        movement = Movement(
+            listOf(
+                Keyframe(0f, Pose.STANDING),
+                Keyframe(0.4f, Pose.symmetric(feet = 32f)),
+                Keyframe(0.6f, Pose.symmetric(feet = 32f)),
+                Keyframe(1f, Pose.STANDING),
+            ),
+        ),
+        primary = setOf(MuscleGroup.Calves),
+        secondary = emptySet(),
+        contacts = setOf(Landmark.LeftToe, Landmark.RightToe),
+        anchor = Landmark.LeftToe,
+        camera = Camera(120f, pitch = 0f),
+        repetitionMillis = 2400,
+    )
+
+    val plank = ExerciseMotion(
+        id = "plank",
+        movement = Movement(listOf(Keyframe(0f, PUSH_UP[0]), Keyframe(1f, PUSH_UP[0]))),
+        primary = setOf(MuscleGroup.Abs),
+        secondary = setOf(MuscleGroup.Shoulders, MuscleGroup.Glutes),
+        contacts = setOf(Landmark.LeftToe, Landmark.RightToe, Landmark.LeftHand, Landmark.RightHand),
+        anchor = Landmark.LeftToe,
+        camera = Camera(90f, pitch = -8f),
+    )
+
+    val mountainClimber = ExerciseMotion(
+        id = "mountain_climber",
+        movement = Movement(
+            listOf(
+                Keyframe(0f, PUSH_UP[0]),
+                Keyframe(0.25f, PUSH_UP[0].copy(leftLeg = KNEE_DRIVE, leftFoot = 15f)),
+                Keyframe(0.5f, PUSH_UP[0]),
+                Keyframe(0.75f, PUSH_UP[0].copy(rightLeg = KNEE_DRIVE, rightFoot = 15f)),
+                Keyframe(1f, PUSH_UP[0]),
+            ),
+        ),
+        primary = setOf(MuscleGroup.Abs),
+        secondary = setOf(MuscleGroup.Shoulders, MuscleGroup.Quads),
+        contacts = setOf(Landmark.LeftHand, Landmark.RightHand),
+        anchor = Landmark.LeftHand,
+        shadowUnder = setOf(Landmark.LeftHand, Landmark.RightHand, Landmark.LeftToe, Landmark.RightToe),
+        camera = Camera(90f, pitch = -8f),
+        peak = 0.25f,
+        repetitionMillis = 1600,
+    )
+
+    val superman = ExerciseMotion(
+        id = "superman",
+        movement = Movement(
+            listOf(
+                Keyframe(0f, SUPERMAN[0]),
+                Keyframe(0.4f, SUPERMAN[1]),
+                Keyframe(0.6f, SUPERMAN[1]),
+                Keyframe(1f, SUPERMAN[0]),
+            ),
+        ),
+        primary = setOf(MuscleGroup.LowerBack, MuscleGroup.Glutes),
+        secondary = setOf(MuscleGroup.UpperBack, MuscleGroup.Hamstrings),
+        contacts = setOf(Landmark.Belly),
+        anchor = Landmark.Belly,
+        camera = Camera(90f),
+    )
+
+    val reverseLunge = ExerciseMotion(
+        id = "reverse_lunge",
+        movement = Movement(
+            listOf(
+                Keyframe(0f, Pose.STANDING),
+                Keyframe(0.2f, STEP_BACK),
+                Keyframe(0.45f, SPLIT[3]),
+                Keyframe(0.58f, SPLIT[3]),
+                Keyframe(0.8f, STEP_BACK),
+                Keyframe(1f, Pose.STANDING),
+            ),
+        ),
+        primary = setOf(MuscleGroup.Quads, MuscleGroup.Glutes),
+        secondary = setOf(MuscleGroup.Hamstrings),
+        contacts = setOf(Landmark.LeftHeel, Landmark.LeftToe),
+        anchor = Landmark.LeftHeel,
+        camera = Camera(60f),
+    )
+
+    val goodMorning = ExerciseMotion(
+        id = "good_morning",
+        movement = Movement(
+            listOf(
+                Keyframe(0f, Pose.STANDING),
+                Keyframe(0.45f, HINGE),
+                Keyframe(0.58f, HINGE),
+                Keyframe(1f, Pose.STANDING),
+            ),
+        ),
+        primary = setOf(MuscleGroup.Hamstrings, MuscleGroup.Glutes),
+        secondary = setOf(MuscleGroup.LowerBack),
+        contacts = feet,
+        anchor = Landmark.LeftHeel,
+        camera = Camera(90f),
+    )
+
+    val birdDog = ExerciseMotion(
+        id = "bird_dog",
+        movement = Movement(
+            listOf(
+                Keyframe(0f, ALL_FOURS),
+                Keyframe(0.4f, BIRD_DOG),
+                Keyframe(0.6f, BIRD_DOG),
+                Keyframe(1f, ALL_FOURS),
+            ),
+        ),
+        primary = setOf(MuscleGroup.Abs, MuscleGroup.LowerBack),
+        secondary = setOf(MuscleGroup.Glutes, MuscleGroup.Shoulders),
+        contacts = setOf(Landmark.LeftKnee, Landmark.RightHand),
+        anchor = Landmark.LeftKnee,
+        camera = Camera(90f, pitch = -8f),
+    )
+
+    val crunch = ExerciseMotion(
+        id = "crunch",
+        movement = Movement(
+            listOf(
+                Keyframe(0f, CRUNCH[0]),
+                Keyframe(0.4f, CRUNCH[1]),
+                Keyframe(0.55f, CRUNCH[1]),
+                Keyframe(1f, CRUNCH[0]),
+            ),
+        ),
+        primary = setOf(MuscleGroup.Abs),
+        secondary = emptySet(),
+        contacts = feet + Landmark.Belly,
+        anchor = Landmark.LeftHeel,
+        camera = Camera(90f),
+    )
+
+    val all: List<ExerciseMotion> = listOf(
+        squat,
+        pushUp,
+        gluteBridge,
+        splitSquat,
+        jumpingJack,
+        calfRaise,
+        plank,
+        mountainClimber,
+        superman,
+        reverseLunge,
+        goodMorning,
+        birdDog,
+        crunch,
+    )
 
     fun byId(id: String): ExerciseMotion? = all.firstOrNull { it.id == id }
 }
@@ -160,4 +310,62 @@ private val SPLIT = listOf(
     split(front = LimbPose(41f, bend = 27f), back = LimbPose(-13.2f, bend = 51.6f), toes = 51.5f),
     split(front = LimbPose(56f, bend = 48f), back = LimbPose(-3.4f, bend = 74.2f), toes = 55f),
     split(front = LimbPose(86f, bend = 90f), back = LimbPose(-3.7f, bend = 102.9f), toes = 62f),
+)
+
+/** Pulling a knee towards the chest from a plank, foot off the floor. */
+private val KNEE_DRIVE = LimbPose(raise = 104f, bend = 124f)
+
+/** Lying face down with the arms reaching overhead, then lifting arms, chest and legs. */
+private val SUPERMAN = listOf(
+    Pose.symmetric(arm = LimbPose(raise = 176f), lean = 90f, feet = 170f),
+    Pose.symmetric(
+        leg = LimbPose(raise = -18f),
+        arm = LimbPose(raise = 182f),
+        lean = 90f,
+        trunk = -22f,
+        neck = -14f,
+        feet = 170f,
+    ),
+)
+
+/** Halfway through stepping back into a lunge, the back foot in the air. */
+private val STEP_BACK = Pose(
+    leftLeg = LimbPose(raise = 22f, bend = 24f),
+    rightLeg = LimbPose(raise = -24f, bend = 62f),
+    leftArm = LimbPose(bend = 15f),
+    rightArm = LimbPose(bend = 15f),
+    rightFoot = 45f,
+)
+
+/** Hinged forward at the hips with a flat back and soft knees; the arms hang straight down. */
+private val HINGE = Pose.symmetric(
+    leg = LimbPose(raise = 70f, bend = 14f),
+    arm = LimbPose(raise = 62f),
+    lean = 62f,
+    neck = -22f,
+)
+
+/** On hands and knees: hands under the shoulders, knees under the hips (solved, see AnatomyTest). */
+private val ALL_FOURS = Pose.symmetric(
+    leg = LimbPose(raise = 77.3f, bend = 90f),
+    arm = LimbPose(raise = 77.3f),
+    lean = 77.3f,
+    feet = 165f,
+    flatHands = true,
+)
+
+/** From all fours, the left arm reaches forward and the right leg back, both level with the back. */
+private val BIRD_DOG = ALL_FOURS.copy(
+    leftArm = LimbPose(raise = 167.3f),
+    rightLeg = LimbPose(raise = -12.7f),
+    rightFoot = 180f,
+)
+
+/**
+ * Lying with bent knees, then the shoulders curl off the floor while the lower back stays down. The
+ * arms reach for the knees above the body, so they don't hide the belly.
+ */
+private val CRUNCH = listOf(
+    BRIDGE[0],
+    BRIDGE[0].copy(trunk = 32f, neck = 18f, leftArm = LimbPose(raise = 55f), rightArm = LimbPose(raise = 55f)),
 )

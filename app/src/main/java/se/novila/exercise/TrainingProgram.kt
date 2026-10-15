@@ -5,11 +5,12 @@ import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters
 import kotlin.math.roundToInt
 
-/** One planned workout in the week. */
+/** One planned workout in the week. Strength sessions list their [exercises]. */
 data class PlannedSession(
     val day: DayOfWeek,
     val type: ExerciseType,
     val minutes: Int,
+    val exercises: List<PlannedExercise> = emptyList(),
 )
 
 /** A week of workouts starting on Monday [weekStart], sorted by day. */
@@ -23,7 +24,8 @@ data class TrainingProgram(
  * Builds a week's program from recent workouts, along WHO's guidelines for adults: 150–300 minutes of
  * moderate cardio and strength training on at least two days a week. It starts where the user is and
  * raises the cardio time by at most 10 % a week, so a beginner gets a gentle program and an active user
- * isn't held back. Plain Kotlin, so it is unit tested; the source of the workouts doesn't matter.
+ * isn't held back. Strength days get concrete exercises from [StrengthSessions] at the user's level.
+ * Plain Kotlin, so it is unit tested; the source of the workouts doesn't matter.
  */
 object TrainingProgramGenerator {
     const val MIN_CARDIO_MINUTES = 90
@@ -47,15 +49,27 @@ object TrainingProgramGenerator {
         val cardioType = favoriteCardio(recent)
 
         val weeklyStrength = recent.count { it.type.kind == ExerciseKind.Strength } / HISTORY_WEEKS.toDouble()
-        val strengthMinutes = when {
-            weeklyStrength >= 2 -> 40
-            weeklyStrength >= 1 -> 30
-            else -> 20
+        val level = StrengthSessions.level(weeklyStrength)
+        val strengthMinutes = when (level) {
+            StrengthLevel.Advanced -> 40
+            StrengthLevel.Intermediate -> 30
+            StrengthLevel.Beginner -> 20
         }
 
         val cardioMinutes = roundTo5(cardioTarget / cardioDays.size.toDouble())
         val sessions = cardioDays.map { PlannedSession(it, cardioType, cardioMinutes) } +
-            STRENGTH_DAYS.map { PlannedSession(it, ExerciseType.Strength, strengthMinutes) } +
+            STRENGTH_DAYS.mapIndexed { i, day ->
+                PlannedSession(
+                    day,
+                    ExerciseType.Strength,
+                    strengthMinutes,
+                    StrengthSessions.session(
+                        level,
+                        second =
+                            i > 0,
+                    ),
+                )
+            } +
             PlannedSession(DayOfWeek.WEDNESDAY, ExerciseType.Mobility, MOBILITY_MINUTES)
 
         return TrainingProgram(

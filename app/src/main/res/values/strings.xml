@@ -99,9 +99,112 @@
     <string name="move_glute_bridge">Glute bridge</string>
     <string name="move_split_squat">Split squat</string>
     <string name="move_jumping_jack">Jumping jacks</string>
-    <string name="move_works">Works %1$s</string>
-    <string name="move_also">Also %1$s</string>
+    <string name="move_calf_raise">Calf raise</string>
+    <string name="move_plank">Plank</string>
+    <string name="move_mountain_climber">Mountain climbers</string>
+    <string name="move_superman">Superman</string>
+    <string name="move_reverse_lunge">Reverse lunge</string>
+    <string name="move_good_morning">Good morning</string>
+    <string name="move_bird_dog">Bird dog</string>
+    <string name="move_crunch">Crunch</string>
+    <string-array name="move_squat_steps">
+        <item>Stand with your feet hip-width apart, toes turned slightly out.</item>
+        <item>Push your hips back and bend your knees until your thighs are about level with the floor.</item>
+        <item>Press through your whole foot to stand up again.</item>
+    </string-array>
+    <string name="move_squat_tip">Keep your heels on the floor and your knees pointing the same way as your toes.</string>
+    <string-array name="move_push_up_steps">
+        <item>Place your hands a little wider than your shoulders, body straight from head to heels.</item>
+        <item>Bend your elbows and lower your chest towards the floor.</item>
+        <item>Push back up until your arms are straight.</item>
+    </string-array>
+    <string name="move_push_up_tip">Keep your belly tight so your hips don\'t sag. Too hard? Start with your knees on the floor.</string>
+    <string-array name="move_glute_bridge_steps">
+        <item>Lie on your back with bent knees and your feet flat on the floor.</item>
+        <item>Squeeze your glutes and lift your hips until your body is straight from knees to shoulders.</item>
+        <item>Lower slowly back down.</item>
+    </string-array>
+    <string name="move_glute_bridge_tip">Push through your heels and avoid arching your lower back.</string>
+    <string-array name="move_split_squat_steps">
+        <item>Stand with one foot a long step in front of the other, up on the toes of the back foot.</item>
+        <item>Lower straight down until both knees are bent about 90 degrees.</item>
+        <item>Push up through the front foot. Do all repetitions, then switch legs.</item>
+    </string-array>
+    <string name="move_split_squat_tip">Keep your upper body upright and your front knee over your foot.</string>
+    <string-array name="move_jumping_jack_steps">
+        <item>Stand with your feet together and your arms by your sides.</item>
+        <item>Jump your feet apart while your arms swing up over your head.</item>
+        <item>Jump back to the start and keep a steady pace.</item>
+    </string-array>
+    <string name="move_jumping_jack_tip">Land softly on the balls of your feet.</string>
+    <string-array name="move_calf_raise_steps">
+        <item>Stand tall with your feet hip-width apart. Hold on to a wall for balance if you like.</item>
+        <item>Rise up onto the balls of your feet as high as you can.</item>
+        <item>Lower your heels slowly back to the floor.</item>
+    </string-array>
+    <string name="move_calf_raise_tip">Go slowly, especially on the way down.</string>
+    <string-array name="move_plank_steps">
+        <item>Place your hands under your shoulders and your feet hip-width apart.</item>
+        <item>Lift your body so it is straight from head to heels.</item>
+        <item>Hold the position and keep breathing calmly.</item>
+    </string-array>
+    <string name="move_plank_tip">Squeeze your belly and glutes so your hips neither sag nor rise.</string>
+    <string-array name="move_mountain_climber_steps">
+        <item>Start in a high plank with your hands under your shoulders.</item>
+        <item>Pull one knee towards your chest, then put the foot back.</item>
+        <item>Switch legs in a steady rhythm.</item>
+    </string-array>
+    <string name="move_mountain_climber_tip">Keep your hips low and your shoulders over your hands.</string>
+    <string-array name="move_superman_steps">
+        <item>Lie on your stomach with your arms stretched out in front of you.</item>
+        <item>Lift your arms, chest and legs a little off the floor at the same time.</item>
+        <item>Hold for a moment, then lower slowly.</item>
+    </string-array>
+    <string name="move_superman_tip">Look at the floor so your neck stays long. Lifting a few centimetres is enough.</string>
+    <string-array name="move_reverse_lunge_steps">
+        <item>Stand with your feet hip-width apart.</item>
+        <item>Take a long step back and lower until both knees are bent about 90 degrees.</item>
+        <item>Push off with the front foot back to standing. Do all repetitions, then switch legs.</item>
+    </string-array>
+    <string name="move_reverse_lunge_tip">Keep most of your weight on the front foot.</string>
+    <string-array name="move_good_morning_steps">
+        <item>Stand with your feet hip-width apart and your knees soft.</item>
+        <item>Push your hips back and lean forward with a straight back until you feel a stretch in the back of your thighs.</item>
+        <item>Squeeze your glutes and rise back up.</item>
+    </string-array>
+    <string name="move_good_morning_tip">Move from your hips, not your back, and keep your back straight the whole time.</string>
+    <string-array name="move_bird_dog_steps">
+        <item>Get on your hands and knees, hands under your shoulders and knees under your hips.</item>
+        <item>Stretch one arm forward and the opposite leg back until both are level with your back.</item>
+        <item>Return slowly and switch sides.</item>
+    </string-array>
+    <string name="move_bird_dog_tip">Keep your back still, as if a glass of water were standing on it.</string>
+    <string-array name="move_crunch_steps">
+        <item>Lie on your back with bent knees and your feet on the floor.</item>
+        <item>Tighten your belly and curl your shoulders off the floor, reaching for your knees.</item>
+        <item>Lower slowly back down.</item>
+    </string-array>
+    <string name="move_crunch_tip">Your lower back stays on the floor. Don\'t pull on your neck.</string>
     <string name="move_figure_description">%1$s. Works %2$s.</string>
+    <string name="dose_reps" translatable="false">%1$d × %2$d</string>
+    <string name="dose_reps_per_side">%1$d × %2$d per side</string>
+    <string name="dose_seconds" translatable="false">%1$d × %2$d s</string>
+    <string name="dose_rest">Rest %1$d s</string>
+    <string name="step_number" translatable="false">%1$d</string>
+    <string name="strength_session_title">Strength on %1$s</string>
+    <string name="strength_session_summary">Full body, about %1$d minutes. Tap an exercise to see how it\'s done.</string>
+    <string name="exercises_title">All exercises</string>
+    <string name="exercises_body">Bodyweight exercises you can do at home, no equipment needed.</string>
+    <string name="exercise_open">Show how to do %1$s</string>
+    <string name="exercise_replay">Play again</string>
+    <string name="exercise_in_program">In your program: %1$s, %2$s</string>
+    <string name="exercise_muscles_title">Muscles</string>
+    <string name="exercise_primary_legend">Main muscles: %1$s</string>
+    <string name="exercise_secondary_legend">Also working: %1$s</string>
+    <string name="exercise_how_title">How to do it</string>
+    <string name="exercise_tip_title">Keep in mind</string>
+    <string name="exercise_safety">Stop if it hurts. If you have an injury or are unsure, ask a physiotherapist.</string>
+    <string name="navigate_back">Back</string>
     <string name="muscle_chest">chest</string>
     <string name="muscle_shoulders">shoulders</string>
     <string name="muscle_biceps">biceps</string>
