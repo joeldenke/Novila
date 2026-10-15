@@ -6,15 +6,7 @@
     <string name="nav_sleep">Sömn</string>
     <string name="nav_nutrition">Kost</string>
 
-    <!-- Water -->
     <string name="water_title">Vatten</string>
-    <string name="water_progress">%1$d av %2$d glas</string>
-    <string name="water_add">+1 glas</string>
-    <string name="water_remove_description">Ta bort ett glas</string>
-    <plurals name="glasses_count">
-        <item quantity="one">%d glas</item>
-        <item quantity="other">%d glas</item>
-    </plurals>
 
     <!-- Sleep -->
     <string name="sleep_title">Sömn i natt</string>
@@ -26,6 +18,7 @@
     <string name="mood_3">Okej</string>
     <string name="mood_4">Bra</string>
     <string name="mood_5">Toppen</string>
+    <string name="mood_hint">Hur mår du i dag?</string>
 
     <!-- Today -->
     <string name="greeting_morning">God morgon</string>
@@ -34,12 +27,51 @@
     <string name="balance_title">Dagens balans</string>
     <string name="balance_unit">av 100</string>
     <string name="tip_log_sleep">Logga nattens sömn så blir balansen komplett.</string>
-    <plurals name="tip_drink_water">
-        <item quantity="one">%d glas vatten kvar till dagens mål.</item>
-        <item quantity="other">%d glas vatten kvar till dagens mål.</item>
-    </plurals>
-    <string name="tip_goals_met">Vatten och sömn är i mål. Bra jobbat!</string>
-    <string name="history_title">Senaste dagarna</string>
+    <string name="tip_goals_met">Sömn och kost är i mål. Bra jobbat!</string>
+
+    <string name="pillar_movement">Rörelse</string>
+    <string name="tip_next_vegetables">En portion grönsaker eller frukt till ger kostpoängen +%1$d.</string>
+    <string name="tip_next_meal">Nästa regelbundna måltid ger kostpoängen +%1$d.</string>
+    <string name="tip_next_protein">Lägg till protein, som fisk, bönor eller ägg, för +%1$d i kostpoäng.</string>
+    <string name="tip_next_whole_grain">Välj fullkorn nästa gång för +%1$d i kostpoäng.</string>
+    <string name="tip_next_water">Ett glas vatten ger kostpoängen +%1$d.</string>
+
+    <!-- Week and insights -->
+    <string name="week_sleep_title">Sömn i veckan</string>
+    <string name="week_sleep_caption">Snitt per natt · mål %1$s</string>
+    <string name="week_sleep_description">Sömn de senaste sju dagarna, %1$s per natt i snitt.</string>
+    <string name="week_nutrition_title">Kost i veckan</string>
+    <string name="week_nutrition_caption">Snittpoäng · en bra dag är %1$d eller mer</string>
+    <string name="week_nutrition_description">Kostpoäng de senaste sju dagarna, %1$s i snitt.</string>
+    <string name="insights_title">Insikter</string>
+    <string name="insights_empty">Logga sömn, kost och mående några dagar så visar Novila vad som påverkar hur du mår.</string>
+    <string name="insight_mood_sleep">Du mår bättre dagar efter minst %1$s sömn.</string>
+    <string name="insight_sleep_more">I natt sov du %1$s mer än ditt snitt i veckan.</string>
+    <string name="insight_sleep_less">I natt sov du %1$s mindre än ditt snitt i veckan.</string>
+    <string name="insight_steady_sleep">Jämn sömn i veckan: alla nätter inom en timme från varandra.</string>
+    <string name="insight_nutrition_streak">%1$d dagar i rad med bra kostpoäng.</string>
+    <string name="insight_nutrition_up">Din kostpoäng har ökat med %1$d poäng de senaste dagarna.</string>
+    <string name="insight_nutrition_down">Din kostpoäng har minskat med %1$d poäng de senaste dagarna.</string>
+    <string name="insight_steps_goal">Du har passerat %1$s steg i dag.</string>
+
+    <!-- Kost -->
+    <string name="nutrition_score_title">Dagens kostpoäng</string>
+    <string name="nutrition_score_short">Kostpoäng</string>
+    <string name="nutrition_next_title">Nästa steg</string>
+    <string name="nutrition_done_title">Alla livsmedelsgrupper i mål</string>
+    <string name="nutrition_done_body">Varje livsmedelsgrupp har nått dagens mål.</string>
+    <string name="nutrition_treat_penalty">Sött och snacks: −%1$d poäng i dag. Ett per dag är fritt.</string>
+    <string name="nutrition_about">Viktat efter Livsmedelsverkets kostråd: grönsaker och frukt väger tyngst.</string>
+    <string name="food_log_title">Logga i dag</string>
+    <string name="food_vegetables">Grönsaker &amp; frukt</string>
+    <string name="food_meals">Måltider</string>
+    <string name="food_protein">Protein</string>
+    <string name="food_whole_grain">Fullkorn</string>
+    <string name="food_treats">Sött &amp; snacks</string>
+    <string name="food_progress">%1$d av %2$d</string>
+    <string name="food_treats_value">%1$d i dag</string>
+    <string name="food_add">Lägg till %1$s</string>
+    <string name="food_remove">Ta bort %1$s</string>
 
     <!-- Training -->
     <string name="training_empty_title">Träning kommer snart</string>

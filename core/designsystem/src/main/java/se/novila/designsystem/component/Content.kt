@@ -120,7 +120,7 @@ fun NovilaEmptyState(
 
 /** Decorative icon on a circle in the role's container color (contrast checked by ColorContrastTest). */
 @Composable
-private fun IconBadge(
+internal fun IconBadge(
     icon: Painter,
     role: NovilaColorRole,
     size: Dp,

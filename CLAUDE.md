@@ -9,7 +9,7 @@ CI är därför den enda sanningen om att något bygger och fungerar.
 - Jetpack Compose med eget designsystem ovanpå Material 3 1.5 (beta), compileSdk/targetSdk 37, minSdk 26
 - Navigation 3 (`androidx.navigation3`) med en back stack per flik: Idag, Träning, Sömn, Kost
 - Alla versioner i `gradle/libs.versions.toml`. Hårdkoda aldrig versioner i byggfiler.
-- Data lokalt i SharedPreferences via `HealthStore`, kodat av `DayEntryCodec` (versionerat format)
+- Data lokalt i SharedPreferences via `HealthStore`, kodat av `DayEntryCodec` (versionerat format, v2 sedan kostloggen)
 - En delad `HealthViewModel` (`StateFlow`); skärmarna i `feature/*` är tillståndslösa
 
 ## Struktur
@@ -142,7 +142,15 @@ där pluginet `firebase@firebase` inte alltid installeras.
   kost = falurött (tertiary). Solen (`NovilaTheme.accent`) används för högst en huvudknapp per skärm.
   Hörnradie från basen 14 dp via `NovilaTheme.shapes`. Nya färgpar läggs till i `ColorContrastTest` (WCAG 2.2).
   Förlagan är riktning D i designkanvasen *Novila designriktningar*. Idag är en dashboard: hälsning, `NovilaHeroCard`
-  (granen med solen, `NovilaTheme.hero`) och en `NovilaStatTile` per del. Kort är vita med hårfin kant (`NovilaTheme.surfaces`).
+  (balansen som ringar per del, skogssiluett och solens sken, `NovilaTheme.hero`), en `NovilaStatTile` per del med
+  veckans trend, insikter, veckans sömn (`NovilaLineChart`) och kost (`NovilaBarChart`) och mående.
+  Kort är vita med hårfin kant (`NovilaTheme.surfaces`).
+- **Inga emojis i UI:t.** Novila ska kännas som en professionell hälsoapp: använd vektorikoner och ritade komponenter
+  (t.ex. `NovilaLevelPicker` för mående), aldrig emoji-tecken.
+- **Rörelse:** lugn och engångs. Animationer spelas när innehållet visas (`NovilaReveal`, diagram som ritar in sig)
+  via `NovilaMotion` i `:core:designsystem`. Inga oändliga animationer: de får skärmdumpstesterna att hänga.
+- **Kostpoäng:** `nutritionScore()` (0–100) viktar livsmedelsgrupper efter Livsmedelsverkets kostråd (`FoodGroup`) med
+  avdrag för sött och snacks. Ändra vikterna bara medvetet: `NutritionTest` och dagens balans bygger på dem.
 - **Inga hårdkodade texter:** all text som visas eller läses upp ska komma från `strings.xml`.
   Engelska i `values/`, svenska i `values-sv/`. Symboler och enheter markeras `translatable="false"`.
 - `ArchitectureTest` bevakar båda reglerna i CI.

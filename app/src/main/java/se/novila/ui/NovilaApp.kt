@@ -107,7 +107,7 @@ fun NovilaApp(vm: HealthViewModel = viewModel()) {
                     SleepScreen(state.today, state.history, vm::setSleep, innerPadding)
                 }
                 entry<NutritionRoute> {
-                    NutritionScreen(state.today, state.history, vm::addWater, vm::removeWater, innerPadding)
+                    NutritionScreen(state.today, state.history, vm::changePortions, vm::changeTreats, innerPadding)
                 }
             }
             NavDisplay(

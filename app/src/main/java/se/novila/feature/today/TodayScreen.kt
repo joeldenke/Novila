@@ -8,40 +8,47 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import se.novila.DayEntry
 import se.novila.DayTip
 import se.novila.Greeting
 import se.novila.R
-import se.novila.WATER_GOAL
 import se.novila.balance
 import se.novila.designsystem.component.NovilaHeroCard
 import se.novila.designsystem.component.NovilaHeroSegment
+import se.novila.designsystem.component.NovilaReveal
 import se.novila.designsystem.component.NovilaScaffold
 import se.novila.designsystem.component.NovilaStatTile
 import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.greetingFor
 import se.novila.movement.MovementState
+import se.novila.nutritionScore
 import se.novila.sleepProgress
+import se.novila.stepsProgress
 import se.novila.tip
-import se.novila.ui.common.HistoryRow
+import se.novila.ui.common.InsightsCard
 import se.novila.ui.common.MoodCard
+import se.novila.ui.common.NutritionWeekCard
 import se.novila.ui.common.ScreenList
-import se.novila.ui.common.glassesText
+import se.novila.ui.common.SleepWeekCard
 import se.novila.ui.common.hoursText
 import se.novila.ui.common.longDateText
-import se.novila.ui.common.moodText
+import se.novila.ui.common.nextPortionText
 import se.novila.ui.common.stepsText
 import se.novila.ui.preview.PreviewData
+import se.novila.weekInsights
+import se.novila.weekOf
 
-/** The dashboard: greeting, today's balance, one tile per part, mood and recent days. */
+/**
+ * The dashboard: greeting, today's balance as rings, one tile per part with its trend, what the
+ * week's logs say, the week's sleep and nutrition, and today's mood. Blocks arrive one by one.
+ */
 @Composable
 fun TodayScreen(
     today: DayEntry,
@@ -55,19 +62,22 @@ fun TodayScreen(
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
+    // Today's steps once Health Connect is connected, otherwise null.
+    val steps = (movement as? MovementState.Connected)?.today?.steps
+    val week = remember(today, history) { weekOf(today, history) }
+    val insights = remember(week, steps) { weekInsights(week, steps) }
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
-        item(key = "header") { Header(today, greetingFor(hour)) }
-        item(key = "balance") { BalanceCard(today) }
+        item(key = "header") { NovilaReveal(order = 0) { Header(today, greetingFor(hour)) } }
+        item(key = "balance") { NovilaReveal(order = 1) { BalanceCard(today, steps) } }
         item(key = "pillars") {
-            PillarTiles(today, movement, onOpenTraining, onOpenSleep, onOpenNutrition)
+            NovilaReveal(order = 2) {
+                PillarTiles(today, week, steps, onOpenTraining, onOpenSleep, onOpenNutrition)
+            }
         }
-        item(key = "mood") { MoodCard(today.mood, onMood) }
-        item(key = "history-title") {
-            NovilaText(stringResource(R.string.history_title), style = NovilaTheme.typography.titleMedium)
-        }
-        items(history, key = { it.date.toString() }) { day ->
-            HistoryRow(day, glassesText(day.waterGlasses), hoursText(day.sleepHours), moodText(day.mood))
-        }
+        item(key = "insights") { NovilaReveal(order = 3) { InsightsCard(insights) } }
+        item(key = "sleep-week") { NovilaReveal(order = 4) { SleepWeekCard(week) } }
+        item(key = "nutrition-week") { NovilaReveal(order = 5) { NutritionWeekCard(week) } }
+        item(key = "mood") { NovilaReveal(order = 6) { MoodCard(today.mood, onMood) } }
     }
 }
 
@@ -93,20 +103,27 @@ private fun Header(today: DayEntry, greeting: Greeting) {
 }
 
 @Composable
-private fun BalanceCard(today: DayEntry) {
+private fun BalanceCard(today: DayEntry, steps: Long?) {
     val hero = NovilaTheme.hero
     NovilaHeroCard(
         title = stringResource(R.string.balance_title),
-        value = stringResource(R.string.balance_value, today.balance),
+        value = today.balance(steps),
         unit = stringResource(R.string.balance_unit),
         body = when (val tip = today.tip()) {
             DayTip.LogSleep -> stringResource(R.string.tip_log_sleep)
-            is DayTip.DrinkWater -> pluralStringResource(R.plurals.tip_drink_water, tip.glassesLeft, tip.glassesLeft)
+            is DayTip.Eat -> nextPortionText(tip.next)
             DayTip.GoalsMet -> stringResource(R.string.tip_goals_met)
         },
-        segments = listOf(
-            NovilaHeroSegment(today.sleepProgress, hero.sleep),
-            NovilaHeroSegment(today.waterProgress, hero.nutrition),
+        segments = listOfNotNull(
+            steps?.let {
+                NovilaHeroSegment(stringResource(R.string.pillar_movement), stepsProgress(it), hero.training)
+            },
+            NovilaHeroSegment(stringResource(R.string.nav_sleep), today.sleepProgress, hero.sleep),
+            NovilaHeroSegment(
+                stringResource(R.string.nav_nutrition),
+                today.nutritionScore()?.progress ?: 0f,
+                hero.nutrition,
+            ),
         ),
     )
 }
@@ -114,7 +131,8 @@ private fun BalanceCard(today: DayEntry) {
 @Composable
 private fun PillarTiles(
     today: DayEntry,
-    movement: MovementState,
+    week: List<DayEntry>,
+    steps: Long?,
     onOpenTraining: () -> Unit,
     onOpenSleep: () -> Unit,
     onOpenNutrition: () -> Unit,
@@ -125,8 +143,6 @@ private fun PillarTiles(
         horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s),
     ) {
         val tile = Modifier.weight(1f).fillMaxHeight()
-        // Today's steps once Health Connect is connected, otherwise just the part's name.
-        val steps = (movement as? MovementState.Connected)?.today?.steps
         NovilaStatTile(
             icon = painterResource(R.drawable.ic_training),
             value = stepsText(steps),
@@ -134,6 +150,7 @@ private fun PillarTiles(
             role = pillars.training,
             onClick = onOpenTraining,
             modifier = tile,
+            progress = steps?.let(::stepsProgress),
         )
         NovilaStatTile(
             icon = painterResource(R.drawable.ic_sleep),
@@ -142,17 +159,26 @@ private fun PillarTiles(
             role = pillars.sleep,
             onClick = onOpenSleep,
             modifier = tile,
+            trend = week.map { day -> day.sleepHours.takeIf { it > 0f } },
+            trendRange = TileSleepRange,
         )
+        val score = today.nutritionScore()
         NovilaStatTile(
             icon = painterResource(R.drawable.ic_nutrition),
-            value = stringResource(R.string.water_fraction, today.waterGlasses, WATER_GOAL),
-            label = stringResource(R.string.water_title),
+            value = score?.let { stringResource(R.string.balance_value, it.total) }
+                ?: stringResource(R.string.value_missing),
+            label = stringResource(R.string.nutrition_score_short),
             role = pillars.nutrition,
             onClick = onOpenNutrition,
             modifier = tile,
+            trend = week.map { it.nutritionScore()?.total?.toFloat() },
+            trendRange = TileScoreRange,
         )
     }
 }
+
+private val TileSleepRange = 4f..10f
+private val TileScoreRange = 0f..100f
 
 @Composable
 private fun TodayScreenContent() {
@@ -173,10 +199,10 @@ private fun TodayScreenContent() {
     }
 }
 
-@Preview
+@Preview(heightDp = 2000)
 @Composable
 private fun TodayScreenPreview() = TodayScreenContent()
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
+@Preview(heightDp = 2000, uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
 private fun TodayScreenDarkPreview() = TodayScreenContent()

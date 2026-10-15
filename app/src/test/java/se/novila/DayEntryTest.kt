@@ -11,24 +11,30 @@ class DayEntryTest {
     private val sv = Locale.forLanguageTag("sv-SE")
 
     @Test fun `codec round-trips an entry`() {
-        val entry = DayEntry(date, waterGlasses = 5, sleepHours = 7.5f, mood = 4)
+        val food = FoodLog(vegetables = 4, meals = 3, protein = 2, wholeGrain = 1, treats = 2)
+        val entry = DayEntry(date, waterGlasses = 5, sleepHours = 7.5f, mood = 4, food = food)
         assertEquals(entry, DayEntryCodec.decode(date, DayEntryCodec.encode(entry)))
+    }
+
+    @Test fun `v1 data from before food logging is migrated`() {
+        assertEquals(
+            DayEntry(date, waterGlasses = 5, sleepHours = 7.5f, mood = 4),
+            DayEntryCodec.decode(date, "v1;5;7.5;4"),
+        )
     }
 
     @Test fun `missing or corrupt data decodes to an empty day`() {
         assertEquals(DayEntry(date), DayEntryCodec.decode(date, null))
         assertEquals(DayEntry(date), DayEntryCodec.decode(date, "skräp"))
         assertEquals(DayEntry(date), DayEntryCodec.decode(date, "v9;1;2;3"))
+        assertEquals(DayEntry(date), DayEntryCodec.decode(date, "v2;1;2;3"))
     }
 
-    @Test fun `water never goes below zero`() {
-        assertEquals(0, DayEntry(date).withWater(-1).waterGlasses)
-        assertEquals(1, DayEntry(date).withWater(+1).waterGlasses)
-    }
-
-    @Test fun `water progress is capped at the goal`() {
-        assertEquals(0.5f, DayEntry(date, waterGlasses = WATER_GOAL / 2).waterProgress, 0.0001f)
-        assertEquals(1f, DayEntry(date, waterGlasses = WATER_GOAL * 2).waterProgress, 0.0001f)
+    @Test fun `portions never go below zero`() {
+        assertEquals(0, DayEntry(date).withPortions(FoodGroup.Water, -1).waterGlasses)
+        assertEquals(1, DayEntry(date).withPortions(FoodGroup.Water, +1).waterGlasses)
+        assertEquals(0, DayEntry(date).withPortions(FoodGroup.Protein, -1).food.protein)
+        assertEquals(0, DayEntry(date).withTreats(-1).food.treats)
     }
 
     @Test fun `sleep rounds to half hours and stays in range`() {

@@ -1,48 +1,48 @@
 package se.novila.feature.nutrition
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import se.novila.DayEntry
-import se.novila.R
-import se.novila.designsystem.component.NovilaText
+import se.novila.FoodGroup
+import se.novila.designsystem.component.NovilaReveal
 import se.novila.designsystem.theme.NovilaTheme
-import se.novila.ui.common.HistoryRow
+import se.novila.ui.common.FoodLogCard
+import se.novila.ui.common.NutritionScoreCard
+import se.novila.ui.common.NutritionWeekCard
 import se.novila.ui.common.ScreenList
-import se.novila.ui.common.WaterCard
-import se.novila.ui.common.glassesText
 import se.novila.ui.preview.PreviewData
+import se.novila.weekOf
 
+/** Today's nutrition score with its breakdown, logging per food group and the week's scores. */
 @Composable
 fun NutritionScreen(
     today: DayEntry,
     history: List<DayEntry>,
-    onAddWater: () -> Unit,
-    onRemoveWater: () -> Unit,
+    onPortions: (FoodGroup, Int) -> Unit,
+    onTreats: (Int) -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
+    val week = remember(today, history) { weekOf(today, history) }
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
-        item(key = "water") { WaterCard(today, onAddWater, onRemoveWater) }
-        item(key = "history-title") {
-            NovilaText(stringResource(R.string.history_title), style = NovilaTheme.typography.titleMedium)
-        }
-        items(history, key = { it.date.toString() }) { day -> HistoryRow(day, glassesText(day.waterGlasses)) }
+        item(key = "score") { NovilaReveal(order = 0) { NutritionScoreCard(today) } }
+        item(key = "log") { NovilaReveal(order = 1) { FoodLogCard(today, onPortions, onTreats) } }
+        item(key = "week") { NovilaReveal(order = 2) { NutritionWeekCard(week) } }
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, heightDp = 1800)
 @Composable
 private fun NutritionScreenPreview() {
     NovilaTheme {
         NutritionScreen(
             PreviewData.today,
             PreviewData.history,
-            onAddWater = {},
-            onRemoveWater = {},
+            onPortions = { _, _ -> },
+            onTreats = {},
             contentPadding = PaddingValues(),
         )
     }

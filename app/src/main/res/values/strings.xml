@@ -4,14 +4,8 @@
     <string name="app_name" translatable="false">Novila</string>
     <string name="value_missing" translatable="false">–</string>
     <string name="hours_value" translatable="false">%1$s h</string>
-    <string name="water_remove_label" translatable="false">−1</string>
     <string name="balance_value" translatable="false">%1$d</string>
-    <string name="water_fraction" translatable="false">%1$d/%2$d</string>
-    <string name="mood_emoji_1" translatable="false">😞</string>
-    <string name="mood_emoji_2" translatable="false">🙁</string>
-    <string name="mood_emoji_3" translatable="false">😐</string>
-    <string name="mood_emoji_4" translatable="false">🙂</string>
-    <string name="mood_emoji_5" translatable="false">😄</string>
+    <string name="fraction" translatable="false">%1$d/%2$d</string>
 
     <!-- Navigation -->
     <string name="nav_today">Today</string>
@@ -19,15 +13,7 @@
     <string name="nav_sleep">Sleep</string>
     <string name="nav_nutrition">Nutrition</string>
 
-    <!-- Water -->
     <string name="water_title">Water</string>
-    <string name="water_progress">%1$d of %2$d glasses</string>
-    <string name="water_add">+1 glass</string>
-    <string name="water_remove_description">Remove one glass</string>
-    <plurals name="glasses_count">
-        <item quantity="one">%d glass</item>
-        <item quantity="other">%d glasses</item>
-    </plurals>
 
     <!-- Sleep -->
     <string name="sleep_title">Sleep last night</string>
@@ -39,6 +25,7 @@
     <string name="mood_3">Okay</string>
     <string name="mood_4">Good</string>
     <string name="mood_5">Great</string>
+    <string name="mood_hint">How do you feel today?</string>
 
     <!-- Today -->
     <string name="greeting_morning">Good morning</string>
@@ -47,12 +34,51 @@
     <string name="balance_title">Today\'s balance</string>
     <string name="balance_unit">of 100</string>
     <string name="tip_log_sleep">Log last night\'s sleep to complete your balance.</string>
-    <plurals name="tip_drink_water">
-        <item quantity="one">%d more glass of water to reach today\'s goal.</item>
-        <item quantity="other">%d more glasses of water to reach today\'s goal.</item>
-    </plurals>
-    <string name="tip_goals_met">Water and sleep are on target. Nice work!</string>
-    <string name="history_title">Recent days</string>
+    <string name="tip_goals_met">Sleep and nutrition are on target. Nice work!</string>
+
+    <string name="pillar_movement">Movement</string>
+    <string name="tip_next_vegetables">One more portion of vegetables or fruit gives your nutrition score +%1$d.</string>
+    <string name="tip_next_meal">Your next regular meal gives your nutrition score +%1$d.</string>
+    <string name="tip_next_protein">Add protein, like fish, beans or eggs, for +%1$d to your nutrition score.</string>
+    <string name="tip_next_whole_grain">Choose whole grain next time for +%1$d to your nutrition score.</string>
+    <string name="tip_next_water">A glass of water gives your nutrition score +%1$d.</string>
+
+    <!-- Week and insights -->
+    <string name="week_sleep_title">Sleep this week</string>
+    <string name="week_sleep_caption">Average per night · goal %1$s</string>
+    <string name="week_sleep_description">Sleep over the last seven days, %1$s per night on average.</string>
+    <string name="week_nutrition_title">Nutrition this week</string>
+    <string name="week_nutrition_caption">Average score · a good day is %1$d or more</string>
+    <string name="week_nutrition_description">Nutrition score over the last seven days, %1$s on average.</string>
+    <string name="insights_title">Insights</string>
+    <string name="insights_empty">Log sleep, food and mood for a few days and Novila will show you what affects how you feel.</string>
+    <string name="insight_mood_sleep">You feel better on days after at least %1$s of sleep.</string>
+    <string name="insight_sleep_more">Last night you slept %1$s more than your average this week.</string>
+    <string name="insight_sleep_less">Last night you slept %1$s less than your average this week.</string>
+    <string name="insight_steady_sleep">Steady sleep this week: every night within an hour of the others.</string>
+    <string name="insight_nutrition_streak">%1$d days in a row with a good nutrition score.</string>
+    <string name="insight_nutrition_up">Your nutrition score is up %1$d points over the last few days.</string>
+    <string name="insight_nutrition_down">Your nutrition score is down %1$d points over the last few days.</string>
+    <string name="insight_steps_goal">You have passed %1$s steps today.</string>
+
+    <!-- Nutrition -->
+    <string name="nutrition_score_title">Today\'s nutrition score</string>
+    <string name="nutrition_score_short">Nutrition</string>
+    <string name="nutrition_next_title">Next step</string>
+    <string name="nutrition_done_title">All food groups on target</string>
+    <string name="nutrition_done_body">Every food group has reached today\'s goal.</string>
+    <string name="nutrition_treat_penalty">Sweets and snacks: −%1$d points today. One a day is free.</string>
+    <string name="nutrition_about">Weighted after the Swedish Food Agency\'s dietary advice: vegetables and fruit count the most.</string>
+    <string name="food_log_title">Log today</string>
+    <string name="food_vegetables">Vegetables &amp; fruit</string>
+    <string name="food_meals">Meals</string>
+    <string name="food_protein">Protein</string>
+    <string name="food_whole_grain">Whole grain</string>
+    <string name="food_treats">Sweets &amp; snacks</string>
+    <string name="food_progress">%1$d of %2$d</string>
+    <string name="food_treats_value">%1$d today</string>
+    <string name="food_add">Add %1$s</string>
+    <string name="food_remove">Remove %1$s</string>
 
     <!-- Training -->
     <string name="training_empty_title">Training is coming soon</string>
