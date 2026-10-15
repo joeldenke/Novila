@@ -264,10 +264,10 @@ private fun ExerciseCardsContent() {
             ScreenList(contentPadding = padding) {
                 item(key = "session") {
                     StrengthSessionCard(
-                        PreviewData.program.sessions.first {
-                            it.exercises.isNotEmpty()
-                        },
+                        session = PreviewData.program.sessions.first { it.exercises.isNotEmpty() },
                         onOpenExercise = {},
+                        onStart = {},
+                        next = true,
                     )
                 }
                 item(key = "library") { ExerciseLibraryCard(onOpenExercise = {}) }
