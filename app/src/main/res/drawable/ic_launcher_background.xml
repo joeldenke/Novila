@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Launcher icon background, Skog & sol: a pine sky (Pine10 to Pine45) over a still lake
+  (Lake toward Lake10). The horizon matches the one in ic_launcher_foreground.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path android:pathData="M0,0H108V61.64H0Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:endX="0"
+                android:endY="61.14"
+                android:startX="0"
+                android:startY="0"
+                android:type="linear">
+                <item android:color="#FF0D3220" android:offset="0" />
+                <item android:color="#FF3D6B3A" android:offset="1" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path android:pathData="M0,61.14H108V108H0Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:endX="0"
+                android:endY="108"
+                android:startX="0"
+                android:startY="61.14"
+                android:type="linear">
+                <item android:color="#FF24496F" android:offset="0" />
+                <item android:color="#FF0F2E4D" android:offset="1" />
+            </gradient>
+        </aapt:attr>
+    </path>
+</vector>
