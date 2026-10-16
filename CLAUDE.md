@@ -24,8 +24,8 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   strängar, ViewModels och `@Preview`/skärmdumpar. Varje feature äger sin navigation (`navigation/`): `@Serializable`-rutter
   (`NavKey`) och `EntryProviderScope<NavKey>.<feature>Entries(...)`, som `:app` lägger i sin `entryProvider`.
   Features beror aldrig på varandra (`ArchitectureTest`); flikbyten går via callbacks från `:app`.
-- `:feature:onboarding` – introduktionen vid första start: en karusell genom appens delar (`NovilaIllustration`,
-  ritade scener med parallax), namn, mål och tid för coachen, Health Connect och en sammanfattning i `NovilaHeroBanner`.
+- `:feature:onboarding` – introduktionen vid första start: en karusell genom appens delar (målade scener i
+  `NovilaSceneImage` med parallax), namn, mål och tid för coachen, Health Connect och en sammanfattning i `NovilaHeroBanner`.
   Visas ensam (utan flikar) tills `AppSettings.onboarded` är satt; `NovilaApp` ger den en egen entry via
   `rememberStandaloneEntries`. Kan visas igen från Inställningar.
 - `:feature:settings` – Inställningar (tema, Health Connect, ansvarsfriskrivning, radera data, introduktionen, version).
@@ -215,6 +215,10 @@ där pluginet `firebase@firebase` inte alltid installeras.
   (balansen som ringar per del, skogssiluett och solens sken, `NovilaTheme.hero`), en `NovilaStatTile` per del med
   veckans trend, insikter, veckans sömn (`NovilaLineChart`) och kost (`NovilaBarChart`) och mående.
   Kort är vita med hårfin kant (`NovilaTheme.surfaces`).
+- **Målade scener:** introduktionens scener är målade bilder i samma nordiska stil (falröd stuga, björk, gran, sjö,
+  midsommarljus), WebP i featurens `drawable-nodpi`, beskurna till 1,4:1 och helst under 150 kB. De visas bara via
+  `NovilaSceneImage`, som sköter hörn, entré, parallax och dimning i mörkt läge. Rita inte landskap i kod: det har
+  provats och når inte upp till målade bilder. Nya scener tas fram i samma stil som de befintliga.
 - **Inga emojis i UI:t.** Novila ska kännas som en professionell hälsoapp: använd vektorikoner och ritade komponenter
   (t.ex. `NovilaLevelPicker` för mående), aldrig emoji-tecken.
 - **Övningsillustrationer:** en övning är data (keyframes med ledvinklar i `ExerciseLibrary`), aldrig video eller
