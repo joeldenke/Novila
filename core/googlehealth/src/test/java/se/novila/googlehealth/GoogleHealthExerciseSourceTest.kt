@@ -1,5 +1,6 @@
 package se.novila.googlehealth
 
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -10,7 +11,6 @@ import java.time.LocalDate
 import java.time.ZoneId
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
-import kotlinx.coroutines.runBlocking
 
 class GoogleHealthExerciseSourceTest {
     private val stockholm = ZoneId.of("Europe/Stockholm")
