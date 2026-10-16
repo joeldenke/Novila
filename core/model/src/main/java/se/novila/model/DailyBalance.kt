@@ -5,17 +5,21 @@ import kotlin.math.roundToInt
 const val SLEEP_GOAL_HOURS = 8f
 const val STEPS_GOAL = 8000L
 
-val DayEntry.sleepProgress: Float get() = (sleepHours / SLEEP_GOAL_HOURS).coerceIn(0f, 1f)
+fun DayEntry.sleepProgress(goals: Goals = Goals()): Float = (sleepHours / goals.sleepHours).coerceIn(0f, 1f)
 
-fun stepsProgress(steps: Long): Float = (steps.toFloat() / STEPS_GOAL).coerceIn(0f, 1f)
+fun stepsProgress(steps: Long, goals: Goals = Goals()): Float = (steps.toFloat() / goals.steps).coerceIn(0f, 1f)
 
 /**
  * Today's balance from 0 to 100: sleep, nutrition and (when known) movement, weighted equally.
  * Without a movement source the balance is sleep and nutrition only, so it never punishes a
- * user for not connecting one.
+ * user for not connecting one. Each part is measured against the user's [goals].
  */
-fun DayEntry.balance(steps: Long?): Int {
-    val parts = listOfNotNull(sleepProgress, nutritionScore()?.progress ?: 0f, steps?.let(::stepsProgress))
+fun DayEntry.balance(steps: Long?, goals: Goals = Goals()): Int {
+    val parts = listOfNotNull(
+        sleepProgress(goals),
+        nutritionScore(goals)?.progress ?: 0f,
+        steps?.let { stepsProgress(it, goals) },
+    )
     return (parts.average() * 100).roundToInt()
 }
 
@@ -29,9 +33,9 @@ sealed interface DayTip {
     data object GoalsMet : DayTip
 }
 
-fun DayEntry.tip(): DayTip {
+fun DayEntry.tip(goals: Goals = Goals()): DayTip {
     if (sleepHours <= 0f) return DayTip.LogSleep
-    return nextPortion()?.let(DayTip::Eat) ?: DayTip.GoalsMet
+    return nextPortion(goals)?.let(DayTip::Eat) ?: DayTip.GoalsMet
 }
 
 enum class Greeting { Morning, Afternoon, Evening }

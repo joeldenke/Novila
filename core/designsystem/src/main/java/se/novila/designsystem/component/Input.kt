@@ -34,7 +34,8 @@ import se.novila.designsystem.theme.NovilaTheme
 
 /**
  * A row for logging a count: [title] and [value] (e.g. "3 of 5 portions") with round minus and
- * plus buttons. The plus is filled in the [role] color, since adding is what the row is for.
+ * plus buttons. The plus is filled in the [role] color, since adding is what the row is for. Either button can be
+ * turned off at the end of a range.
  */
 @Composable
 fun NovilaStepper(
@@ -47,6 +48,7 @@ fun NovilaStepper(
     role: NovilaColorRole,
     modifier: Modifier = Modifier,
     decrementEnabled: Boolean = true,
+    incrementEnabled: Boolean = true,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -68,7 +70,7 @@ fun NovilaStepper(
         RoundButton(
             plus = true,
             onClick = onIncrement,
-            enabled = true,
+            enabled = incrementEnabled,
             description = incrementDescription,
             container = role.color,
             content = role.onColor,

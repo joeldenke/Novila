@@ -40,6 +40,7 @@ fun EntryProviderScope<NavKey>.todayEntry(
             history = state.week.history,
             hour = state.hour,
             name = state.name,
+            goals = state.goals,
             movement = movement,
             onMood = viewModel::setMood,
             onOpenTraining = onOpenTraining,

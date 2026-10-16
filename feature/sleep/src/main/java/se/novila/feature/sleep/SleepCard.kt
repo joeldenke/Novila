@@ -8,12 +8,14 @@ import se.novila.designsystem.component.NovilaSlider
 import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.sleep.R
+import se.novila.model.Goals
 import se.novila.model.MAX_SLEEP_HOURS
 import se.novila.ui.common.hoursText
 import se.novila.ui.R as UiR
 
+/** Last night's hours on a half-hour slider, and the user's sleep goal from [goals]. */
 @Composable
-fun SleepCard(hours: Float, onChange: (Float) -> Unit) {
+fun SleepCard(hours: Float, goals: Goals, onChange: (Float) -> Unit) {
     val sleep = NovilaTheme.pillars.sleep
     NovilaCard(
         title = stringResource(R.string.sleep_title),
@@ -21,6 +23,11 @@ fun SleepCard(hours: Float, onChange: (Float) -> Unit) {
         role = sleep,
     ) {
         NovilaText(hoursText(hours), style = NovilaTheme.typography.headlineSmall)
+        NovilaText(
+            stringResource(R.string.sleep_goal, hoursText(goals.sleepHours)),
+            style = NovilaTheme.typography.bodySmall,
+            color = NovilaTheme.colors.onSurfaceVariant,
+        )
         NovilaSlider(
             value = hours,
             onValueChange = onChange,

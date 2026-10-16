@@ -37,7 +37,7 @@
     <string name="settings_data_body">Everything you log is saved on this phone only. Novila has no account and no cloud, so nothing can be restored once deleted.</string>
     <string name="settings_delete_data">Delete all data</string>
     <string name="settings_delete_data_title">Delete all data?</string>
-    <string name="settings_delete_data_body">Your profile, your logged sleep, food, mood and workouts and the coach\'s answers are deleted from this phone. This cannot be undone. Data in Health Connect is not affected.</string>
+    <string name="settings_delete_data_body">Your profile and goals, your logged sleep, food, mood and workouts and the coach\'s answers are deleted from this phone. This cannot be undone. Data in Health Connect is not affected.</string>
     <string name="settings_delete_data_confirm">Delete</string>
     <string name="settings_cancel">Cancel</string>
     <string name="settings_data_deleted">All data is deleted.</string>
@@ -82,4 +82,23 @@
     <string name="profile_privacy">Every field is optional. Your profile is saved on this phone only and needs no account. Deleting all data under Settings deletes it too.</string>
     <string name="settings_intro">Show the intro again</string>
     <string name="settings_intro_summary">A tour of Novila, and your goal and time for the coach.</string>
+
+    <!-- Goals -->
+    <string name="settings_goals_summary">%1$s steps · %2$s sleep · %3$d glasses of water</string>
+    <string name="goals_title">Goals</string>
+    <string name="goals_daily">Every day</string>
+    <string name="goals_steps">Steps</string>
+    <string name="goals_steps_value">%1$s a day</string>
+    <string name="goals_sleep">Sleep</string>
+    <string name="goals_sleep_value">%1$s a night</string>
+    <string name="goals_water">Water</string>
+    <string name="goals_water_value">%1$d glasses a day</string>
+    <string name="goals_lower">%1$s: lower the goal</string>
+    <string name="goals_raise">%1$s: raise the goal</string>
+    <string name="goals_suggestion">Suggested for you</string>
+    <string name="goals_suggestion_body">From your profile: %1$s steps, %2$s of sleep and %3$d glasses of water a day.</string>
+    <string name="goals_suggestion_use">Use these goals</string>
+    <string name="goals_suggestion_in_use">You are using these goals.</string>
+    <string name="goals_suggestion_needs_profile">Add your birth year or weight to your profile, and Novila suggests goals that fit you.</string>
+    <string name="goals_about">Today, Sleep and Nutrition measure your days against these goals. Water counts towards the nutrition score; the food portions follow the Swedish Food Agency\'s dietary advice. A glass is 2 dl.</string>
 </resources>

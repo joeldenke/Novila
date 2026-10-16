@@ -32,7 +32,7 @@
     <string name="settings_data_body">Allt du loggar sparas bara i den här telefonen. Novila har inget konto och inget moln, så inget kan återställas när det har raderats.</string>
     <string name="settings_delete_data">Radera all data</string>
     <string name="settings_delete_data_title">Radera all data?</string>
-    <string name="settings_delete_data_body">Din profil, din loggade sömn, kost, mående och dina pass samt coachens svar raderas från telefonen. Det går inte att ångra. Data i Health Connect påverkas inte.</string>
+    <string name="settings_delete_data_body">Din profil och dina mål, din loggade sömn, kost, mående och dina pass samt coachens svar raderas från telefonen. Det går inte att ångra. Data i Health Connect påverkas inte.</string>
     <string name="settings_delete_data_confirm">Radera</string>
     <string name="settings_cancel">Avbryt</string>
     <string name="settings_data_deleted">All data är raderad.</string>
@@ -77,4 +77,23 @@
     <string name="profile_privacy">Alla fält är valfria. Profilen sparas bara i den här telefonen och kräver inget konto. Raderar du all data under Inställningar raderas den också.</string>
     <string name="settings_intro">Visa introduktionen igen</string>
     <string name="settings_intro_summary">En rundtur i Novila, och ditt mål och din tid för coachen.</string>
+
+    <!-- Mål -->
+    <string name="settings_goals_summary">%1$s steg · %2$s sömn · %3$d glas vatten</string>
+    <string name="goals_title">Mål</string>
+    <string name="goals_daily">Varje dag</string>
+    <string name="goals_steps">Steg</string>
+    <string name="goals_steps_value">%1$s om dagen</string>
+    <string name="goals_sleep">Sömn</string>
+    <string name="goals_sleep_value">%1$s per natt</string>
+    <string name="goals_water">Vatten</string>
+    <string name="goals_water_value">%1$d glas om dagen</string>
+    <string name="goals_lower">%1$s: sänk målet</string>
+    <string name="goals_raise">%1$s: höj målet</string>
+    <string name="goals_suggestion">Förslag för dig</string>
+    <string name="goals_suggestion_body">Utifrån din profil: %1$s steg, %2$s sömn och %3$d glas vatten om dagen.</string>
+    <string name="goals_suggestion_use">Använd förslaget</string>
+    <string name="goals_suggestion_in_use">Du använder de här målen.</string>
+    <string name="goals_suggestion_needs_profile">Fyll i födelseår eller vikt i profilen, så föreslår Novila mål som passar dig.</string>
+    <string name="goals_about">Idag, Sömn och Kost mäter dina dagar mot de här målen. Vattnet räknas in i kostpoängen; portionerna mat följer Livsmedelsverkets kostråd. Ett glas är 2 dl.</string>
 </resources>

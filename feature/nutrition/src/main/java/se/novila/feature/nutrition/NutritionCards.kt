@@ -18,6 +18,8 @@ import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.nutrition.R
 import se.novila.model.DayEntry
 import se.novila.model.FoodGroup
+import se.novila.model.Goals
+import se.novila.model.dailyGoal
 import se.novila.model.nextPortion
 import se.novila.model.nutritionScore
 import se.novila.model.portions
@@ -27,9 +29,9 @@ import se.novila.ui.R as UiR
 
 /** Today's nutrition score, the smartest next step and how each food group contributes. */
 @Composable
-fun NutritionScoreCard(today: DayEntry) {
+fun NutritionScoreCard(today: DayEntry, goals: Goals) {
     val nutrition = NovilaTheme.pillars.nutrition
-    val score = today.nutritionScore()
+    val score = today.nutritionScore(goals)
     NovilaCard(
         title = stringResource(R.string.nutrition_score_title),
         icon = painterResource(UiR.drawable.ic_nutrition),
@@ -46,7 +48,7 @@ fun NutritionScoreCard(today: DayEntry) {
                 role = nutrition,
             )
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.xs)) {
-                val next = today.nextPortion()
+                val next = today.nextPortion(goals)
                 NovilaText(
                     stringResource(if (next != null) R.string.nutrition_next_title else R.string.nutrition_done_title),
                     style = NovilaTheme.typography.labelLarge,
@@ -85,10 +87,11 @@ fun NutritionScoreCard(today: DayEntry) {
     }
 }
 
-/** Steppers for each food group and for treats. */
+/** Steppers for each food group, water against the user's goal, and for treats. */
 @Composable
 fun FoodLogCard(
     today: DayEntry,
+    goals: Goals,
     onPortions: (FoodGroup, Int) -> Unit,
     onTreats: (Int) -> Unit,
 ) {
@@ -100,7 +103,7 @@ fun FoodLogCard(
                 val count = today.portions(group)
                 NovilaStepper(
                     title = name,
-                    value = stringResource(R.string.food_progress, count, group.goal),
+                    value = stringResource(R.string.food_progress, count, group.dailyGoal(goals)),
                     onDecrement = { onPortions(group, -1) },
                     onIncrement = { onPortions(group, +1) },
                     decrementDescription = stringResource(R.string.food_remove, name),

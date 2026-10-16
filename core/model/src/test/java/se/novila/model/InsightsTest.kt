@@ -58,7 +58,7 @@ class InsightsTest {
         )
         val insights = weekInsights(days, steps = STEPS_GOAL, limit = 10)
         assertTrue(Insight.SteadySleep in insights)
-        assertTrue(Insight.StepsGoalReached in insights)
+        assertTrue(Insight.StepsGoalReached(STEPS_GOAL.toInt()) in insights)
     }
 
     @Test fun `a streak of good days counts from yesterday while today is in progress`() {

@@ -10,9 +10,9 @@ Bocka av här när något blir klart, och flytta upp det som blir viktigare.
 | Idag | Hälsning med namn, dagens balans (ringar), en ruta per del, insikter, veckans sömn och kost, mående | Snyggt, men allt slutar efter 7 dagar |
 | Träning | Veckoprogram (WHO), coach med mål, dagar, fokus och hänsyn, rehab (knä, ländrygg, fas 1–3), 13 illustrerade övningar, passläge med timer, Gemini Nano-kommentar | Appens starkaste del |
 | Sömn | Timmar i halvtimmessteg och en veckograf | Tunnast: bara en siffra |
-| Kost | Portioner per livsmedelsgrupp, vatten, sött, poäng 0–100, "nästa steg" | Bra och enkelt, men fasta mål |
+| Kost | Portioner per livsmedelsgrupp, vatten mot eget mål, sött, poäng 0–100, "nästa steg" | Bra och enkelt |
 | Rörelse | Dagens steg och aktiva kalorier från Health Connect, i förgrunden | Bara dagens värden |
-| Inställningar | Tema, profil, ansvarsfriskrivning, radera data | Komplett för sin nivå |
+| Inställningar | Tema, profil, egna mål, ansvarsfriskrivning, radera data | Komplett för sin nivå |
 
 ## Det som saknas
 
@@ -24,7 +24,8 @@ mer än kommentaren, eller data som lämnar appen.
 - [ ] **Påminnelser** (pass, logga sömn, läggdags) **(ok: `POST_NOTIFICATIONS`)**
 - [ ] **Redigera tidigare dagar.** I dag går bara idag att ändra.
 - [ ] **Historik längre än 7 dagar:** månad och år, och trender över tid
-- [ ] **Egna mål** för steg (8000), vatten (8 glas) och portioner, gärna föreslagna utifrån profilen
+- [x] **Egna mål** för steg, sömn och vatten, med förslag utifrån ålder och vikt i profilen. Portionerna följer
+  Livsmedelsverkets kostråd, som kostpoängen bygger på.
 - [ ] **Export och import** som lokal fil, utan moln **(ok)**
 
 ### 2. Träning
@@ -70,7 +71,7 @@ mer än kommentaren, eller data som lämnar appen.
 ## Ordning
 
 1. Introduktion vid första start ← klar
-2. Egna mål
+2. Egna mål ← klar
 3. Logga konditionspass, och RPE och smärta efter passet
 4. Redigera tidigare dagar och längre historik
 5. Påminnelser **(ok)**

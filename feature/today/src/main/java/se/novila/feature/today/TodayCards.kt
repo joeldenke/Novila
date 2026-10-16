@@ -10,7 +10,6 @@ import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.today.R
 import se.novila.model.Insight
-import se.novila.model.STEPS_GOAL
 import se.novila.ui.common.hoursText
 import se.novila.ui.common.stepsText
 import kotlin.math.abs
@@ -92,9 +91,9 @@ private fun InsightRow(insight: Insight) {
             pillars.nutrition,
         )
 
-        Insight.StepsGoalReached -> NovilaInsight(
+        is Insight.StepsGoalReached -> NovilaInsight(
             painterResource(UiR.drawable.ic_training),
-            stringResource(R.string.insight_steps_goal, stepsText(STEPS_GOAL)),
+            stringResource(R.string.insight_steps_goal, stepsText(insight.steps.toLong())),
             pillars.training,
         )
     }
