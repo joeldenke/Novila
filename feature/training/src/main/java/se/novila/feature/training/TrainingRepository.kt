@@ -14,8 +14,8 @@ import se.novila.data.SavedCoach
 import se.novila.exercise.Exercise
 import se.novila.exercise.ExerciseType
 import se.novila.exercise.TrainingProgramGenerator
-import java.time.Duration
 import java.time.LocalDate
+import kotlin.time.Duration.Companion.minutes
 
 /**
  * The week's program for the Training tab's ViewModels, from the saved days and the coach's answers. Each ViewModel
@@ -54,7 +54,7 @@ class TrainingRepository(private val health: HealthStore, private val coach: Coa
         val days = saved.lastDays(count = HISTORY_DAYS, today = today)
         val strength = days
             .filter { it.strengthMinutes > 0 }
-            .map { Exercise(ExerciseType.Strength, it.date, Duration.ofMinutes(it.strengthMinutes.toLong())) }
+            .map { Exercise(ExerciseType.Strength, it.date, it.strengthMinutes.minutes) }
         val active = answers.preferences
         val preferences = active ?: draft ?: CoachPreferences()
         val plan = CoachPlanner.plan(preferences, history = strength, today = today)

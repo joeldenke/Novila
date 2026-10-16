@@ -1,18 +1,21 @@
 package se.novila.exercise
 
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
+
 /** Whether an exercise is counted in repetitions or held for a number of seconds. */
 enum class Dosage { Repetitions, Seconds }
 
 /** How much strength training the user already does, from their recent workouts. */
-enum class StrengthLevel(val sets: Int, val repetitions: Int, val seconds: Int, val restSeconds: Int) {
-    Beginner(sets = 2, repetitions = 8, seconds = 20, restSeconds = 90),
-    Intermediate(sets = 3, repetitions = 10, seconds = 30, restSeconds = 75),
-    Advanced(sets = 3, repetitions = 12, seconds = 40, restSeconds = 60),
+enum class StrengthLevel(val sets: Int, val repetitions: Int, val seconds: Int, val rest: Duration) {
+    Beginner(sets = 2, repetitions = 8, seconds = 20, rest = 90.seconds),
+    Intermediate(sets = 3, repetitions = 10, seconds = 30, rest = 75.seconds),
+    Advanced(sets = 3, repetitions = 12, seconds = 40, rest = 60.seconds),
 }
 
 /**
  * One exercise in a strength session: [sets] of [amount] repetitions or seconds (per side when
- * [perSide]), with [restSeconds] between sets. [exerciseId] is an exercise in the anatomy library.
+ * [perSide]), with [rest] between sets. [exerciseId] is an exercise in the anatomy library.
  */
 data class PlannedExercise(
     val exerciseId: String,
@@ -20,7 +23,7 @@ data class PlannedExercise(
     val amount: Int,
     val dosage: Dosage,
     val perSide: Boolean,
-    val restSeconds: Int,
+    val rest: Duration,
 )
 
 /**
@@ -85,7 +88,7 @@ object StrengthSessions {
                 amount = if (move.dosage == Dosage.Seconds) level.seconds else level.repetitions,
                 dosage = move.dosage,
                 perSide = move.perSide,
-                restSeconds = level.restSeconds,
+                rest = level.rest,
             )
         }
     }

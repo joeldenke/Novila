@@ -32,6 +32,9 @@ import se.novila.feature.training.R
 import se.novila.ui.common.ScreenList
 import se.novila.ui.preview.PreviewData
 import kotlin.math.roundToInt
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Instant
 
 private const val FIGURE_ASPECT_RATIO = 1.2f
 
@@ -174,7 +177,7 @@ private fun Rest(step: WorkoutStep.Rest, secondsLeft: Int?, onNext: () -> Unit) 
     val next = step.next
     val motion = ExerciseLibrary.byId(next.exercise.exerciseId)
     NovilaCard(title = stringResource(R.string.workout_rest_title)) {
-        Countdown(secondsLeft ?: step.seconds)
+        Countdown(secondsLeft ?: step.duration.inWholeSeconds.toInt())
         Row(
             horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.m),
             verticalAlignment = Alignment.CenterVertically,
@@ -217,7 +220,7 @@ private fun Finished(workout: Workout, onFinish: () -> Unit) {
                 R.string.workout_finished_body,
                 workout.exerciseCount,
                 workout.setsDone,
-                workout.minutes(workout.finishedAtMillis ?: workout.startedAtMillis),
+                workout.minutes(workout.finishedAt ?: workout.startedAt),
             ),
             style = NovilaTheme.typography.bodyLarge,
         )
@@ -240,17 +243,17 @@ private fun NoWorkout() {
     }
 }
 
-private const val PREVIEW_START = 1_000_000L
+private val PREVIEW_START = Instant.fromEpochSeconds(1_000)
 
 private fun previewWorkout(steps: Int): WorkoutUiState {
     val session = TrainingPreviewData.program.sessions.first { it.exercises.isNotEmpty() }
     var workout = Workout.start(session, PREVIEW_START)
     var now = PREVIEW_START
     while (workout.index < steps && !workout.isFinished) {
-        now += 60_000L
+        now += 1.minutes
         workout = workout.next(now)
     }
-    return WorkoutUiState(workout, workout.secondsLeft(now + 20_000L))
+    return WorkoutUiState(workout, workout.secondsLeft(now + 20.seconds))
 }
 
 @Composable

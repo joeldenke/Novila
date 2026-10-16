@@ -15,6 +15,10 @@ import java.time.LocalDate
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
 
 /** Why the coach built the program the way it did. The UI turns each note into a sentence. */
 sealed interface CoachNote {
@@ -52,9 +56,9 @@ data class CoachPlan(val program: TrainingProgram, val notes: List<CoachNote>)
  * changes, so it is unit tested.
  */
 object CoachPlanner {
-    private const val WARM_UP_SECONDS = 5 * 60
-    private const val SECONDS_PER_REPETITION = 3
-    private const val CHANGE_OVER_SECONDS = 30
+    private val WARM_UP = 5.minutes
+    private val TIME_PER_REPETITION = 3.seconds
+    private val CHANGE_OVER = 30.seconds
     private const val MIN_EXERCISES = 3
     private const val MAX_EXERCISES = 7
     private const val MIN_CARDIO_MINUTES = 10
@@ -152,7 +156,7 @@ object CoachPlanner {
         amount = if (exercise.dosage == Dosage.Seconds) 10 + phase * 5 else 6 + phase * 2,
         dosage = exercise.dosage,
         perSide = exercise.perSide,
-        restSeconds = REHAB_REST_SECONDS,
+        rest = REHAB_REST,
     )
 
     /** WHO's two strength days; three when strength is the goal and there is time for it. */
@@ -207,7 +211,7 @@ object CoachPlanner {
             if (preferences.focus.any { muscle in it.muscles }) FOCUS_WEIGHT else 1.0
         }.toMutableMap()
         val chosen = mutableListOf<CoachExercise>()
-        val budget = preferences.sessionMinutes * 60 - WARM_UP_SECONDS
+        val budget = preferences.sessionMinutes.minutes - WARM_UP
 
         fun score(exercise: CoachExercise): Double {
             val motion = ExerciseLibrary.byId(exercise.id)!!
@@ -228,7 +232,7 @@ object CoachPlanner {
 
         fun dosed(exercise: CoachExercise) = dose(exercise, level, preferences.goal, preferences.focus)
 
-        fun timeWith(exercise: CoachExercise) = (chosen + exercise).sumOf { seconds(dosed(it)) }
+        fun timeWith(exercise: CoachExercise) = (chosen + exercise).map(::dosed).total()
 
         // A balanced base first: lower body, a push and the trunk.
         REQUIRED.forEach { patterns ->
@@ -269,10 +273,15 @@ object CoachPlanner {
     ): PlannedExercise {
         val primary = ExerciseLibrary.byId(exercise.id)?.primary.orEmpty()
         val focusSet = if (focus.any { area -> primary.any { it in area.muscles } }) 1 else 0
-        val (sets, extraReps, extraSeconds, rest) = when (goal) {
-            CoachGoal.Strength -> listOf(min(level.sets + 1, MAX_SETS), 0, 0, level.restSeconds + 30)
-            CoachGoal.Endurance -> listOf(level.sets, 5, 15, max(30, level.restSeconds - 30))
-            CoachGoal.Health, CoachGoal.Mobility, CoachGoal.Rehab -> listOf(level.sets, 0, 0, level.restSeconds)
+        val (sets, extraReps, extraSeconds) = when (goal) {
+            CoachGoal.Strength -> listOf(min(level.sets + 1, MAX_SETS), 0, 0)
+            CoachGoal.Endurance -> listOf(level.sets, 5, 15)
+            CoachGoal.Health, CoachGoal.Mobility, CoachGoal.Rehab -> listOf(level.sets, 0, 0)
+        }
+        val rest = when (goal) {
+            CoachGoal.Strength -> level.rest + 30.seconds
+            CoachGoal.Endurance -> maxOf(30.seconds, level.rest - 30.seconds)
+            CoachGoal.Health, CoachGoal.Mobility, CoachGoal.Rehab -> level.rest
         }
         return PlannedExercise(
             exerciseId = exercise.id,
@@ -284,20 +293,25 @@ object CoachPlanner {
             },
             dosage = exercise.dosage,
             perSide = exercise.perSide,
-            restSeconds = rest,
+            rest = rest,
         )
     }
 
     /** Roughly how long an exercise takes: its sets, the rests between them and moving on to the next. */
-    internal fun seconds(planned: PlannedExercise): Int {
-        val work = if (planned.dosage == Dosage.Seconds) planned.amount else planned.amount * SECONDS_PER_REPETITION
+    internal fun duration(planned: PlannedExercise): Duration {
+        val work = when (planned.dosage) {
+            Dosage.Seconds -> planned.amount.seconds
+            Dosage.Repetitions -> TIME_PER_REPETITION * planned.amount
+        }
         val perSet = work * (if (planned.perSide) 2 else 1)
-        return planned.sets * perSet + (planned.sets - 1) * planned.restSeconds + CHANGE_OVER_SECONDS
+        return perSet * planned.sets + planned.rest * (planned.sets - 1) + CHANGE_OVER
     }
+
+    private fun List<PlannedExercise>.total(): Duration = fold(Duration.ZERO) { sum, it -> sum + duration(it) }
 
     /** The session's length with a warm-up, rounded to five minutes. */
     private fun sessionMinutes(exercises: List<PlannedExercise>): Int =
-        TrainingProgramGenerator.roundTo5((WARM_UP_SECONDS + exercises.sumOf(::seconds)) / 60.0)
+        TrainingProgramGenerator.roundTo5((WARM_UP + exercises.total()).toDouble(DurationUnit.MINUTES))
             .coerceAtLeast(CoachPreferences.MIN_MINUTES)
 
     private fun notes(
@@ -335,7 +349,7 @@ object CoachPlanner {
     )
     private const val REHAB_DAYS = 3
     private const val REHAB_WALK_MINUTES = 20
-    private const val REHAB_REST_SECONDS = 60
+    private val REHAB_REST = 60.seconds
 
     /** Each session gets one of each before anything else, in this order. */
     private val REQUIRED = listOf(

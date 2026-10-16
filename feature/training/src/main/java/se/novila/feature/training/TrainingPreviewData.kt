@@ -12,7 +12,7 @@ import se.novila.exercise.ExerciseType
 import se.novila.exercise.TrainingProgramGenerator
 import se.novila.ui.preview.PreviewData
 import java.time.DayOfWeek
-import java.time.Duration
+import kotlin.time.Duration.Companion.minutes
 
 /** Training samples for Compose previews, on the same day as [PreviewData]. */
 internal object TrainingPreviewData {
@@ -22,9 +22,9 @@ internal object TrainingPreviewData {
     private val workouts = (1L..4L).flatMap { week ->
         val monday = date.minusWeeks(week).with(DayOfWeek.MONDAY)
         listOf(
-            Exercise(ExerciseType.Running, monday.plusDays(1), Duration.ofMinutes(35)),
-            Exercise(ExerciseType.Running, monday.plusDays(5), Duration.ofMinutes(50)),
-            Exercise(ExerciseType.Strength, monday.plusDays(3), Duration.ofMinutes(30)),
+            Exercise(ExerciseType.Running, monday.plusDays(1), 35.minutes),
+            Exercise(ExerciseType.Running, monday.plusDays(5), 50.minutes),
+            Exercise(ExerciseType.Strength, monday.plusDays(3), 30.minutes),
         )
     }
 

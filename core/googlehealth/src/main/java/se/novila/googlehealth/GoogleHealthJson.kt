@@ -6,9 +6,11 @@ import kotlinx.serialization.json.Json
 import se.novila.exercise.Exercise
 import se.novila.exercise.ExerciseType
 import java.time.DateTimeException
-import java.time.Duration
 import java.time.Instant
 import java.time.ZoneId
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.toKotlinInstant
 
 /**
  * The parts of the Google Health API's exercise data points that Novila uses
@@ -51,7 +53,7 @@ internal object GoogleHealthJson {
         val start = exercise.interval?.startTime?.let(::instant) ?: return@mapNotNull null
         val end = exercise.interval?.endTime?.let(::instant)
         val duration = exercise.activeDuration?.let(::duration)
-            ?: end?.let { Duration.between(start, it) }
+            ?: end?.let { it.toKotlinInstant() - start.toKotlinInstant() }
             ?: Duration.ZERO
         Exercise(
             type = exerciseType(exercise.exerciseType),
@@ -85,8 +87,6 @@ internal object GoogleHealthJson {
 
     private fun duration(text: String): Duration? {
         val seconds = text.removeSuffix("s").toDoubleOrNull() ?: return null
-        return Duration.ofMillis((seconds * 1000).toLong())
+        return (seconds * 1000).toLong().milliseconds
     }
-
-    private fun Duration.coerceAtLeast(min: Duration) = if (this < min) min else this
 }
