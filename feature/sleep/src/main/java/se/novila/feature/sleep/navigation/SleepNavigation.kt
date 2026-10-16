@@ -1,7 +1,6 @@
 package se.novila.feature.sleep.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
@@ -22,7 +21,8 @@ fun EntryProviderScope<NavKey>.sleepEntry(contentPadding: PaddingValues) {
             viewModel.refresh()
             onPauseOrDispose { }
         }
-        val week by viewModel.week.collectAsStateWithLifecycle()
+        // Nothing to show until the saved days are read, a moment at app start.
+        val week = viewModel.week.collectAsStateWithLifecycle().value ?: return@entry
         SleepScreen(week.today, week.history, viewModel::setSleep, contentPadding)
     }
 }

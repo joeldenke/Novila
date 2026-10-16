@@ -38,7 +38,13 @@ class WorkoutViewModel(
     private var timer: Job? = null
 
     init {
-        training.read(LocalDate.now()).program.sessions
+        // The stores are almost always read by now; only a screen restored at app start waits for them.
+        val today = LocalDate.now()
+        training.current(today)?.let { start(it, day) } ?: viewModelScope.launch { start(training.read(today), day) }
+    }
+
+    private fun start(state: TrainingUiState, day: DayOfWeek) {
+        state.program.sessions
             .firstOrNull { it.day == day && it.exercises.isNotEmpty() }
             ?.let { show(Workout.start(it, System.currentTimeMillis())) }
     }

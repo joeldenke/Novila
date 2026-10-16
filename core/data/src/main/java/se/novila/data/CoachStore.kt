@@ -1,42 +1,39 @@
 package se.novila.data
 
 import android.content.Context
+import androidx.datastore.preferences.core.stringPreferencesKey
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import se.novila.coach.CoachPreferences
 import se.novila.coach.CoachPreferencesCodec
 
 /**
- * The coach's answers in SharedPreferences, on the device only. Null until the user sets up the coach. One instance
- * for the whole app, so the Training tab sees what the coach screen saves through [changes].
+ * The coach's answers in Preferences DataStore (file `coach`, moved over from the SharedPreferences of the same name
+ * on first read), on the device only. One instance for the whole app, so the Training tab sees what the coach screen
+ * saves through [answers].
  */
 @SingleIn(AppScope::class)
-@Inject
-class CoachStore(context: Context) {
-    private val prefs = context.getSharedPreferences("coach", Context.MODE_PRIVATE)
-    private val revision = MutableStateFlow(0)
+class CoachStore internal constructor(context: Context, scope: CoroutineScope) {
+    @Inject constructor(context: Context) : this(context, storeScope())
 
-    /** Counts saves and resets. */
-    val changes: StateFlow<Int> = revision.asStateFlow()
+    private val store = PreferencesStore(context, NAME, scope)
 
-    fun load(): CoachPreferences? = CoachPreferencesCodec.decode(prefs.getString(KEY, null))
+    /** The saved answers, kept in memory. Null until the first read is done. */
+    val answers: StateFlow<SavedCoach?> = store.snapshots { SavedCoach(CoachPreferencesCodec.decode(it[KEY])) }
 
-    fun save(preferences: CoachPreferences) {
-        prefs.edit().putString(KEY, CoachPreferencesCodec.encode(preferences)).apply()
-        revision.update { it + 1 }
-    }
+    /** Saves [preferences] in the background, in order with other saves. */
+    fun save(preferences: CoachPreferences) = store.edit { it[KEY] = CoachPreferencesCodec.encode(preferences) }
 
-    fun clear() {
-        prefs.edit().remove(KEY).apply()
-        revision.update { it + 1 }
-    }
+    fun clear() = store.edit { it.remove(KEY) }
 
     private companion object {
-        const val KEY = "preferences"
+        const val NAME = "coach"
+        val KEY = stringPreferencesKey("preferences")
     }
 }
+
+/** The coach's answers as saved at one moment: null [preferences] until the user sets up the coach. */
+data class SavedCoach(val preferences: CoachPreferences?)

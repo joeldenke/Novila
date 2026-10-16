@@ -9,7 +9,6 @@ import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import se.novila.movement.MovementRepository
@@ -26,8 +25,9 @@ class TrainingViewModel(
 ) : ViewModel() {
     private val date = MutableStateFlow(LocalDate.now())
 
-    val state: StateFlow<TrainingUiState> = combine(date, training.changes) { date, _ -> training.read(date) }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, training.read(date.value))
+    /** The week's program, or null before the stores' first read. */
+    val state: StateFlow<TrainingUiState?> = training.states(date)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, training.current(date.value))
 
     val movement: StateFlow<MovementState> = movementRepository.state
 
