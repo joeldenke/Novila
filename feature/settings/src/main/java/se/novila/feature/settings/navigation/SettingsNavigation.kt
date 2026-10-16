@@ -19,6 +19,8 @@ import androidx.navigation3.runtime.NavKey
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.serialization.Serializable
 import se.novila.feature.settings.DisclaimerScreen
+import se.novila.feature.settings.ProfileScreen
+import se.novila.feature.settings.ProfileViewModel
 import se.novila.feature.settings.R
 import se.novila.feature.settings.SettingsActions
 import se.novila.feature.settings.SettingsScreen
@@ -39,9 +41,13 @@ import se.novila.ui.R as UiR
 /** The health disclaimer. */
 @Serializable data object DisclaimerRoute : NavKey
 
+/** The user's profile, on the phone only. */
+@Serializable data object ProfileRoute : NavKey
+
 /**
- * Settings and the screens opened from it. Settings has its own ViewModel, scoped to the entry; the other two are
- * static text. Navigation inside goes through [navigator], on whichever tab Settings was opened from.
+ * Settings and the screens opened from it. Settings and the profile have their own ViewModels, scoped to their
+ * entries; the other two are static text. Navigation inside goes through [navigator], on whichever tab Settings was
+ * opened from.
  */
 fun EntryProviderScope<NavKey>.settingsEntries(navigator: Navigator, contentPadding: PaddingValues) {
     entry<SettingsRoute> {
@@ -53,16 +59,19 @@ fun EntryProviderScope<NavKey>.settingsEntries(navigator: Navigator, contentPadd
         }
         // Nothing to show until the settings are read, a moment at app start.
         val settings = viewModel.settings.collectAsStateWithLifecycle().value ?: return@entry
+        val profile = viewModel.profile.collectAsStateWithLifecycle().value ?: return@entry
         val movement by viewModel.movement.collectAsStateWithLifecycle()
         val context = LocalContext.current
         val connectHealth = rememberMovementPermissionRequest(viewModel::onMovementPermissionsResult)
         SettingsScreen(
             settings = settings,
+            profile = profile,
             movement = movement,
             version = viewModel.version,
             canUseDynamicColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
             canChooseLanguage = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU,
             actions = SettingsActions(
+                onOpenProfile = { navigator.navigate(ProfileRoute) },
                 onTheme = viewModel::setTheme,
                 onDynamicColor = viewModel::setDynamicColor,
                 onChooseLanguage = { openLanguageSettings(context) },
@@ -73,6 +82,17 @@ fun EntryProviderScope<NavKey>.settingsEntries(navigator: Navigator, contentPadd
                 onOpenDisclaimer = { navigator.navigate(DisclaimerRoute) },
                 onDeleteData = viewModel::deleteAllData,
             ),
+            contentPadding = contentPadding,
+        )
+    }
+    entry<ProfileRoute> {
+        val viewModel = metroViewModel<ProfileViewModel>()
+        // Nothing to show until the profile is read, a moment at app start.
+        val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
+        ProfileScreen(
+            form = state.form,
+            currentYear = state.currentYear,
+            onChange = viewModel::onChange,
             contentPadding = contentPadding,
         )
     }
@@ -92,6 +112,7 @@ fun settingsTitle(route: NavKey?): String? = when (route) {
     SettingsRoute -> stringResource(UiR.string.settings_title)
     HealthDataRoute -> stringResource(HealthConnectR.string.health_info_title)
     DisclaimerRoute -> stringResource(R.string.disclaimer_title)
+    ProfileRoute -> stringResource(R.string.profile_title)
     else -> null
 }
 

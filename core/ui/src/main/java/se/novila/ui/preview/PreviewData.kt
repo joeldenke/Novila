@@ -2,6 +2,7 @@ package se.novila.ui.preview
 
 import se.novila.model.DayEntry
 import se.novila.model.FoodLog
+import se.novila.model.Profile
 import se.novila.movement.MovementState
 import se.novila.movement.TodayMovement
 import java.time.LocalDate
@@ -21,6 +22,9 @@ object PreviewData {
         mood: Int,
         food: FoodLog,
     ) = DayEntry(date.minusDays(daysAgo), waterGlasses = water, sleepHours = sleep, mood = mood, food = food)
+
+    /** Who the previews are about. */
+    val profile = Profile(name = "Alex", birthYear = 1990, heightCm = 178, weightKg = 74)
 
     val today = day(0, sleep = 7.5f, water = 5, mood = 4, food = FoodLog(3, 2, 2, 1))
 

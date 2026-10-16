@@ -13,6 +13,9 @@
     <string name="greeting_morning">Good morning</string>
     <string name="greeting_afternoon">Good afternoon</string>
     <string name="greeting_evening">Good evening</string>
+    <string name="greeting_morning_named">Good morning, %1$s</string>
+    <string name="greeting_afternoon_named">Good afternoon, %1$s</string>
+    <string name="greeting_evening_named">Good evening, %1$s</string>
     <string name="balance_title">Today\'s balance</string>
     <string name="tip_log_sleep">Log last night\'s sleep to complete your balance.</string>
     <string name="tip_goals_met">Sleep and nutrition are on target. Nice work!</string>

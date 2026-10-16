@@ -32,7 +32,7 @@
     <string name="settings_data_body">Allt du loggar sparas bara i den här telefonen. Novila har inget konto och inget moln, så inget kan återställas när det har raderats.</string>
     <string name="settings_delete_data">Radera all data</string>
     <string name="settings_delete_data_title">Radera all data?</string>
-    <string name="settings_delete_data_body">Din loggade sömn, kost, mående och dina pass samt coachens svar raderas från telefonen. Det går inte att ångra. Data i Health Connect påverkas inte.</string>
+    <string name="settings_delete_data_body">Din profil, din loggade sömn, kost, mående och dina pass samt coachens svar raderas från telefonen. Det går inte att ångra. Data i Health Connect påverkas inte.</string>
     <string name="settings_delete_data_confirm">Radera</string>
     <string name="settings_cancel">Avbryt</string>
     <string name="settings_data_deleted">All data är raderad.</string>
@@ -59,4 +59,20 @@
     <string name="disclaimer_ai_body">Coachens kommentar skrivs av Gemini Nano i din telefon. AI kan ha fel. Själva programmet görs utan AI, och det är programmet som gäller.</string>
     <string name="disclaimer_sources_title">Var råden kommer ifrån</string>
     <string name="disclaimer_sources_body">Aktivitetsmålen följer WHO:s råd om fysisk aktivitet och kostpoängen Livsmedelsverkets kostråd. Dina egna behov kan skilja sig.</string>
+
+    <!-- Profil -->
+    <string name="settings_profile">Profil</string>
+    <string name="settings_profile_empty">Lägg till ditt namn och dina kroppsmått</string>
+    <string name="profile_title">Profil</string>
+    <string name="profile_about_you">Om dig</string>
+    <string name="profile_name">Namn</string>
+    <string name="profile_name_summary">Idag hälsar på dig med namn.</string>
+    <string name="profile_body">Kropp</string>
+    <string name="profile_birth_year">Födelseår</string>
+    <string name="profile_height">Längd</string>
+    <string name="profile_weight">Vikt</string>
+    <string name="profile_birth_year_error">Ange ett år mellan %1$d och %2$d.</string>
+    <string name="profile_height_error">Ange en längd mellan %1$d och %2$d cm.</string>
+    <string name="profile_weight_error">Ange en vikt mellan %1$d och %2$d kg.</string>
+    <string name="profile_privacy">Alla fält är valfria. Profilen sparas bara i den här telefonen och kräver inget konto. Raderar du all data under Inställningar raderas den också.</string>
 </resources>
