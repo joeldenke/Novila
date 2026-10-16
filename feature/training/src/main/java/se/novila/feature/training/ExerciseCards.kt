@@ -209,7 +209,7 @@ private fun PlannedExerciseRow(motion: ExerciseMotion, planned: PlannedExercise,
                 color = NovilaTheme.pillars.training.color,
             )
             NovilaText(
-                stringResource(R.string.dose_rest, planned.restSeconds),
+                stringResource(R.string.dose_rest, planned.rest.inWholeSeconds.toInt()),
                 style = NovilaTheme.typography.bodySmall,
                 color = NovilaTheme.colors.onSurfaceVariant,
             )

@@ -9,6 +9,7 @@ import dev.zacsweers.metrox.viewmodel.ViewModelGraph
 import se.novila.healthconnect.HealthConnectSource
 import se.novila.movement.InMemoryMovementCache
 import se.novila.movement.MovementRepository
+import kotlin.time.Clock
 
 /**
  * The app's Metro graph. Modules contribute to [AppScope]: the stores in `:core:data` (`@Inject`, `@SingleIn`), the
@@ -29,6 +30,10 @@ interface AppGraph : ViewModelGraph {
         source = HealthConnectSource(context),
         cache = InMemoryMovementCache(),
     )
+
+    /** The time, for ViewModels that count it (the workout timer). Tests can pass their own [Clock]. */
+    @Provides
+    fun clock(): Clock = Clock.System
 
     @DependencyGraph.Factory
     fun interface Factory {

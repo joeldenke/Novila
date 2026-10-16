@@ -1,7 +1,7 @@
 package se.novila.exercise
 
-import java.time.Duration
 import java.time.LocalDate
+import kotlin.time.Duration
 
 /** What a session trains. The program balances these, following WHO's activity guidelines. */
 enum class ExerciseKind { Cardio, Strength, Mobility }

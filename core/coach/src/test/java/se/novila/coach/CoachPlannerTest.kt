@@ -15,8 +15,9 @@ import se.novila.exercise.PlannedSession
 import se.novila.exercise.StrengthLevel
 import se.novila.exercise.TrainingProgram
 import java.time.DayOfWeek
-import java.time.Duration
 import java.time.LocalDate
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 class CoachPlannerTest {
     /** A Thursday. The program's week starts on Monday the 12th. */
@@ -146,8 +147,8 @@ class CoachPlannerTest {
         val strength = CoachPlanner.dose(squat, level, CoachGoal.Strength)
         val endurance = CoachPlanner.dose(squat, level, CoachGoal.Endurance)
         assertEquals(level.sets, health.sets)
-        assertTrue(strength.sets > health.sets && strength.restSeconds > health.restSeconds)
-        assertTrue(endurance.amount > health.amount && endurance.restSeconds < health.restSeconds)
+        assertTrue(strength.sets > health.sets && strength.rest > health.rest)
+        assertTrue(endurance.amount > health.amount && endurance.rest < health.rest)
     }
 
     @Test fun `endurance gets more cardio days and mobility gets mobility days`() {
@@ -159,7 +160,7 @@ class CoachPlannerTest {
 
     @Test fun `cardio builds on recent workouts and never outgrows the session time`() {
         val running = (1..4L).map {
-            Exercise(ExerciseType.Running, monday.minusWeeks(it).plusDays(1), Duration.ofMinutes(200))
+            Exercise(ExerciseType.Running, monday.minusWeeks(it).plusDays(1), 200.minutes)
         }
         val program = plan(CoachPreferences(CoachGoal.Endurance, daysPerWeek = 6, sessionMinutes = 60), running).program
         val cardio = program.sessions.filter { it.type.kind == ExerciseKind.Cardio }
@@ -225,7 +226,7 @@ class CoachPlannerTest {
             val phases = (1..3).map { rehab(area, it).program.sessions.first { s -> s.type == ExerciseType.Rehab } }
             phases.forEachIndexed { i, session ->
                 assertEquals(CoachPlanner.rehabExercises(area, i + 1), session.ids())
-                assertTrue(session.exercises.all { it.restSeconds == 60 })
+                assertTrue(session.exercises.all { it.rest == 60.seconds })
             }
             assertTrue(phases[0].exercises.size <= phases[2].exercises.size)
             val first = phases[0].exercises.first { it.dosage == Dosage.Repetitions }
@@ -252,7 +253,7 @@ class CoachPlannerTest {
 
     private fun strengthTwiceAWeek() = (1..4L).flatMap { week ->
         listOf(1L, 4L).map {
-            Exercise(ExerciseType.Strength, monday.minusWeeks(week).plusDays(it), Duration.ofMinutes(30))
+            Exercise(ExerciseType.Strength, monday.minusWeeks(week).plusDays(it), 30.minutes)
         }
     }
 }

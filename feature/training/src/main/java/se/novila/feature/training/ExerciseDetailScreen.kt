@@ -72,7 +72,7 @@ fun ExerciseDetailScreen(
                         stringResource(
                             R.string.exercise_in_program,
                             dosageText(planned),
-                            stringResource(R.string.dose_rest, planned.restSeconds),
+                            stringResource(R.string.dose_rest, planned.rest.inWholeSeconds.toInt()),
                         ),
                         style = NovilaTheme.typography.titleSmall,
                         color = NovilaTheme.pillars.training.color,

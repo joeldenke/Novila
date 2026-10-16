@@ -7,9 +7,10 @@ import org.junit.Test
 import se.novila.exercise.Exercise
 import se.novila.exercise.ExerciseType
 import java.net.URLDecoder
-import java.time.Duration
 import java.time.LocalDate
 import java.time.ZoneId
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.minutes
 
 class GoogleHealthExerciseSourceTest {
     private val stockholm = ZoneId.of("Europe/Stockholm")
@@ -71,10 +72,10 @@ class GoogleHealthExerciseSourceTest {
         assertEquals(
             listOf(
                 // 22:30 UTC is past midnight in Stockholm, so the run counts on the 14th.
-                Exercise(ExerciseType.Running, LocalDate.of(2026, 10, 14), Duration.ofMinutes(30)),
+                Exercise(ExerciseType.Running, LocalDate.of(2026, 10, 14), 30.minutes),
                 // Without an active duration the interval is used.
-                Exercise(ExerciseType.Strength, LocalDate.of(2026, 10, 14), Duration.ofMinutes(45)),
-                Exercise(ExerciseType.Walking, LocalDate.of(2026, 10, 15), Duration.ofMillis(1_200_500)),
+                Exercise(ExerciseType.Strength, LocalDate.of(2026, 10, 14), 45.minutes),
+                Exercise(ExerciseType.Walking, LocalDate.of(2026, 10, 15), 1_200_500.milliseconds),
             ),
             exercises,
         )

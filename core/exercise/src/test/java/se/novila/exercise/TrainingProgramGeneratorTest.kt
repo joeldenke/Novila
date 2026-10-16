@@ -4,8 +4,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.time.DayOfWeek
-import java.time.Duration
 import java.time.LocalDate
+import kotlin.time.Duration.Companion.minutes
 
 class TrainingProgramGeneratorTest {
     /** A Thursday. The program's week starts on Monday the 12th. */
@@ -13,7 +13,7 @@ class TrainingProgramGeneratorTest {
     private val monday = LocalDate.of(2026, 10, 12)
 
     private fun weekly(type: ExerciseType, minutes: Long, weeks: Int = 4, dayOffset: Long = 1) = (1..weeks).map {
-        Exercise(type, monday.minusWeeks(it.toLong()).plusDays(dayOffset), Duration.ofMinutes(minutes))
+        Exercise(type, monday.minusWeeks(it.toLong()).plusDays(dayOffset), minutes.minutes)
     }
 
     private fun TrainingProgram.minutes(kind: ExerciseKind) =
@@ -67,8 +67,8 @@ class TrainingProgramGeneratorTest {
     }
 
     @Test fun `this week's and older workouts don't count`() {
-        val thisWeek = Exercise(ExerciseType.Running, monday, Duration.ofMinutes(600))
-        val tooOld = Exercise(ExerciseType.Running, monday.minusWeeks(5), Duration.ofMinutes(600))
+        val thisWeek = Exercise(ExerciseType.Running, monday, 600.minutes)
+        val tooOld = Exercise(ExerciseType.Running, monday.minusWeeks(5), 600.minutes)
         val program = TrainingProgramGenerator.generate(listOf(thisWeek, tooOld), today)
         assertEquals(TrainingProgramGenerator.MIN_CARDIO_MINUTES, program.cardioMinutes)
         assertTrue(program.sessions.none { it.type == ExerciseType.Running })

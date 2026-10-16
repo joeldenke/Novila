@@ -91,7 +91,7 @@ object TrainingProgramGenerator {
     fun summarize(history: List<Exercise>, weekStart: LocalDate): RecentTraining {
         val recent = history.filter { it.date >= weekStart.minusWeeks(HISTORY_WEEKS) && it.date < weekStart }
         val weeklyCardio = recent.filter { it.type.kind == ExerciseKind.Cardio }
-            .sumOf { it.duration.toMinutes() } / HISTORY_WEEKS.toDouble()
+            .sumOf { it.duration.inWholeMinutes } / HISTORY_WEEKS.toDouble()
         val weeklyStrength = recent.count { it.type.kind == ExerciseKind.Strength } / HISTORY_WEEKS.toDouble()
         return RecentTraining(
             cardioTarget = roundTo5(weeklyCardio * PROGRESSION).coerceIn(MIN_CARDIO_MINUTES, MAX_CARDIO_MINUTES),

@@ -7,9 +7,9 @@ import org.junit.Test
 import se.novila.anatomy.ExerciseLibrary
 import se.novila.anatomy.MuscleGroup
 import java.time.DayOfWeek
-import java.time.Duration
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
+import kotlin.time.Duration.Companion.minutes
 
 class StrengthSessionsTest {
     private val today = LocalDate.of(2026, 10, 15)
@@ -39,7 +39,7 @@ class StrengthSessionsTest {
         val beginner = StrengthSessions.session(StrengthLevel.Beginner, second = false).first()
         val advanced = StrengthSessions.session(StrengthLevel.Advanced, second = false).first()
         assertTrue(advanced.sets >= beginner.sets && advanced.amount > beginner.amount)
-        assertTrue(advanced.restSeconds < beginner.restSeconds)
+        assertTrue(advanced.rest < beginner.rest)
     }
 
     @Test fun `holds are dosed in seconds and one-sided exercises per side`() {
@@ -72,7 +72,7 @@ class StrengthSessionsTest {
         val monday = LocalDate.of(2026, 10, 12)
         val twiceAWeek = (1..4L).flatMap { week ->
             listOf(1L, 4L).map {
-                Exercise(ExerciseType.Strength, monday.minusWeeks(week).plusDays(it), Duration.ofMinutes(30))
+                Exercise(ExerciseType.Strength, monday.minusWeeks(week).plusDays(it), 30.minutes)
             }
         }
         val program = TrainingProgramGenerator.generate(twiceAWeek, today)
