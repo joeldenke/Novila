@@ -12,6 +12,7 @@ navigation3 = "1.2.0"
 # Health Connect: read-only steps and active calories, see HealthConnectSource.
 healthConnect = "1.1.0"
 kotlinxSerialization = "1.11.0"
+kotlinxCoroutines = "1.11.0"
 # Gemini Nano on the device through AICore, for the coach's message. See GeminiNanoCoachModel.
 mlkitGenaiPrompt = "1.0.0-beta2"
 junit = "4.13.2"
@@ -36,6 +37,7 @@ androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-ru
 androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }
 androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "navigation3" }
 androidx-health-connect-client = { module = "androidx.health.connect:connect-client", version.ref = "healthConnect" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerialization" }
 # Google Health API responses (JSON), see GoogleHealthJson.
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
@@ -65,6 +67,8 @@ kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", v
 # artifact, never AGP internals: AGP 10 plans to expose nothing else for compilation.
 android-gradle-api = { module = "com.android.tools.build:gradle-api", version.ref = "agp" }
 compose-gradle-plugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
+# Kover's DSL, for the coverage variant every module shares (build-logic Kover.kt).
+kover-gradle-plugin = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", version.ref = "kover" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -78,6 +82,8 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 # Convention plugins from build-logic (no version: they come from the included build).
 novila-android-application = { id = "novila.android.application" }
 novila-android-library = { id = "novila.android.library" }
+novila-android-feature = { id = "novila.android.feature" }
 novila-android-compose = { id = "novila.android.compose" }
 novila-android-unittest = { id = "novila.android.unittest" }
 novila-android-screenshot = { id = "novila.android.screenshot" }
+novila-jvm-library = { id = "novila.jvm.library" }

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Health Connect: everything the app declares for it, merged into the app's manifest. Every permission, query and
+  exported component here ends up in app/badging/debug-badging.txt, which CI compares against the built APK
+  (checkDebugBadging). A change here must update that file in the same PR, so it is visible in review. See CLAUDE.md
+  before adding permissions. HealthConnectManifestTest keeps this file and MOVEMENT_PERMISSIONS in sync.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+      Read-only, today's steps and active calories. Nothing is written, nothing is read in the background and no
+      history beyond today is requested. Each type here must be justified in Play Console's Health apps declaration,
+      so keep the list short.
+    -->
+    <uses-permission android:name="android.permission.health.READ_STEPS" />
+    <uses-permission android:name="android.permission.health.READ_ACTIVE_CALORIES_BURNED" />
+
+    <!-- Lets the app see the Health Connect app on Android 13 and lower (package visibility). -->
+    <queries>
+        <package android:name="com.google.android.apps.healthdata" />
+    </queries>
+
+    <application>
+        <!--
+          Health Connect shows this screen when the user taps the privacy link in its permission
+          dialog. It is required: without it Health Connect never shows the dialog.
+          Exported without a permission on Android 13 and lower because the Health Connect app has
+          no permission to require. It only shows static text and never reads data or intent extras.
+        -->
+        <activity
+            android:name="se.novila.healthconnect.HealthDataInfoActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE" />
+            </intent-filter>
+        </activity>
+
+        <!-- Android 14 and higher: same screen, only the system may open it. Named as before the move to this module. -->
+        <activity-alias
+            android:name="se.novila.ViewPermissionUsageActivity"
+            android:exported="true"
+            android:permission="android.permission.START_VIEW_PERMISSION_USAGE"
+            android:targetActivity="se.novila.healthconnect.HealthDataInfoActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW_PERMISSION_USAGE" />
+                <category android:name="android.intent.category.HEALTH_PERMISSIONS" />
+            </intent-filter>
+        </activity-alias>
+    </application>
+</manifest>

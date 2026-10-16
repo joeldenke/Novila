@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Navigation -->
+    <string name="nav_today">Idag</string>
+    <string name="nav_training">Träning</string>
+    <string name="nav_sleep">Sömn</string>
+    <string name="nav_nutrition">Kost</string>
+    <string name="balance_unit">av 100</string>
+    <string name="tip_next_vegetables">En portion grönsaker eller frukt till ger kostpoängen +%1$d.</string>
+    <string name="tip_next_meal">Nästa regelbundna måltid ger kostpoängen +%1$d.</string>
+    <string name="tip_next_protein">Lägg till protein, som fisk, bönor eller ägg, för +%1$d i kostpoäng.</string>
+    <string name="tip_next_whole_grain">Välj fullkorn nästa gång för +%1$d i kostpoäng.</string>
+    <string name="tip_next_water">Ett glas vatten ger kostpoängen +%1$d.</string>
+
+    <!-- Week and insights -->
+    <string name="week_sleep_title">Sömn i veckan</string>
+    <string name="week_sleep_caption">Snitt per natt · mål %1$s</string>
+    <string name="week_sleep_description">Sömn de senaste sju dagarna, %1$s per natt i snitt.</string>
+    <string name="week_nutrition_title">Kost i veckan</string>
+    <string name="week_nutrition_caption">Snittpoäng · en bra dag är %1$d eller mer</string>
+    <string name="week_nutrition_description">Kostpoäng de senaste sju dagarna, %1$s i snitt.</string>
+    <string name="movement_steps">Steg</string>
+    <string name="movement_open_settings">Öppna Health Connect</string>
+</resources>

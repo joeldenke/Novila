@@ -35,10 +35,10 @@ class AndroidComposeConventionPlugin : Plugin<Project> {
             }
 
             dependencies {
-                val bom = platform(libs.findLibrary("compose-bom").get())
+                val bom = platform(libs.library("compose-bom"))
                 add("implementation", bom)
-                add("implementation", libs.findLibrary("compose-ui-tooling-preview").get())
-                add("debugImplementation", libs.findLibrary("compose-ui-tooling").get())
+                add("implementation", libs.library("compose-ui-tooling-preview"))
+                add("debugImplementation", libs.library("compose-ui-tooling"))
             }
         }
     }

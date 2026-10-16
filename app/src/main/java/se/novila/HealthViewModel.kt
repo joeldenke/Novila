@@ -16,15 +16,23 @@ import se.novila.coach.CoachPlanner
 import se.novila.coach.CoachPreferences
 import se.novila.coach.CoachPrompt
 import se.novila.coach.CoachPromptInput
-import se.novila.coach.CoachStore
-import se.novila.coach.GeminiNanoCoachModel
+import se.novila.data.CoachStore
+import se.novila.data.GeminiNanoCoachModel
+import se.novila.data.HealthStore
 import se.novila.exercise.Exercise
 import se.novila.exercise.ExerciseType
 import se.novila.exercise.TrainingProgram
 import se.novila.exercise.TrainingProgramGenerator
 import se.novila.exercise.Workout
+import se.novila.feature.training.AssistantUiState
+import se.novila.feature.training.CoachUiState
+import se.novila.feature.training.WorkoutUiState
 import se.novila.healthconnect.HealthConnectSource
 import se.novila.healthconnect.MOVEMENT_PERMISSIONS
+import se.novila.model.DayEntry
+import se.novila.model.FoodGroup
+import se.novila.model.withPortions
+import se.novila.model.withTreats
 import se.novila.movement.InMemoryMovementCache
 import se.novila.movement.MovementRepository
 import se.novila.movement.MovementState
@@ -42,26 +50,6 @@ data class HealthUiState(
     val program: TrainingProgram,
     val coach: CoachUiState,
 )
-
-/**
- * The coach's [preferences] (the defaults before it is set up) and the [plan] they give. [active] when the
- * user has set it up, so the plan is the week's program.
- */
-data class CoachUiState(val preferences: CoachPreferences, val plan: CoachPlan, val active: Boolean)
-
-/**
- * The coach's message from the on-device model: whether the model can be used, whether it is [writing], and the
- * [message] it wrote for the current plan. [failed] when the last attempt gave nothing.
- */
-data class AssistantUiState(
-    val availability: AssistantAvailability = AssistantAvailability.Unknown,
-    val writing: Boolean = false,
-    val message: String? = null,
-    val failed: Boolean = false,
-)
-
-/** A strength session in progress, with the seconds left of a timed step (a rest or a hold). */
-data class WorkoutUiState(val workout: Workout, val secondsLeft: Int?)
 
 class HealthViewModel(app: Application) : AndroidViewModel(app) {
     private val store = HealthStore(app)

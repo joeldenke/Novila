@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Training program -->
+    <string name="program_title">This week\'s program</string>
+    <string name="program_summary">%1$d minutes of cardio and strength on %2$d days a week.</string>
+    <string name="program_basis">Based on WHO\'s activity guidelines and your recent workouts. Cardio time rises by at most a tenth a week.</string>
+    <string name="minutes_value" translatable="false">%1$d min</string>
+    <string name="exercise_walking">Brisk walk</string>
+    <string name="exercise_running">Run</string>
+    <string name="exercise_cycling">Cycling</string>
+    <string name="exercise_swimming">Swimming</string>
+    <string name="exercise_strength">Strength, full body</string>
+    <string name="exercise_mobility">Mobility and stretching</string>
+    <string name="exercise_other">Cardio</string>
+
+    <!-- Exercise illustrations -->
+    <string name="move_squat">Squat</string>
+    <string name="move_push_up">Push-up</string>
+    <string name="move_glute_bridge">Glute bridge</string>
+    <string name="move_split_squat">Split squat</string>
+    <string name="move_jumping_jack">Jumping jacks</string>
+    <string name="move_calf_raise">Calf raise</string>
+    <string name="move_plank">Plank</string>
+    <string name="move_mountain_climber">Mountain climbers</string>
+    <string name="move_superman">Superman</string>
+    <string name="move_reverse_lunge">Reverse lunge</string>
+    <string name="move_good_morning">Good morning</string>
+    <string name="move_bird_dog">Bird dog</string>
+    <string name="move_crunch">Crunch</string>
+    <string-array name="move_squat_steps">
+        <item>Stand with your feet hip-width apart, toes turned slightly out.</item>
+        <item>Push your hips back and bend your knees until your thighs are about level with the floor.</item>
+        <item>Press through your whole foot to stand up again.</item>
+    </string-array>
+    <string name="move_squat_tip">Keep your heels on the floor and your knees pointing the same way as your toes.</string>
+    <string-array name="move_push_up_steps">
+        <item>Place your hands a little wider than your shoulders, body straight from head to heels.</item>
+        <item>Bend your elbows and lower your chest towards the floor.</item>
+        <item>Push back up until your arms are straight.</item>
+    </string-array>
+    <string name="move_push_up_tip">Keep your belly tight so your hips don\'t sag. Too hard? Start with your knees on the floor.</string>
+    <string-array name="move_glute_bridge_steps">
+        <item>Lie on your back with bent knees and your feet flat on the floor.</item>
+        <item>Squeeze your glutes and lift your hips until your body is straight from knees to shoulders.</item>
+        <item>Lower slowly back down.</item>
+    </string-array>
+    <string name="move_glute_bridge_tip">Push through your heels and avoid arching your lower back.</string>
+    <string-array name="move_split_squat_steps">
+        <item>Stand with one foot a long step in front of the other, up on the toes of the back foot.</item>
+        <item>Lower straight down until both knees are bent about 90 degrees.</item>
+        <item>Push up through the front foot. Do all repetitions, then switch legs.</item>
+    </string-array>
+    <string name="move_split_squat_tip">Keep your upper body upright and your front knee over your foot.</string>
+    <string-array name="move_jumping_jack_steps">
+        <item>Stand with your feet together and your arms by your sides.</item>
+        <item>Jump your feet apart while your arms swing up over your head.</item>
+        <item>Jump back to the start and keep a steady pace.</item>
+    </string-array>
+    <string name="move_jumping_jack_tip">Land softly on the balls of your feet.</string>
+    <string-array name="move_calf_raise_steps">
+        <item>Stand tall with your feet hip-width apart. Hold on to a wall for balance if you like.</item>
+        <item>Rise up onto the balls of your feet as high as you can.</item>
+        <item>Lower your heels slowly back to the floor.</item>
+    </string-array>
+    <string name="move_calf_raise_tip">Go slowly, especially on the way down.</string>
+    <string-array name="move_plank_steps">
+        <item>Place your hands under your shoulders and your feet hip-width apart.</item>
+        <item>Lift your body so it is straight from head to heels.</item>
+        <item>Hold the position and keep breathing calmly.</item>
+    </string-array>
+    <string name="move_plank_tip">Squeeze your belly and glutes so your hips neither sag nor rise.</string>
+    <string-array name="move_mountain_climber_steps">
+        <item>Start in a high plank with your hands under your shoulders.</item>
+        <item>Pull one knee towards your chest, then put the foot back.</item>
+        <item>Switch legs in a steady rhythm.</item>
+    </string-array>
+    <string name="move_mountain_climber_tip">Keep your hips low and your shoulders over your hands.</string>
+    <string-array name="move_superman_steps">
+        <item>Lie on your stomach with your arms stretched out in front of you.</item>
+        <item>Lift your arms, chest and legs a little off the floor at the same time.</item>
+        <item>Hold for a moment, then lower slowly.</item>
+    </string-array>
+    <string name="move_superman_tip">Look at the floor so your neck stays long. Lifting a few centimetres is enough.</string>
+    <string-array name="move_reverse_lunge_steps">
+        <item>Stand with your feet hip-width apart.</item>
+        <item>Take a long step back and lower until both knees are bent about 90 degrees.</item>
+        <item>Push off with the front foot back to standing. Do all repetitions, then switch legs.</item>
+    </string-array>
+    <string name="move_reverse_lunge_tip">Keep most of your weight on the front foot.</string>
+    <string-array name="move_good_morning_steps">
+        <item>Stand with your feet hip-width apart and your knees soft.</item>
+        <item>Push your hips back and lean forward with a straight back until you feel a stretch in the back of your thighs.</item>
+        <item>Squeeze your glutes and rise back up.</item>
+    </string-array>
+    <string name="move_good_morning_tip">Move from your hips, not your back, and keep your back straight the whole time.</string>
+    <string-array name="move_bird_dog_steps">
+        <item>Get on your hands and knees, hands under your shoulders and knees under your hips.</item>
+        <item>Stretch one arm forward and the opposite leg back until both are level with your back.</item>
+        <item>Return slowly and switch sides.</item>
+    </string-array>
+    <string name="move_bird_dog_tip">Keep your back still, as if a glass of water were standing on it.</string>
+    <string-array name="move_crunch_steps">
+        <item>Lie on your back with bent knees and your feet on the floor.</item>
+        <item>Tighten your belly and curl your shoulders off the floor, reaching for your knees.</item>
+        <item>Lower slowly back down.</item>
+    </string-array>
+    <string name="move_crunch_tip">Your lower back stays on the floor. Don\'t pull on your neck.</string>
+    <string name="move_figure_description">%1$s. Works %2$s.</string>
+    <string name="dose_reps" translatable="false">%1$d × %2$d</string>
+    <string name="dose_reps_per_side">%1$d × %2$d per side</string>
+    <string name="dose_seconds" translatable="false">%1$d × %2$d s</string>
+    <string name="dose_rest">Rest %1$d s</string>
+    <string name="step_number" translatable="false">%1$d</string>
+    <string name="strength_session_title">Strength on %1$s</string>
+    <string name="strength_session_summary">Full body, about %1$d minutes. Tap an exercise to see how it\'s done.</string>
+    <string name="exercises_title">All exercises</string>
+    <string name="exercises_body">Bodyweight exercises you can do at home, no equipment needed.</string>
+    <string name="exercise_open">Show how to do %1$s</string>
+    <string name="exercise_replay">Play again</string>
+    <string name="exercise_in_program">In your program: %1$s, %2$s</string>
+    <string name="exercise_muscles_title">Muscles</string>
+    <string name="exercise_primary_legend">Main muscles: %1$s</string>
+    <string name="exercise_secondary_legend">Also working: %1$s</string>
+    <string name="exercise_how_title">How to do it</string>
+    <string name="exercise_tip_title">Keep in mind</string>
+    <string name="exercise_safety">Stop if it hurts. If you have an injury or are unsure, ask a physiotherapist.</string>
+    <string name="workout_start">Start the session</string>
+    <string name="workout_done_today">Done today: %1$d minutes. Well done!</string>
+    <string name="workout_title">Strength session</string>
+    <string name="workout_progress">Exercise %1$d of %2$d · set %3$d of %4$d</string>
+    <string name="workout_reps">%1$d repetitions</string>
+    <string name="workout_reps_per_side">%1$d repetitions per side</string>
+    <string name="workout_timer" translatable="false">%1$d:%2$02d</string>
+    <string name="workout_tempo">Follow the figure\'s calm pace.</string>
+    <string name="workout_hold">Hold until the timer runs out.</string>
+    <string name="workout_set_done">Set done</string>
+    <string name="workout_rest_title">Rest</string>
+    <string name="workout_next">Next: %1$s, set %2$d of %3$d</string>
+    <string name="workout_skip_rest">Skip the rest</string>
+    <string name="workout_skip_timer">Next</string>
+    <string name="workout_finished_title">Well done!</string>
+    <string name="workout_finished_body">You did %1$d exercises and %2$d sets in %3$d minutes. Next week\'s program builds on it.</string>
+    <string name="workout_save">Save the session</string>
+    <string name="workout_none">No session is running. Start one from a strength day under Training.</string>
+    <string name="workout_timer_description">%1$d seconds left</string>
+    <string name="muscle_chest">chest</string>
+    <string name="muscle_shoulders">shoulders</string>
+    <string name="muscle_biceps">biceps</string>
+    <string name="muscle_triceps">triceps</string>
+    <string name="muscle_abs">abs</string>
+    <string name="muscle_upper_back">upper back</string>
+    <string name="muscle_lats">lats</string>
+    <string name="muscle_lower_back">lower back</string>
+    <string name="muscle_glutes">glutes</string>
+    <string name="muscle_quads">quads</string>
+    <string name="muscle_hamstrings">hamstrings</string>
+    <string name="muscle_calves">calves</string>
+    <string name="list_separator" translatable="false">", "</string>
+    <string name="movement_title">Today\'s movement</string>
+    <string name="movement_active_calories">Active calories</string>
+    <string name="movement_source">From Health Connect. Novila only reads it and stores nothing.</string>
+    <string name="movement_connect_body">See today\'s steps and active calories from your watch or phone, via Health Connect. Novila only reads them and the data stays on your phone.</string>
+    <string name="movement_connect">Connect Health Connect</string>
+    <string name="movement_denied_body">Access was declined. You can allow it for Novila in Health Connect.</string>
+    <string name="movement_install_body">Health Connect needs to be installed or updated to show your steps and active calories.</string>
+    <string name="movement_install">Get Health Connect</string>
+    <!-- Training coach -->
+    <string name="coach_title">Training coach</string>
+    <string name="coach_card_inactive">Let the coach build a week around your goal, your time and the exercises in Novila.</string>
+    <string name="coach_card_active">Your program is built by the coach: %1$s, %2$d days a week, about %3$d minutes at a time.</string>
+    <string name="coach_open">Open the coach</string>
+    <string name="coach_adjust">Adjust the program</string>
+    <string name="coach_intro">The coach plans your week right here on your phone, from your answers, your recent workouts and the exercises in Novila. Nothing is sent anywhere.</string>
+    <string name="coach_goal_title">Your goal</string>
+    <string name="coach_goal_health">All-round health</string>
+    <string name="coach_goal_strength">Get stronger</string>
+    <string name="coach_goal_endurance">Better fitness</string>
+    <string name="coach_goal_mobility">Mobility</string>
+    <string name="coach_time_title">Your time</string>
+    <string name="coach_days">Days a week</string>
+    <string name="coach_days_value">%1$d days</string>
+    <string name="coach_minutes">Minutes per session</string>
+    <string name="coach_minutes_value">About %1$d minutes</string>
+    <string name="coach_fewer_days">Fewer days</string>
+    <string name="coach_more_days">More days</string>
+    <string name="coach_shorter">Shorter sessions</string>
+    <string name="coach_longer">Longer sessions</string>
+    <string name="coach_focus_title">Extra focus</string>
+    <string name="coach_area_legs">Legs</string>
+    <string name="coach_area_core">Core</string>
+    <string name="coach_area_upper_body">Upper body</string>
+    <string name="coach_consider_title">Take into account</string>
+    <string name="coach_consider_knees">Sensitive knees</string>
+    <string name="coach_consider_back">Sensitive back</string>
+    <string name="coach_consider_quiet">No jumping</string>
+    <string name="coach_why_title">Why this program</string>
+    <string name="coach_create">Create my program</string>
+    <string name="coach_suggest">Suggest another program</string>
+    <string name="coach_reset">Use the standard program</string>
+    <string name="coach_note_goal_health">All-round health: full-body strength and cardio along WHO\'s guidelines.</string>
+    <string name="coach_note_goal_strength">Getting stronger: more sets, longer rests and a third strength day when you have the time.</string>
+    <string name="coach_note_goal_endurance">Better fitness: more cardio days, more repetitions and shorter rests.</string>
+    <string name="coach_note_goal_mobility">Mobility: mobility sessions and calm exercises for the back and hips.</string>
+    <string name="coach_note_level_beginner">You are new to strength training, so the sessions start gently with fewer sets and longer rests.</string>
+    <string name="coach_note_level_intermediate">You strength train about once a week, so the sessions have three sets and a little more work.</string>
+    <string name="coach_note_level_advanced">You strength train regularly, so the sessions have more repetitions and shorter rests.</string>
+    <string name="coach_note_rest">At least one rest day between strength days, so your muscles have time to recover.</string>
+    <string name="coach_note_focus">An extra set for exercises that train your %1$s.</string>
+    <string name="coach_note_knees">Easy on the knees: no jumps or lunges.</string>
+    <string name="coach_note_back">Easy on the back: calm trunk exercises instead of ones that bend or arch the back.</string>
+    <string name="coach_note_quiet">No jumping, so it works in an apartment.</string>
+    <string name="coach_note_cardio_low">The program has %1$d minutes of cardio. WHO recommends at least 150 a week, so add brisk walks in everyday life too.</string>
+    <string name="coach_note_cardio_progression">Cardio builds on your recent workouts and rises by at most a tenth a week.</string>
+    <string name="coach_goal_rehab">Rehab</string>
+    <string name="exercise_rehab">Rehab session</string>
+    <string name="rehab_session_title">Rehab on %1$s</string>
+    <string name="rehab_session_summary">Slow, controlled exercises, about %1$d minutes. Tap an exercise to see how it is done.</string>
+    <string name="coach_rehab_title">Rehab</string>
+    <string name="coach_rehab_knee">Knee</string>
+    <string name="coach_rehab_lower_back">Lower back</string>
+    <string name="coach_rehab_phase">Phase</string>
+    <string name="coach_rehab_phase_value">%1$d of %2$d: %3$s</string>
+    <string name="coach_rehab_phase_1">a gentle start</string>
+    <string name="coach_rehab_phase_2">building strength</string>
+    <string name="coach_rehab_phase_3">back to everyday life and training</string>
+    <string name="coach_rehab_easier">Earlier phase</string>
+    <string name="coach_rehab_harder">Later phase</string>
+    <string name="coach_rehab_safety">The rehab program is a support, not care. If a physiotherapist has given you exercises, follow them. Seek care for severe or increasing pain, swelling or numbness.</string>
+    <string name="coach_rehab_safety_knee">Seek care if the knee locks, gives way or swells up.</string>
+    <string name="coach_rehab_safety_lower_back">Seek care at once for numbness around the groin, trouble passing urine or growing weakness in the legs.</string>
+    <string name="coach_note_goal_rehab">Rehab: slow, controlled exercises three days a week with a rest day in between, and walks on the other days.</string>
+    <string name="coach_note_rehab_phase">%1$s, phase %2$d of %3$d. Move on when the sessions feel easy and the pain does not increase the day after, often after a couple of weeks.</string>
+    <string name="coach_note_pain">Pain up to 3 out of 10 during a session is fine if it has settled by the next morning. If it gets worse, go back a phase.</string>
+    <string name="coach_ai_title">The coach\'s comment</string>
+    <string name="coach_ai_unavailable">Gemini Nano is not available on this phone, so the coach explains the week with its own reasons above.</string>
+    <string name="coach_ai_downloadable">Your phone can run Gemini Nano, Google\'s AI model that runs on the phone. Get it and the coach can explain your week in its own words. Your plan and answers never leave the phone.</string>
+    <string name="coach_ai_download">Get Gemini Nano</string>
+    <string name="coach_ai_downloading">Your phone is getting Gemini Nano. It can take a while.</string>
+    <string name="coach_ai_ready">Gemini Nano can explain your week in its own words, right on your phone.</string>
+    <string name="coach_ai_write">Let the coach explain the week</string>
+    <string name="coach_ai_rewrite">Write a new comment</string>
+    <string name="coach_ai_writing">The coach is writing…</string>
+    <string name="coach_ai_failed">Nothing could be written right now. Try again in a while.</string>
+    <string name="coach_ai_disclaimer">Written by Gemini Nano on your phone. AI can be wrong: the program above is what counts.</string>
+</resources>

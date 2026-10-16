@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Sleep -->
+    <string name="sleep_title">Sleep last night</string>
+</resources>

@@ -74,14 +74,10 @@ jobs:
         with:
           ref: ${{ steps.target.outputs.branch }}
 
-      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+      # Restores the cache main saved: modules the branch doesn't touch come from the build cache.
+      - uses: ./.github/actions/setup-gradle-build
         with:
-          distribution: temurin
-          java-version: 21
-
-      - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
-        with:
-          cache-provider: basic
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
       - name: Record
         run: |

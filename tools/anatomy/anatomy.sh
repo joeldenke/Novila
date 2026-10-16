@@ -33,12 +33,9 @@ POM
   (cd "$CACHE" && mvn -q dependency:copy-dependencies -DoutputDirectory="$LIB")
 }
 
-# Everything that runs on a plain JVM: AnatomyFigure.kt (Compose), CoachStore.kt (Android) and
-# GeminiNanoCoachModel.kt (ML Kit) are left out.
+# The plain Kotlin modules :core:anatomy, :core:exercise and :core:coach (no Android, so no Gradle needed).
 sources() {
-  find "$ROOT/app/src/main/java/se/novila/anatomy" "$ROOT/app/src/main/java/se/novila/exercise" \
-    "$ROOT/app/src/main/java/se/novila/coach" -name '*.kt' \
-    ! -name AnatomyFigure.kt ! -name CoachStore.kt ! -name GeminiNanoCoachModel.kt
+  find "$ROOT/core/anatomy/src/main" "$ROOT/core/exercise/src/main" "$ROOT/core/coach/src/main" -name '*.kt'
   find "$ROOT/tools/anatomy/src" -name '*.kt'
 }
 
@@ -58,13 +55,13 @@ shift || true
 case "$command" in
   test)
     tests=(
-      "$ROOT/app/src/test/java/se/novila/anatomy/AnatomyTest.kt"
-      "$ROOT/app/src/test/java/se/novila/exercise/StrengthSessionsTest.kt"
-      "$ROOT/app/src/test/java/se/novila/exercise/TrainingProgramGeneratorTest.kt"
-      "$ROOT/app/src/test/java/se/novila/exercise/WorkoutTest.kt"
-      "$ROOT/app/src/test/java/se/novila/coach/CoachPlannerTest.kt"
-      "$ROOT/app/src/test/java/se/novila/coach/CoachPreferencesTest.kt"
-      "$ROOT/app/src/test/java/se/novila/coach/CoachPromptTest.kt"
+      "$ROOT/core/anatomy/src/test/java/se/novila/anatomy/AnatomyTest.kt"
+      "$ROOT/core/exercise/src/test/java/se/novila/exercise/StrengthSessionsTest.kt"
+      "$ROOT/core/exercise/src/test/java/se/novila/exercise/TrainingProgramGeneratorTest.kt"
+      "$ROOT/core/exercise/src/test/java/se/novila/exercise/WorkoutTest.kt"
+      "$ROOT/core/coach/src/test/java/se/novila/coach/CoachPlannerTest.kt"
+      "$ROOT/core/coach/src/test/java/se/novila/coach/CoachPreferencesTest.kt"
+      "$ROOT/core/coach/src/test/java/se/novila/coach/CoachPromptTest.kt"
     )
     # shellcheck disable=SC2046
     compile $(sources) "${tests[@]}"

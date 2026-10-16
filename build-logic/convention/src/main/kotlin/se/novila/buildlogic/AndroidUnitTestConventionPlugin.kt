@@ -9,14 +9,14 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 
 /**
- * `novila.android.unittest`: JVM unit tests with Robolectric, so Android and Compose UI tests
- * run in CI without an emulator. Adds Compose UI test APIs when the module uses Compose,
- * and Kover for coverage.
+ * `novila.android.unittest`: JVM unit tests with Robolectric, so Android and Compose UI tests run in CI without an
+ * emulator. Adds Compose UI test APIs when the module uses Compose, and Kover for coverage. Robolectric's SDK level
+ * is set per module in `src/test/resources/robolectric.properties` (see CLAUDE.md).
  */
 class AndroidUnitTestConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            pluginManager.apply("org.jetbrains.kotlinx.kover")
+            configureKover("debug")
 
             pluginManager.withPlugin("com.android.application") {
                 extensions.configure<ApplicationExtension> { testOptions.configureUnitTests() }
@@ -26,15 +26,15 @@ class AndroidUnitTestConventionPlugin : Plugin<Project> {
             }
 
             dependencies {
-                add("testImplementation", libs.findLibrary("junit").get())
-                add("testImplementation", libs.findLibrary("robolectric").get())
+                add("testImplementation", libs.library("junit"))
+                add("testImplementation", libs.library("robolectric"))
             }
             pluginManager.withPlugin("org.jetbrains.kotlin.plugin.compose") {
                 dependencies {
-                    add("testImplementation", platform(libs.findLibrary("compose-bom").get()))
-                    add("testImplementation", libs.findLibrary("compose-ui-test-junit4").get())
+                    add("testImplementation", platform(libs.library("compose-bom")))
+                    add("testImplementation", libs.library("compose-ui-test-junit4"))
                     // Registers the empty activity that createComposeRule() launches.
-                    add("debugImplementation", libs.findLibrary("compose-ui-test-manifest").get())
+                    add("debugImplementation", libs.library("compose-ui-test-manifest"))
                 }
             }
         }
@@ -50,6 +50,9 @@ class AndroidUnitTestConventionPlugin : Plugin<Project> {
             // Robolectric 4.17 reaches into jdk.internal.access for SDK 36+ on JDK 17+; without this
             // every Robolectric test fails with IllegalAccessException (robolectric#11434).
             test.jvmArgs("--add-exports=java.base/jdk.internal.access=ALL-UNNAMED")
+            // Rendering screenshots needs more than Gradle's 512 MB default. Two test JVMs (one per CPU on CI) plus
+            // the Gradle daemon still fit in a 7 GB runner.
+            test.maxHeapSize = "1g"
         }
     }
 }

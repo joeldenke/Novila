@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fraction" translatable="false">%1$d/%2$d</string>
+
+    <string name="water_title">Water</string>
+
+    <!-- Nutrition -->
+    <string name="nutrition_score_title">Today\'s nutrition score</string>
+    <string name="nutrition_next_title">Next step</string>
+    <string name="nutrition_done_title">All food groups on target</string>
+    <string name="nutrition_done_body">Every food group has reached today\'s goal.</string>
+    <string name="nutrition_treat_penalty">Sweets and snacks: −%1$d points today. One a day is free.</string>
+    <string name="nutrition_about">Weighted after the Swedish Food Agency\'s dietary advice: vegetables and fruit count the most.</string>
+    <string name="food_log_title">Log today</string>
+    <string name="food_vegetables">Vegetables &amp; fruit</string>
+    <string name="food_meals">Meals</string>
+    <string name="food_protein">Protein</string>
+    <string name="food_whole_grain">Whole grain</string>
+    <string name="food_treats">Sweets &amp; snacks</string>
+    <string name="food_progress">%1$d of %2$d</string>
+    <string name="food_treats_value">%1$d today</string>
+    <string name="food_add">Add %1$s</string>
+    <string name="food_remove">Remove %1$s</string>
+</resources>

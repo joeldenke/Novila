@@ -17,7 +17,7 @@ Keyframe(at, Pose) ──► Movement.poseAt(progress)      ledvinklar, utjämna
       Scene ──► AnatomyFigure (Compose Canvas)         färger från NovilaTheme.anatomy
 ```
 
-| Fil (`app/src/main/java/se/novila/anatomy/`) | Ansvar |
+| Fil (`core/anatomy/`, ren Kotlin, `se.novila.anatomy`) | Ansvar |
 |---|---|
 | `Geometry.kt` | `Vec3`, `Point2`, `Rotation` (`aboutX/Y/Z`) |
 | `Pose.kt` | `LimbPose`, `Pose`, `Keyframe`, `Movement` |
@@ -27,11 +27,13 @@ Keyframe(at, Pose) ──► Movement.poseAt(progress)      ledvinklar, utjämna
 | `ViewSelector.kt` | väljer varje övnings bästa kamera |
 | `ExerciseMotion.kt` | en övning: rörelse, muskler, kontakter, ankare, kamera |
 | `ExerciseLibrary.kt` | alla övningar och deras lösta vinklar |
-| `AnatomyFigure.kt` | Compose: still på toppen (tumnagel) eller ett antal repetitioner, aldrig loop |
 
-Programmet bygger på detta i `exercise/StrengthSessions.kt`: veckans två helkroppspass, en övning per
+`AnatomyFigure` (Compose, i `:feature:training`) ritar en `Scene`: still på toppen (tumnagel) eller ett antal
+repetitioner, aldrig loop.
+
+Programmet bygger på detta i `StrengthSessions.kt` (`:core:exercise`): veckans två helkroppspass, en övning per
 *slot* (ben, press, höftfällning, bål, rygg, kondition) och set, repetitioner och vila efter nivå.
-Texterna (namn, steg och tips) finns i `ui/common/ExerciseCards.kt` (`moveText`) och i `strings.xml`.
+Texterna (namn, steg och tips) finns i `ExerciseCards.kt` (`moveText`) och i `strings.xml`, båda i `:feature:training`.
 
 ## Koordinater och vinklar
 
