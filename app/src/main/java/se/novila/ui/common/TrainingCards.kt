@@ -72,6 +72,7 @@ private val ExerciseType.label: Int
         ExerciseType.Cycling -> R.string.exercise_cycling
         ExerciseType.Swimming -> R.string.exercise_swimming
         ExerciseType.Strength -> R.string.exercise_strength
+        ExerciseType.Rehab -> R.string.exercise_rehab
         ExerciseType.Mobility -> R.string.exercise_mobility
         ExerciseType.Other -> R.string.exercise_other
     }

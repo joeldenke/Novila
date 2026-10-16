@@ -1,13 +1,16 @@
 package se.novila.ui.preview
 
+import se.novila.AssistantUiState
 import se.novila.CoachUiState
 import se.novila.DayEntry
 import se.novila.FoodLog
+import se.novila.coach.AssistantAvailability
 import se.novila.coach.BodyArea
 import se.novila.coach.CoachGoal
 import se.novila.coach.CoachPlanner
 import se.novila.coach.CoachPreferences
 import se.novila.coach.Consideration
+import se.novila.coach.RehabArea
 import se.novila.exercise.Exercise
 import se.novila.exercise.ExerciseType
 import se.novila.exercise.TrainingProgramGenerator
@@ -56,6 +59,20 @@ internal object PreviewData {
             considerations = setOf(Consideration.Knees),
         ),
         active = true,
+    )
+
+    /** A rehab program for the lower back, in its second phase. */
+    val rehabCoach = coach(
+        CoachPreferences(goal = CoachGoal.Rehab, daysPerWeek = 5, rehabArea = RehabArea.LowerBack, rehabPhase = 2),
+        active = true,
+    )
+
+    /** What Gemini Nano might write about [coach]'s week. */
+    val assistantMessage = AssistantUiState(
+        availability = AssistantAvailability.Available,
+        message = "Den här veckan bygger du styrka i benen tre dagar, med vila emellan så att musklerna " +
+            "hinner återhämta sig. Knäböj och höftlyft gör jobbet utan hopp, så knäna skonas. Börja " +
+            "måndagens pass lugnt och fokusera på tekniken i första setet.",
     )
 
     /** The coach before it is set up. */

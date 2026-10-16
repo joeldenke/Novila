@@ -7,6 +7,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import se.novila.anatomy.ExerciseLibrary
 import se.novila.anatomy.MuscleGroup
+import se.novila.exercise.Dosage
 import se.novila.exercise.Exercise
 import se.novila.exercise.ExerciseKind
 import se.novila.exercise.ExerciseType
@@ -33,8 +34,8 @@ class CoachPlannerTest {
     private fun PlannedSession.muscles(): Set<MuscleGroup> =
         exercises.flatMap { ExerciseLibrary.byId(it.exerciseId)!!.primary }.toSet()
 
-    /** Every combination of answers a user can give, apart from the variation. */
-    private val everyAnswer: List<CoachPreferences> = CoachGoal.entries.flatMap { goal ->
+    /** Every combination of answers for a training goal, apart from the variation. Rehab is tested on its own. */
+    private val everyAnswer: List<CoachPreferences> = (CoachGoal.entries - CoachGoal.Rehab).flatMap { goal ->
         (CoachPreferences.MIN_DAYS..CoachPreferences.MAX_DAYS).flatMap { days ->
             listOf(15, 30, 60).flatMap { minutes ->
                 listOf(emptySet(), Consideration.entries.toSet(), setOf(Consideration.Knees)).map { considered ->
@@ -90,7 +91,7 @@ class CoachPlannerTest {
 
     @Test fun `considerations leave out the exercises that don't suit them`() {
         Consideration.entries.forEach { consideration ->
-            val used = CoachGoal.entries.flatMap { goal ->
+            val used = (CoachGoal.entries - CoachGoal.Rehab).flatMap { goal ->
                 val history = strengthTwiceAWeek()
                 plan(CoachPreferences(goal, 6, 60, considerations = setOf(consideration)), history)
                     .program.strength.flatMap { it.ids() }
@@ -191,6 +192,62 @@ class CoachPlannerTest {
         assertTrue(notes.contains(CoachNote.Level(StrengthLevel.Beginner)))
         assertTrue(notes.contains(CoachNote.RestBetweenStrengthDays))
         assertTrue(notes.contains(CoachNote.Focus(setOf(BodyArea.Core))))
+    }
+
+    private fun rehab(area: RehabArea, phase: Int, days: Int = 4, considered: Set<Consideration> = emptySet()) =
+        plan(
+            CoachPreferences(
+                CoachGoal.Rehab,
+                daysPerWeek = days,
+                considerations = considered,
+                rehabArea = area,
+                rehabPhase = phase,
+            ),
+            strengthTwiceAWeek(),
+        )
+
+    @Test fun `a rehab week has three calm sessions every other day and walks in between`() {
+        RehabArea.entries.forEach { area ->
+            (CoachPreferences.MIN_DAYS..CoachPreferences.MAX_DAYS).forEach { days ->
+                val program = rehab(area, phase = 1, days = days).program
+                val sessions = program.sessions.filter { it.type == ExerciseType.Rehab }
+                assertEquals(3, sessions.size)
+                assertTrue("$area $days", CoachPlanner.minGap(sessions.map { it.day }) >= 2)
+                val others = program.sessions - sessions.toSet()
+                assertTrue(others.all { it.type == ExerciseType.Walking && it.exercises.isEmpty() })
+                assertEquals(days, program.sessions.size)
+            }
+        }
+    }
+
+    @Test fun `rehab uses the phase's exercises, gets harder with each phase and ignores the strength level`() {
+        RehabArea.entries.forEach { area ->
+            val phases = (1..3).map { rehab(area, it).program.sessions.first { s -> s.type == ExerciseType.Rehab } }
+            phases.forEachIndexed { i, session ->
+                assertEquals(CoachPlanner.rehabExercises(area, i + 1), session.ids())
+                assertTrue(session.exercises.all { it.restSeconds == 60 })
+            }
+            assertTrue(phases[0].exercises.size <= phases[2].exercises.size)
+            val first = phases[0].exercises.first { it.dosage == Dosage.Repetitions }
+            val last = phases[2].exercises.first { it.exerciseId == first.exerciseId }
+            assertTrue(last.sets > first.sets && last.amount > first.amount)
+        }
+        // Rehab never starts with jumps, lunges or anything above a beginner's level.
+        RehabArea.entries.flatMap { area -> (1..3).flatMap { CoachPlanner.rehabExercises(area, it) } }.forEach {
+            val exercise = CoachCatalog.byId(it)!!
+            assertTrue(it, !exercise.jump && exercise.level == StrengthLevel.Beginner)
+        }
+    }
+
+    @Test fun `rehab respects the considerations and explains the pain limit`() {
+        val knee = rehab(RehabArea.Knee, 3, considered = setOf(Consideration.Knees))
+        assertTrue(knee.program.sessions.flatMap { it.ids() }.none { it == "split_squat" })
+        val back = rehab(RehabArea.LowerBack, 3, considered = setOf(Consideration.Back))
+        assertTrue(back.program.sessions.flatMap { it.ids() }.none { it == "good_morning" })
+        assertEquals(
+            listOf(CoachNote.Goal(CoachGoal.Rehab), CoachNote.RehabPhase(RehabArea.LowerBack, 3), CoachNote.PainGuide),
+            back.notes.take(3),
+        )
     }
 
     private fun strengthTwiceAWeek() = (1..4L).flatMap { week ->

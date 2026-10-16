@@ -18,10 +18,24 @@ class CoachPreferencesTest {
         assertEquals(CoachPreferences(), CoachPreferencesCodec.decode(CoachPreferencesCodec.encode(CoachPreferences())))
     }
 
+    @Test fun `rehab answers survive encoding, and answers from before rehab are still read`() {
+        val rehab = CoachPreferences(goal = CoachGoal.Rehab, rehabArea = RehabArea.LowerBack, rehabPhase = 2)
+        assertEquals(rehab, CoachPreferencesCodec.decode(CoachPreferencesCodec.encode(rehab)))
+        assertEquals(
+            CoachPreferences(goal = CoachGoal.Strength, daysPerWeek = 5, focus = setOf(BodyArea.Core)),
+            CoachPreferencesCodec.decode("c1;Strength;5;30;Core;;0"),
+        )
+        assertEquals(
+            CoachPreferences.MAX_REHAB_PHASE,
+            CoachPreferencesCodec.decode("c2;Rehab;4;30;;;0;Knee;9")?.rehabPhase,
+        )
+    }
+
     @Test fun `nothing stored or unreadable means no coach`() {
         assertNull(CoachPreferencesCodec.decode(null))
         assertNull(CoachPreferencesCodec.decode(""))
         assertNull(CoachPreferencesCodec.decode("c2;Health;4;30;;;0"))
+        assertNull(CoachPreferencesCodec.decode("c3;Health;4;30;;;0;Knee;1"))
         assertNull(CoachPreferencesCodec.decode("c1;Yoga;4;30;;;0"))
         assertNull(CoachPreferencesCodec.decode("c1;Health;four;30;;;0"))
     }

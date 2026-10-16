@@ -11,7 +11,9 @@ import se.novila.R
 import se.novila.coach.BodyArea
 import se.novila.coach.CoachGoal
 import se.novila.coach.CoachNote
+import se.novila.coach.CoachPreferences
 import se.novila.coach.Consideration
+import se.novila.coach.RehabArea
 import se.novila.designsystem.component.NovilaButton
 import se.novila.designsystem.component.NovilaCard
 import se.novila.designsystem.component.NovilaText
@@ -58,6 +60,7 @@ fun coachNoteText(note: CoachNote): String = when (note) {
             CoachGoal.Strength -> R.string.coach_note_goal_strength
             CoachGoal.Endurance -> R.string.coach_note_goal_endurance
             CoachGoal.Mobility -> R.string.coach_note_goal_mobility
+            CoachGoal.Rehab -> R.string.coach_note_goal_rehab
         },
     )
 
@@ -87,6 +90,15 @@ fun coachNoteText(note: CoachNote): String = when (note) {
     is CoachNote.CardioBelowGuideline -> stringResource(R.string.coach_note_cardio_low, note.minutes)
 
     CoachNote.CardioProgression -> stringResource(R.string.coach_note_cardio_progression)
+
+    is CoachNote.RehabPhase -> stringResource(
+        R.string.coach_note_rehab_phase,
+        stringResource(note.area.label),
+        note.phase,
+        CoachPreferences.MAX_REHAB_PHASE,
+    )
+
+    CoachNote.PainGuide -> stringResource(R.string.coach_note_pain)
 }
 
 @get:StringRes
@@ -96,7 +108,23 @@ val CoachGoal.label: Int
         CoachGoal.Strength -> R.string.coach_goal_strength
         CoachGoal.Endurance -> R.string.coach_goal_endurance
         CoachGoal.Mobility -> R.string.coach_goal_mobility
+        CoachGoal.Rehab -> R.string.coach_goal_rehab
     }
+
+@get:StringRes
+val RehabArea.label: Int
+    get() = when (this) {
+        RehabArea.Knee -> R.string.coach_rehab_knee
+        RehabArea.LowerBack -> R.string.coach_rehab_lower_back
+    }
+
+/** What a rehab [phase] is about, in a few words. */
+@StringRes
+fun rehabPhaseLabel(phase: Int): Int = when (phase) {
+    1 -> R.string.coach_rehab_phase_1
+    2 -> R.string.coach_rehab_phase_2
+    else -> R.string.coach_rehab_phase_3
+}
 
 @get:StringRes
 val BodyArea.label: Int

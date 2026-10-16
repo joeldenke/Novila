@@ -33,11 +33,12 @@ POM
   (cd "$CACHE" && mvn -q dependency:copy-dependencies -DoutputDirectory="$LIB")
 }
 
-# Everything that runs on a plain JVM: AnatomyFigure.kt (Compose) and CoachStore.kt (Android) are left out.
+# Everything that runs on a plain JVM: AnatomyFigure.kt (Compose), CoachStore.kt (Android) and
+# GeminiNanoCoachModel.kt (ML Kit) are left out.
 sources() {
   find "$ROOT/app/src/main/java/se/novila/anatomy" "$ROOT/app/src/main/java/se/novila/exercise" \
     "$ROOT/app/src/main/java/se/novila/coach" -name '*.kt' \
-    ! -name AnatomyFigure.kt ! -name CoachStore.kt
+    ! -name AnatomyFigure.kt ! -name CoachStore.kt ! -name GeminiNanoCoachModel.kt
   find "$ROOT/tools/anatomy/src" -name '*.kt'
 }
 
@@ -63,12 +64,14 @@ case "$command" in
       "$ROOT/app/src/test/java/se/novila/exercise/WorkoutTest.kt"
       "$ROOT/app/src/test/java/se/novila/coach/CoachPlannerTest.kt"
       "$ROOT/app/src/test/java/se/novila/coach/CoachPreferencesTest.kt"
+      "$ROOT/app/src/test/java/se/novila/coach/CoachPromptTest.kt"
     )
     # shellcheck disable=SC2046
     compile $(sources) "${tests[@]}"
     java -cp "$(classpath)" org.junit.runner.JUnitCore \
       se.novila.anatomy.AnatomyTest se.novila.exercise.StrengthSessionsTest se.novila.exercise.TrainingProgramGeneratorTest \
-      se.novila.exercise.WorkoutTest se.novila.coach.CoachPlannerTest se.novila.coach.CoachPreferencesTest
+      se.novila.exercise.WorkoutTest se.novila.coach.CoachPlannerTest se.novila.coach.CoachPreferencesTest \
+      se.novila.coach.CoachPromptTest
     ;;
   render)
     # shellcheck disable=SC2046

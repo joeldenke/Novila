@@ -2,6 +2,7 @@ package se.novila.ui
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
@@ -61,6 +62,7 @@ fun NovilaApp(vm: HealthViewModel = viewModel()) {
     val state by vm.state.collectAsStateWithLifecycle()
     val movement by vm.movement.collectAsStateWithLifecycle()
     val workout by vm.workout.collectAsStateWithLifecycle()
+    val assistant by vm.assistant.collectAsStateWithLifecycle()
 
     // Health Connect's own permission dialog. It links to HealthDataInfoActivity for the details.
     val context = LocalContext.current
@@ -151,14 +153,19 @@ fun NovilaApp(vm: HealthViewModel = viewModel()) {
                     )
                 }
                 entry<CoachRoute> {
+                    // Whether Gemini Nano can run here is asked when the coach opens, never in the background.
+                    LaunchedEffect(Unit) { vm.checkAssistant() }
                     CoachScreen(
                         coach = state.coach,
+                        assistant = assistant,
                         today = state.today.date.dayOfWeek,
                         onChange = vm::changeCoach,
                         onCreate = vm::createCoachProgram,
                         onSuggest = vm::nextCoachSuggestion,
                         onReset = vm::resetCoach,
                         onOpenExercise = { navigator.navigate(ExerciseRoute(it)) },
+                        onDownloadAssistant = vm::downloadAssistant,
+                        onWriteMessage = vm::writeAssistantMessage,
                         contentPadding = innerPadding,
                     )
                 }

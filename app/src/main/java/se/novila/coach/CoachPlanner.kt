@@ -27,6 +27,12 @@ sealed interface CoachNote {
     /** The week's cardio is below WHO's 150 minutes: everyday walks make up for it. */
     data class CardioBelowGuideline(val minutes: Int) : CoachNote
     data object CardioProgression : CoachNote
+
+    /** Which rehab program and phase, and when to move on to the next one. */
+    data class RehabPhase(val area: RehabArea, val phase: Int) : CoachNote
+
+    /** How much pain is fine during a rehab session, and what to do when it is more. */
+    data object PainGuide : CoachNote
 }
 
 /** A program from the coach and the [notes] that explain it. */
@@ -67,6 +73,7 @@ object CoachPlanner {
         val weekStart = TrainingProgramGenerator.weekStart(today)
         val recent = TrainingProgramGenerator.summarize(history, weekStart)
         val days = DAYS.getValue(preferences.daysPerWeek.coerceIn(CoachPreferences.MIN_DAYS, CoachPreferences.MAX_DAYS))
+        if (preferences.goal == CoachGoal.Rehab) return rehab(preferences, days, weekStart)
 
         val strengthCount = strengthDays(preferences)
         val strengthDays = spreadOut(days, strengthCount)
@@ -102,6 +109,51 @@ object CoachPlanner {
             notes = notes(preferences, recent.level, strengthCount, weeklyCardio),
         )
     }
+
+    /**
+     * A rehab week: three calm sessions every other day with the phase's exercises, and walks on the days in
+     * between. The exercises are chosen by hand per area and phase (see [REHAB]) rather than by score, so the
+     * program is predictable; the considerations still leave out what doesn't suit.
+     */
+    private fun rehab(preferences: CoachPreferences, days: List<DayOfWeek>, weekStart: LocalDate): CoachPlan {
+        val phase = preferences.rehabPhase.coerceIn(1, CoachPreferences.MAX_REHAB_PHASE)
+        val rehabDays = spreadOut(days, REHAB_DAYS)
+        val walkDays = days - rehabDays.toSet()
+        val walkMinutes =
+            min(REHAB_WALK_MINUTES + (phase - 1) * CoachPreferences.MINUTES_STEP, preferences.sessionMinutes)
+        val exercises = rehabExercises(preferences.rehabArea, phase)
+            .mapNotNull(CoachCatalog::byId)
+            .filter { it.suits(preferences.considerations) }
+            .map { rehabDose(it, phase) }
+        val sessions = rehabDays.map { PlannedSession(it, ExerciseType.Rehab, sessionMinutes(exercises), exercises) } +
+            walkDays.map { PlannedSession(it, ExerciseType.Walking, walkMinutes) }
+        return CoachPlan(
+            program = TrainingProgram(weekStart, walkMinutes * walkDays.size, sessions.sortedBy { it.day }),
+            notes = buildList {
+                add(CoachNote.Goal(CoachGoal.Rehab))
+                add(CoachNote.RehabPhase(preferences.rehabArea, phase))
+                add(CoachNote.PainGuide)
+                add(CoachNote.RestBetweenStrengthDays)
+                Consideration.entries.filter {
+                    it in preferences.considerations
+                }.forEach { add(CoachNote.Considered(it)) }
+            },
+        )
+    }
+
+    /** The exercises of a rehab [phase] for [area], in the order they are done. */
+    internal fun rehabExercises(area: RehabArea, phase: Int): List<String> =
+        REHAB.getValue(area)[phase.coerceIn(1, CoachPreferences.MAX_REHAB_PHASE) - 1]
+
+    /** Slow and controlled: more sets, repetitions and longer holds with each phase, always a full minute of rest. */
+    internal fun rehabDose(exercise: CoachExercise, phase: Int): PlannedExercise = PlannedExercise(
+        exerciseId = exercise.id,
+        sets = if (phase == 1) 2 else 3,
+        amount = if (exercise.dosage == Dosage.Seconds) 10 + phase * 5 else 6 + phase * 2,
+        dosage = exercise.dosage,
+        perSide = exercise.perSide,
+        restSeconds = REHAB_REST_SECONDS,
+    )
 
     /** WHO's two strength days; three when strength is the goal and there is time for it. */
     private fun strengthDays(preferences: CoachPreferences): Int =
@@ -202,7 +254,7 @@ object CoachPlanner {
 
         CoachGoal.Strength -> if (pattern == MovementPattern.Conditioning) -0.5 else 0.0
 
-        CoachGoal.Health -> 0.0
+        CoachGoal.Health, CoachGoal.Rehab -> 0.0
     }
 
     /**
@@ -220,7 +272,7 @@ object CoachPlanner {
         val (sets, extraReps, extraSeconds, rest) = when (goal) {
             CoachGoal.Strength -> listOf(min(level.sets + 1, MAX_SETS), 0, 0, level.restSeconds + 30)
             CoachGoal.Endurance -> listOf(level.sets, 5, 15, max(30, level.restSeconds - 30))
-            CoachGoal.Health, CoachGoal.Mobility -> listOf(level.sets, 0, 0, level.restSeconds)
+            CoachGoal.Health, CoachGoal.Mobility, CoachGoal.Rehab -> listOf(level.sets, 0, 0, level.restSeconds)
         }
         return PlannedExercise(
             exerciseId = exercise.id,
@@ -264,6 +316,26 @@ object CoachPlanner {
         }
         if (weeklyCardio > 0) add(CoachNote.CardioProgression)
     }
+
+    /**
+     * Rehab exercises per area, phase 1 to 3. The knee starts with the hips and calves and adds knee bends
+     * once they are easy; the lower back starts with holding the trunk still and adds hinging last.
+     */
+    private val REHAB: Map<RehabArea, List<List<String>>> = mapOf(
+        RehabArea.Knee to listOf(
+            listOf("glute_bridge", "calf_raise", "bird_dog"),
+            listOf("glute_bridge", "squat", "calf_raise", "plank"),
+            listOf("squat", "split_squat", "glute_bridge", "calf_raise", "plank"),
+        ),
+        RehabArea.LowerBack to listOf(
+            listOf("bird_dog", "glute_bridge", "plank"),
+            listOf("bird_dog", "glute_bridge", "squat", "plank"),
+            listOf("squat", "good_morning", "glute_bridge", "bird_dog", "plank"),
+        ),
+    )
+    private const val REHAB_DAYS = 3
+    private const val REHAB_WALK_MINUTES = 20
+    private const val REHAB_REST_SECONDS = 60
 
     /** Each session gets one of each before anything else, in this order. */
     private val REQUIRED = listOf(

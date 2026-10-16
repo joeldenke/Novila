@@ -32,11 +32,13 @@ I `:app`:
   `StrengthSessions` fyller styrkedagarna med övningar, set, repetitioner och vila efter nivå. `Workout` är passläget
   (set, vila och nedräkning) i ren Kotlin. Timern körs i `HealthViewModel`. Avklarade pass sparas som `strengthMinutes`
   per dag och blir generatorns historik.
-- `coach` – träningscoachen, helt på enheten: `CoachPreferences` (mål, dagar, tid per pass, fokus, hänsyn),
-  `CoachCatalog` (rörelsemönster, dosering och belastning per övning) och `CoachPlanner`, som bygger veckans program
-  ur svaren, senaste passen och övningsbiblioteket och förklarar valen (`CoachNote`). Svaren sparas i `CoachStore`;
-  är coachen inte inställd gäller `TrainingProgramGenerator`. Ingen språkmodell eller nätverk: planeraren är
-  deterministisk och testad (`CoachPlannerTest`), och `variation` ger ett nytt förslag.
+- `coach` – träningscoachen, helt på enheten: `CoachPreferences` (mål, dagar, tid per pass, fokus, hänsyn,
+  rehabområde och fas), `CoachCatalog` (rörelsemönster, dosering och belastning per övning) och `CoachPlanner`, som
+  bygger veckans program ur svaren, senaste passen och övningsbiblioteket och förklarar valen (`CoachNote`). Målet
+  `Rehab` ger ett handvalt, fasindelat program (knä eller ländrygg, fas 1–3) med smärtgräns och vårdråd. Svaren sparas
+  i `CoachStore`; är coachen inte inställd gäller `TrainingProgramGenerator`. Planen är alltid deterministisk och testad.
+  Gemini Nano (`GeminiNanoCoachModel`, ML Kit Prompt API via AICore) skriver bara en kommentar om den färdiga planen
+  (`CoachPrompt` bygger prompten och tvättar svaret), aldrig själva planen. Se *Gemini Nano* under Regler.
 - `anatomy` – kroppsagnostiska övningsillustrationer i ren Kotlin: `Pose`/`Movement` (ledvinklar per keyframe),
   `Skeleton` (framåtkinematik, `BodyShape`), `MuscleMap`, `SceneBuilder` (ortografisk `Camera`, siluetter och de
   muskelband som syns), `ViewSelector` (varje övnings bästa vy) och `ExerciseLibrary`. `AnatomyFigure` ritar i Compose.
@@ -205,5 +207,9 @@ där pluginet `firebase@firebase` inte alltid installeras.
   inkopplad än. Att koppla in den kräver ägarens ok och, i samma PR: Google-inloggning som `AccessTokenProvider`,
   behörigheten `INTERNET` (ny rad i badging), uppdaterad integritetsskärm och Play-deklaration, och skillen
   `android-permissions-security`. Svaren tolkas i `GoogleHealthJson`; okända fält ignoreras.
+- **Gemini Nano:** coachens kommentar körs med Gemini Nano i AICore på telefonen; prompten (veckans plan) lämnar
+  aldrig enheten. Modellen får aldrig bestämma övningar, doser eller rehabråd: den förklarar bara planen från
+  `CoachPlanner`, och svaret visas med en AI-reservation. Inga emojis eller markdown (`CoachPrompt.clean`). Att använda
+  modellen till mer än så, eller byta till en molnmodell, kräver ägarens ok.
 - Hälsodata stannar på enheten. Inga nätverksanrop, analysverktyg eller Firebase-SDK:er i appen utan att ägaren ber om det.
 - Pinna GitHub Actions till commit-SHA med versionskommentar. Dependabot håller dem uppdaterade.

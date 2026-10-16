@@ -2,8 +2,14 @@ package se.novila.coach
 
 import se.novila.anatomy.MuscleGroup
 
-/** What the user wants from their training. It decides how the week is split and how exercises are dosed. */
-enum class CoachGoal { Health, Strength, Endurance, Mobility }
+/**
+ * What the user wants from their training. It decides how the week is split and how exercises are dosed.
+ * [Rehab] is a calm, phased program for a [RehabArea] instead of the usual full-body sessions.
+ */
+enum class CoachGoal { Health, Strength, Endurance, Mobility, Rehab }
+
+/** What a rehab program is for. Each has its own exercises per phase, see CoachPlanner. */
+enum class RehabArea { Knee, LowerBack }
 
 /** Parts of the body the user wants extra work on. */
 enum class BodyArea(val muscles: Set<MuscleGroup>) {
@@ -36,7 +42,8 @@ enum class Consideration {
 /**
  * The user's answers to the coach: [goal], how many [daysPerWeek] they can train and for how many
  * [sessionMinutes], areas to [focus] on and [considerations]. [variation] is bumped for a new
- * suggestion with the same answers; 0 is the coach's first choice.
+ * suggestion with the same answers; 0 is the coach's first choice. With the [CoachGoal.Rehab] goal,
+ * [rehabArea] and [rehabPhase] (1 to 3, from gentle to harder) choose the exercises.
  */
 data class CoachPreferences(
     val goal: CoachGoal = CoachGoal.Health,
@@ -45,6 +52,8 @@ data class CoachPreferences(
     val focus: Set<BodyArea> = emptySet(),
     val considerations: Set<Consideration> = emptySet(),
     val variation: Int = 0,
+    val rehabArea: RehabArea = RehabArea.Knee,
+    val rehabPhase: Int = 1,
 ) {
     fun withDays(days: Int) = copy(daysPerWeek = days.coerceIn(MIN_DAYS, MAX_DAYS))
 
@@ -61,6 +70,8 @@ data class CoachPreferences(
         },
     )
 
+    fun withRehabPhase(phase: Int) = copy(rehabPhase = phase.coerceIn(1, MAX_REHAB_PHASE))
+
     /** A different program from the same answers. */
     fun nextVariation() = copy(variation = variation + 1)
 
@@ -71,17 +82,19 @@ data class CoachPreferences(
         const val MIN_MINUTES = 15
         const val MAX_MINUTES = 60
         const val MINUTES_STEP = 5
+        const val MAX_REHAB_PHASE = 3
     }
 }
 
 /**
- * Stores [CoachPreferences] as text: "c1;goal;days;minutes;focus;considerations;variation", where focus
- * and considerations are comma-separated names. Plain Kotlin, so it is unit tested. Unknown names (from a
- * later version) are skipped, and anything unreadable gives null: the coach is then simply not set up.
+ * Stores [CoachPreferences] as text: "c2;goal;days;minutes;focus;considerations;variation;rehabArea;rehabPhase",
+ * where focus and considerations are comma-separated names. c1 (before rehab) is still read. Plain Kotlin, so it is
+ * unit tested. Unknown names (from a later version) are skipped, and anything unreadable gives null: the coach is
+ * then simply not set up.
  */
 object CoachPreferencesCodec {
-    private const val VERSION = "c1"
-    private const val FIELDS = 7
+    private const val VERSION = "c2"
+    private val FIELDS = mapOf("c1" to 7, VERSION to 9)
 
     fun encode(preferences: CoachPreferences): String = with(preferences) {
         listOf(
@@ -92,12 +105,14 @@ object CoachPreferencesCodec {
             focus.sorted().joinToString(",") { it.name },
             considerations.sorted().joinToString(",") { it.name },
             variation,
+            rehabArea.name,
+            rehabPhase,
         ).joinToString(";")
     }
 
     fun decode(raw: String?): CoachPreferences? {
         val parts = raw?.split(';') ?: return null
-        if (parts.size != FIELDS || parts[0] != VERSION) return null
+        if (FIELDS[parts[0]] != parts.size) return null
         val goal = CoachGoal.entries.firstOrNull { it.name == parts[1] } ?: return null
         val days = parts[2].toIntOrNull() ?: return null
         val minutes = parts[3].toIntOrNull() ?: return null
@@ -106,7 +121,8 @@ object CoachPreferencesCodec {
             focus = names(parts[4], BodyArea.entries),
             considerations = names(parts[5], Consideration.entries),
             variation = parts[6].toIntOrNull()?.coerceAtLeast(0) ?: 0,
-        ).withDays(days).withMinutes(minutes)
+            rehabArea = RehabArea.entries.firstOrNull { it.name == parts.getOrNull(7) } ?: RehabArea.Knee,
+        ).withDays(days).withMinutes(minutes).withRehabPhase(parts.getOrNull(8)?.toIntOrNull() ?: 1)
     }
 
     private fun <T : Enum<T>> names(raw: String, entries: List<T>): Set<T> =
