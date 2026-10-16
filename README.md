@@ -59,5 +59,5 @@ designsystem ovanpå Material 3. Appen finns på engelska och svenska.
 Moduler per lager: `:app` (bara aktivitet, navigation och ihopkoppling), en `:feature:*` per flik,
 och `:core:*` för designsystem, delad UI, data, Health Connect och ren Kotlin-logik (modell, anatomi, träning,
 coach). Convention plugins i `build-logic` gör att modulernas byggfiler bara innehåller plugins och beroenden;
-kompatibelt med Isolated Projects. Versionskatalog, configuration cache, build cache, R8 på release, Dependabot och
+med Isolated Projects påslaget. Versionskatalog, configuration cache, build cache, R8 på release, Dependabot och
 SHA-pinnade GitHub Actions.

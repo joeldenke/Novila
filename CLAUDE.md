@@ -114,6 +114,9 @@ Misstag som redan har gjorts i det här repot. Gör dem inte igen.
 - **gcloud i molnsessioner:** miljön sätter `CLOUDSDK_AUTH_ACCESS_TOKEN`, som skriver över `gcloud auth login`.
   Kör `unset CLOUDSDK_AUTH_ACCESS_TOKEN` efter inloggningen, annars svarar alla anrop `CREDENTIALS_MISSING`.
 - **GitHub API:** GraphQL och `gh pr create` fungerar inte här. Använd REST (`gh api repos/.../pulls`).
+- **Spotless och Isolated Projects:** ge Spotless filträd (`fileTree(...)`) som `target`, aldrig glob-strängar som
+  `"**/*.kt"`. För en glob slår Spotless upp varje undermoduls `build`-katalog, och då fallerar bygget med
+  "cannot access 'Project.layout' functionality on subprojects". Isolated Projects stoppar sådant i varje bygge.
 
 ## Repots egna skills
 - `add-exercise` (`.claude/skills/add-exercise`) när en övning läggs till eller ändras, eller styrkepassen byter övningar.
@@ -158,10 +161,14 @@ där pluginet `firebase@firebase` inte alltid installeras.
   använder hämtas via `novila { coroutines(); lifecycle(); … }` (`NovilaExtension`), så varje modul tar bara det den
   använder. Lägg till en funktion där hellre än att kopiera samma beroenden mellan moduler.
 - Logik utan Android blir en `novila.jvm.library`-modul. Den kompilerar och testar utan resurser och Robolectric.
-- Bygget ska vara kompatibelt med Isolated Projects: aldrig `allprojects {}`, `subprojects {}`,
-  `rootProject.<…>` eller `project(":x")` för att läsa eller ändra en annan modul. Behövs en fil i roten,
-  använd `project.isolated.rootProject.projectDirectory`. Workflowen *Isolated Projects* kontrollerar detta, men körs bara
-  manuellt från Actions-fliken (den är långsam och har hängt sig på AGP 9.x). Kör den efter ändringar i bygglogiken.
+- Isolated Projects är påslaget (`org.gradle.isolated-projects=true`): modulerna konfigureras parallellt, och varje bygge
+  fallerar om bygglogik når in i en annan modul. Aldrig `allprojects {}`, `subprojects {}`, `rootProject.<…>` eller
+  `project(":x")` för att läsa eller ändra en annan modul; beroenden deklareras med `projects.<…>` eller
+  `dependencies.project(...)`. Behövs en fil i roten, använd `project.isolated.rootProject.projectDirectory`.
+  KSP (t.ex. för DI eller Room) kräver `ksp.project.isolation.enabled=true` i `gradle.properties`, annars fallerar
+  bygget med "cannot access task dependencies directly" (google/ksp#2844). CI har `workers.max=3` i stället för 2:
+  Gradle 9.8 fryser med Isolated Projects när workers ≤ antalet byggen (roten och `build-logic`), gradle#39040.
+  Tillbaka till 2 efter uppgradering till Gradle 9.9.
 - Nya moduler: lägg till `include(...)` i `settings.gradle.kts`, beroende via `projects.<…>` (typsäkra accessorer).
 - Nya Gradle-plugins deklareras med `apply false` i rotens `build.gradle.kts`, så att alla moduler delar en classloader.
 
