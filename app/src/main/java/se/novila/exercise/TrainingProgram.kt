@@ -13,6 +13,14 @@ data class PlannedSession(
     val exercises: List<PlannedExercise> = emptyList(),
 )
 
+/** The user's recent training, which a program builds on. [strengthPerWeek] is sessions a week. */
+data class RecentTraining(
+    val cardioTarget: Int,
+    val cardioType: ExerciseType,
+    val strengthPerWeek: Double,
+    val level: StrengthLevel,
+)
+
 /** A week of workouts starting on Monday [weekStart], sorted by day. */
 data class TrainingProgram(
     val weekStart: LocalDate,
@@ -30,7 +38,7 @@ data class TrainingProgram(
 object TrainingProgramGenerator {
     const val MIN_CARDIO_MINUTES = 90
     const val MAX_CARDIO_MINUTES = 300
-    private const val GUIDELINE_CARDIO_MINUTES = 150
+    const val GUIDELINE_CARDIO_MINUTES = 150
     private const val HISTORY_WEEKS = 4L
     private const val PROGRESSION = 1.1
     private const val MOBILITY_MINUTES = 15
@@ -39,17 +47,11 @@ object TrainingProgramGenerator {
     private val FOUR_CARDIO_DAYS = listOf(DayOfWeek.TUESDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
 
     fun generate(history: List<Exercise>, today: LocalDate): TrainingProgram {
-        val weekStart = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-        val recent = history.filter { it.date >= weekStart.minusWeeks(HISTORY_WEEKS) && it.date < weekStart }
-
-        val weeklyCardio = recent.filter { it.type.kind == ExerciseKind.Cardio }
-            .sumOf { it.duration.toMinutes() } / HISTORY_WEEKS.toDouble()
-        val cardioTarget = roundTo5(weeklyCardio * PROGRESSION).coerceIn(MIN_CARDIO_MINUTES, MAX_CARDIO_MINUTES)
+        val weekStart = weekStart(today)
+        val recent = summarize(history, weekStart)
+        val cardioTarget = recent.cardioTarget
         val cardioDays = if (cardioTarget < GUIDELINE_CARDIO_MINUTES) THREE_CARDIO_DAYS else FOUR_CARDIO_DAYS
-        val cardioType = favoriteCardio(recent)
-
-        val weeklyStrength = recent.count { it.type.kind == ExerciseKind.Strength } / HISTORY_WEEKS.toDouble()
-        val level = StrengthSessions.level(weeklyStrength)
+        val level = recent.level
         val strengthMinutes = when (level) {
             StrengthLevel.Advanced -> 40
             StrengthLevel.Intermediate -> 30
@@ -57,7 +59,7 @@ object TrainingProgramGenerator {
         }
 
         val cardioMinutes = roundTo5(cardioTarget / cardioDays.size.toDouble())
-        val sessions = cardioDays.map { PlannedSession(it, cardioType, cardioMinutes) } +
+        val sessions = cardioDays.map { PlannedSession(it, recent.cardioType, cardioMinutes) } +
             STRENGTH_DAYS.mapIndexed { i, day ->
                 PlannedSession(
                     day,
@@ -79,6 +81,26 @@ object TrainingProgramGenerator {
         )
     }
 
+    /** The Monday of [today]'s week, when every program starts. */
+    fun weekStart(today: LocalDate): LocalDate = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+
+    /**
+     * What the four whole weeks before [weekStart] say about the user: this week's cardio target (at most
+     * a tenth more than the recent average, within 90–300 minutes), their favorite cardio and strength level.
+     */
+    fun summarize(history: List<Exercise>, weekStart: LocalDate): RecentTraining {
+        val recent = history.filter { it.date >= weekStart.minusWeeks(HISTORY_WEEKS) && it.date < weekStart }
+        val weeklyCardio = recent.filter { it.type.kind == ExerciseKind.Cardio }
+            .sumOf { it.duration.toMinutes() } / HISTORY_WEEKS.toDouble()
+        val weeklyStrength = recent.count { it.type.kind == ExerciseKind.Strength } / HISTORY_WEEKS.toDouble()
+        return RecentTraining(
+            cardioTarget = roundTo5(weeklyCardio * PROGRESSION).coerceIn(MIN_CARDIO_MINUTES, MAX_CARDIO_MINUTES),
+            cardioType = favoriteCardio(recent),
+            strengthPerWeek = weeklyStrength,
+            level = StrengthSessions.level(weeklyStrength),
+        )
+    }
+
     /** The cardio the user does most, so the program fits their habits. Walking for a new user. */
     private fun favoriteCardio(recent: List<Exercise>): ExerciseType = recent
         .filter { it.type.kind == ExerciseKind.Cardio && it.type != ExerciseType.Other }
@@ -87,5 +109,5 @@ object TrainingProgramGenerator {
         .maxWithOrNull(compareBy<Map.Entry<ExerciseType, Int>> { it.value }.thenBy { -it.key.ordinal })
         ?.key ?: ExerciseType.Walking
 
-    private fun roundTo5(minutes: Double): Int = (minutes / 5).roundToInt() * 5
+    fun roundTo5(minutes: Double): Int = (minutes / 5).roundToInt() * 5
 }

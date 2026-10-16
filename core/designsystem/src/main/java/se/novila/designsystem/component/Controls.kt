@@ -65,7 +65,7 @@ fun NovilaAccentButton(
     }
 }
 
-/** Selectable chip. [contentDescription] is required when [label] is not readable text (e.g. an emoji). */
+/** Selectable chip for one choice of a few, or one of several options that can be turned on and off. */
 @Composable
 fun NovilaChoiceChip(
     label: String,
@@ -78,7 +78,7 @@ fun NovilaChoiceChip(
     FilterChip(
         selected = selected,
         onClick = onClick,
-        label = { Text(label, style = NovilaTheme.typography.titleLarge) },
+        label = { Text(label, style = NovilaTheme.typography.labelLarge) },
         shape = NovilaTheme.shapes.small,
         colors = FilterChipDefaults.filterChipColors(
             selectedContainerColor = role.container,

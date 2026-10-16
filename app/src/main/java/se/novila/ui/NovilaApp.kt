@@ -26,11 +26,13 @@ import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.nutrition.NutritionScreen
 import se.novila.feature.sleep.SleepScreen
 import se.novila.feature.today.TodayScreen
+import se.novila.feature.training.CoachScreen
 import se.novila.feature.training.ExerciseDetailScreen
 import se.novila.feature.training.TrainingScreen
 import se.novila.feature.training.WorkoutScreen
 import se.novila.healthconnect.HealthConnectSource
 import se.novila.healthconnect.MOVEMENT_PERMISSIONS
+import se.novila.navigation.CoachRoute
 import se.novila.navigation.ExerciseRoute
 import se.novila.navigation.Navigator
 import se.novila.navigation.NutritionRoute
@@ -81,6 +83,13 @@ fun NovilaApp(vm: HealthViewModel = viewModel()) {
                         onNavigate = navigator::goBack,
                     )
 
+                    currentRoute is CoachRoute -> NovilaTopAppBar(
+                        title = stringResource(R.string.coach_title),
+                        navigationIcon = painterResource(R.drawable.ic_back),
+                        navigationLabel = stringResource(R.string.navigate_back),
+                        onNavigate = navigator::goBack,
+                    )
+
                     currentRoute is WorkoutRoute -> NovilaTopAppBar(
                         title = stringResource(R.string.workout_title),
                         navigationIcon = painterResource(R.drawable.ic_back),
@@ -126,6 +135,7 @@ fun NovilaApp(vm: HealthViewModel = viewModel()) {
                     TrainingScreen(
                         movement = movement,
                         program = state.program,
+                        coach = state.coach,
                         today = state.today.date.dayOfWeek,
                         onConnectHealth = { healthPermissions.launch(MOVEMENT_PERMISSIONS) },
                         onOpenHealthSettings = { HealthConnectSource.openSettings(context) },
@@ -135,8 +145,21 @@ fun NovilaApp(vm: HealthViewModel = viewModel()) {
                             vm.startWorkout(day)
                             navigator.navigate(WorkoutRoute)
                         },
+                        onOpenCoach = { navigator.navigate(CoachRoute) },
                         contentPadding = innerPadding,
                         strengthMinutesToday = state.today.strengthMinutes,
+                    )
+                }
+                entry<CoachRoute> {
+                    CoachScreen(
+                        coach = state.coach,
+                        today = state.today.date.dayOfWeek,
+                        onChange = vm::changeCoach,
+                        onCreate = vm::createCoachProgram,
+                        onSuggest = vm::nextCoachSuggestion,
+                        onReset = vm::resetCoach,
+                        onOpenExercise = { navigator.navigate(ExerciseRoute(it)) },
+                        contentPadding = innerPadding,
                     )
                 }
                 entry<WorkoutRoute> {

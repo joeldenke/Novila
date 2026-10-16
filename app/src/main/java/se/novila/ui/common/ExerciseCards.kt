@@ -134,14 +134,14 @@ fun ExerciseThumbnail(motion: ExerciseMotion, modifier: Modifier = Modifier) {
 
 /**
  * A strength day in the program: one row per exercise with its sets, repetitions and rest, and a button
- * that starts the guided session. The [next] strength day gets the sun, so a screen has only one.
- * [minutesDone] shows that the session is already done today.
+ * that starts the guided session (none without [onStart]). The [next] strength day gets the sun, so a screen
+ * has only one. [minutesDone] shows that the session is already done today.
  */
 @Composable
 fun StrengthSessionCard(
     session: PlannedSession,
     onOpenExercise: (String) -> Unit,
-    onStart: () -> Unit,
+    onStart: (() -> Unit)?,
     next: Boolean,
     minutesDone: Int? = null,
 ) {
@@ -168,6 +168,8 @@ fun StrengthSessionCard(
                 style = NovilaTheme.typography.titleSmall,
                 color = NovilaTheme.pillars.training.color,
             )
+
+            onStart == null -> Unit
 
             next -> NovilaAccentButton(start, onClick = onStart, modifier = Modifier.fillMaxWidth())
 

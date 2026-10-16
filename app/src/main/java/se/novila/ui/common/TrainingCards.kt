@@ -28,7 +28,11 @@ fun TrainingProgramCard(program: TrainingProgram, today: DayOfWeek) {
         role = training,
     ) {
         NovilaText(
-            stringResource(R.string.program_summary, program.cardioMinutes),
+            stringResource(
+                R.string.program_summary,
+                program.cardioMinutes,
+                program.sessions.count { it.type == ExerciseType.Strength },
+            ),
             style = NovilaTheme.typography.bodyMedium,
             color = NovilaTheme.colors.onSurfaceVariant,
         )

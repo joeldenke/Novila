@@ -3,7 +3,7 @@
 # exercise code with the Kotlin compiler from Maven Central, then runs its tests, renders exercises
 # to a PNG or checks each exercise's camera. See docs/anatomy.md and .claude/skills/add-exercise.
 #
-#   tools/anatomy/anatomy.sh test                      unit tests for anatomy, programs and session mode
+#   tools/anatomy/anatomy.sh test                      unit tests for anatomy, programs, session mode and the coach
 #   tools/anatomy/anatomy.sh render out.png [id ...]    contact sheet: one row per exercise
 #   tools/anatomy/anatomy.sh views [id ...]             best camera per exercise vs. the stored one
 #   tools/anatomy/anatomy.sh run Main.kt [args ...]     compile your own file (e.g. a pose solver) and run it
@@ -33,10 +33,11 @@ POM
   (cd "$CACHE" && mvn -q dependency:copy-dependencies -DoutputDirectory="$LIB")
 }
 
-# Everything that runs on a plain JVM: AnatomyFigure.kt is Compose, so it is left out.
+# Everything that runs on a plain JVM: AnatomyFigure.kt (Compose) and CoachStore.kt (Android) are left out.
 sources() {
-  find "$ROOT/app/src/main/java/se/novila/anatomy" "$ROOT/app/src/main/java/se/novila/exercise" -name '*.kt' \
-    ! -name AnatomyFigure.kt
+  find "$ROOT/app/src/main/java/se/novila/anatomy" "$ROOT/app/src/main/java/se/novila/exercise" \
+    "$ROOT/app/src/main/java/se/novila/coach" -name '*.kt' \
+    ! -name AnatomyFigure.kt ! -name CoachStore.kt
   find "$ROOT/tools/anatomy/src" -name '*.kt'
 }
 
@@ -60,12 +61,14 @@ case "$command" in
       "$ROOT/app/src/test/java/se/novila/exercise/StrengthSessionsTest.kt"
       "$ROOT/app/src/test/java/se/novila/exercise/TrainingProgramGeneratorTest.kt"
       "$ROOT/app/src/test/java/se/novila/exercise/WorkoutTest.kt"
+      "$ROOT/app/src/test/java/se/novila/coach/CoachPlannerTest.kt"
+      "$ROOT/app/src/test/java/se/novila/coach/CoachPreferencesTest.kt"
     )
     # shellcheck disable=SC2046
     compile $(sources) "${tests[@]}"
     java -cp "$(classpath)" org.junit.runner.JUnitCore \
       se.novila.anatomy.AnatomyTest se.novila.exercise.StrengthSessionsTest se.novila.exercise.TrainingProgramGeneratorTest \
-      se.novila.exercise.WorkoutTest
+      se.novila.exercise.WorkoutTest se.novila.coach.CoachPlannerTest se.novila.coach.CoachPreferencesTest
     ;;
   render)
     # shellcheck disable=SC2046

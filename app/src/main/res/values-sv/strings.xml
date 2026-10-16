@@ -75,7 +75,7 @@
 
     <!-- Träningsprogram -->
     <string name="program_title">Veckans program</string>
-    <string name="program_summary">%1$d minuter konditionsträning, styrka två dagar och lite rörlighet.</string>
+    <string name="program_summary">%1$d minuter kondition och styrka %2$d dagar i veckan.</string>
     <string name="program_basis">Bygger på WHO:s råd om fysisk aktivitet och dina senaste pass. Konditionstiden ökar med högst en tiondel i veckan.</string>
     <string name="exercise_walking">Rask promenad</string>
     <string name="exercise_running">Löpning</string>
@@ -245,4 +245,51 @@
     <string name="health_info_where_body">Ingenstans. Novila läser siffrorna när appen är öppen och visar dem bara. De sparas inte av Novila, skickas inte över internet och delas inte med någon.</string>
     <string name="health_info_revoke_title">Ändra eller stäng av åtkomst</string>
     <string name="health_info_revoke_body">Du kan när som helst stänga av Novilas åtkomst i Health Connect.</string>
+    <!-- Träningscoach -->
+    <string name="coach_title">Träningscoach</string>
+    <string name="coach_card_inactive">Låt coachen bygga en vecka efter ditt mål, din tid och övningarna i Novila.</string>
+    <string name="coach_card_active">Ditt program är byggt av coachen: %1$s, %2$d dagar i veckan, ungefär %3$d minuter åt gången.</string>
+    <string name="coach_open">Öppna coachen</string>
+    <string name="coach_adjust">Anpassa programmet</string>
+    <string name="coach_intro">Coachen planerar din vecka här i telefonen, utifrån dina svar, dina senaste pass och övningarna i Novila. Inget skickas någonstans.</string>
+    <string name="coach_goal_title">Ditt mål</string>
+    <string name="coach_goal_health">Allsidig hälsa</string>
+    <string name="coach_goal_strength">Bli starkare</string>
+    <string name="coach_goal_endurance">Bättre kondition</string>
+    <string name="coach_goal_mobility">Rörlighet</string>
+    <string name="coach_time_title">Din tid</string>
+    <string name="coach_days">Dagar i veckan</string>
+    <string name="coach_days_value">%1$d dagar</string>
+    <string name="coach_minutes">Minuter per pass</string>
+    <string name="coach_minutes_value">Ungefär %1$d minuter</string>
+    <string name="coach_fewer_days">Färre dagar</string>
+    <string name="coach_more_days">Fler dagar</string>
+    <string name="coach_shorter">Kortare pass</string>
+    <string name="coach_longer">Längre pass</string>
+    <string name="coach_focus_title">Extra fokus</string>
+    <string name="coach_area_legs">Ben</string>
+    <string name="coach_area_core">Bål</string>
+    <string name="coach_area_upper_body">Överkropp</string>
+    <string name="coach_consider_title">Ta hänsyn till</string>
+    <string name="coach_consider_knees">Känsliga knän</string>
+    <string name="coach_consider_back">Känslig rygg</string>
+    <string name="coach_consider_quiet">Inga hopp</string>
+    <string name="coach_why_title">Därför ser programmet ut så här</string>
+    <string name="coach_create">Skapa mitt program</string>
+    <string name="coach_suggest">Föreslå ett annat program</string>
+    <string name="coach_reset">Använd standardprogrammet</string>
+    <string name="coach_note_goal_health">Allsidig hälsa: styrka för hela kroppen och kondition enligt WHO:s råd.</string>
+    <string name="coach_note_goal_strength">Bli starkare: fler set, längre vila och en tredje styrkedag när du har tid.</string>
+    <string name="coach_note_goal_endurance">Bättre kondition: fler konditionsdagar, fler repetitioner och kortare vila.</string>
+    <string name="coach_note_goal_mobility">Rörlighet: rörlighetspass och lugna övningar för rygg och höfter.</string>
+    <string name="coach_note_level_beginner">Du är ny på styrketräning, så passen börjar lugnt med färre set och längre vila.</string>
+    <string name="coach_note_level_intermediate">Du styrketränar ungefär en gång i veckan, så passen har tre set och lite mer att göra.</string>
+    <string name="coach_note_level_advanced">Du styrketränar regelbundet, så passen har fler repetitioner och kortare vila.</string>
+    <string name="coach_note_rest">Minst en vilodag mellan styrkedagarna, så att musklerna hinner återhämta sig.</string>
+    <string name="coach_note_focus">Ett extra set i övningar som tränar %1$s.</string>
+    <string name="coach_note_knees">Skonsamt för knäna: inga hopp eller utfall.</string>
+    <string name="coach_note_back">Skonsamt för ryggen: lugna bålövningar i stället för sådana som böjer eller svankar ryggen.</string>
+    <string name="coach_note_quiet">Inga hopp, så det fungerar i lägenhet.</string>
+    <string name="coach_note_cardio_low">Programmet har %1$d minuter kondition. WHO rekommenderar minst 150 i veckan, så ta gärna raska promenader i vardagen också.</string>
+    <string name="coach_note_cardio_progression">Konditionen bygger på dina senaste pass och ökar med högst en tiondel i veckan.</string>
 </resources>

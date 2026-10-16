@@ -102,6 +102,9 @@ tools/anatomy/anatomy.sh render /path/to/ark.png mitt_id
   (`Seconds` för hållningar och kondition) och `perSide` för ensidiga övningar.
 - `StrengthSessionsTest` kräver att lår, säte, bröst och mage tränas båda styrkedagarna på varje nivå, och att
   pass B skiljer sig från pass A.
+- **Alltid:** lägg till övningen i `coach/CoachCatalog.kt` med rörelsemönster (`MovementPattern`), `Dosage`, `perSide`,
+  lägsta nivå och om den belastar knän, rygg eller är ett hopp. Coachen väljer bara bland övningar i katalogen, och
+  `CoachPlannerTest` kräver att varje övning i biblioteket finns där.
 
 ## 7. Verifiera och skicka
 ```bash

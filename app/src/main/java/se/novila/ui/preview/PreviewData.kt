@@ -1,7 +1,13 @@
 package se.novila.ui.preview
 
+import se.novila.CoachUiState
 import se.novila.DayEntry
 import se.novila.FoodLog
+import se.novila.coach.BodyArea
+import se.novila.coach.CoachGoal
+import se.novila.coach.CoachPlanner
+import se.novila.coach.CoachPreferences
+import se.novila.coach.Consideration
 import se.novila.exercise.Exercise
 import se.novila.exercise.ExerciseType
 import se.novila.exercise.TrainingProgramGenerator
@@ -25,18 +31,35 @@ internal object PreviewData {
 
     val today = day(0, sleep = 7.5f, water = 5, mood = 4, food = FoodLog(3, 2, 2, 1))
 
-    /** A program for someone who runs a little and has just started with strength training. */
-    val program = TrainingProgramGenerator.generate(
-        history = (1L..4L).flatMap { week ->
-            val monday = date.minusWeeks(week).with(DayOfWeek.MONDAY)
-            listOf(
-                Exercise(ExerciseType.Running, monday.plusDays(1), Duration.ofMinutes(35)),
-                Exercise(ExerciseType.Running, monday.plusDays(5), Duration.ofMinutes(50)),
-                Exercise(ExerciseType.Strength, monday.plusDays(3), Duration.ofMinutes(30)),
-            )
-        },
-        today = date,
+    /** Someone who runs a little and has just started with strength training. */
+    private val workouts = (1L..4L).flatMap { week ->
+        val monday = date.minusWeeks(week).with(DayOfWeek.MONDAY)
+        listOf(
+            Exercise(ExerciseType.Running, monday.plusDays(1), Duration.ofMinutes(35)),
+            Exercise(ExerciseType.Running, monday.plusDays(5), Duration.ofMinutes(50)),
+            Exercise(ExerciseType.Strength, monday.plusDays(3), Duration.ofMinutes(30)),
+        )
+    }
+
+    val program = TrainingProgramGenerator.generate(history = workouts, today = date)
+
+    private fun coach(preferences: CoachPreferences, active: Boolean) =
+        CoachUiState(preferences, CoachPlanner.plan(preferences, workouts, date), active)
+
+    /** The coach set up for strength, with sensitive knees and extra leg work. */
+    val coach = coach(
+        CoachPreferences(
+            goal = CoachGoal.Strength,
+            daysPerWeek = 4,
+            sessionMinutes = 30,
+            focus = setOf(BodyArea.Legs),
+            considerations = setOf(Consideration.Knees),
+        ),
+        active = true,
     )
+
+    /** The coach before it is set up. */
+    val newCoach = coach(CoachPreferences(), active = false)
 
     val movement = MovementState.Connected(TodayMovement(steps = 8412, activeKilocalories = 312))
 

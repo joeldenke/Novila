@@ -32,6 +32,11 @@ I `:app`:
   `StrengthSessions` fyller styrkedagarna med övningar, set, repetitioner och vila efter nivå. `Workout` är passläget
   (set, vila och nedräkning) i ren Kotlin. Timern körs i `HealthViewModel`. Avklarade pass sparas som `strengthMinutes`
   per dag och blir generatorns historik.
+- `coach` – träningscoachen, helt på enheten: `CoachPreferences` (mål, dagar, tid per pass, fokus, hänsyn),
+  `CoachCatalog` (rörelsemönster, dosering och belastning per övning) och `CoachPlanner`, som bygger veckans program
+  ur svaren, senaste passen och övningsbiblioteket och förklarar valen (`CoachNote`). Svaren sparas i `CoachStore`;
+  är coachen inte inställd gäller `TrainingProgramGenerator`. Ingen språkmodell eller nätverk: planeraren är
+  deterministisk och testad (`CoachPlannerTest`), och `variation` ger ett nytt förslag.
 - `anatomy` – kroppsagnostiska övningsillustrationer i ren Kotlin: `Pose`/`Movement` (ledvinklar per keyframe),
   `Skeleton` (framåtkinematik, `BodyShape`), `MuscleMap`, `SceneBuilder` (ortografisk `Camera`, siluetter och de
   muskelband som syns), `ViewSelector` (varje övnings bästa vy) och `ExerciseLibrary`. `AnatomyFigure` ritar i Compose.
