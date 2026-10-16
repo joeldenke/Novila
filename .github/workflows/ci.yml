@@ -7,7 +7,6 @@
 #   - Build: the debug APK and its badging check.
 # "Lint, test and build" collects them and is the required status check in branch protection, so nothing red can
 # be merged. Release builds (R8, release signing) only run on merge to main, in distribute.yml.
-# Isolated Projects compatibility has its own workflow, isolated-projects.yml.
 name: CI
 
 on:
