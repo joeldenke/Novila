@@ -45,6 +45,9 @@ class HealthStore internal constructor(context: Context, scope: CoroutineScope) 
         prefs[key] = DayEntryCodec.encode(change(DayEntryCodec.decode(date, prefs[key])))
     }
 
+    /** Forgets every saved day, in order with other saves. */
+    fun clear() = store.edit { it.clear() }
+
     private companion object {
         const val NAME = "health"
 

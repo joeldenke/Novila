@@ -28,4 +28,7 @@
     <string name="kcal_value" translatable="false">%1$s kcal</string>
     <string name="movement_steps">Steps</string>
     <string name="movement_open_settings">Open Health Connect</string>
+
+    <!-- Settings, opened from every tab -->
+    <string name="settings_title">Settings</string>
 </resources>

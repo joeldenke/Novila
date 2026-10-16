@@ -36,7 +36,7 @@ fun NovilaScaffold(
 
 /**
  * Top bar with a [title]. On screens below a tab, pass a [navigationIcon] (a back arrow) with its
- * [navigationLabel] for screen readers and [onNavigate].
+ * [navigationLabel] for screen readers and [onNavigate]. [actions] go at the end, as [NovilaIconButton]s.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,6 +46,7 @@ fun NovilaTopAppBar(
     navigationIcon: Painter? = null,
     navigationLabel: String? = null,
     onNavigate: () -> Unit = {},
+    actions: @Composable RowScope.() -> Unit = {},
 ) {
     TopAppBar(
         title = { Text(title, style = NovilaTheme.typography.titleLarge) },
@@ -57,10 +58,12 @@ fun NovilaTopAppBar(
                 }
             }
         },
+        actions = actions,
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = NovilaTheme.colors.surface,
             titleContentColor = NovilaTheme.colors.onSurface,
             navigationIconContentColor = NovilaTheme.colors.onSurface,
+            actionIconContentColor = NovilaTheme.colors.onSurfaceVariant,
         ),
     )
 }
