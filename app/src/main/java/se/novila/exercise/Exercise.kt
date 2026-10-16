@@ -13,6 +13,9 @@ enum class ExerciseType(val kind: ExerciseKind) {
     Cycling(ExerciseKind.Cardio),
     Swimming(ExerciseKind.Cardio),
     Strength(ExerciseKind.Strength),
+
+    /** A calm, phased rehab session from the coach, for a knee or the lower back. */
+    Rehab(ExerciseKind.Strength),
     Mobility(ExerciseKind.Mobility),
     Other(ExerciseKind.Cardio),
 }

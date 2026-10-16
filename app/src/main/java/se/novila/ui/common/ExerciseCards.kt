@@ -32,6 +32,7 @@ import se.novila.designsystem.component.NovilaScaffold
 import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.exercise.Dosage
+import se.novila.exercise.ExerciseType
 import se.novila.exercise.PlannedExercise
 import se.novila.exercise.PlannedSession
 import se.novila.ui.preview.PreviewData
@@ -133,26 +134,33 @@ fun ExerciseThumbnail(motion: ExerciseMotion, modifier: Modifier = Modifier) {
 }
 
 /**
- * A strength day in the program: one row per exercise with its sets, repetitions and rest, and a button
- * that starts the guided session. The [next] strength day gets the sun, so a screen has only one.
- * [minutesDone] shows that the session is already done today.
+ * A strength or rehab day in the program: one row per exercise with its sets, repetitions and rest, and a button
+ * that starts the guided session (none without [onStart]). The [next] strength day gets the sun, so a screen
+ * has only one. [minutesDone] shows that the session is already done today.
  */
 @Composable
 fun StrengthSessionCard(
     session: PlannedSession,
     onOpenExercise: (String) -> Unit,
-    onStart: () -> Unit,
+    onStart: (() -> Unit)?,
     next: Boolean,
     minutesDone: Int? = null,
 ) {
     val locale = LocalConfiguration.current.locales[0]
+    val rehab = session.type == ExerciseType.Rehab
     NovilaCard(
-        title = stringResource(R.string.strength_session_title, session.day.getDisplayName(TextStyle.FULL, locale)),
+        title = stringResource(
+            if (rehab) R.string.rehab_session_title else R.string.strength_session_title,
+            session.day.getDisplayName(TextStyle.FULL, locale),
+        ),
         icon = painterResource(R.drawable.ic_training),
         role = NovilaTheme.pillars.training,
     ) {
         NovilaText(
-            stringResource(R.string.strength_session_summary, session.minutes),
+            stringResource(
+                if (rehab) R.string.rehab_session_summary else R.string.strength_session_summary,
+                session.minutes,
+            ),
             style = NovilaTheme.typography.bodyMedium,
             color = NovilaTheme.colors.onSurfaceVariant,
         )
@@ -168,6 +176,8 @@ fun StrengthSessionCard(
                 style = NovilaTheme.typography.titleSmall,
                 color = NovilaTheme.pillars.training.color,
             )
+
+            onStart == null -> Unit
 
             next -> NovilaAccentButton(start, onClick = onStart, modifier = Modifier.fillMaxWidth())
 

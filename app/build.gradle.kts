@@ -103,5 +103,6 @@ dependencies {
     implementation(libs.androidx.health.connect.client)
     implementation(libs.kotlinx.serialization.core)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.mlkit.genai.prompt)
     implementation(libs.compose.ui)
 }

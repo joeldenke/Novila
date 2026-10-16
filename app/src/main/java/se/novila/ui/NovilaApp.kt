@@ -2,6 +2,7 @@ package se.novila.ui
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
@@ -26,11 +27,13 @@ import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.nutrition.NutritionScreen
 import se.novila.feature.sleep.SleepScreen
 import se.novila.feature.today.TodayScreen
+import se.novila.feature.training.CoachScreen
 import se.novila.feature.training.ExerciseDetailScreen
 import se.novila.feature.training.TrainingScreen
 import se.novila.feature.training.WorkoutScreen
 import se.novila.healthconnect.HealthConnectSource
 import se.novila.healthconnect.MOVEMENT_PERMISSIONS
+import se.novila.navigation.CoachRoute
 import se.novila.navigation.ExerciseRoute
 import se.novila.navigation.Navigator
 import se.novila.navigation.NutritionRoute
@@ -59,6 +62,7 @@ fun NovilaApp(vm: HealthViewModel = viewModel()) {
     val state by vm.state.collectAsStateWithLifecycle()
     val movement by vm.movement.collectAsStateWithLifecycle()
     val workout by vm.workout.collectAsStateWithLifecycle()
+    val assistant by vm.assistant.collectAsStateWithLifecycle()
 
     // Health Connect's own permission dialog. It links to HealthDataInfoActivity for the details.
     val context = LocalContext.current
@@ -76,6 +80,13 @@ fun NovilaApp(vm: HealthViewModel = viewModel()) {
                 when {
                     currentRoute is ExerciseRoute -> NovilaTopAppBar(
                         title = moveName(currentRoute.exerciseId),
+                        navigationIcon = painterResource(R.drawable.ic_back),
+                        navigationLabel = stringResource(R.string.navigate_back),
+                        onNavigate = navigator::goBack,
+                    )
+
+                    currentRoute is CoachRoute -> NovilaTopAppBar(
+                        title = stringResource(R.string.coach_title),
                         navigationIcon = painterResource(R.drawable.ic_back),
                         navigationLabel = stringResource(R.string.navigate_back),
                         onNavigate = navigator::goBack,
@@ -126,6 +137,7 @@ fun NovilaApp(vm: HealthViewModel = viewModel()) {
                     TrainingScreen(
                         movement = movement,
                         program = state.program,
+                        coach = state.coach,
                         today = state.today.date.dayOfWeek,
                         onConnectHealth = { healthPermissions.launch(MOVEMENT_PERMISSIONS) },
                         onOpenHealthSettings = { HealthConnectSource.openSettings(context) },
@@ -135,8 +147,26 @@ fun NovilaApp(vm: HealthViewModel = viewModel()) {
                             vm.startWorkout(day)
                             navigator.navigate(WorkoutRoute)
                         },
+                        onOpenCoach = { navigator.navigate(CoachRoute) },
                         contentPadding = innerPadding,
                         strengthMinutesToday = state.today.strengthMinutes,
+                    )
+                }
+                entry<CoachRoute> {
+                    // Whether Gemini Nano can run here is asked when the coach opens, never in the background.
+                    LaunchedEffect(Unit) { vm.checkAssistant() }
+                    CoachScreen(
+                        coach = state.coach,
+                        assistant = assistant,
+                        today = state.today.date.dayOfWeek,
+                        onChange = vm::changeCoach,
+                        onCreate = vm::createCoachProgram,
+                        onSuggest = vm::nextCoachSuggestion,
+                        onReset = vm::resetCoach,
+                        onOpenExercise = { navigator.navigate(ExerciseRoute(it)) },
+                        onDownloadAssistant = vm::downloadAssistant,
+                        onWriteMessage = vm::writeAssistantMessage,
+                        contentPadding = innerPadding,
                     )
                 }
                 entry<WorkoutRoute> {

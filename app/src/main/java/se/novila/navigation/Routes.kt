@@ -17,6 +17,9 @@ import se.novila.R
 /** How to do one exercise from the anatomy library, opened from the Training tab. */
 @Serializable data class ExerciseRoute(val exerciseId: String) : NavKey
 
+/** The training coach, opened from the Training tab: answers in, a week's program out. */
+@Serializable data object CoachRoute : NavKey
+
 /** A guided strength session, set by set, from a strength day in the Training tab. */
 @Serializable data object WorkoutRoute : NavKey
 

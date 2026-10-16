@@ -4,9 +4,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import se.novila.CoachUiState
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.exercise.TrainingProgram
 import se.novila.movement.MovementState
+import se.novila.ui.common.CoachCard
 import se.novila.ui.common.ExerciseLibraryCard
 import se.novila.ui.common.MovementCard
 import se.novila.ui.common.ScreenList
@@ -19,12 +21,14 @@ import java.time.DayOfWeek
 fun TrainingScreen(
     movement: MovementState,
     program: TrainingProgram,
+    coach: CoachUiState,
     today: DayOfWeek,
     onConnectHealth: () -> Unit,
     onOpenHealthSettings: () -> Unit,
     onInstallHealth: () -> Unit,
     onOpenExercise: (String) -> Unit,
     onStartWorkout: (DayOfWeek) -> Unit,
+    onOpenCoach: () -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
     strengthMinutesToday: Int = 0,
@@ -38,6 +42,9 @@ fun TrainingScreen(
         }
         item(key = "program") {
             TrainingProgramCard(program, today)
+        }
+        item(key = "coach") {
+            CoachCard(coach, onOpen = onOpenCoach)
         }
         strengthDays.forEach { session ->
             item(key = "strength-${session.day}") {
@@ -62,12 +69,14 @@ private fun TrainingScreenContent(movement: MovementState) {
         TrainingScreen(
             movement = movement,
             program = PreviewData.program,
+            coach = PreviewData.newCoach,
             today = PreviewData.today.date.dayOfWeek,
             onConnectHealth = {},
             onOpenHealthSettings = {},
             onInstallHealth = {},
             onOpenExercise = {},
             onStartWorkout = {},
+            onOpenCoach = {},
             contentPadding = PaddingValues(),
         )
     }

@@ -12,6 +12,8 @@ navigation3 = "1.2.0"
 # Health Connect: read-only steps and active calories, see HealthConnectSource.
 healthConnect = "1.1.0"
 kotlinxSerialization = "1.11.0"
+# Gemini Nano on the device through AICore, for the coach's message. See GeminiNanoCoachModel.
+mlkitGenaiPrompt = "1.0.0-beta2"
 junit = "4.13.2"
 robolectric = "4.17"
 roborazzi = "1.76.0"
@@ -37,6 +39,8 @@ androidx-health-connect-client = { module = "androidx.health.connect:connect-cli
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerialization" }
 # Google Health API responses (JSON), see GoogleHealthJson.
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+# On-device Gemini Nano (ML Kit GenAI Prompt API), see GeminiNanoCoachModel.
+mlkit-genai-prompt = { module = "com.google.mlkit:genai-prompt", version.ref = "mlkitGenaiPrompt" }
 
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 compose-ui = { module = "androidx.compose.ui:ui" }

@@ -9,6 +9,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import se.novila.coach.AssistantAvailability
+import se.novila.coach.CoachLanguageModel
+import se.novila.coach.CoachPlan
+import se.novila.coach.CoachPlanner
+import se.novila.coach.CoachPreferences
+import se.novila.coach.CoachPrompt
+import se.novila.coach.CoachPromptInput
+import se.novila.coach.CoachStore
+import se.novila.coach.GeminiNanoCoachModel
 import se.novila.exercise.Exercise
 import se.novila.exercise.ExerciseType
 import se.novila.exercise.TrainingProgram
@@ -29,8 +38,26 @@ data class HealthUiState(
     val history: List<DayEntry>,
     /** Hour of day when the state was read, for the greeting. */
     val hour: Int,
-    /** This week's workouts, generated from recent ones. */
+    /** This week's workouts: the coach's when it is set up, otherwise generated from recent ones. */
     val program: TrainingProgram,
+    val coach: CoachUiState,
+)
+
+/**
+ * The coach's [preferences] (the defaults before it is set up) and the [plan] they give. [active] when the
+ * user has set it up, so the plan is the week's program.
+ */
+data class CoachUiState(val preferences: CoachPreferences, val plan: CoachPlan, val active: Boolean)
+
+/**
+ * The coach's message from the on-device model: whether the model can be used, whether it is [writing], and the
+ * [message] it wrote for the current plan. [failed] when the last attempt gave nothing.
+ */
+data class AssistantUiState(
+    val availability: AssistantAvailability = AssistantAvailability.Unknown,
+    val writing: Boolean = false,
+    val message: String? = null,
+    val failed: Boolean = false,
 )
 
 /** A strength session in progress, with the seconds left of a timed step (a rest or a hold). */
@@ -38,6 +65,10 @@ data class WorkoutUiState(val workout: Workout, val secondsLeft: Int?)
 
 class HealthViewModel(app: Application) : AndroidViewModel(app) {
     private val store = HealthStore(app)
+    private val coachStore = CoachStore(app)
+
+    /** Answers the user is trying out before the coach is set up. Not saved until they create the program. */
+    private var coachDraft: CoachPreferences? = null
     private val _state = MutableStateFlow(read())
     val state: StateFlow<HealthUiState> = _state.asStateFlow()
 
@@ -59,12 +90,16 @@ class HealthViewModel(app: Application) : AndroidViewModel(app) {
         val strength = store.lastDays(count = HISTORY_DAYS, today = today)
             .filter { it.strengthMinutes > 0 }
             .map { Exercise(ExerciseType.Strength, it.date, Duration.ofMinutes(it.strengthMinutes.toLong())) }
-        val program = TrainingProgramGenerator.generate(history = strength, today = today)
+        val saved = coachStore.load()
+        val preferences = saved ?: coachDraft ?: CoachPreferences()
+        val plan = CoachPlanner.plan(preferences, history = strength, today = today)
+        val program = if (saved != null) plan.program else TrainingProgramGenerator.generate(strength, today)
         return HealthUiState(
             today = days.first(),
             history = days.drop(1),
             hour = LocalTime.now().hour,
             program = program,
+            coach = CoachUiState(preferences, plan, active = saved != null),
         )
     }
 
@@ -90,6 +125,83 @@ class HealthViewModel(app: Application) : AndroidViewModel(app) {
         val today = store.load(LocalDate.now())
         store.save(change(today))
         _state.value = read()
+    }
+
+    /** Gemini Nano on the device. The coach's plan never depends on it; it only explains the plan in its own words. */
+    private val languageModel: CoachLanguageModel = GeminiNanoCoachModel()
+    private val _assistant = MutableStateFlow(AssistantUiState())
+    val assistant: StateFlow<AssistantUiState> = _assistant.asStateFlow()
+
+    /** Asks the system whether Gemini Nano can run here. Called when the coach is opened. */
+    fun checkAssistant() {
+        viewModelScope.launch {
+            val availability = languageModel.availability()
+            _assistant.value = _assistant.value.copy(availability = availability)
+        }
+    }
+
+    /** The user asked for Gemini Nano: AICore downloads it and keeps it up to date. */
+    fun downloadAssistant() {
+        _assistant.value = _assistant.value.copy(availability = AssistantAvailability.Downloading, failed = false)
+        viewModelScope.launch {
+            val done = languageModel.download()
+            _assistant.value = _assistant.value.copy(
+                availability = if (done) AssistantAvailability.Available else languageModel.availability(),
+                failed = !done,
+            )
+        }
+    }
+
+    /** Lets Gemini Nano explain the coach's current plan, from [input] in the user's language. */
+    fun writeAssistantMessage(input: CoachPromptInput) {
+        val coach = _state.value.coach
+        _assistant.value = _assistant.value.copy(writing = true, message = null, failed = false)
+        viewModelScope.launch {
+            val answer = languageModel.write(CoachPrompt.build(coach.plan, coach.preferences, input))
+                .map(CoachPrompt::clean)
+                .getOrNull()
+                ?.takeIf { it.isNotBlank() }
+            // A message for a plan that changed meanwhile would explain the wrong week.
+            val current = _state.value.coach.plan == coach.plan
+            _assistant.value = _assistant.value.copy(
+                writing = false,
+                message = answer.takeIf { current },
+                failed = answer == null,
+            )
+        }
+    }
+
+    /** The plan changed, so the message no longer fits it. */
+    private fun forgetAssistantMessage() {
+        _assistant.value = _assistant.value.copy(message = null, failed = false)
+    }
+
+    /** A changed answer. Once the coach is set up it is saved and changes the week's program right away. */
+    fun changeCoach(preferences: CoachPreferences) {
+        if (_state.value.coach.active) coachStore.save(preferences) else coachDraft = preferences
+        _state.value = read()
+        forgetAssistantMessage()
+    }
+
+    /** Saves the answers, which makes the coach's plan the week's program. */
+    fun createCoachProgram() {
+        coachStore.save(_state.value.coach.preferences)
+        _state.value = read()
+    }
+
+    /** A new suggestion from the same answers, used right away. */
+    fun nextCoachSuggestion() {
+        coachStore.save(_state.value.coach.preferences.nextVariation())
+        _state.value = read()
+        forgetAssistantMessage()
+    }
+
+    /** Back to the standard program generated from recent workouts. */
+    fun resetCoach() {
+        coachStore.clear()
+        coachDraft = null
+        _state.value = read()
+        forgetAssistantMessage()
     }
 
     private val _workout = MutableStateFlow<WorkoutUiState?>(null)
