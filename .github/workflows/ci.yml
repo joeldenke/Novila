@@ -1,11 +1,12 @@
-# Runs on every PR to main as two parallel jobs on 2-vCPU runners:
-#   - Lint: formatting (Spotless/ktlint) and Android lint over every module, in one Gradle run.
-#   - Tests and build: unit and screenshot tests, coverage, the debug APK and its badging check. Tests and the APK
-#     share one compilation.
+# Runs on every PR to main as four parallel jobs, so the run takes as long as its slowest job. Each job restores
+# the Gradle User Home that the last run on main saved (setup-gradle), so modules a PR doesn't touch come
+# FROM-CACHE instead of being compiled and tested again.
+#   - Format: Spotless (ktlint).
+#   - Lint: Android lint over every module (:app:lintDebug with checkDependencies).
+#   - Tests: unit and screenshot tests and coverage.
+#   - Build: the debug APK and its badging check.
 # "Lint, test and build" collects them and is the required status check in branch protection, so nothing red can
-# be merged. setup-gradle restores the Gradle User Home that the last run on main saved, so modules a
-# PR doesn't touch come from the build cache instead of being compiled and tested again.
-# Release builds (R8, release signing) only run on merge to main, in distribute.yml.
+# be merged. Release builds (R8, release signing) only run on merge to main, in distribute.yml.
 # Isolated Projects compatibility has its own workflow, isolated-projects.yml.
 name: CI
 
@@ -26,6 +27,25 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  format:
+    name: Format
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-gradle-build
+        with:
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+      - name: Spotless (ktlint)
+        run: |
+          set -o pipefail
+          ./gradlew spotlessCheck 2>&1 | tee build.log
+      - name: Annotate failures
+        if: failure()
+        uses: ./.github/actions/annotate-gradle-failures
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
@@ -39,10 +59,10 @@ jobs:
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
       # :app:lintDebug checks the app and every module it depends on together (checkDependencies), which is what
       # unused resources need. :core:googlehealth isn't part of the app yet, so it is linted on its own.
-      - name: Format and Android lint
+      - name: Android lint
         run: |
           set -o pipefail
-          ./gradlew spotlessCheck :app:lintDebug :core:googlehealth:lint --continue 2>&1 | tee build.log
+          ./gradlew :app:lintDebug :core:googlehealth:lint --continue 2>&1 | tee build.log
       - name: Annotate failures
         if: failure()
         uses: ./.github/actions/annotate-gradle-failures
@@ -55,7 +75,7 @@ jobs:
           retention-days: 7
 
   test:
-    name: Tests and build
+    name: Tests
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -66,13 +86,11 @@ jobs:
         with:
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
       # Unit tests of every module (debug variant only, see build-logic), screenshot tests against the committed
-      # references, coverage per module, and the debug APK with its badging: permissions, SDK levels, features,
-      # exported components and queries, compared with the reviewed app/badging/debug-badging.txt. See Badging.kt.
-      - name: Tests, coverage, debug build and badging check
+      # references and coverage per module.
+      - name: Unit and screenshot tests, coverage
         run: |
           set -o pipefail
-          ./gradlew test verifyRoborazziDebug koverXmlReportCoverage :app:assembleDebug :app:checkDebugBadging \
-            --continue 2>&1 | tee build.log
+          ./gradlew test verifyRoborazziDebug koverXmlReportCoverage --continue 2>&1 | tee build.log
 
       - name: Coverage summary
         if: success()
@@ -118,6 +136,40 @@ jobs:
             **/build/reports/kover/
           retention-days: 14
 
+      - name: Annotate failures
+        if: failure()
+        uses: ./.github/actions/annotate-gradle-failures
+
+      - name: Upload test reports on failure
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: test-reports
+          path: |
+            **/build/reports/tests/
+            **/build/test-results/
+            **/build/outputs/roborazzi/
+          retention-days: 7
+
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-gradle-build
+        with:
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+      # Badging: permissions, SDK levels, features, exported components and queries of the APK testers
+      # get, compared with the reviewed app/badging/debug-badging.txt. A library or manifest change
+      # that adds any of these fails here until the file is updated in the PR. See Badging.kt.
+      - name: Debug build and badging check
+        run: |
+          set -o pipefail
+          ./gradlew :app:assembleDebug :app:checkDebugBadging 2>&1 | tee build.log
       - name: Show badging diff
         if: failure() && hashFiles('app/build/outputs/badging/debug-badging.txt') != ''
         run: |
@@ -139,28 +191,22 @@ jobs:
           message=$(printf '%s' "$diff" | sed -e 's/%/%25/g' | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/%0A/g')
           echo "::error title=Badging changed (comment /record-badging if intended)::$message"
 
+      - name: Upload badging on failure
+        if: failure() && hashFiles('app/build/outputs/badging/debug-badging.txt') != ''
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: badging
+          path: app/build/outputs/badging/
+          retention-days: 7
       - name: Annotate failures
         if: failure()
         uses: ./.github/actions/annotate-gradle-failures
-
-      - name: Upload test reports and badging on failure
-        if: failure()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: test-reports
-          path: |
-            **/build/reports/tests/
-            **/build/test-results/
-            **/build/outputs/roborazzi/
-            app/build/outputs/badging/
-          retention-days: 7
-
 
   # The single required check: green only when every job above is green.
   check:
     name: Lint, test and build
     if: always()
-    needs: [lint, test]
+    needs: [format, lint, test, build]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

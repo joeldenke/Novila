@@ -62,9 +62,9 @@ Strängar och ikoner ligger i modulen som använder dem; det flera moduler anvä
 - **Commit-meddelanden, branchnamn, PR-titlar och PR-beskrivningar skrivs på engelska.**
   PR-titeln (vid squash: commit-rubriken) blir en rad i testarnas release notes, så skriv den som en tydlig
   sammanfattning. `scripts/release-notes.sh` listar allt på `main` sedan förra lyckade distributionen.
-- `CI`-workflowen måste vara grön innan PR:en är klar. Den kör två jobb parallellt: Lint (`spotlessCheck
-  :app:lintDebug`) och Tests and build (`test verifyRoborazziDebug koverXmlReportCoverage :app:assembleDebug
-  :app:checkDebugBadging`); kontrollen *Lint, test and build* samlar dem och är den som krävs. Gemensamma steg ligger
+- `CI`-workflowen måste vara grön innan PR:en är klar. Den kör fyra jobb parallellt: Format (`spotlessCheck`), Lint
+  (`:app:lintDebug`, alla moduler), Tests (`test verifyRoborazziDebug koverXmlReportCoverage`) och Build
+  (`:app:assembleDebug :app:checkDebugBadging`); kontrollen *Lint, test and build* samlar dem och är den som krävs. Gemensamma steg ligger
   i `.github/actions/`. Cachen sköts av `gradle/actions/setup-gradle` (standardcachen, sparas bara från `main`), och
   CI-flaggorna för 2-kärniga runners ligger i `.github/ci-gradle.properties`. Bygg aldrig egen cachelogik.
   Release-bygget (R8) körs inte på PR:er. Ändrar du `proguard-rules.pro` eller R8-känslig kod,
