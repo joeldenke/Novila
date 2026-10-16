@@ -32,3 +32,9 @@ internal val Project.novilaNamespace: String
 
 /** A dependency on another module by path. Declares the dependency only; never touches that project (Isolated Projects). */
 internal fun Project.module(path: String) = dependencies.project(mapOf("path" to path))
+
+/**
+ * JVM flags for test JVMs. They are short-lived (seconds to a minute per module), so C1 alone compiles faster than it
+ * loses on code quality, and ParallelGC has the least overhead.
+ */
+internal val TEST_JVM_ARGS = listOf("-XX:+UseParallelGC", "-XX:TieredStopAtLevel=1")

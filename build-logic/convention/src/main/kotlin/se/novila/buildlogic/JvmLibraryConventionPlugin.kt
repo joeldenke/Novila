@@ -36,7 +36,10 @@ class JvmLibraryConventionPlugin : Plugin<Project> {
                 lintConfig = lintPolicy
             }
             configureKover("jvm")
-            tasks.withType<Test>().configureEach { useJUnit() }
+            tasks.withType<Test>().configureEach {
+                useJUnit()
+                jvmArgs(TEST_JVM_ARGS)
+            }
             dependencies {
                 add("testImplementation", libs.library("junit"))
             }
