@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="onboarding_progress">Step %1$d of %2$d</string>
+    <string name="onboarding_next">Next</string>
+    <string name="onboarding_begin">Show me</string>
+    <string name="onboarding_skip">Skip</string>
+    <string name="onboarding_back">Back</string>
+    <string name="onboarding_finish">Get started</string>
+
+    <string name="onboarding_welcome_eyebrow">Welcome to Novila</string>
+    <string name="onboarding_welcome_title">Training, sleep and food in balance</string>
+    <string name="onboarding_welcome_body">A calm health coach in your pocket. Novila plans your training, follows your sleep and guides your meals, and shows how they work together.</string>
+    <string name="onboarding_welcome_privacy">Everything stays on your phone. No account, no ads.</string>
+
+    <string name="onboarding_training_eyebrow">Training</string>
+    <string name="onboarding_training_title">A program that grows with you</string>
+    <string name="onboarding_training_body">The coach builds your week around your goal and your time, and the next week builds on what you did.</string>
+    <string name="onboarding_training_point_1">Cardio and strength along WHO\'s activity guidelines</string>
+    <string name="onboarding_training_point_2">Every exercise shown on a moving figure, with the muscles it works</string>
+    <string name="onboarding_training_point_3">A guided session with sets, rests and a timer</string>
+
+    <string name="onboarding_sleep_eyebrow">Sleep</string>
+    <string name="onboarding_sleep_title">See what a good night gives you</string>
+    <string name="onboarding_sleep_body">Log the night in a second each morning. Novila finds the patterns in your week.</string>
+    <string name="onboarding_sleep_point_1">Your week\'s sleep as a calm curve</string>
+    <string name="onboarding_sleep_point_2">How your sleep affects your mood</string>
+    <string name="onboarding_sleep_point_3">Insights from your own logs, worked out on the phone</string>
+
+    <string name="onboarding_nutrition_eyebrow">Nutrition</string>
+    <string name="onboarding_nutrition_title">Portions, not calories</string>
+    <string name="onboarding_nutrition_body">Tap in what you eat by food group. Today\'s score follows the Swedish Food Agency\'s dietary advice.</string>
+    <string name="onboarding_nutrition_point_1">A score from 0 to 100 that rewards vegetables and whole grain</string>
+    <string name="onboarding_nutrition_point_2">The next step that does the most good today</string>
+    <string name="onboarding_nutrition_point_3">One sweet treat a day is free</string>
+
+    <string name="onboarding_you_eyebrow">About you</string>
+    <string name="onboarding_you_title">What do you want from Novila?</string>
+    <string name="onboarding_you_body">The coach plans your first week from this. You can change everything later under Training.</string>
+    <string name="onboarding_name">What should we call you?</string>
+    <string name="onboarding_name_summary">Optional. Today greets you by name.</string>
+    <string name="onboarding_goal_title">Your goal</string>
+    <string name="onboarding_goal_health">All-round health</string>
+    <string name="onboarding_goal_health_body">A bit of everything: cardio and strength for a healthy everyday life.</string>
+    <string name="onboarding_goal_strength">Get stronger</string>
+    <string name="onboarding_goal_strength_body">More sets and longer rests, so your muscles grow.</string>
+    <string name="onboarding_goal_endurance">Better fitness</string>
+    <string name="onboarding_goal_endurance_body">More cardio and more repetitions, for more stamina.</string>
+    <string name="onboarding_goal_mobility">Mobility</string>
+    <string name="onboarding_goal_mobility_body">Calm sessions for your back, hips and shoulders.</string>
+    <string name="onboarding_goal_rehab">Your rehab program stays as it is. Choose a goal to change it.</string>
+    <string name="onboarding_time_title">Your time</string>
+    <string name="onboarding_days">Days a week</string>
+    <string name="onboarding_days_value">%1$d days</string>
+    <string name="onboarding_fewer_days">Fewer days</string>
+    <string name="onboarding_more_days">More days</string>
+    <string name="onboarding_minutes">Minutes per session</string>
+    <string name="onboarding_minutes_value">About %1$d minutes</string>
+    <string name="onboarding_shorter">Shorter sessions</string>
+    <string name="onboarding_longer">Longer sessions</string>
+
+    <string name="onboarding_movement_eyebrow">Movement</string>
+    <string name="onboarding_movement_title">Count every step</string>
+    <string name="onboarding_movement_body">Connect Health Connect, and Novila shows today\'s steps and active calories from your watch or phone. Novila only reads them, while the app is open.</string>
+    <string name="onboarding_movement_connect">Connect Health Connect</string>
+    <string name="onboarding_movement_connected">Connected. %1$s steps so far today.</string>
+    <string name="onboarding_movement_denied">Access was declined. You can allow it in Health Connect whenever you like.</string>
+    <string name="onboarding_movement_install">Get Health Connect</string>
+    <string name="onboarding_movement_unavailable">Health Connect is not available on this phone. You can still log everything yourself.</string>
+    <string name="onboarding_movement_later">You can also do this later under Settings.</string>
+
+    <string name="onboarding_ready_title">Your week is ready</string>
+    <string name="onboarding_ready_title_named">Your week is ready, %1$s</string>
+    <string name="onboarding_ready_body">%1$s, %2$d days a week, about %3$d minutes at a time.</string>
+    <string name="onboarding_ready_body_rehab">Your rehab program, %1$d days a week, about %2$d minutes at a time.</string>
+    <string name="onboarding_ready_training">Your program is under Training</string>
+    <string name="onboarding_ready_sleep">Log last night\'s sleep tomorrow morning</string>
+    <string name="onboarding_ready_nutrition">Start with breakfast under Nutrition</string>
+    <string name="onboarding_ready_know_title">Good to know</string>
+    <string name="onboarding_ready_privacy">Everything you log stays on this phone. There is no account and no cloud.</string>
+    <string name="onboarding_ready_disclaimer">Novila gives general advice, not medical advice. Ask a doctor or physiotherapist if you are unsure.</string>
+</resources>

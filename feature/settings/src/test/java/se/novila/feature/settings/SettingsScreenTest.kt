@@ -91,4 +91,13 @@ class SettingsScreenTest {
 
         scrollTo("0.1.7-debug (7)").assertExists()
     }
+
+    @Test fun `the intro can be shown again`() {
+        var shows = 0
+        show(SettingsActions(onShowIntro = { shows++ }))
+
+        scrollTo("Show the intro again").performClick()
+
+        assertEquals(1, shows)
+    }
 }

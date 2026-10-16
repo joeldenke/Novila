@@ -96,3 +96,24 @@ fun NavigationState.toEntries(
         .flatMap { decoratedEntries[it] ?: emptyList() }
         .toMutableStateList()
 }
+
+/**
+ * A single [route] shown on its own, outside the tabs, such as the intro before the app. Its entry gets its own saved
+ * state and `ViewModelStore` like every tab entry, so `metroViewModel()` works the same. Show it with
+ * `entries.last().Content()`; there is nothing to go back to, so system back stays with the screen and the app.
+ */
+@Composable
+fun rememberStandaloneEntries(
+    route: NavKey,
+    entryProvider: (NavKey) -> NavEntry<NavKey>,
+): List<NavEntry<NavKey>> {
+    val backStack = rememberNavBackStack(route)
+    return rememberDecoratedNavEntries(
+        backStack = backStack,
+        entryDecorators = listOf<NavEntryDecorator<NavKey>>(
+            rememberSaveableStateHolderNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator(),
+        ),
+        entryProvider = entryProvider,
+    )
+}

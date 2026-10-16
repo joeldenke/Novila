@@ -149,7 +149,7 @@ private fun Rings(segments: List<NovilaHeroSegment>, track: Color, reveal: Float
 }
 
 /** The midsummer sun's glow in the top corner, behind the sun emblem. */
-private fun DrawScope.drawSunGlow(sun: Color) {
+internal fun DrawScope.drawSunGlow(sun: Color) {
     val center = Offset(size.width - 36.dp.toPx(), 36.dp.toPx())
     val radius = 120.dp.toPx()
     drawCircle(
@@ -160,7 +160,7 @@ private fun DrawScope.drawSunGlow(sun: Color) {
 }
 
 /** A quiet row of spruces along the bottom right, like a forest edge across a lake. */
-private fun DrawScope.drawForest(color: Color) {
+internal fun DrawScope.drawForest(color: Color) {
     val unit = 12.dp.toPx()
     val base = size.height
     // Position across the card and relative height of each tree.

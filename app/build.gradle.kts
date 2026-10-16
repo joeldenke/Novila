@@ -16,6 +16,7 @@ dependencies {
     implementation(projects.feature.training)
     implementation(projects.feature.sleep)
     implementation(projects.feature.nutrition)
+    implementation(projects.feature.onboarding)
     implementation(projects.feature.settings)
 
     // Everything that contributes to the graph must be on the app's classpath, so Metro can find it.

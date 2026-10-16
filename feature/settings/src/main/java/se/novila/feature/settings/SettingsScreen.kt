@@ -45,6 +45,7 @@ data class SettingsActions(
     val onOpenHealthInfo: () -> Unit = {},
     val onOpenDisclaimer: () -> Unit = {},
     val onDeleteData: () -> Unit = {},
+    val onShowIntro: () -> Unit = {},
 )
 
 /**
@@ -74,7 +75,7 @@ fun SettingsScreen(
         item(key = "health-connect") { HealthConnectCard(movement, actions) }
         item(key = "disclaimer") { DisclaimerCard(actions.onOpenDisclaimer) }
         item(key = "data") { DataCard(actions.onDeleteData) }
-        item(key = "about") { AboutCard(version) }
+        item(key = "about") { AboutCard(version, actions.onShowIntro) }
     }
 }
 
@@ -235,8 +236,14 @@ private fun DataCard(onDeleteData: () -> Unit) {
 }
 
 @Composable
-private fun AboutCard(version: AppVersion) {
+private fun AboutCard(version: AppVersion, onShowIntro: () -> Unit) {
     NovilaCard(title = stringResource(R.string.settings_about)) {
+        NovilaListRow(
+            title = stringResource(R.string.settings_intro),
+            summary = stringResource(R.string.settings_intro_summary),
+            onClick = onShowIntro,
+            trailing = { Chevron() },
+        )
         NovilaListRow(
             title = stringResource(R.string.settings_version),
             summary = stringResource(R.string.settings_version_value, version.name, version.code),

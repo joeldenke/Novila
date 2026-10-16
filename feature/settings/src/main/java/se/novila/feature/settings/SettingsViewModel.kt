@@ -60,6 +60,9 @@ class SettingsViewModel(
 
     fun setDynamicColor(enabled: Boolean) = settingsStore.setDynamicColor(enabled)
 
+    /** Shows the intro from the start again. The app switches to it as soon as the flag is saved. */
+    fun showIntro() = settingsStore.setOnboarded(false)
+
     /**
      * Forgets the profile, everything the user has logged and the coach's answers. Settings stay, since they are not
      * health data. Health Connect's own data is not Novila's to delete.

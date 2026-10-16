@@ -80,4 +80,6 @@
     <string name="profile_height_error">Enter a height between %1$d and %2$d cm.</string>
     <string name="profile_weight_error">Enter a weight between %1$d and %2$d kg.</string>
     <string name="profile_privacy">Every field is optional. Your profile is saved on this phone only and needs no account. Deleting all data under Settings deletes it too.</string>
+    <string name="settings_intro">Show the intro again</string>
+    <string name="settings_intro_summary">A tour of Novila, and your goal and time for the coach.</string>
 </resources>

@@ -81,6 +81,7 @@ fun EntryProviderScope<NavKey>.settingsEntries(navigator: Navigator, contentPadd
                 onOpenHealthInfo = { navigator.navigate(HealthDataRoute) },
                 onOpenDisclaimer = { navigator.navigate(DisclaimerRoute) },
                 onDeleteData = viewModel::deleteAllData,
+                onShowIntro = viewModel::showIntro,
             ),
             contentPadding = contentPadding,
         )
