@@ -60,7 +60,8 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
             viewModel.refresh()
             onPauseOrDispose { }
         }
-        val state by viewModel.state.collectAsStateWithLifecycle()
+        // Nothing to show until the saved days and answers are read, a moment at app start.
+        val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
         val movement by viewModel.movement.collectAsStateWithLifecycle()
         val context = LocalContext.current
         val connectHealth = rememberMovementPermissionRequest(viewModel::onMovementPermissionsResult)
@@ -87,7 +88,7 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
         }
         // Whether Gemini Nano can run here is asked when the coach opens, never in the background.
         LaunchedEffect(viewModel) { viewModel.checkAssistant() }
-        val state by viewModel.state.collectAsStateWithLifecycle()
+        val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
         val assistant by viewModel.assistant.collectAsStateWithLifecycle()
         CoachScreen(
             coach = state.coach,

@@ -31,7 +31,8 @@ fun EntryProviderScope<NavKey>.todayEntry(
             viewModel.refresh()
             onPauseOrDispose { }
         }
-        val state by viewModel.state.collectAsStateWithLifecycle()
+        // Nothing to show until the saved days are read, a moment at app start.
+        val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
         val movement by viewModel.movement.collectAsStateWithLifecycle()
         TodayScreen(
             today = state.week.today,

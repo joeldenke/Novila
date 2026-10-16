@@ -1,7 +1,6 @@
 package se.novila.feature.nutrition.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
@@ -22,7 +21,8 @@ fun EntryProviderScope<NavKey>.nutritionEntry(contentPadding: PaddingValues) {
             viewModel.refresh()
             onPauseOrDispose { }
         }
-        val week by viewModel.week.collectAsStateWithLifecycle()
+        // Nothing to show until the saved days are read, a moment at app start.
+        val week = viewModel.week.collectAsStateWithLifecycle().value ?: return@entry
         NutritionScreen(week.today, week.history, viewModel::changePortions, viewModel::changeTreats, contentPadding)
     }
 }

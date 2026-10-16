@@ -9,7 +9,7 @@ CI är därför den enda sanningen om att något bygger och fungerar.
 - Jetpack Compose med eget designsystem ovanpå Material 3 1.5 (beta), compileSdk/targetSdk 37, minSdk 26
 - Navigation 3 (`androidx.navigation3`) med en back stack per flik: Idag, Träning, Sömn, Kost
 - Alla versioner i `gradle/libs.versions.toml`. Hårdkoda aldrig versioner i byggfiler.
-- Data lokalt i SharedPreferences via `HealthStore`, kodat av `DayEntryCodec` (versionerat format, v3 sedan passläget)
+- Data lokalt i Preferences DataStore via `HealthStore`, kodat av `DayEntryCodec` (versionerat format, v3 sedan passläget)
 - DI med [Metro](https://zacsweers.github.io/metro/) (`dev.zacsweers.metro`, Kotlin-kompilatorplugin, ingen KSP).
   Varje skärm har en egen ViewModel (`StateFlow`) i sin feature, skapad av Metro och scopad till sin Navigation 3-entry.
   Ingen delad ViewModel. Skärmarna i `feature/*` är tillståndslösa.
@@ -31,8 +31,11 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   flikikonerna och `PreviewData` (samma person i alla previews)
 - `:core:navigation` – `NavigationState` (en back stack per flik, varje entry med egen sparad state och
   `ViewModelStore` via `rememberViewModelStoreNavEntryDecorator`) och `Navigator`
-- `:core:data` – lagring i SharedPreferences (`HealthStore`, `CoachStore`, singletons i `AppScope` vars `changes` får
-  alla ViewModels att läsa om efter en sparning) och `GeminiNanoCoachModel` (bunden som `CoachLanguageModel`)
+- `:core:data` – lagring i Preferences DataStore (`HealthStore`, `CoachStore`, singletons i `AppScope` vars `StateFlow`
+  `days`/`answers` får alla ViewModels att läsa om efter en sparning) och `GeminiNanoCoachModel` (bunden som
+  `CoachLanguageModel`). `PreferencesStore` flyttar gamla SharedPreferences hit vid första läsningen, håller datan i
+  minnet och köar sparningar i storens egen scope (i ordning, klara även när ViewModeln rensas). Tills första läsningen
+  är klar är ViewModelns state `null` och entryn ritar inget. Använd aldrig SharedPreferences för ny data.
 - `:core:healthconnect` – Health Connect som `MovementSource`, behörigheterna i modulens manifest och integritetsskärmen
   (`HealthDataInfoActivity`)
 - Ren Kotlin, utan Android (`novila.jvm.library`, testas på sekunder):

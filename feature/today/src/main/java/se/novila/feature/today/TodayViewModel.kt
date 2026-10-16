@@ -10,9 +10,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import se.novila.data.HealthStore
+import se.novila.data.HealthStore.SavedDays
 import se.novila.data.Week
 import se.novila.movement.MovementRepository
 import se.novila.movement.MovementState
@@ -32,12 +34,13 @@ class TodayViewModel(
 ) : ViewModel() {
     private val now = MutableStateFlow(LocalDateTime.now())
 
-    val state: StateFlow<TodayUiState> = combine(now, store.changes) { now, _ -> read(now) }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, read(now.value))
+    /** The dashboard, or null before the store's first read. */
+    val state: StateFlow<TodayUiState?> = combine(now, store.days.filterNotNull()) { now, days -> read(days, now) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, store.days.value?.let { read(it, now.value) })
 
     val movement: StateFlow<MovementState> = movementRepository.state
 
-    private fun read(now: LocalDateTime) = TodayUiState(store.week(now.toLocalDate()), now.hour)
+    private fun read(days: SavedDays, now: LocalDateTime) = TodayUiState(days.week(now.toLocalDate()), now.hour)
 
     /**
      * Called on resume, so "today" and the greeting stay correct. Health Connect only allows reads while the app is

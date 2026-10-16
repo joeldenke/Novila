@@ -13,6 +13,7 @@ import java.io.File
  * - Features never depend on each other: the app connects them through navigation.
  * - ViewModels belong to the feature that shows them and are created by Metro (`metroViewModel()`), scoped to their
  *   Navigation 3 entry. No shared ViewModel in :app and no `viewModel()` without Metro's factory.
+ * - Saved data lives in DataStore through the stores in :core:data, never in SharedPreferences.
  *
  * The sources are declared as inputs of the test task (novila.android.application), so it reruns when they change.
  */
@@ -61,6 +62,13 @@ class ArchitectureTest {
         assertTrue("Use metroViewModel(), not viewModel(): ${plainViewModel.names()}", plainViewModel.isEmpty())
         val inApp = sources().filter { it.startsWith(File(root, "app")) && it.readText().contains(": ViewModel()") }
         assertTrue("Give each screen its own ViewModel in its feature instead of: ${inApp.names()}", inApp.isEmpty())
+    }
+
+    @Test fun `nothing is saved in SharedPreferences`() {
+        val offenders = sources().filter { file ->
+            file.readLines().any { "getSharedPreferences(" in it || "import android.content.SharedPreferences" in it }
+        }
+        assertTrue("Save through a store in :core:data (DataStore) instead: ${offenders.names()}", offenders.isEmpty())
     }
 
     private fun List<File>.names() = joinToString { it.relativeTo(root).path }

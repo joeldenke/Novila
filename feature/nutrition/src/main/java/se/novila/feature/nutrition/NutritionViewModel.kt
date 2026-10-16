@@ -24,7 +24,8 @@ import java.time.LocalDate
 class NutritionViewModel(private val store: HealthStore) : ViewModel() {
     private val date = MutableStateFlow(LocalDate.now())
 
-    val week: StateFlow<Week> = store.weeks(date)
+    /** The week so far, or null before the store's first read. */
+    val week: StateFlow<Week?> = store.weeks(date)
         .stateIn(viewModelScope, SharingStarted.Eagerly, store.week(date.value))
 
     /** Called on resume so "today" stays correct after midnight. */

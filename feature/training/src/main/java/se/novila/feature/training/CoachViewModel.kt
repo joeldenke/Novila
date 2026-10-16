@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -40,9 +39,9 @@ class CoachViewModel(
     /** Answers the user is trying out before the coach is set up. Not saved until they create the program. */
     private val draft = MutableStateFlow<CoachPreferences?>(null)
 
-    val state: StateFlow<TrainingUiState> = combine(date, draft, training.changes) { date, draft, _ ->
-        training.read(date, draft)
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, training.read(date.value))
+    /** The answers and their plan, or null before the stores' first read. */
+    val state: StateFlow<TrainingUiState?> = training.states(date, draft)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, training.current(date.value))
 
     private val _assistant = MutableStateFlow(AssistantUiState())
     val assistant: StateFlow<AssistantUiState> = _assistant.asStateFlow()
@@ -72,7 +71,7 @@ class CoachViewModel(
 
     /** Lets Gemini Nano explain the coach's current plan, from [input] in the user's language. */
     fun writeAssistantMessage(input: CoachPromptInput) {
-        val coach = state.value.coach
+        val coach = state.value?.coach ?: return
         _assistant.update { it.copy(writing = true, message = null, failed = false) }
         viewModelScope.launch {
             val answer = languageModel.write(CoachPrompt.build(coach.plan, coach.preferences, input))
@@ -80,25 +79,25 @@ class CoachViewModel(
                 .getOrNull()
                 ?.takeIf { it.isNotBlank() }
             // A message for a plan that changed meanwhile would explain the wrong week.
-            val current = state.value.coach.plan == coach.plan
+            val current = state.value?.coach?.plan == coach.plan
             _assistant.update { it.copy(writing = false, message = answer.takeIf { current }, failed = answer == null) }
         }
     }
 
     /** A changed answer. Once the coach is set up it is saved and changes the week's program right away. */
     fun change(preferences: CoachPreferences) {
-        if (state.value.coach.active) coachStore.save(preferences) else draft.value = preferences
+        if (state.value?.coach?.active == true) coachStore.save(preferences) else draft.value = preferences
         forgetAssistantMessage()
     }
 
     /** Saves the answers, which makes the coach's plan the week's program. */
     fun createProgram() {
-        coachStore.save(state.value.coach.preferences)
+        state.value?.let { coachStore.save(it.coach.preferences) }
     }
 
     /** A new suggestion from the same answers, used right away. */
     fun nextSuggestion() {
-        coachStore.save(state.value.coach.preferences.nextVariation())
+        state.value?.let { coachStore.save(it.coach.preferences.nextVariation()) }
         forgetAssistantMessage()
     }
 
