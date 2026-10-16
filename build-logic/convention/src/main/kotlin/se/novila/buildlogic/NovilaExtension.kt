@@ -48,10 +48,34 @@ abstract class NovilaExtension @Inject constructor(private val project: Project)
         project.dependencies.add("implementation", project.module(":core:navigation"))
     }
 
-    /** ViewModels and lifecycle-aware state collection in Compose. */
+    /**
+     * ViewModels and lifecycle-aware state collection in Compose, and ViewModel stores scoped to Navigation 3
+     * entries (`rememberViewModelStoreNavEntryDecorator`).
+     */
     fun lifecycle() {
         implementation("androidx-lifecycle-runtime-compose")
         implementation("androidx-lifecycle-viewmodel-compose")
+        implementation("androidx-lifecycle-viewmodel-navigation3")
+    }
+
+    /**
+     * Metro, compile-time dependency injection: the compiler plugin and its runtime (`@Inject`, `@SingleIn`,
+     * `@ContributesBinding` …). Every module with injected classes needs it, so Metro generates their factories.
+     */
+    fun metro() {
+        project.pluginManager.apply("dev.zacsweers.metro")
+    }
+
+    /**
+     * ViewModels created by Metro: `@ViewModelKey @ContributesIntoMap(AppScope::class)` on the ViewModel and
+     * `metroViewModel()` in the Navigation 3 entry, so each entry gets its own instance. Includes [metro] and
+     * [lifecycle].
+     */
+    fun viewModels() {
+        metro()
+        lifecycle()
+        coroutines()
+        implementation("metrox-viewmodel-compose")
     }
 
     /** Activities with Compose content (`setContent`). */

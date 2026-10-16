@@ -3,7 +3,18 @@ package se.novila.feature.training
 import se.novila.coach.AssistantAvailability
 import se.novila.coach.CoachPlan
 import se.novila.coach.CoachPreferences
+import se.novila.exercise.TrainingProgram
 import se.novila.exercise.Workout
+import java.time.DayOfWeek
+
+/** What the training screens show for one day. */
+data class TrainingUiState(
+    /** This week's workouts: the coach's when it is set up, otherwise generated from recent ones. */
+    val program: TrainingProgram,
+    val coach: CoachUiState,
+    val today: DayOfWeek,
+    val strengthMinutesToday: Int,
+)
 
 /**
  * The coach's [preferences] (the defaults before it is set up) and the [plan] they give. [active] when the

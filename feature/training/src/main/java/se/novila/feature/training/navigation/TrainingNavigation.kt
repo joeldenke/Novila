@@ -3,24 +3,29 @@ package se.novila.feature.training.navigation
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.LifecycleResumeEffect
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.serialization.Serializable
 import se.novila.anatomy.ExerciseLibrary
-import se.novila.coach.CoachPreferences
-import se.novila.coach.CoachPromptInput
-import se.novila.exercise.TrainingProgram
-import se.novila.feature.training.AssistantUiState
 import se.novila.feature.training.CoachScreen
-import se.novila.feature.training.CoachUiState
+import se.novila.feature.training.CoachViewModel
 import se.novila.feature.training.ExerciseDetailScreen
+import se.novila.feature.training.ExerciseViewModel
 import se.novila.feature.training.R
 import se.novila.feature.training.TrainingScreen
+import se.novila.feature.training.TrainingViewModel
 import se.novila.feature.training.WorkoutScreen
-import se.novila.feature.training.WorkoutUiState
+import se.novila.feature.training.WorkoutViewModel
 import se.novila.feature.training.moveName
-import se.novila.movement.MovementState
+import se.novila.healthconnect.HealthConnectSource
+import se.novila.healthconnect.rememberMovementPermissionRequest
 import se.novila.navigation.Navigator
 import java.time.DayOfWeek
 
@@ -33,85 +38,82 @@ import java.time.DayOfWeek
 /** The training coach: answers in, a week's program out. */
 @Serializable data object CoachRoute : NavKey
 
-/** A guided strength session, set by set, from a strength day in the Training tab. */
-@Serializable data object WorkoutRoute : NavKey
+/** A guided strength session, set by set, for the program's strength day [day] (ISO, Monday is 1). */
+@Serializable
+data class WorkoutRoute(val day: Int) : NavKey {
+    constructor(day: DayOfWeek) : this(day.value)
 
-/** What the training screens show. */
-data class TrainingState(
-    val movement: MovementState,
-    val program: TrainingProgram,
-    val coach: CoachUiState,
-    val assistant: AssistantUiState,
-    val workout: WorkoutUiState?,
-    val today: DayOfWeek,
-    val strengthMinutesToday: Int,
-)
+    val dayOfWeek: DayOfWeek get() = DayOfWeek.of(day)
+}
 
 /**
- * The Training tab and the screens opened from it. Navigation inside the tab goes through [navigator]; Health
- * Connect and the data behind the screens come from the app through the callbacks.
+ * The Training tab and the screens opened from it. Each entry gets its own ViewModel from Metro, scoped to the entry
+ * (`metroViewModel()`), so it lives as long as the entry is on the back stack. Navigation inside the tab goes through
+ * [navigator].
  */
-fun EntryProviderScope<NavKey>.trainingEntries(
-    state: TrainingState,
-    navigator: Navigator,
-    contentPadding: PaddingValues,
-    onConnectHealth: () -> Unit,
-    onOpenHealthSettings: () -> Unit,
-    onInstallHealth: () -> Unit,
-    onCheckAssistant: () -> Unit,
-    onDownloadAssistant: () -> Unit,
-    onWriteAssistantMessage: (CoachPromptInput) -> Unit,
-    onChangeCoach: (CoachPreferences) -> Unit,
-    onCreateCoachProgram: () -> Unit,
-    onNextCoachSuggestion: () -> Unit,
-    onResetCoach: () -> Unit,
-    onStartWorkout: (DayOfWeek) -> Unit,
-    onNextWorkoutStep: () -> Unit,
-    onFinishWorkout: () -> Unit,
-) {
+fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadding: PaddingValues) {
     val openExercise = { id: String -> navigator.navigate(ExerciseRoute(id)) }
     entry<TrainingRoute> {
+        val viewModel = metroViewModel<TrainingViewModel>()
+        // Read again on resume so "today" is correct after midnight, and movement is fresh.
+        LifecycleResumeEffect(viewModel) {
+            viewModel.refresh()
+            onPauseOrDispose { }
+        }
+        val state by viewModel.state.collectAsStateWithLifecycle()
+        val movement by viewModel.movement.collectAsStateWithLifecycle()
+        val context = LocalContext.current
+        val connectHealth = rememberMovementPermissionRequest(viewModel::onMovementPermissionsResult)
         TrainingScreen(
-            movement = state.movement,
+            movement = movement,
             program = state.program,
             coach = state.coach,
             today = state.today,
-            onConnectHealth = onConnectHealth,
-            onOpenHealthSettings = onOpenHealthSettings,
-            onInstallHealth = onInstallHealth,
+            onConnectHealth = connectHealth,
+            onOpenHealthSettings = { HealthConnectSource.openSettings(context) },
+            onInstallHealth = { HealthConnectSource.openInstall(context) },
             onOpenExercise = openExercise,
-            onStartWorkout = { day ->
-                onStartWorkout(day)
-                navigator.navigate(WorkoutRoute)
-            },
+            onStartWorkout = { day -> navigator.navigate(WorkoutRoute(day)) },
             onOpenCoach = { navigator.navigate(CoachRoute) },
             contentPadding = contentPadding,
             strengthMinutesToday = state.strengthMinutesToday,
         )
     }
     entry<CoachRoute> {
+        val viewModel = metroViewModel<CoachViewModel>()
+        LifecycleResumeEffect(viewModel) {
+            viewModel.refresh()
+            onPauseOrDispose { }
+        }
         // Whether Gemini Nano can run here is asked when the coach opens, never in the background.
-        LaunchedEffect(Unit) { onCheckAssistant() }
+        LaunchedEffect(viewModel) { viewModel.checkAssistant() }
+        val state by viewModel.state.collectAsStateWithLifecycle()
+        val assistant by viewModel.assistant.collectAsStateWithLifecycle()
         CoachScreen(
             coach = state.coach,
-            assistant = state.assistant,
+            assistant = assistant,
             today = state.today,
-            onChange = onChangeCoach,
-            onCreate = onCreateCoachProgram,
-            onSuggest = onNextCoachSuggestion,
-            onReset = onResetCoach,
+            onChange = viewModel::change,
+            onCreate = viewModel::createProgram,
+            onSuggest = viewModel::nextSuggestion,
+            onReset = viewModel::reset,
             onOpenExercise = openExercise,
-            onDownloadAssistant = onDownloadAssistant,
-            onWriteMessage = onWriteAssistantMessage,
+            onDownloadAssistant = viewModel::downloadAssistant,
+            onWriteMessage = viewModel::writeAssistantMessage,
             contentPadding = contentPadding,
         )
     }
-    entry<WorkoutRoute> {
+    entry<WorkoutRoute> { route ->
+        // Leaving without finishing pops the entry, which clears this ViewModel: the session is discarded.
+        val viewModel = assistedMetroViewModel<WorkoutViewModel, WorkoutViewModel.Factory> {
+            create(route.dayOfWeek)
+        }
+        val state by viewModel.state.collectAsStateWithLifecycle()
         WorkoutScreen(
-            state = state.workout,
-            onNext = onNextWorkoutStep,
+            state = state,
+            onNext = viewModel::next,
             onFinish = {
-                onFinishWorkout()
+                viewModel.finish()
                 navigator.goBack()
             },
             onShowHow = openExercise,
@@ -120,12 +122,11 @@ fun EntryProviderScope<NavKey>.trainingEntries(
     }
     entry<ExerciseRoute> { route ->
         ExerciseLibrary.byId(route.exerciseId)?.let { motion ->
-            ExerciseDetailScreen(
-                motion = motion,
-                planned = state.program.sessions.flatMap { it.exercises }
-                    .firstOrNull { it.exerciseId == route.exerciseId },
-                contentPadding = contentPadding,
-            )
+            val viewModel = assistedMetroViewModel<ExerciseViewModel, ExerciseViewModel.Factory> {
+                create(route.exerciseId)
+            }
+            val planned by viewModel.planned.collectAsStateWithLifecycle()
+            ExerciseDetailScreen(motion = motion, planned = planned, contentPadding = contentPadding)
         }
     }
 }
@@ -135,6 +136,6 @@ fun EntryProviderScope<NavKey>.trainingEntries(
 fun trainingDetailTitle(route: NavKey?): String? = when (route) {
     is ExerciseRoute -> moveName(route.exerciseId)
     CoachRoute -> stringResource(R.string.coach_title)
-    WorkoutRoute -> stringResource(R.string.workout_title)
+    is WorkoutRoute -> stringResource(R.string.workout_title)
     else -> null
 }

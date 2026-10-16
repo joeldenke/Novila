@@ -4,6 +4,7 @@ plugins {
 
 novila {
     coroutines()
+    metro()
 }
 
 dependencies {
