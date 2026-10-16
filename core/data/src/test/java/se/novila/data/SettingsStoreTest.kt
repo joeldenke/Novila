@@ -31,4 +31,13 @@ class SettingsStoreTest {
         stores.restart()
         assertEquals(chosen, SettingsStore(context, stores.scope).settings.await())
     }
+
+    @Test fun `the intro stays done after a restart`() {
+        val store = SettingsStore(context, stores.scope)
+        store.setOnboarded(true)
+        store.settings.await { it.onboarded }
+
+        stores.restart()
+        assertEquals(true, SettingsStore(context, stores.scope).settings.await().onboarded)
+    }
 }

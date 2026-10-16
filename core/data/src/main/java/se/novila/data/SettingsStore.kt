@@ -13,7 +13,8 @@ import se.novila.model.ThemeMode
 
 /**
  * The app's settings in Preferences DataStore (file `settings`), on the device only. One instance for the whole app,
- * so the theme in `MainActivity` changes as soon as the Settings screen saves.
+ * so the theme in `MainActivity` changes as soon as the Settings screen saves, and the app opens as soon as the intro
+ * is done.
  */
 @SingleIn(AppScope::class)
 class SettingsStore internal constructor(context: Context, scope: CoroutineScope) {
@@ -26,6 +27,7 @@ class SettingsStore internal constructor(context: Context, scope: CoroutineScope
         AppSettings(
             theme = ThemeMode.fromName(it[THEME]),
             dynamicColor = it[DYNAMIC_COLOR] ?: false,
+            onboarded = it[ONBOARDED] ?: false,
         )
     }
 
@@ -33,9 +35,13 @@ class SettingsStore internal constructor(context: Context, scope: CoroutineScope
 
     fun setDynamicColor(enabled: Boolean) = store.edit { it[DYNAMIC_COLOR] = enabled }
 
+    /** The intro is done, and the app opens on Today; or, from Settings, not done, to show it again. */
+    fun setOnboarded(done: Boolean) = store.edit { it[ONBOARDED] = done }
+
     private companion object {
         const val NAME = "settings"
         val THEME = stringPreferencesKey("theme")
         val DYNAMIC_COLOR = booleanPreferencesKey("dynamic_color")
+        val ONBOARDED = booleanPreferencesKey("onboarded")
     }
 }

@@ -75,4 +75,6 @@
     <string name="profile_height_error">Ange en längd mellan %1$d och %2$d cm.</string>
     <string name="profile_weight_error">Ange en vikt mellan %1$d och %2$d kg.</string>
     <string name="profile_privacy">Alla fält är valfria. Profilen sparas bara i den här telefonen och kräver inget konto. Raderar du all data under Inställningar raderas den också.</string>
+    <string name="settings_intro">Visa introduktionen igen</string>
+    <string name="settings_intro_summary">En rundtur i Novila, och ditt mål och din tid för coachen.</string>
 </resources>

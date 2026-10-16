@@ -17,6 +17,8 @@ import se.novila.designsystem.theme.NovilaColorRole
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.nutrition.navigation.NutritionRoute
 import se.novila.feature.nutrition.navigation.nutritionEntry
+import se.novila.feature.onboarding.navigation.OnboardingRoute
+import se.novila.feature.onboarding.navigation.onboardingEntry
 import se.novila.feature.settings.navigation.SettingsRoute
 import se.novila.feature.settings.navigation.settingsEntries
 import se.novila.feature.settings.navigation.settingsTitle
@@ -29,6 +31,7 @@ import se.novila.feature.training.navigation.trainingEntries
 import se.novila.navigation.Navigator
 import se.novila.navigation.TopLevelDestination
 import se.novila.navigation.rememberNavigationState
+import se.novila.navigation.rememberStandaloneEntries
 import se.novila.navigation.toEntries
 import se.novila.ui.R as UiR
 
@@ -39,10 +42,29 @@ import se.novila.ui.R as UiR
  *
  * Settings opens from the top bar (on Today, from its header) and goes onto the current tab's back stack.
  *
- * @param darkTheme and [dynamicColor] come from the user's settings, read in [MainActivity]
+ * Until the intro is done ([onboarded]), the app shows only the intro, from `:feature:onboarding`.
+ *
+ * @param darkTheme and [dynamicColor] come from the user's settings, read in [MainActivity], as does [onboarded]
  */
 @Composable
-fun NovilaApp(darkTheme: Boolean, dynamicColor: Boolean) {
+fun NovilaApp(darkTheme: Boolean, dynamicColor: Boolean, onboarded: Boolean) {
+    NovilaTheme(darkTheme = darkTheme, dynamicColor = dynamicColor) {
+        if (onboarded) Tabs() else Intro()
+    }
+}
+
+/**
+ * The intro on its own, without tabs or top bar, until it is done. Finishing it saves the flag that [MainActivity]
+ * reads, and the tabs take over.
+ */
+@Composable
+private fun Intro() {
+    val entries = rememberStandaloneEntries(OnboardingRoute, entryProvider<NavKey> { onboardingEntry() })
+    entries.last().Content()
+}
+
+@Composable
+private fun Tabs() {
     val navigationState = rememberNavigationState(
         startRoute = TopLevelDestination.start.route,
         topLevelRoutes = TopLevelDestination.routes,
@@ -52,64 +74,62 @@ fun NovilaApp(darkTheme: Boolean, dynamicColor: Boolean) {
     val currentRoute = navigationState.backStacks[navigationState.topLevelRoute]?.lastOrNull()
     val openSettings = { navigator.navigate(SettingsRoute) }
 
-    NovilaTheme(darkTheme = darkTheme, dynamicColor = dynamicColor) {
-        NovilaScaffold(
-            // Today is a dashboard with its own greeting header instead of a title bar.
-            topBar = {
-                val detailTitle = trainingDetailTitle(currentRoute) ?: settingsTitle(currentRoute)
-                when {
-                    detailTitle != null -> NovilaTopAppBar(
-                        title = detailTitle,
-                        navigationIcon = painterResource(R.drawable.ic_back),
-                        navigationLabel = stringResource(R.string.navigate_back),
-                        onNavigate = navigator::goBack,
-                    )
-
-                    current != TopLevelDestination.Today -> NovilaTopAppBar(
-                        title = stringResource(current.label),
-                        actions = {
-                            NovilaIconButton(
-                                painter = painterResource(UiR.drawable.ic_settings),
-                                contentDescription = stringResource(UiR.string.settings_title),
-                                onClick = openSettings,
-                            )
-                        },
-                    )
-                }
-            },
-            bottomBar = {
-                NovilaNavigationBar {
-                    TopLevelDestination.entries.forEach { destination ->
-                        NovilaNavigationBarItem(
-                            selected = destination == current,
-                            onClick = { navigator.navigate(destination.route) },
-                            icon = painterResource(destination.icon),
-                            label = stringResource(destination.label),
-                            role = destination.role(),
-                        )
-                    }
-                }
-            },
-        ) { innerPadding ->
-            val entryProvider = entryProvider<NavKey> {
-                todayEntry(
-                    onOpenTraining = { navigator.navigate(TrainingRoute) },
-                    onOpenSleep = { navigator.navigate(SleepRoute) },
-                    onOpenNutrition = { navigator.navigate(NutritionRoute) },
-                    onOpenSettings = openSettings,
-                    contentPadding = innerPadding,
+    NovilaScaffold(
+        // Today is a dashboard with its own greeting header instead of a title bar.
+        topBar = {
+            val detailTitle = trainingDetailTitle(currentRoute) ?: settingsTitle(currentRoute)
+            when {
+                detailTitle != null -> NovilaTopAppBar(
+                    title = detailTitle,
+                    navigationIcon = painterResource(R.drawable.ic_back),
+                    navigationLabel = stringResource(R.string.navigate_back),
+                    onNavigate = navigator::goBack,
                 )
-                trainingEntries(navigator = navigator, contentPadding = innerPadding)
-                sleepEntry(contentPadding = innerPadding)
-                nutritionEntry(contentPadding = innerPadding)
-                settingsEntries(navigator = navigator, contentPadding = innerPadding)
+
+                current != TopLevelDestination.Today -> NovilaTopAppBar(
+                    title = stringResource(current.label),
+                    actions = {
+                        NovilaIconButton(
+                            painter = painterResource(UiR.drawable.ic_settings),
+                            contentDescription = stringResource(UiR.string.settings_title),
+                            onClick = openSettings,
+                        )
+                    },
+                )
             }
-            NavDisplay(
-                entries = navigationState.toEntries(entryProvider),
-                // Popping an entry clears its ViewModel: leaving a session without finishing it discards it.
-                onBack = navigator::goBack,
+        },
+        bottomBar = {
+            NovilaNavigationBar {
+                TopLevelDestination.entries.forEach { destination ->
+                    NovilaNavigationBarItem(
+                        selected = destination == current,
+                        onClick = { navigator.navigate(destination.route) },
+                        icon = painterResource(destination.icon),
+                        label = stringResource(destination.label),
+                        role = destination.role(),
+                    )
+                }
+            }
+        },
+    ) { innerPadding ->
+        val entryProvider = entryProvider<NavKey> {
+            todayEntry(
+                onOpenTraining = { navigator.navigate(TrainingRoute) },
+                onOpenSleep = { navigator.navigate(SleepRoute) },
+                onOpenNutrition = { navigator.navigate(NutritionRoute) },
+                onOpenSettings = openSettings,
+                contentPadding = innerPadding,
             )
+            trainingEntries(navigator = navigator, contentPadding = innerPadding)
+            sleepEntry(contentPadding = innerPadding)
+            nutritionEntry(contentPadding = innerPadding)
+            settingsEntries(navigator = navigator, contentPadding = innerPadding)
         }
+        NavDisplay(
+            entries = navigationState.toEntries(entryProvider),
+            // Popping an entry clears its ViewModel: leaving a session without finishing it discards it.
+            onBack = navigator::goBack,
+        )
     }
 }
 

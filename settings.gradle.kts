@@ -48,6 +48,7 @@ include(":core:navigation")
 include(":core:ui")
 
 include(":feature:nutrition")
+include(":feature:onboarding")
 include(":feature:settings")
 include(":feature:sleep")
 include(":feature:today")

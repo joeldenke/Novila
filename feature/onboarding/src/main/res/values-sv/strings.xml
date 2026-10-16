@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="onboarding_progress">Steg %1$d av %2$d</string>
+    <string name="onboarding_next">Nästa</string>
+    <string name="onboarding_begin">Visa mig</string>
+    <string name="onboarding_skip">Hoppa över</string>
+    <string name="onboarding_back">Tillbaka</string>
+    <string name="onboarding_finish">Kom igång</string>
+
+    <string name="onboarding_welcome_eyebrow">Välkommen till Novila</string>
+    <string name="onboarding_welcome_title">Träning, sömn och kost i balans</string>
+    <string name="onboarding_welcome_body">En lugn hälsocoach i fickan. Novila planerar din träning, följer din sömn och guidar dina måltider, och visar hur de hänger ihop.</string>
+    <string name="onboarding_welcome_privacy">Allt stannar i din telefon. Inget konto, ingen reklam.</string>
+
+    <string name="onboarding_training_eyebrow">Träning</string>
+    <string name="onboarding_training_title">Ett program som växer med dig</string>
+    <string name="onboarding_training_body">Coachen bygger din vecka kring ditt mål och din tid, och nästa vecka bygger på det du gjorde.</string>
+    <string name="onboarding_training_point_1">Kondition och styrka enligt WHO:s råd om fysisk aktivitet</string>
+    <string name="onboarding_training_point_2">Varje övning visas på en figur som rör sig, med musklerna den tränar</string>
+    <string name="onboarding_training_point_3">Ett guidat pass med set, vila och timer</string>
+
+    <string name="onboarding_sleep_eyebrow">Sömn</string>
+    <string name="onboarding_sleep_title">Se vad en god natt ger dig</string>
+    <string name="onboarding_sleep_body">Logga natten på en sekund varje morgon. Novila hittar mönstren i din vecka.</string>
+    <string name="onboarding_sleep_point_1">Veckans sömn som en lugn kurva</string>
+    <string name="onboarding_sleep_point_2">Hur sömnen påverkar ditt mående</string>
+    <string name="onboarding_sleep_point_3">Insikter ur dina egna loggar, uträknade i telefonen</string>
+
+    <string name="onboarding_nutrition_eyebrow">Kost</string>
+    <string name="onboarding_nutrition_title">Portioner, inte kalorier</string>
+    <string name="onboarding_nutrition_body">Tryck in vad du äter per livsmedelsgrupp. Dagens poäng följer Livsmedelsverkets kostråd.</string>
+    <string name="onboarding_nutrition_point_1">En poäng från 0 till 100 som belönar grönsaker och fullkorn</string>
+    <string name="onboarding_nutrition_point_2">Nästa steg som gör mest nytta i dag</string>
+    <string name="onboarding_nutrition_point_3">Något sött om dagen är fritt</string>
+
+    <string name="onboarding_you_eyebrow">Om dig</string>
+    <string name="onboarding_you_title">Vad vill du få ut av Novila?</string>
+    <string name="onboarding_you_body">Coachen planerar din första vecka utifrån det här. Du kan ändra allt senare under Träning.</string>
+    <string name="onboarding_name">Vad ska vi kalla dig?</string>
+    <string name="onboarding_name_summary">Valfritt. Idag hälsar dig med namn.</string>
+    <string name="onboarding_goal_title">Ditt mål</string>
+    <string name="onboarding_goal_health">Allmän hälsa</string>
+    <string name="onboarding_goal_health_body">Lite av allt: kondition och styrka för en frisk vardag.</string>
+    <string name="onboarding_goal_strength">Bli starkare</string>
+    <string name="onboarding_goal_strength_body">Fler set och längre vila, så att musklerna växer.</string>
+    <string name="onboarding_goal_endurance">Bättre kondition</string>
+    <string name="onboarding_goal_endurance_body">Mer kondition och fler repetitioner, för mer ork.</string>
+    <string name="onboarding_goal_mobility">Rörlighet</string>
+    <string name="onboarding_goal_mobility_body">Lugna pass för rygg, höfter och axlar.</string>
+    <string name="onboarding_goal_rehab">Ditt rehabprogram är kvar som det är. Välj ett mål för att byta.</string>
+    <string name="onboarding_time_title">Din tid</string>
+    <string name="onboarding_days">Dagar i veckan</string>
+    <string name="onboarding_days_value">%1$d dagar</string>
+    <string name="onboarding_fewer_days">Färre dagar</string>
+    <string name="onboarding_more_days">Fler dagar</string>
+    <string name="onboarding_minutes">Minuter per pass</string>
+    <string name="onboarding_minutes_value">Cirka %1$d minuter</string>
+    <string name="onboarding_shorter">Kortare pass</string>
+    <string name="onboarding_longer">Längre pass</string>
+
+    <string name="onboarding_movement_eyebrow">Rörelse</string>
+    <string name="onboarding_movement_title">Varje steg räknas</string>
+    <string name="onboarding_movement_body">Koppla Health Connect, så visar Novila dagens steg och aktiva kalorier från din klocka eller telefon. Novila läser dem bara, medan appen är öppen.</string>
+    <string name="onboarding_movement_connect">Koppla Health Connect</string>
+    <string name="onboarding_movement_connected">Kopplat. %1$s steg hittills i dag.</string>
+    <string name="onboarding_movement_denied">Åtkomsten nekades. Du kan tillåta den i Health Connect när du vill.</string>
+    <string name="onboarding_movement_install">Hämta Health Connect</string>
+    <string name="onboarding_movement_unavailable">Health Connect finns inte på den här telefonen. Du kan ändå logga allt själv.</string>
+    <string name="onboarding_movement_later">Du kan också göra det senare under Inställningar.</string>
+
+    <string name="onboarding_ready_title">Din vecka är klar</string>
+    <string name="onboarding_ready_title_named">Din vecka är klar, %1$s</string>
+    <string name="onboarding_ready_body">%1$s, %2$d dagar i veckan, cirka %3$d minuter per pass.</string>
+    <string name="onboarding_ready_body_rehab">Ditt rehabprogram, %1$d dagar i veckan, cirka %2$d minuter per pass.</string>
+    <string name="onboarding_ready_training">Ditt program finns under Träning</string>
+    <string name="onboarding_ready_sleep">Logga nattens sömn i morgon bitti</string>
+    <string name="onboarding_ready_nutrition">Börja med frukosten under Kost</string>
+    <string name="onboarding_ready_know_title">Bra att veta</string>
+    <string name="onboarding_ready_privacy">Allt du loggar stannar i den här telefonen. Det finns inget konto och inget moln.</string>
+    <string name="onboarding_ready_disclaimer">Novila ger allmänna råd, inte medicinska. Fråga en läkare eller fysioterapeut om du är osäker.</string>
+</resources>

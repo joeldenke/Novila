@@ -1,10 +1,14 @@
 package se.novila.model
 
-/** How the app looks, chosen under Settings. Saved by `SettingsStore` in `:core:data`. */
+/**
+ * How the app looks, chosen under Settings, and whether the intro is done. Saved by `SettingsStore` in `:core:data`.
+ */
 data class AppSettings(
     val theme: ThemeMode = ThemeMode.System,
     /** Wallpaper colors (Material You, Android 12+) instead of the Skog & sol palette. */
     val dynamicColor: Boolean = false,
+    /** The intro at first start is done or skipped, so the app opens on Today. */
+    val onboarded: Boolean = false,
 )
 
 /** Light, dark, or whatever the phone uses. */
