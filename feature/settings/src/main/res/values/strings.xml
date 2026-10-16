@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Not translated: symbols and units. -->
+    <string name="settings_version_value" translatable="false">%1$s (%2$d)</string>
+
+    <!-- Appearance -->
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_theme_system">Automatic</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_dynamic_color">Wallpaper colors</string>
+    <string name="settings_dynamic_color_summary">Use colors from your wallpaper instead of Novila\'s forest and sun.</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_language_summary">Choose English or Swedish for Novila in your phone\'s settings.</string>
+
+    <!-- Health Connect -->
+    <string name="settings_health_connect">Health Connect</string>
+    <string name="settings_health_connected">Connected. Novila reads today\'s steps and active calories while the app is open.</string>
+    <string name="settings_health_not_connected">Not connected. Connect to see today\'s steps and active calories from your watch or phone.</string>
+    <string name="settings_health_denied">Access was declined. You can allow it for Novila in Health Connect.</string>
+    <string name="settings_health_needs_install">Health Connect needs to be installed or updated before Novila can read your steps.</string>
+    <string name="settings_health_unavailable">Health Connect is not available on this phone.</string>
+    <string name="settings_health_connect_action">Connect Health Connect</string>
+    <string name="settings_health_install_action">Get Health Connect</string>
+    <string name="settings_health_info">What Novila reads</string>
+    <string name="settings_health_info_summary">Which data, why, and where it goes.</string>
+
+    <!-- Health and safety -->
+    <string name="settings_health_and_safety">Health and safety</string>
+    <string name="settings_disclaimer_short">Novila gives general advice, not medical advice. Ask a doctor or physiotherapist if you are unsure.</string>
+
+    <!-- Your data -->
+    <string name="settings_data">Your data</string>
+    <string name="settings_data_body">Everything you log is saved on this phone only. Novila has no account and no cloud, so nothing can be restored once deleted.</string>
+    <string name="settings_delete_data">Delete all data</string>
+    <string name="settings_delete_data_title">Delete all data?</string>
+    <string name="settings_delete_data_body">Your logged sleep, food, mood and workouts and the coach\'s answers are deleted from this phone. This cannot be undone. Data in Health Connect is not affected.</string>
+    <string name="settings_delete_data_confirm">Delete</string>
+    <string name="settings_cancel">Cancel</string>
+    <string name="settings_data_deleted">All data is deleted.</string>
+
+    <!-- About -->
+    <string name="settings_about">About Novila</string>
+    <string name="settings_version">Version</string>
+    <string name="settings_privacy">Privacy</string>
+    <string name="settings_privacy_summary">No ads, no analytics and no network calls. Your health data stays on the phone.</string>
+    <string name="settings_licenses">Licenses</string>
+    <string name="settings_licenses_summary">Hanken Grotesk typeface, SIL Open Font License 1.1. Icons from Material Symbols, Apache License 2.0.</string>
+
+    <!-- Disclaimer -->
+    <string name="disclaimer_title">Health disclaimer</string>
+    <string name="disclaimer_not_medical_title">Not medical advice</string>
+    <string name="disclaimer_not_medical_body">Novila gives general advice on exercise, sleep and food. It is not a medical device, and it does not diagnose, treat or prevent any disease.</string>
+    <string name="disclaimer_ask_title">Ask before you start</string>
+    <string name="disclaimer_ask_body">Talk to a doctor or physiotherapist before you start training if you have an illness, an injury or pain, are pregnant, or are unsure whether training suits you.</string>
+    <string name="disclaimer_stop_title">Stop if it hurts</string>
+    <string name="disclaimer_stop_body">Stop and rest if you feel chest pain, dizziness, shortness of breath or sharp pain. Seek care if it does not pass. In an emergency, call 112.</string>
+    <string name="disclaimer_rehab_title">Rehab programs</string>
+    <string name="disclaimer_rehab_body">The coach\'s rehab programs are general and do not replace a plan from your physiotherapist. Follow the pain limit, and your caregiver\'s advice before Novila\'s.</string>
+    <string name="disclaimer_ai_title">AI comments</string>
+    <string name="disclaimer_ai_body">The coach\'s comment is written by Gemini Nano on your phone. AI can be wrong. The program itself is made without AI, and it is what counts.</string>
+    <string name="disclaimer_sources_title">Where the advice comes from</string>
+    <string name="disclaimer_sources_body">Activity goals follow the WHO\'s physical activity guidelines, and the nutrition score follows the Swedish Food Agency\'s dietary guidelines. Your own needs can differ.</string>
+</resources>

@@ -15,13 +15,14 @@ import se.novila.feature.today.TodayViewModel
 @Serializable data object TodayRoute : NavKey
 
 /**
- * Today's entry, with its own [TodayViewModel] scoped to the entry. The other tabs are opened through the callbacks,
- * so this module never depends on another feature.
+ * Today's entry, with its own [TodayViewModel] scoped to the entry. The other tabs and Settings are opened through
+ * the callbacks, so this module never depends on another feature.
  */
 fun EntryProviderScope<NavKey>.todayEntry(
     onOpenTraining: () -> Unit,
     onOpenSleep: () -> Unit,
     onOpenNutrition: () -> Unit,
+    onOpenSettings: () -> Unit,
     contentPadding: PaddingValues,
 ) {
     entry<TodayRoute> {
@@ -43,6 +44,7 @@ fun EntryProviderScope<NavKey>.todayEntry(
             onOpenTraining = onOpenTraining,
             onOpenSleep = onOpenSleep,
             onOpenNutrition = onOpenNutrition,
+            onOpenSettings = onOpenSettings,
             contentPadding = contentPadding,
         )
     }

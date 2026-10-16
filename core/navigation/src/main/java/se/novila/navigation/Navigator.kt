@@ -10,6 +10,15 @@ class Navigator(val state: NavigationState) {
             // Top-level route: switch tab and keep that tab's history.
             state.topLevelRoute = route
         } else {
+            // A screen that opens from any tab (Settings) lives in one back stack at a time: the start tab's stack is
+            // shown under the current one, and the same key twice in NavDisplay clashes. Opening it in another tab
+            // moves it here, together with what was opened from it.
+            state.backStacks.forEach { (topLevelRoute, stack) ->
+                val index = stack.indexOf(route)
+                if (topLevelRoute != state.topLevelRoute && index >= 0) {
+                    while (stack.size > index) stack.removeLastOrNull()
+                }
+            }
             state.backStacks[state.topLevelRoute]?.add(route)
         }
     }

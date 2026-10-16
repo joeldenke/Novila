@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Utseende -->
+    <string name="settings_appearance">Utseende</string>
+    <string name="settings_theme">Tema</string>
+    <string name="settings_theme_system">Automatiskt</string>
+    <string name="settings_theme_light">Ljust</string>
+    <string name="settings_theme_dark">Mörkt</string>
+    <string name="settings_dynamic_color">Färger från bakgrundsbilden</string>
+    <string name="settings_dynamic_color_summary">Använd färgerna från din bakgrundsbild i stället för Novilas skog och sol.</string>
+    <string name="settings_language">Språk</string>
+    <string name="settings_language_summary">Välj svenska eller engelska för Novila i telefonens inställningar.</string>
+
+    <!-- Health Connect -->
+    <string name="settings_health_connect">Health Connect</string>
+    <string name="settings_health_connected">Ansluten. Novila läser dagens steg och aktiva kalorier medan appen är öppen.</string>
+    <string name="settings_health_not_connected">Inte ansluten. Anslut för att se dagens steg och aktiva kalorier från din klocka eller telefon.</string>
+    <string name="settings_health_denied">Åtkomst nekades. Du kan tillåta den för Novila i Health Connect.</string>
+    <string name="settings_health_needs_install">Health Connect behöver installeras eller uppdateras innan Novila kan läsa dina steg.</string>
+    <string name="settings_health_unavailable">Health Connect finns inte på den här telefonen.</string>
+    <string name="settings_health_connect_action">Anslut Health Connect</string>
+    <string name="settings_health_install_action">Hämta Health Connect</string>
+    <string name="settings_health_info">Vad Novila läser</string>
+    <string name="settings_health_info_summary">Vilken data, varför och vart den tar vägen.</string>
+
+    <!-- Hälsa och säkerhet -->
+    <string name="settings_health_and_safety">Hälsa och säkerhet</string>
+    <string name="settings_disclaimer_short">Novila ger allmänna råd, inte medicinska råd. Fråga en läkare eller fysioterapeut om du är osäker.</string>
+
+    <!-- Dina data -->
+    <string name="settings_data">Dina data</string>
+    <string name="settings_data_body">Allt du loggar sparas bara i den här telefonen. Novila har inget konto och inget moln, så inget kan återställas när det har raderats.</string>
+    <string name="settings_delete_data">Radera all data</string>
+    <string name="settings_delete_data_title">Radera all data?</string>
+    <string name="settings_delete_data_body">Din loggade sömn, kost, mående och dina pass samt coachens svar raderas från telefonen. Det går inte att ångra. Data i Health Connect påverkas inte.</string>
+    <string name="settings_delete_data_confirm">Radera</string>
+    <string name="settings_cancel">Avbryt</string>
+    <string name="settings_data_deleted">All data är raderad.</string>
+
+    <!-- Om -->
+    <string name="settings_about">Om Novila</string>
+    <string name="settings_version">Version</string>
+    <string name="settings_privacy">Integritet</string>
+    <string name="settings_privacy_summary">Ingen reklam, inga analysverktyg och inga nätverksanrop. Din hälsodata stannar i telefonen.</string>
+    <string name="settings_licenses">Licenser</string>
+    <string name="settings_licenses_summary">Typsnittet Hanken Grotesk, SIL Open Font License 1.1. Ikoner från Material Symbols, Apache License 2.0.</string>
+
+    <!-- Ansvarsfriskrivning -->
+    <string name="disclaimer_title">Ansvarsfriskrivning</string>
+    <string name="disclaimer_not_medical_title">Inte medicinska råd</string>
+    <string name="disclaimer_not_medical_body">Novila ger allmänna råd om träning, sömn och kost. Appen är ingen medicinteknisk produkt och ställer inte diagnoser, behandlar inte och förebygger inte sjukdomar.</string>
+    <string name="disclaimer_ask_title">Fråga innan du börjar</string>
+    <string name="disclaimer_ask_body">Prata med en läkare eller fysioterapeut innan du börjar träna om du har en sjukdom, en skada eller ont, är gravid eller är osäker på om träningen passar dig.</string>
+    <string name="disclaimer_stop_title">Sluta om det gör ont</string>
+    <string name="disclaimer_stop_body">Avbryt och vila om du får ont i bröstet, blir yr, andfådd eller får skarp smärta. Sök vård om det inte går över. Ring 112 vid akut fara.</string>
+    <string name="disclaimer_rehab_title">Rehabprogram</string>
+    <string name="disclaimer_rehab_body">Coachens rehabprogram är allmänna och ersätter inte en plan från din fysioterapeut. Följ smärtgränsen, och din vårdgivares råd före Novilas.</string>
+    <string name="disclaimer_ai_title">AI-kommentarer</string>
+    <string name="disclaimer_ai_body">Coachens kommentar skrivs av Gemini Nano i din telefon. AI kan ha fel. Själva programmet görs utan AI, och det är programmet som gäller.</string>
+    <string name="disclaimer_sources_title">Var råden kommer ifrån</string>
+    <string name="disclaimer_sources_body">Aktivitetsmålen följer WHO:s råd om fysisk aktivitet och kostpoängen Livsmedelsverkets kostråd. Dina egna behov kan skilja sig.</string>
+</resources>

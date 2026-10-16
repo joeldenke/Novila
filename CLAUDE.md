@@ -24,6 +24,9 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   strängar, ViewModels och `@Preview`/skärmdumpar. Varje feature äger sin navigation (`navigation/`): `@Serializable`-rutter
   (`NavKey`) och `EntryProviderScope<NavKey>.<feature>Entries(...)`, som `:app` lägger i sin `entryProvider`.
   Features beror aldrig på varandra (`ArchitectureTest`); flikbyten går via callbacks från `:app`.
+- `:feature:settings` – Inställningar (tema, Health Connect, ansvarsfriskrivning, radera data, version). Ingen flik:
+  öppnas med kugghjulet i toppraden (på Idag i hälsningen) och läggs på aktuell fliks back stack. `Navigator` flyttar
+  den om den öppnas från en annan flik, så samma nyckel aldrig ligger i två stackar som visas samtidigt.
 - `:core:designsystem` – `se.novila.designsystem`, enda modulen som använder Material 3 direkt
   - `theme` – `NovilaTheme`: färger, typografi, former och spacing-tokens
   - `component` – `Novila*`-komponenter som wrappar Material 3
@@ -31,15 +34,15 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   flikikonerna och `PreviewData` (samma person i alla previews)
 - `:core:navigation` – `NavigationState` (en back stack per flik, varje entry med egen sparad state och
   `ViewModelStore` via `rememberViewModelStoreNavEntryDecorator`) och `Navigator`
-- `:core:data` – lagring i Preferences DataStore (`HealthStore`, `CoachStore`, singletons i `AppScope` vars `StateFlow`
-  `days`/`answers` får alla ViewModels att läsa om efter en sparning) och `GeminiNanoCoachModel` (bunden som
+- `:core:data` – lagring i Preferences DataStore (`HealthStore`, `CoachStore`, `SettingsStore`, singletons i `AppScope`
+  vars `StateFlow` `days`/`answers`/`settings` får alla ViewModels att läsa om efter en sparning) och `GeminiNanoCoachModel` (bunden som
   `CoachLanguageModel`). `PreferencesStore` flyttar gamla SharedPreferences hit vid första läsningen, håller datan i
   minnet och köar sparningar i storens egen scope (i ordning, klara även när ViewModeln rensas). Tills första läsningen
   är klar är ViewModelns state `null` och entryn ritar inget. Använd aldrig SharedPreferences för ny data.
 - `:core:healthconnect` – Health Connect som `MovementSource`, behörigheterna i modulens manifest och integritetsskärmen
   (`HealthDataInfoActivity`)
 - Ren Kotlin, utan Android (`novila.jvm.library`, testas på sekunder):
-  - `:core:model` – `DayEntry` (`DayEntryCodec`), kost, dagens balans och insikter
+  - `:core:model` – `DayEntry` (`DayEntryCodec`), kost, dagens balans, insikter och `AppSettings` (`ThemeMode`)
   - `:core:movement` – rörelsedata oberoende av källa: `MovementSource` (källa), `MovementCache` (cache) och
     `MovementRepository` (det enda UI:t läser). Källa och cache väljs på ett ställe, i `AppGraph`.
   - `:core:exercise` – träningspass oberoende av källa: `Exercise`, `ExerciseSource` och `TrainingProgramGenerator`, som
@@ -215,6 +218,9 @@ där pluginet `firebase@firebase` inte alltid installeras.
   `add-exercise` (lösta vinklar, kamera från `ViewSelector`, texter på båda språken). `AnatomyTest` kontrollerar att
   planterade händer och fötter står still och säger vilken kamera som gäller. Figuren färgas bara med `NovilaTheme.anatomy` (sjöblå kropp, glödande muskler) och
   spelar ett bestämt antal repetitioner, aldrig i loop.
+- **Tema:** användaren väljer Automatiskt/Ljust/Mörkt och bakgrundsfärger (Android 12+) under Inställningar.
+  `MainActivity` läser `SettingsStore` och ger `NovilaApp` `darkTheme`/`dynamicColor`, och systemfälten följer appens
+  tema. Ritar inget förrän inställningarna är lästa, så temat aldrig blinkar.
 - **Rörelse:** lugn och engångs. Animationer spelas när innehållet visas (`NovilaReveal`, diagram som ritar in sig)
   via `NovilaMotion` i `:core:designsystem`. Inga oändliga animationer: de får skärmdumpstesterna att hänga.
 - **Kostpoäng:** `nutritionScore()` (0–100) viktar livsmedelsgrupper efter Livsmedelsverkets kostråd (`FoodGroup`) med

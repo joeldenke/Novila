@@ -64,4 +64,16 @@ class HealthStoreTest {
 
         assertEquals(30, HealthStore(context, stores.scope).days.await().day(today).strengthMinutes)
     }
+
+    @Test fun `clearing forgets every day`() {
+        val store = HealthStore(context, stores.scope)
+        store.update(today) { it.withSleep(7f) }
+        store.update(today.minusDays(3)) { it.withMood(2) }
+        store.days.await { it.day(today.minusDays(3)).mood == 2 }
+
+        store.clear()
+        val days = store.days.await { it.day(today) == DayEntry(today) }
+
+        assertEquals(DayEntry(today.minusDays(3)), days.day(today.minusDays(3)))
+    }
 }

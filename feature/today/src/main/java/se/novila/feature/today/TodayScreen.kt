@@ -10,12 +10,14 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import se.novila.designsystem.component.NovilaHeroCard
 import se.novila.designsystem.component.NovilaHeroSegment
+import se.novila.designsystem.component.NovilaIconButton
 import se.novila.designsystem.component.NovilaReveal
 import se.novila.designsystem.component.NovilaScaffold
 import se.novila.designsystem.component.NovilaStatTile
@@ -58,6 +60,7 @@ fun TodayScreen(
     onOpenTraining: () -> Unit,
     onOpenSleep: () -> Unit,
     onOpenNutrition: () -> Unit,
+    onOpenSettings: () -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
@@ -66,7 +69,7 @@ fun TodayScreen(
     val week = remember(today, history) { weekOf(today, history) }
     val insights = remember(week, steps) { weekInsights(week, steps) }
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
-        item(key = "header") { NovilaReveal(order = 0) { Header(today, greetingFor(hour)) } }
+        item(key = "header") { NovilaReveal(order = 0) { Header(today, greetingFor(hour), onOpenSettings) } }
         item(key = "balance") { NovilaReveal(order = 1) { BalanceCard(today, steps) } }
         item(key = "pillars") {
             NovilaReveal(order = 2) {
@@ -81,8 +84,21 @@ fun TodayScreen(
 }
 
 @Composable
-private fun Header(today: DayEntry, greeting: Greeting) {
-    Column(verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.xxs)) {
+private fun Header(today: DayEntry, greeting: Greeting, onOpenSettings: () -> Unit) {
+    // Today has no top bar, so Settings sits next to the greeting.
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        GreetingText(today, greeting, Modifier.weight(1f))
+        NovilaIconButton(
+            painter = painterResource(UiR.drawable.ic_settings),
+            contentDescription = stringResource(UiR.string.settings_title),
+            onClick = onOpenSettings,
+        )
+    }
+}
+
+@Composable
+private fun GreetingText(today: DayEntry, greeting: Greeting, modifier: Modifier = Modifier) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.xxs)) {
         NovilaText(
             longDateText(today.date),
             style = NovilaTheme.typography.bodyMedium,
@@ -192,6 +208,7 @@ private fun TodayScreenContent() {
                 onOpenTraining = {},
                 onOpenSleep = {},
                 onOpenNutrition = {},
+                onOpenSettings = {},
                 contentPadding = padding,
             )
         }

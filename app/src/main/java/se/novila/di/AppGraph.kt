@@ -6,6 +6,7 @@ import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 import dev.zacsweers.metrox.viewmodel.ViewModelGraph
+import se.novila.data.SettingsStore
 import se.novila.healthconnect.HealthConnectSource
 import se.novila.movement.InMemoryMovementCache
 import se.novila.movement.MovementRepository
@@ -20,6 +21,9 @@ import kotlin.time.Clock
  */
 @DependencyGraph(AppScope::class)
 interface AppGraph : ViewModelGraph {
+    /** The app's settings, which [se.novila.MainActivity] reads for the theme before any screen is shown. */
+    val settingsStore: SettingsStore
+
     /**
      * Movement for Today and Training, one repository for the app. Swap [HealthConnectSource] for another
      * MovementSource, or the cache for a persistent one, here.

@@ -8,6 +8,7 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import se.novila.R
+import se.novila.designsystem.component.NovilaIconButton
 import se.novila.designsystem.component.NovilaNavigationBar
 import se.novila.designsystem.component.NovilaNavigationBarItem
 import se.novila.designsystem.component.NovilaScaffold
@@ -16,6 +17,9 @@ import se.novila.designsystem.theme.NovilaColorRole
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.nutrition.navigation.NutritionRoute
 import se.novila.feature.nutrition.navigation.nutritionEntry
+import se.novila.feature.settings.navigation.SettingsRoute
+import se.novila.feature.settings.navigation.settingsEntries
+import se.novila.feature.settings.navigation.settingsTitle
 import se.novila.feature.sleep.navigation.SleepRoute
 import se.novila.feature.sleep.navigation.sleepEntry
 import se.novila.feature.today.navigation.todayEntry
@@ -26,14 +30,19 @@ import se.novila.navigation.Navigator
 import se.novila.navigation.TopLevelDestination
 import se.novila.navigation.rememberNavigationState
 import se.novila.navigation.toEntries
+import se.novila.ui.R as UiR
 
 /**
  * The app shell: tabs, top bar and the navigation display. Each feature module brings its own routes and entries
  * (`todayEntry`, `trainingEntries`, ...), and each entry its own ViewModel from Metro, scoped to the entry. This only
  * connects the tabs to each other; it holds no screen state.
+ *
+ * Settings opens from the top bar (on Today, from its header) and goes onto the current tab's back stack.
+ *
+ * @param darkTheme and [dynamicColor] come from the user's settings, read in [MainActivity]
  */
 @Composable
-fun NovilaApp() {
+fun NovilaApp(darkTheme: Boolean, dynamicColor: Boolean) {
     val navigationState = rememberNavigationState(
         startRoute = TopLevelDestination.start.route,
         topLevelRoutes = TopLevelDestination.routes,
@@ -41,12 +50,13 @@ fun NovilaApp() {
     val navigator = remember(navigationState) { Navigator(navigationState) }
     val current = TopLevelDestination.of(navigationState.topLevelRoute)
     val currentRoute = navigationState.backStacks[navigationState.topLevelRoute]?.lastOrNull()
+    val openSettings = { navigator.navigate(SettingsRoute) }
 
-    NovilaTheme {
+    NovilaTheme(darkTheme = darkTheme, dynamicColor = dynamicColor) {
         NovilaScaffold(
             // Today is a dashboard with its own greeting header instead of a title bar.
             topBar = {
-                val detailTitle = trainingDetailTitle(currentRoute)
+                val detailTitle = trainingDetailTitle(currentRoute) ?: settingsTitle(currentRoute)
                 when {
                     detailTitle != null -> NovilaTopAppBar(
                         title = detailTitle,
@@ -55,7 +65,16 @@ fun NovilaApp() {
                         onNavigate = navigator::goBack,
                     )
 
-                    current != TopLevelDestination.Today -> NovilaTopAppBar(title = stringResource(current.label))
+                    current != TopLevelDestination.Today -> NovilaTopAppBar(
+                        title = stringResource(current.label),
+                        actions = {
+                            NovilaIconButton(
+                                painter = painterResource(UiR.drawable.ic_settings),
+                                contentDescription = stringResource(UiR.string.settings_title),
+                                onClick = openSettings,
+                            )
+                        },
+                    )
                 }
             },
             bottomBar = {
@@ -77,11 +96,13 @@ fun NovilaApp() {
                     onOpenTraining = { navigator.navigate(TrainingRoute) },
                     onOpenSleep = { navigator.navigate(SleepRoute) },
                     onOpenNutrition = { navigator.navigate(NutritionRoute) },
+                    onOpenSettings = openSettings,
                     contentPadding = innerPadding,
                 )
                 trainingEntries(navigator = navigator, contentPadding = innerPadding)
                 sleepEntry(contentPadding = innerPadding)
                 nutritionEntry(contentPadding = innerPadding)
+                settingsEntries(navigator = navigator, contentPadding = innerPadding)
             }
             NavDisplay(
                 entries = navigationState.toEntries(entryProvider),
