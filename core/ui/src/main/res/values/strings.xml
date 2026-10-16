@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="value_missing" translatable="false">–</string>
+    <string name="hours_value" translatable="false">%1$s h</string>
+    <string name="balance_value" translatable="false">%1$d</string>
+
+    <!-- Navigation -->
+    <string name="nav_today">Today</string>
+    <string name="nav_training">Training</string>
+    <string name="nav_sleep">Sleep</string>
+    <string name="nav_nutrition">Nutrition</string>
+    <string name="balance_unit">of 100</string>
+    <string name="tip_next_vegetables">One more portion of vegetables or fruit gives your nutrition score +%1$d.</string>
+    <string name="tip_next_meal">Your next regular meal gives your nutrition score +%1$d.</string>
+    <string name="tip_next_protein">Add protein, like fish, beans or eggs, for +%1$d to your nutrition score.</string>
+    <string name="tip_next_whole_grain">Choose whole grain next time for +%1$d to your nutrition score.</string>
+    <string name="tip_next_water">A glass of water gives your nutrition score +%1$d.</string>
+
+    <!-- Week and insights -->
+    <string name="week_sleep_title">Sleep this week</string>
+    <string name="week_sleep_caption">Average per night · goal %1$s</string>
+    <string name="week_sleep_description">Sleep over the last seven days, %1$s per night on average.</string>
+    <string name="week_nutrition_title">Nutrition this week</string>
+    <string name="week_nutrition_caption">Average score · a good day is %1$d or more</string>
+    <string name="week_nutrition_description">Nutrition score over the last seven days, %1$s on average.</string>
+
+    <!-- Health Connect -->
+    <string name="kcal_value" translatable="false">%1$s kcal</string>
+    <string name="movement_steps">Steps</string>
+    <string name="movement_open_settings">Open Health Connect</string>
+</resources>

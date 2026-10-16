@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="health_info_title">Health Connect in Novila</string>
+    <string name="health_info_read_title">What Novila reads</string>
+    <string name="health_info_read_body">Today\'s steps and active calories burned. Novila never writes to Health Connect and never reads anything else.</string>
+    <string name="health_info_why_title">Why</string>
+    <string name="health_info_why_body">To show how much you have moved today on the Today dashboard and under Training.</string>
+    <string name="health_info_where_title">Where the data goes</string>
+    <string name="health_info_where_body">Nowhere. Novila reads the numbers while the app is open and only shows them. They are not saved by Novila, not sent over the internet and not shared with anyone.</string>
+    <string name="health_info_revoke_title">Change or turn off access</string>
+    <string name="health_info_revoke_body">You can turn off Novila\'s access at any time in Health Connect.</string>
+</resources>

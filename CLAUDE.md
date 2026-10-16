@@ -13,47 +13,60 @@ CI är därför den enda sanningen om att något bygger och fungerar.
 - En delad `HealthViewModel` (`StateFlow`); skärmarna i `feature/*` är tillståndslösa
 
 ## Struktur
-Moduler:
-- `:app` – appen: navigation, features, data och `ui/common`
+Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, `:feature:today` → `se.novila.feature.today`):
+- `:app` – bara skalet: `MainActivity`, `NovilaApp` (flikar, toppbar, `NavDisplay`), `TopLevelDestination` och
+  `HealthViewModel`, som kopplar data till skärmarna och väljer källor. Ingen skärm eller logik som går att lägga i en modul.
+- `:feature:today`, `:feature:training`, `:feature:sleep`, `:feature:nutrition` – en modul per flik med skärmar, kort,
+  strängar och `@Preview`/skärmdumpar. Varje feature äger sin navigation (`navigation/`): `@Serializable`-rutter
+  (`NavKey`) och `EntryProviderScope<NavKey>.<feature>Entries(...)`, som `:app` lägger i sin `entryProvider`.
+  Features beror aldrig på varandra (`ArchitectureTest`); flikbyten går via callbacks från `:app`.
 - `:core:designsystem` – `se.novila.designsystem`, enda modulen som använder Material 3 direkt
   - `theme` – `NovilaTheme`: färger, typografi, former och spacing-tokens
   - `component` – `Novila*`-komponenter som wrappar Material 3
-- `build-logic` – inkluderat bygge med convention plugins (`novila.android.*`), se `build-logic/README.md`
+- `:core:ui` – det flera features delar: `ScreenList`, formatering (`hoursText`, `stepsText` …), veckokorten,
+  flikikonerna och `PreviewData` (samma person i alla previews)
+- `:core:navigation` – `NavigationState` (en back stack per flik) och `Navigator`
+- `:core:data` – lagring i SharedPreferences (`HealthStore`, `CoachStore`) och `GeminiNanoCoachModel`
+- `:core:healthconnect` – Health Connect som `MovementSource`, behörigheterna i modulens manifest och integritetsskärmen
+  (`HealthDataInfoActivity`)
+- Ren Kotlin, utan Android (`novila.jvm.library`, testas på sekunder):
+  - `:core:model` – `DayEntry` (`DayEntryCodec`), kost, dagens balans och insikter
+  - `:core:movement` – rörelsedata oberoende av källa: `MovementSource` (källa), `MovementCache` (cache) och
+    `MovementRepository` (det enda UI:t läser). Källa och cache väljs på ett ställe, i `HealthViewModel`.
+  - `:core:exercise` – träningspass oberoende av källa: `Exercise`, `ExerciseSource` och `TrainingProgramGenerator`, som
+    bygger veckans program (WHO:s råd: 150–300 min kondition och styrka två dagar, högst +10 % kondition per vecka).
+    `StrengthSessions` fyller styrkedagarna med övningar, set, repetitioner och vila efter nivå. `Workout` är passläget
+    (set, vila och nedräkning). Timern körs i `HealthViewModel`. Avklarade pass sparas som `strengthMinutes` per dag
+    och blir generatorns historik.
+  - `:core:coach` – träningscoachen, helt på enheten: `CoachPreferences` (mål, dagar, tid per pass, fokus, hänsyn,
+    rehabområde och fas), `CoachCatalog` (rörelsemönster, dosering och belastning per övning) och `CoachPlanner`, som
+    bygger veckans program ur svaren, senaste passen och övningsbiblioteket och förklarar valen (`CoachNote`). Målet
+    `Rehab` ger ett handvalt, fasindelat program (knä eller ländrygg, fas 1–3) med smärtgräns och vårdråd. Svaren
+    sparas i `CoachStore`; är coachen inte inställd gäller `TrainingProgramGenerator`. Planen är alltid deterministisk
+    och testad. Gemini Nano (`GeminiNanoCoachModel`, ML Kit Prompt API via AICore) skriver bara en kommentar om den
+    färdiga planen (`CoachPrompt` bygger prompten och tvättar svaret), aldrig själva planen. Se *Gemini Nano* under Regler.
+  - `:core:anatomy` – kroppsagnostiska övningsillustrationer: `Pose`/`Movement` (ledvinklar per keyframe), `Skeleton`
+    (framåtkinematik, `BodyShape`), `MuscleMap`, `SceneBuilder` (ortografisk `Camera`, siluetter och de muskelband som
+    syns), `ViewSelector` (varje övnings bästa vy) och `ExerciseLibrary`. `AnatomyFigure` i `:feature:training` ritar
+    i Compose. Se `docs/anatomy.md`. `tools/anatomy/anatomy.sh` testar, renderar och löser vinklar utan Gradle.
+  - `:core:googlehealth` – Google Health API (REST v4) som `ExerciseSource`: läser
+    `users/me/dataTypes/exercise/dataPoints`. Ännu inte inkopplad i `:app`, se *Google Health API* under Regler.
+- `build-logic` – inkluderat bygge med convention plugins (`novila.*`) och `novila { }`, se `build-logic/README.md`
 
-I `:app`:
-- `navigation` – rutter (`NavKey`), `NavigationState`, `Navigator`
-- `feature/<flik>` – en skärm per flik, med `@Preview`
-- `ui/common` – delade hälsokort och listlayout
-- `movement` – rörelsedata oberoende av källa: `MovementSource` (källa), `MovementCache` (cache) och
-  `MovementRepository` (det enda UI:t läser). Källa och cache väljs på ett ställe, i `HealthViewModel`.
-- `healthconnect` – Health Connect som `MovementSource`, behörigheter och integritetsskärmen
-- `exercise` – träningspass oberoende av källa: `Exercise`, `ExerciseSource` och `TrainingProgramGenerator`, som bygger
-  veckans program (WHO:s råd: 150–300 min kondition och styrka två dagar, högst +10 % kondition per vecka).
-  `StrengthSessions` fyller styrkedagarna med övningar, set, repetitioner och vila efter nivå. `Workout` är passläget
-  (set, vila och nedräkning) i ren Kotlin. Timern körs i `HealthViewModel`. Avklarade pass sparas som `strengthMinutes`
-  per dag och blir generatorns historik.
-- `coach` – träningscoachen, helt på enheten: `CoachPreferences` (mål, dagar, tid per pass, fokus, hänsyn,
-  rehabområde och fas), `CoachCatalog` (rörelsemönster, dosering och belastning per övning) och `CoachPlanner`, som
-  bygger veckans program ur svaren, senaste passen och övningsbiblioteket och förklarar valen (`CoachNote`). Målet
-  `Rehab` ger ett handvalt, fasindelat program (knä eller ländrygg, fas 1–3) med smärtgräns och vårdråd. Svaren sparas
-  i `CoachStore`; är coachen inte inställd gäller `TrainingProgramGenerator`. Planen är alltid deterministisk och testad.
-  Gemini Nano (`GeminiNanoCoachModel`, ML Kit Prompt API via AICore) skriver bara en kommentar om den färdiga planen
-  (`CoachPrompt` bygger prompten och tvättar svaret), aldrig själva planen. Se *Gemini Nano* under Regler.
-- `anatomy` – kroppsagnostiska övningsillustrationer i ren Kotlin: `Pose`/`Movement` (ledvinklar per keyframe),
-  `Skeleton` (framåtkinematik, `BodyShape`), `MuscleMap`, `SceneBuilder` (ortografisk `Camera`, siluetter och de
-  muskelband som syns), `ViewSelector` (varje övnings bästa vy) och `ExerciseLibrary`. `AnatomyFigure` ritar i Compose.
-  Se `docs/anatomy.md`. `tools/anatomy/anatomy.sh` testar, renderar och löser vinklar utan Gradle.
-- `googlehealth` – Google Health API (REST v4) som `ExerciseSource`: läser `users/me/dataTypes/exercise/dataPoints`.
-  Ännu inte inkopplad i `HealthViewModel`, se *Google Health API* under Regler.
+Beroenden går nedåt: `:app` → `:feature:*` → `:core:ui`/`:core:navigation`/`:core:designsystem` → ren Kotlin.
+Strängar och ikoner ligger i modulen som använder dem; det flera moduler använder ligger i `:core:ui`
+(importeras som `import se.novila.ui.R as UiR`).
 
 ## Arbetsflöde
 - Pusha aldrig direkt till `main`. Skapa en branch och öppna en PR.
 - **Commit-meddelanden, branchnamn, PR-titlar och PR-beskrivningar skrivs på engelska.**
   PR-titeln (vid squash: commit-rubriken) blir en rad i testarnas release notes, så skriv den som en tydlig
   sammanfattning. `scripts/release-notes.sh` listar allt på `main` sedan förra lyckade distributionen.
-- `CI`-workflowen måste vara grön innan PR:en är klar. Den kör jobben Format (`spotlessCheck`), Lint (`lintDebug`),
-  Tests (`testDebugUnitTest verifyRoborazziDebug`) och Build (`assembleDebug :app:checkDebugBadging`) parallellt; kontrollen
-  *Lint, test and build* samlar dem och är den som krävs. Gemensamma steg ligger i `.github/actions/`.
+- `CI`-workflowen måste vara grön innan PR:en är klar. Den kör fyra jobb parallellt: Format (`spotlessCheck`), Lint
+  (`:app:lintDebug`, alla moduler), Tests (`test verifyRoborazziDebug koverXmlReportCoverage`) och Build
+  (`:app:assembleDebug :app:checkDebugBadging`); kontrollen *Lint, test and build* samlar dem och är den som krävs. Gemensamma steg ligger
+  i `.github/actions/`. Cachen sköts av `gradle/actions/setup-gradle` (standardcachen, sparas bara från `main`), och
+  CI-flaggorna för 2-kärniga runners ligger i `.github/ci-gradle.properties`. Bygg aldrig egen cachelogik.
   Release-bygget (R8) körs inte på PR:er. Ändrar du `proguard-rules.pro` eller R8-känslig kod,
   säg det i PR-beskrivningen. Fel syns då först vid merge.
 - Kan din miljö inte nå Google Maven: pusha och följ körningen (`gh pr checks`, `gh run view --log-failed`)
@@ -136,11 +149,15 @@ där pluginet `firebase@firebase` inte alltid installeras.
   aldrig med servicekonto-nycklar. Ändra GCP/Firebase-setupen via `scripts/bootstrap-firebase.sh` och håll den idempotent.
 
 ## Gradle-bygget
-- Varje modul använder convention plugins: `novila.android.application` eller `novila.android.library`,
-  plus `novila.android.compose` för Compose. SDK-nivåer, Java-nivå och lint-policy sätts bara där.
-  Tester: `novila.android.unittest` (JUnit, Robolectric, Compose UI-tester, Kover) och
-  `novila.android.screenshot` (Roborazzi, varje `@Preview` blir ett skärmdumpstest).
-  Modulens egen `build.gradle.kts` innehåller bara `namespace`, beroenden och det som är unikt för modulen.
+- Varje modul använder convention plugins: `novila.android.application` (bara `:app`), `novila.android.feature`
+  (`:feature:*`), `novila.android.library` eller `novila.jvm.library` (ren Kotlin), plus `novila.android.compose` för
+  Compose. Tester: `novila.android.unittest` (JUnit, Robolectric, Compose UI-tester, Kover) och
+  `novila.android.screenshot` (Roborazzi, varje `@Preview` i modulen blir ett skärmdumpstest).
+  SDK-nivåer, Java-nivå, namespace, signering, lint och testuppsättning sätts bara i `build-logic`.
+- Modulens `build.gradle.kts` innehåller bara `plugins`, `novila { }` och `dependencies`. Bibliotek som flera moduler
+  använder hämtas via `novila { coroutines(); lifecycle(); … }` (`NovilaExtension`), så varje modul tar bara det den
+  använder. Lägg till en funktion där hellre än att kopiera samma beroenden mellan moduler.
+- Logik utan Android blir en `novila.jvm.library`-modul. Den kompilerar och testar utan resurser och Robolectric.
 - Bygget ska vara kompatibelt med Isolated Projects: aldrig `allprojects {}`, `subprojects {}`,
   `rootProject.<…>` eller `project(":x")` för att läsa eller ändra en annan modul. Behövs en fil i roten,
   använd `project.isolated.rootProject.projectDirectory`. Workflowen *Isolated Projects* kontrollerar detta, men körs bara
@@ -151,7 +168,8 @@ där pluginet `firebase@firebase` inte alltid installeras.
 ## Tester och kodstil
 - **Logik:** rena Kotlin-tester i `src/test`. **UI:** Compose UI-tester med `createComposeRule()` på Robolectric
   (`@RunWith(RobolectricTestRunner::class)`), också i `src/test`. Ingen emulator behövs.
-- **Skärmdumpar:** varje `@Preview` i `:app` testas mot referensbilder i `app/src/test/screenshots`.
+- **Skärmdumpar:** varje `@Preview` testas mot referensbilder i modulens `src/test/screenshots`
+  (t.ex. `feature/training/src/test/screenshots`). Filnamnet är paket, fil och preview.
   Ändrar du UI med flit: kommentera `/record-screenshots` på PR:en. Workflowen `Record references` tar nya bilder,
   pushar dem till branchen och startar CI. Ta aldrig fram referensbilder lokalt; de ska renderas i CI.
 - **Kodstil:** Spotless med ktlint (`android_studio`-stil) kontrolleras i CI. `./gradlew spotlessApply` rättar.
@@ -183,10 +201,13 @@ där pluginet `firebase@firebase` inte alltid installeras.
   avdrag för sött och snacks. Ändra vikterna bara medvetet: `NutritionTest` och dagens balans bygger på dem.
 - **Inga hårdkodade texter:** all text som visas eller läses upp ska komma från `strings.xml`.
   Engelska i `values/`, svenska i `values-sv/`. Symboler och enheter markeras `translatable="false"`.
-- `ArchitectureTest` bevakar båda reglerna i CI.
-- **Navigation:** nya skärmar blir en `@Serializable`-rutt som implementerar `NavKey`, plus en `entry<…>`
-  i `NovilaApp`. Navigera alltid via `Navigator`. Följ skillen `navigation-3`.
-- Logik som går att testa utan Android ska ligga i rena Kotlin-klasser med enhetstester i `app/src/test`.
+- `ArchitectureTest` (i `:app`, läser alla moduler) bevakar båda reglerna i CI, och att features inte beror på varandra.
+- **Navigation:** nya skärmar blir en `@Serializable`-rutt som implementerar `NavKey` i featurens `navigation/`, plus en
+  `entry<…>` i featurens `…Entries`-funktion. Navigation inom en flik går via `Navigator` (`:core:navigation`); till
+  en annan flik via callbacks som `:app` kopplar. Allt en entry visar kommer in som parametrar, så att `:app` senare
+  kan bytas mot DI (t.ex. en multibinding av entry-installers och ViewModels per feature) utan att skärmarna ändras.
+  Följ skillen `navigation-3`.
+- Logik som går att testa utan Android ska ligga i rena Kotlin-moduler (`novila.jvm.library`) med enhetstester.
 - Ändra lagringsformat bara genom att höja versionen i `DayEntryCodec` och migrera gammal data.
 - Lägg till `contentDescription` på ikoner och emoji-knappar, eller `null` när de är dekorativa.
 - `versionCode` sätts av CI. Ändra `versionName`-prefixet (`0.1`) bara vid större milstolpar.

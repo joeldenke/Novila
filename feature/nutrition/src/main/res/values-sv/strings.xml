@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="water_title">Vatten</string>
+
+    <!-- Kost -->
+    <string name="nutrition_score_title">Dagens kostpoäng</string>
+    <string name="nutrition_next_title">Nästa steg</string>
+    <string name="nutrition_done_title">Alla livsmedelsgrupper i mål</string>
+    <string name="nutrition_done_body">Varje livsmedelsgrupp har nått dagens mål.</string>
+    <string name="nutrition_treat_penalty">Sött och snacks: −%1$d poäng i dag. Ett per dag är fritt.</string>
+    <string name="nutrition_about">Viktat efter Livsmedelsverkets kostråd: grönsaker och frukt väger tyngst.</string>
+    <string name="food_log_title">Logga i dag</string>
+    <string name="food_vegetables">Grönsaker &amp; frukt</string>
+    <string name="food_meals">Måltider</string>
+    <string name="food_protein">Protein</string>
+    <string name="food_whole_grain">Fullkorn</string>
+    <string name="food_treats">Sött &amp; snacks</string>
+    <string name="food_progress">%1$d av %2$d</string>
+    <string name="food_treats_value">%1$d i dag</string>
+    <string name="food_add">Lägg till %1$s</string>
+    <string name="food_remove">Ta bort %1$s</string>
+</resources>

@@ -76,14 +76,9 @@ jobs:
           fetch-depth: 0 # full history, so the release notes can list everything since the last build
           persist-credentials: false
 
-      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+      - uses: ./.github/actions/setup-gradle-build
         with:
-          distribution: temurin
-          java-version: 21
-
-      - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
-        with:
-          cache-provider: basic
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
       - name: Decode release keystore
         if: steps.config.outputs.release-signing == 'true'
@@ -106,7 +101,7 @@ jobs:
           else
             unset NOVILA_RELEASE_STORE_PASSWORD NOVILA_RELEASE_KEY_PASSWORD NOVILA_RELEASE_KEY_ALIAS
           fi
-          ./gradlew assembleDebug assembleRelease 2>&1 | tee build.log
+          ./gradlew :app:assembleDebug :app:assembleRelease 2>&1 | tee build.log
 
       - name: Verify release signature
         if: steps.config.outputs.release-signing == 'true'
@@ -159,6 +154,7 @@ jobs:
       - name: Remove keystore
         if: always()
         run: rm -f "$RUNNER_TEMP/release.jks"
+
 
       # The R8 mapping file is needed to deobfuscate crash stack traces from this build.
       - name: Upload APKs and R8 mapping

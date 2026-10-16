@@ -12,8 +12,9 @@ internal val NOVILA_JAVA_VERSION = JavaVersion.VERSION_17
 internal val Project.libs: VersionCatalog
     get() = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
-internal fun VersionCatalog.intVersion(alias: String): Int =
-    findVersion(alias).get().requiredVersion.toInt()
+internal fun VersionCatalog.intVersion(alias: String): Int = findVersion(alias).get().requiredVersion.toInt()
+
+internal fun VersionCatalog.library(alias: String) = findLibrary(alias).get()
 
 /**
  * The shared lint policy at the repository root. Read through the isolated root project,
@@ -21,3 +22,19 @@ internal fun VersionCatalog.intVersion(alias: String): Int =
  */
 internal val Project.lintPolicy
     get() = isolated.rootProject.projectDirectory.file("lint.xml").asFile
+
+/**
+ * The namespace (and package) of a module, from its path: `:core:ui` is `se.novila.ui`, `:feature:today` is
+ * `se.novila.feature.today`. Modules never set it themselves, so the path is the only place it is decided.
+ */
+internal val Project.novilaNamespace: String
+    get() = "se.novila." + path.removePrefix(":").removePrefix("core:").replace(':', '.')
+
+/** A dependency on another module by path. Declares the dependency only; never touches that project (Isolated Projects). */
+internal fun Project.module(path: String) = dependencies.project(mapOf("path" to path))
+
+/**
+ * JVM flags for test JVMs. They are short-lived (seconds to a minute per module), so C1 alone compiles faster than it
+ * loses on code quality, and ParallelGC has the least overhead.
+ */
+internal val TEST_JVM_ARGS = listOf("-XX:+UseParallelGC", "-XX:TieredStopAtLevel=1")

@@ -34,4 +34,20 @@ rootProject.name = "Novila"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 include(":app")
+
+include(":core:anatomy")
+include(":core:coach")
+include(":core:data")
 include(":core:designsystem")
+include(":core:exercise")
+include(":core:googlehealth")
+include(":core:healthconnect")
+include(":core:model")
+include(":core:movement")
+include(":core:navigation")
+include(":core:ui")
+
+include(":feature:nutrition")
+include(":feature:sleep")
+include(":feature:today")
+include(":feature:training")

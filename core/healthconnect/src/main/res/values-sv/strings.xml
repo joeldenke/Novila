@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="health_info_title">Health Connect i Novila</string>
+    <string name="health_info_read_title">Vad Novila läser</string>
+    <string name="health_info_read_body">Dagens steg och aktiva kalorier. Novila skriver aldrig till Health Connect och läser inget annat.</string>
+    <string name="health_info_why_title">Varför</string>
+    <string name="health_info_why_body">För att visa hur mycket du har rört dig i dag, på Idag och under Träning.</string>
+    <string name="health_info_where_title">Vart datan tar vägen</string>
+    <string name="health_info_where_body">Ingenstans. Novila läser siffrorna när appen är öppen och visar dem bara. De sparas inte av Novila, skickas inte över internet och delas inte med någon.</string>
+    <string name="health_info_revoke_title">Ändra eller stäng av åtkomst</string>
+    <string name="health_info_revoke_body">Du kan när som helst stänga av Novilas åtkomst i Health Connect.</string>
+</resources>

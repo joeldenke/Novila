@@ -1,23 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Every permission, query and exported component here ends up in app/badging/debug-badging.txt,
-  which CI compares against the built APK (checkDebugBadging). A change here must update that file
-  in the same PR, so it is visible in review. See CLAUDE.md before adding permissions.
+  The app's own manifest is just the application and its launcher activity. Modules add what they need
+  (Health Connect: core/healthconnect/src/main/AndroidManifest.xml). Every permission, query and exported component
+  of the merged manifest ends up in app/badging/debug-badging.txt, which CI compares against the built APK
+  (checkDebugBadging). See CLAUDE.md before adding permissions.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <!--
-      Health Connect: read-only, today's steps and active calories. Nothing is written, nothing is
-      read in the background and no history beyond today is requested. Each type here must be
-      justified in Play Console's Health apps declaration, so keep the list short.
-    -->
-    <uses-permission android:name="android.permission.health.READ_STEPS" />
-    <uses-permission android:name="android.permission.health.READ_ACTIVE_CALORIES_BURNED" />
-
-    <!-- Lets the app see the Health Connect app on Android 13 and lower (package visibility). -->
-    <queries>
-        <package android:name="com.google.android.apps.healthdata" />
-    </queries>
 
     <application
         android:allowBackup="true"
@@ -33,31 +21,5 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!--
-          Health Connect shows this screen when the user taps the privacy link in its permission
-          dialog. It is required: without it Health Connect never shows the dialog.
-          Exported without a permission on Android 13 and lower because the Health Connect app has
-          no permission to require. It only shows static text and never reads data or intent extras.
-        -->
-        <activity
-            android:name=".healthconnect.HealthDataInfoActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE" />
-            </intent-filter>
-        </activity>
-
-        <!-- Android 14 and higher: same screen, only the system may open it. -->
-        <activity-alias
-            android:name="ViewPermissionUsageActivity"
-            android:exported="true"
-            android:permission="android.permission.START_VIEW_PERMISSION_USAGE"
-            android:targetActivity=".healthconnect.HealthDataInfoActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW_PERMISSION_USAGE" />
-                <category android:name="android.intent.category.HEALTH_PERMISSIONS" />
-            </intent-filter>
-        </activity-alias>
     </application>
 </manifest>

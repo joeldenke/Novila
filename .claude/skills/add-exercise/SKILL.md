@@ -16,7 +16,7 @@ först. Allt nedan går att verifiera utan Gradle med `tools/anatomy/anatomy.sh`
   `Pose` och `Skeleton` i en egen PR i stället för att fuska med vinklarna.
 - Välj övningar som fungerar hemma med kroppsvikt, i linje med resten av biblioteket.
 
-## 1. Skriv rörelsen i `ExerciseLibrary.kt`
+## 1. Skriv rörelsen i `ExerciseLibrary.kt` (`core/anatomy`)
 - Lägg till en `val` i `ExerciseLibrary` och i listan `all`. `id` skrivs i snake_case och ändras aldrig efteråt,
   eftersom program och texter använder det.
 - Gör en repetition av `Keyframe(at, pose)` från 0 till 1, där den sista keyframen är samma pose som den första.
@@ -89,20 +89,20 @@ tools/anatomy/anatomy.sh render /path/to/ark.png mitt_id
 
 ## 5. Texter
 - Lägg till `move_<id>`, `move_<id>_steps` (en `string-array` med tre steg) och `move_<id>_tip` i både
-  `values/strings.xml` och `values-sv/strings.xml`. Skriv kort och lugnt, som en fysioterapeut, i du-form och
+  `values/strings.xml` och `values-sv/strings.xml` i `feature/training/src/main/res`. Skriv kort och lugnt, som en fysioterapeut, i du-form och
   utan emojis.
-- Lägg till id:t i `moveText()` i `ui/common/ExerciseCards.kt`. `ExerciseCardsTest` kontrollerar att varje
+- Lägg till id:t i `moveText()` i `ExerciseCards.kt` (`:feature:training`). `ExerciseCardsTest` kontrollerar att varje
   övning har texter.
 - Behövs en ny muskelgrupp: lägg till den i `MuscleGroup`, ge den en `MuscleRegion` i `MuscleMap` (testet
   *every muscle group has a place on the body*), en `muscle_<namn>`-sträng på båda språken och en gren i
   `MuscleGroup.label`.
 
 ## 6. Ska övningen ingå i veckans program?
-- Byt eller lägg till den i `SESSION_A` eller `SESSION_B` i `exercise/StrengthSessions.kt`, med rätt `Dosage`
+- Byt eller lägg till den i `SESSION_A` eller `SESSION_B` i `StrengthSessions.kt` (`:core:exercise`), med rätt `Dosage`
   (`Seconds` för hållningar och kondition) och `perSide` för ensidiga övningar.
 - `StrengthSessionsTest` kräver att lår, säte, bröst och mage tränas båda styrkedagarna på varje nivå, och att
   pass B skiljer sig från pass A.
-- **Alltid:** lägg till övningen i `coach/CoachCatalog.kt` med rörelsemönster (`MovementPattern`), `Dosage`, `perSide`,
+- **Alltid:** lägg till övningen i `CoachCatalog.kt` (`:core:coach`) med rörelsemönster (`MovementPattern`), `Dosage`, `perSide`,
   lägsta nivå och om den belastar knän, rygg eller är ett hopp. Coachen väljer bara bland övningar i katalogen, och
   `CoachPlannerTest` kräver att varje övning i biblioteket finns där.
 

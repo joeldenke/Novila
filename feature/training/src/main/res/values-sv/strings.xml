@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Träningsprogram -->
+    <string name="program_title">Veckans program</string>
+    <string name="program_summary">%1$d minuter kondition och styrka %2$d dagar i veckan.</string>
+    <string name="program_basis">Bygger på WHO:s råd om fysisk aktivitet och dina senaste pass. Konditionstiden ökar med högst en tiondel i veckan.</string>
+    <string name="exercise_walking">Rask promenad</string>
+    <string name="exercise_running">Löpning</string>
+    <string name="exercise_cycling">Cykling</string>
+    <string name="exercise_swimming">Simning</string>
+    <string name="exercise_strength">Styrka, helkropp</string>
+    <string name="exercise_mobility">Rörlighet och stretch</string>
+    <string name="exercise_other">Kondition</string>
+
+    <!-- Övningsillustrationer -->
+    <string name="move_squat">Knäböj</string>
+    <string name="move_push_up">Armhävning</string>
+    <string name="move_glute_bridge">Höftlyft</string>
+    <string name="move_split_squat">Statiska utfall</string>
+    <string name="move_jumping_jack">Stjärnhopp</string>
+    <string name="move_calf_raise">Tåhävning</string>
+    <string name="move_plank">Planka</string>
+    <string name="move_mountain_climber">Bergsklättrare</string>
+    <string name="move_superman">Superman</string>
+    <string name="move_reverse_lunge">Utfall bakåt</string>
+    <string name="move_good_morning">Höftfällning</string>
+    <string name="move_bird_dog">Fågelhund</string>
+    <string name="move_crunch">Crunch</string>
+    <string-array name="move_squat_steps">
+        <item>Stå med fötterna höftbrett isär och tårna något utåt.</item>
+        <item>Skjut höften bakåt och böj knäna tills låren är ungefär parallella med golvet.</item>
+        <item>Pressa ifrån med hela foten och res dig upp.</item>
+    </string-array>
+    <string name="move_squat_tip">Håll hälarna i golvet och knäna i samma riktning som tårna.</string>
+    <string-array name="move_push_up_steps">
+        <item>Placera händerna strax bredare än axlarna, kroppen rak från huvud till hälar.</item>
+        <item>Böj armbågarna och sänk bröstet mot golvet.</item>
+        <item>Pressa upp tills armarna är raka.</item>
+    </string-array>
+    <string name="move_push_up_tip">Spänn magen så att höften inte sjunker. För tungt? Börja med knäna i golvet.</string>
+    <string-array name="move_glute_bridge_steps">
+        <item>Ligg på rygg med böjda knän och fötterna i golvet.</item>
+        <item>Spänn sätet och lyft höften tills kroppen är rak från knän till axlar.</item>
+        <item>Sänk långsamt tillbaka.</item>
+    </string-array>
+    <string name="move_glute_bridge_tip">Tryck ifrån med hälarna och undvik att svanka.</string>
+    <string-array name="move_split_squat_steps">
+        <item>Ställ ena foten ett långt steg framför den andra och stå på tå med den bakre.</item>
+        <item>Sänk dig rakt ner tills båda knäna är böjda ungefär 90 grader.</item>
+        <item>Pressa upp med den främre foten. Gör alla repetitioner och byt sedan ben.</item>
+    </string-array>
+    <string name="move_split_squat_tip">Håll överkroppen upprätt och det främre knät över foten.</string>
+    <string-array name="move_jumping_jack_steps">
+        <item>Stå med fötterna ihop och armarna längs sidorna.</item>
+        <item>Hoppa isär med fötterna samtidigt som armarna förs upp över huvudet.</item>
+        <item>Hoppa tillbaka och håll ett jämnt tempo.</item>
+    </string-array>
+    <string name="move_jumping_jack_tip">Landa mjukt på framfoten.</string>
+    <string-array name="move_calf_raise_steps">
+        <item>Stå rak med fötterna höftbrett isär. Håll gärna i en vägg för balansen.</item>
+        <item>Res dig upp på tå så högt du kan.</item>
+        <item>Sänk hälarna långsamt till golvet.</item>
+    </string-array>
+    <string name="move_calf_raise_tip">Gör det långsamt, särskilt på vägen ner.</string>
+    <string-array name="move_plank_steps">
+        <item>Placera händerna under axlarna och fötterna höftbrett isär.</item>
+        <item>Lyft kroppen så att den är rak från huvud till hälar.</item>
+        <item>Håll positionen och andas lugnt.</item>
+    </string-array>
+    <string name="move_plank_tip">Spänn mage och säte så att höften varken sjunker eller åker upp.</string>
+    <string-array name="move_mountain_climber_steps">
+        <item>Börja i hög planka med händerna under axlarna.</item>
+        <item>Dra ena knät mot bröstet och sätt tillbaka foten.</item>
+        <item>Växla ben i en jämn rytm.</item>
+    </string-array>
+    <string name="move_mountain_climber_tip">Håll höften låg och axlarna över händerna.</string>
+    <string-array name="move_superman_steps">
+        <item>Ligg på mage med armarna utsträckta framför dig.</item>
+        <item>Lyft armar, bröst och ben en bit från golvet samtidigt.</item>
+        <item>Håll en stund och sänk långsamt.</item>
+    </string-array>
+    <string name="move_superman_tip">Titta ner i golvet så att nacken blir lång. Det räcker att lyfta några centimeter.</string>
+    <string-array name="move_reverse_lunge_steps">
+        <item>Stå med fötterna höftbrett isär.</item>
+        <item>Ta ett långt steg bakåt och sänk dig tills båda knäna är böjda ungefär 90 grader.</item>
+        <item>Pressa ifrån med den främre foten tillbaka till stående. Gör alla repetitioner och byt sedan ben.</item>
+    </string-array>
+    <string name="move_reverse_lunge_tip">Låt det mesta av vikten vila på den främre foten.</string>
+    <string-array name="move_good_morning_steps">
+        <item>Stå med fötterna höftbrett isär och mjuka knän.</item>
+        <item>Skjut höften bakåt och fäll fram med rak rygg tills det sträcker i baksidan av låren.</item>
+        <item>Spänn sätet och res dig upp igen.</item>
+    </string-array>
+    <string name="move_good_morning_tip">Rör dig från höften, inte ryggen, och håll ryggen rak hela tiden.</string>
+    <string-array name="move_bird_dog_steps">
+        <item>Ställ dig på alla fyra med händerna under axlarna och knäna under höften.</item>
+        <item>Sträck fram ena armen och motsatt ben bakåt tills båda är i linje med ryggen.</item>
+        <item>Gå långsamt tillbaka och byt sida.</item>
+    </string-array>
+    <string name="move_bird_dog_tip">Håll ryggen stilla, som om ett glas vatten stod på den.</string>
+    <string-array name="move_crunch_steps">
+        <item>Ligg på rygg med böjda knän och fötterna i golvet.</item>
+        <item>Spänn magen och rulla upp axlarna från golvet med händerna mot knäna.</item>
+        <item>Sänk långsamt tillbaka.</item>
+    </string-array>
+    <string name="move_crunch_tip">Ländryggen ligger kvar mot golvet. Dra inte i nacken.</string>
+    <string name="move_figure_description">%1$s. Tränar %2$s.</string>
+    <string name="dose_reps_per_side">%1$d × %2$d per sida</string>
+    <string name="dose_rest">Vila %1$d s</string>
+    <string name="strength_session_title">Styrka på %1$s</string>
+    <string name="strength_session_summary">Helkropp, ungefär %1$d minuter. Tryck på en övning för att se hur den görs.</string>
+    <string name="exercises_title">Alla övningar</string>
+    <string name="exercises_body">Övningar med kroppsvikt som du kan göra hemma, utan redskap.</string>
+    <string name="exercise_open">Visa hur man gör %1$s</string>
+    <string name="exercise_replay">Spela igen</string>
+    <string name="exercise_in_program">I ditt program: %1$s, %2$s</string>
+    <string name="exercise_muscles_title">Muskler</string>
+    <string name="exercise_primary_legend">Huvudmuskler: %1$s</string>
+    <string name="exercise_secondary_legend">Arbetar också: %1$s</string>
+    <string name="exercise_how_title">Så gör du</string>
+    <string name="exercise_tip_title">Tänk på</string>
+    <string name="exercise_safety">Avbryt om det gör ont. Har du en skada eller är osäker, fråga en fysioterapeut.</string>
+    <string name="workout_start">Starta passet</string>
+    <string name="workout_done_today">Klart i dag: %1$d minuter. Bra jobbat!</string>
+    <string name="workout_title">Styrkepass</string>
+    <string name="workout_progress">Övning %1$d av %2$d · set %3$d av %4$d</string>
+    <string name="workout_reps">%1$d repetitioner</string>
+    <string name="workout_reps_per_side">%1$d repetitioner per sida</string>
+    <string name="workout_tempo">Följ figurens lugna tempo.</string>
+    <string name="workout_hold">Håll tills tiden är slut.</string>
+    <string name="workout_set_done">Klar med setet</string>
+    <string name="workout_rest_title">Vila</string>
+    <string name="workout_next">Nästa: %1$s, set %2$d av %3$d</string>
+    <string name="workout_skip_rest">Hoppa över vilan</string>
+    <string name="workout_skip_timer">Nästa</string>
+    <string name="workout_finished_title">Bra jobbat!</string>
+    <string name="workout_finished_body">Du gjorde %1$d övningar och %2$d set på %3$d minuter. Nästa veckas program bygger på det.</string>
+    <string name="workout_save">Spara passet</string>
+    <string name="workout_none">Inget pass pågår. Starta ett från en styrkedag under Träning.</string>
+    <string name="workout_timer_description">%1$d sekunder kvar</string>
+    <string name="muscle_chest">bröst</string>
+    <string name="muscle_shoulders">axlar</string>
+    <string name="muscle_biceps">biceps</string>
+    <string name="muscle_triceps">triceps</string>
+    <string name="muscle_abs">mage</string>
+    <string name="muscle_upper_back">övre rygg</string>
+    <string name="muscle_lats">breda ryggmuskler</string>
+    <string name="muscle_lower_back">ländrygg</string>
+    <string name="muscle_glutes">säte</string>
+    <string name="muscle_quads">framsida lår</string>
+    <string name="muscle_hamstrings">baksida lår</string>
+    <string name="muscle_calves">vader</string>
+
+    <!-- Health Connect -->
+    <string name="movement_title">Dagens rörelse</string>
+    <string name="movement_active_calories">Aktiva kalorier</string>
+    <string name="movement_source">Från Health Connect. Novila läser bara och sparar ingenting.</string>
+    <string name="movement_connect_body">Se dagens steg och aktiva kalorier från din klocka eller telefon via Health Connect. Novila läser dem bara och datan stannar i telefonen.</string>
+    <string name="movement_connect">Anslut Health Connect</string>
+    <string name="movement_denied_body">Åtkomst nekades. Du kan tillåta den för Novila i Health Connect.</string>
+    <string name="movement_install_body">Health Connect behöver installeras eller uppdateras för att visa dina steg och aktiva kalorier.</string>
+    <string name="movement_install">Hämta Health Connect</string>
+    <!-- Träningscoach -->
+    <string name="coach_title">Träningscoach</string>
+    <string name="coach_card_inactive">Låt coachen bygga en vecka efter ditt mål, din tid och övningarna i Novila.</string>
+    <string name="coach_card_active">Ditt program är byggt av coachen: %1$s, %2$d dagar i veckan, ungefär %3$d minuter åt gången.</string>
+    <string name="coach_open">Öppna coachen</string>
+    <string name="coach_adjust">Anpassa programmet</string>
+    <string name="coach_intro">Coachen planerar din vecka här i telefonen, utifrån dina svar, dina senaste pass och övningarna i Novila. Inget skickas någonstans.</string>
+    <string name="coach_goal_title">Ditt mål</string>
+    <string name="coach_goal_health">Allsidig hälsa</string>
+    <string name="coach_goal_strength">Bli starkare</string>
+    <string name="coach_goal_endurance">Bättre kondition</string>
+    <string name="coach_goal_mobility">Rörlighet</string>
+    <string name="coach_time_title">Din tid</string>
+    <string name="coach_days">Dagar i veckan</string>
+    <string name="coach_days_value">%1$d dagar</string>
+    <string name="coach_minutes">Minuter per pass</string>
+    <string name="coach_minutes_value">Ungefär %1$d minuter</string>
+    <string name="coach_fewer_days">Färre dagar</string>
+    <string name="coach_more_days">Fler dagar</string>
+    <string name="coach_shorter">Kortare pass</string>
+    <string name="coach_longer">Längre pass</string>
+    <string name="coach_focus_title">Extra fokus</string>
+    <string name="coach_area_legs">Ben</string>
+    <string name="coach_area_core">Bål</string>
+    <string name="coach_area_upper_body">Överkropp</string>
+    <string name="coach_consider_title">Ta hänsyn till</string>
+    <string name="coach_consider_knees">Känsliga knän</string>
+    <string name="coach_consider_back">Känslig rygg</string>
+    <string name="coach_consider_quiet">Inga hopp</string>
+    <string name="coach_why_title">Därför ser programmet ut så här</string>
+    <string name="coach_create">Skapa mitt program</string>
+    <string name="coach_suggest">Föreslå ett annat program</string>
+    <string name="coach_reset">Använd standardprogrammet</string>
+    <string name="coach_note_goal_health">Allsidig hälsa: styrka för hela kroppen och kondition enligt WHO:s råd.</string>
+    <string name="coach_note_goal_strength">Bli starkare: fler set, längre vila och en tredje styrkedag när du har tid.</string>
+    <string name="coach_note_goal_endurance">Bättre kondition: fler konditionsdagar, fler repetitioner och kortare vila.</string>
+    <string name="coach_note_goal_mobility">Rörlighet: rörlighetspass och lugna övningar för rygg och höfter.</string>
+    <string name="coach_note_level_beginner">Du är ny på styrketräning, så passen börjar lugnt med färre set och längre vila.</string>
+    <string name="coach_note_level_intermediate">Du styrketränar ungefär en gång i veckan, så passen har tre set och lite mer att göra.</string>
+    <string name="coach_note_level_advanced">Du styrketränar regelbundet, så passen har fler repetitioner och kortare vila.</string>
+    <string name="coach_note_rest">Minst en vilodag mellan styrkedagarna, så att musklerna hinner återhämta sig.</string>
+    <string name="coach_note_focus">Ett extra set i övningar som tränar %1$s.</string>
+    <string name="coach_note_knees">Skonsamt för knäna: inga hopp eller utfall.</string>
+    <string name="coach_note_back">Skonsamt för ryggen: lugna bålövningar i stället för sådana som böjer eller svankar ryggen.</string>
+    <string name="coach_note_quiet">Inga hopp, så det fungerar i lägenhet.</string>
+    <string name="coach_note_cardio_low">Programmet har %1$d minuter kondition. WHO rekommenderar minst 150 i veckan, så ta gärna raska promenader i vardagen också.</string>
+    <string name="coach_note_cardio_progression">Konditionen bygger på dina senaste pass och ökar med högst en tiondel i veckan.</string>
+    <string name="coach_goal_rehab">Rehabilitering</string>
+    <string name="exercise_rehab">Rehabpass</string>
+    <string name="rehab_session_title">Rehab på %1$s</string>
+    <string name="rehab_session_summary">Lugna, kontrollerade övningar, ungefär %1$d minuter. Tryck på en övning för att se hur den görs.</string>
+    <string name="coach_rehab_title">Rehabilitering</string>
+    <string name="coach_rehab_knee">Knä</string>
+    <string name="coach_rehab_lower_back">Ländrygg</string>
+    <string name="coach_rehab_phase">Fas</string>
+    <string name="coach_rehab_phase_value">%1$d av %2$d: %3$s</string>
+    <string name="coach_rehab_phase_1">en lugn start</string>
+    <string name="coach_rehab_phase_2">bygga styrka</string>
+    <string name="coach_rehab_phase_3">tillbaka till vardag och träning</string>
+    <string name="coach_rehab_easier">Tidigare fas</string>
+    <string name="coach_rehab_harder">Senare fas</string>
+    <string name="coach_rehab_safety">Rehabprogrammet är ett stöd, inte vård. Har du fått övningar av en fysioterapeut, följ dem. Sök vård vid kraftig eller tilltagande smärta, svullnad eller domningar.</string>
+    <string name="coach_rehab_safety_knee">Sök vård om knät låser sig, viker sig eller svullnar upp.</string>
+    <string name="coach_rehab_safety_lower_back">Sök vård direkt vid domningar i underlivet, svårt att kissa eller tilltagande svaghet i benen.</string>
+    <string name="coach_note_goal_rehab">Rehabilitering: lugna, kontrollerade övningar tre dagar i veckan med en vilodag emellan, och promenader de andra dagarna.</string>
+    <string name="coach_note_rehab_phase">%1$s, fas %2$d av %3$d. Gå vidare när passen känns lätta och smärtan inte ökar dagen efter, ofta efter ett par veckor.</string>
+    <string name="coach_note_pain">Smärta upp till 3 av 10 under passet är okej om den har lagt sig till nästa morgon. Blir den värre, gå tillbaka en fas.</string>
+    <string name="coach_ai_title">Coachens kommentar</string>
+    <string name="coach_ai_unavailable">Gemini Nano finns inte på den här telefonen, så coachen förklarar veckan med sina egna skäl ovan.</string>
+    <string name="coach_ai_downloadable">Din telefon kan köra Gemini Nano, Googles AI-modell som körs i telefonen. Hämta den så kan coachen förklara veckan med egna ord. Planen och dina svar lämnar aldrig telefonen.</string>
+    <string name="coach_ai_download">Hämta Gemini Nano</string>
+    <string name="coach_ai_downloading">Telefonen hämtar Gemini Nano. Det kan ta en stund.</string>
+    <string name="coach_ai_ready">Gemini Nano kan förklara veckan med egna ord, direkt i telefonen.</string>
+    <string name="coach_ai_write">Låt coachen förklara veckan</string>
+    <string name="coach_ai_rewrite">Skriv en ny kommentar</string>
+    <string name="coach_ai_writing">Coachen skriver…</string>
+    <string name="coach_ai_failed">Det gick inte att skriva något just nu. Försök igen om en stund.</string>
+    <string name="coach_ai_disclaimer">Skrivet av Gemini Nano i din telefon. AI kan ha fel: det är programmet ovan som gäller.</string>
+</resources>
