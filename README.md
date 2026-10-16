@@ -54,7 +54,7 @@ för Claude Code i det här repot via `.claude/settings.json`. Vilken skill som 
 står i `CLAUDE.md`.
 
 ## Teknik
-Kotlin 2.4, AGP 9.4, Gradle 9.8, Jetpack Compose (BOM 2026.09), Navigation 3 och ett eget
+Kotlin 2.4, AGP 9.4, Gradle 9.8, Jetpack Compose (BOM 2026.09), Navigation 3, Metro (DI, en ViewModel per skärm) och ett eget
 designsystem ovanpå Material 3. Appen finns på engelska och svenska.
 Moduler per lager: `:app` (bara aktivitet, navigation och ihopkoppling), en `:feature:*` per flik,
 och `:core:*` för designsystem, delad UI, data, Health Connect och ren Kotlin-logik (modell, anatomi, träning,

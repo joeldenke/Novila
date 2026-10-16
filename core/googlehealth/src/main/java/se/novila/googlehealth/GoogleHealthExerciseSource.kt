@@ -32,7 +32,7 @@ class GoogleHealthAuthException(message: String) : IOException(message)
  * Workouts from the Google Health API (REST v4), read-only: nothing is written back.
  * Pages through `users/me/dataTypes/exercise/dataPoints`, filtered on the local start time.
  *
- * Not wired into HealthViewModel yet: that needs Google sign-in (an [AccessTokenProvider]), the INTERNET
+ * Not wired into the app (AppGraph) yet: that needs Google sign-in (an [AccessTokenProvider]), the INTERNET
  * permission and an updated privacy screen, which the owner approves separately.
  */
 class GoogleHealthExerciseSource(

@@ -7,9 +7,9 @@ import org.gradle.kotlin.dsl.dependencies
 /**
  * `novila.android.feature`: a feature module (`:feature:<tab>`). One per tab, never depending on another feature.
  * A feature owns its screens, its strings and its navigation: `@Serializable` routes (`NavKey`) and an
- * `EntryProviderScope<NavKey>.<feature>Entries(...)` function that the app adds to its `NavDisplay`. Everything it
- * shows comes in as parameters, so the screens stay stateless and previewable; every `@Preview` is a screenshot
- * test.
+ * `EntryProviderScope<NavKey>.<feature>Entries(...)` function that the app adds to its `NavDisplay`. Each entry gets
+ * its ViewModel from Metro (`novila { viewModels() }`) and passes state to a stateless screen, so the screens stay
+ * previewable; every `@Preview` is a screenshot test.
  */
 class AndroidFeatureConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
