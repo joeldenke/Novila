@@ -2,6 +2,8 @@
 <resources>
     <!-- Not translated: symbols and units. -->
     <string name="settings_version_value" translatable="false">%1$s (%2$d)</string>
+    <string name="profile_unit_cm" translatable="false">cm</string>
+    <string name="profile_unit_kg" translatable="false">kg</string>
 
     <!-- Appearance -->
     <string name="settings_appearance">Appearance</string>
@@ -35,7 +37,7 @@
     <string name="settings_data_body">Everything you log is saved on this phone only. Novila has no account and no cloud, so nothing can be restored once deleted.</string>
     <string name="settings_delete_data">Delete all data</string>
     <string name="settings_delete_data_title">Delete all data?</string>
-    <string name="settings_delete_data_body">Your logged sleep, food, mood and workouts and the coach\'s answers are deleted from this phone. This cannot be undone. Data in Health Connect is not affected.</string>
+    <string name="settings_delete_data_body">Your profile, your logged sleep, food, mood and workouts and the coach\'s answers are deleted from this phone. This cannot be undone. Data in Health Connect is not affected.</string>
     <string name="settings_delete_data_confirm">Delete</string>
     <string name="settings_cancel">Cancel</string>
     <string name="settings_data_deleted">All data is deleted.</string>
@@ -62,4 +64,20 @@
     <string name="disclaimer_ai_body">The coach\'s comment is written by Gemini Nano on your phone. AI can be wrong. The program itself is made without AI, and it is what counts.</string>
     <string name="disclaimer_sources_title">Where the advice comes from</string>
     <string name="disclaimer_sources_body">Activity goals follow the WHO\'s physical activity guidelines, and the nutrition score follows the Swedish Food Agency\'s dietary guidelines. Your own needs can differ.</string>
+
+    <!-- Profile -->
+    <string name="settings_profile">Profile</string>
+    <string name="settings_profile_empty">Add your name and body measurements</string>
+    <string name="profile_title">Profile</string>
+    <string name="profile_about_you">About you</string>
+    <string name="profile_name">Name</string>
+    <string name="profile_name_summary">Today greets you by name.</string>
+    <string name="profile_body">Body</string>
+    <string name="profile_birth_year">Birth year</string>
+    <string name="profile_height">Height</string>
+    <string name="profile_weight">Weight</string>
+    <string name="profile_birth_year_error">Enter a year between %1$d and %2$d.</string>
+    <string name="profile_height_error">Enter a height between %1$d and %2$d cm.</string>
+    <string name="profile_weight_error">Enter a weight between %1$d and %2$d kg.</string>
+    <string name="profile_privacy">Every field is optional. Your profile is saved on this phone only and needs no account. Deleting all data under Settings deletes it too.</string>
 </resources>

@@ -1,12 +1,15 @@
 package se.novila.designsystem.component
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
@@ -14,6 +17,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import se.novila.designsystem.theme.NovilaColorRole
 import se.novila.designsystem.theme.NovilaTheme
 
@@ -125,5 +131,48 @@ fun NovilaProgressBar(
         modifier = modifier.fillMaxWidth(),
         color = role.color,
         trackColor = role.container,
+    )
+}
+
+/**
+ * A field to type in, with its [label] above the text and [suffix] (a unit like "cm") after it. [error] replaces
+ * [supportingText] below the field and marks it as wrong, so screen readers say what to fix. [numeric] opens the
+ * number keyboard; other fields start words with a capital, as names do.
+ */
+@Composable
+fun NovilaTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    modifier: Modifier = Modifier,
+    suffix: String? = null,
+    supportingText: String? = null,
+    error: String? = null,
+    numeric: Boolean = false,
+    last: Boolean = false,
+    role: NovilaColorRole = NovilaTheme.pillars.training,
+) {
+    val below = error ?: supportingText
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = { Text(label) },
+        suffix = suffix?.let { { Text(it) } },
+        supportingText = below?.let { { Text(it) } },
+        isError = error != null,
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(
+            capitalization = if (numeric) KeyboardCapitalization.None else KeyboardCapitalization.Words,
+            keyboardType = if (numeric) KeyboardType.Number else KeyboardType.Text,
+            imeAction = if (last) ImeAction.Done else ImeAction.Next,
+        ),
+        textStyle = NovilaTheme.typography.bodyLarge,
+        shape = NovilaTheme.shapes.small,
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = role.color,
+            focusedLabelColor = role.color,
+            cursorColor = role.color,
+        ),
+        modifier = modifier.fillMaxWidth(),
     )
 }

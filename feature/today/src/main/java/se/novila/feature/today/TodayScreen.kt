@@ -47,14 +47,15 @@ import se.novila.ui.preview.PreviewData
 import se.novila.ui.R as UiR
 
 /**
- * The dashboard: greeting, today's balance as rings, one tile per part with its trend, what the
- * week's logs say, the week's sleep and nutrition, and today's mood. Blocks arrive one by one.
+ * The dashboard: greeting (by [name] when the profile has one), today's balance as rings, one tile per part with its
+ * trend, what the week's logs say, the week's sleep and nutrition, and today's mood. Blocks arrive one by one.
  */
 @Composable
 fun TodayScreen(
     today: DayEntry,
     history: List<DayEntry>,
     hour: Int,
+    name: String,
     movement: MovementState,
     onMood: (Int) -> Unit,
     onOpenTraining: () -> Unit,
@@ -69,7 +70,7 @@ fun TodayScreen(
     val week = remember(today, history) { weekOf(today, history) }
     val insights = remember(week, steps) { weekInsights(week, steps) }
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
-        item(key = "header") { NovilaReveal(order = 0) { Header(today, greetingFor(hour), onOpenSettings) } }
+        item(key = "header") { NovilaReveal(order = 0) { Header(today, greetingFor(hour), name, onOpenSettings) } }
         item(key = "balance") { NovilaReveal(order = 1) { BalanceCard(today, steps) } }
         item(key = "pillars") {
             NovilaReveal(order = 2) {
@@ -84,10 +85,10 @@ fun TodayScreen(
 }
 
 @Composable
-private fun Header(today: DayEntry, greeting: Greeting, onOpenSettings: () -> Unit) {
+private fun Header(today: DayEntry, greeting: Greeting, name: String, onOpenSettings: () -> Unit) {
     // Today has no top bar, so Settings sits next to the greeting.
     Row(verticalAlignment = Alignment.CenterVertically) {
-        GreetingText(today, greeting, Modifier.weight(1f))
+        GreetingText(today, greeting, name, Modifier.weight(1f))
         NovilaIconButton(
             painter = painterResource(UiR.drawable.ic_settings),
             contentDescription = stringResource(UiR.string.settings_title),
@@ -97,7 +98,7 @@ private fun Header(today: DayEntry, greeting: Greeting, onOpenSettings: () -> Un
 }
 
 @Composable
-private fun GreetingText(today: DayEntry, greeting: Greeting, modifier: Modifier = Modifier) {
+private fun GreetingText(today: DayEntry, greeting: Greeting, name: String, modifier: Modifier = Modifier) {
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.xxs)) {
         NovilaText(
             longDateText(today.date),
@@ -105,13 +106,24 @@ private fun GreetingText(today: DayEntry, greeting: Greeting, modifier: Modifier
             color = NovilaTheme.colors.onSurfaceVariant,
         )
         NovilaText(
-            stringResource(
-                when (greeting) {
-                    Greeting.Morning -> R.string.greeting_morning
-                    Greeting.Afternoon -> R.string.greeting_afternoon
-                    Greeting.Evening -> R.string.greeting_evening
-                },
-            ),
+            if (name.isEmpty()) {
+                stringResource(
+                    when (greeting) {
+                        Greeting.Morning -> R.string.greeting_morning
+                        Greeting.Afternoon -> R.string.greeting_afternoon
+                        Greeting.Evening -> R.string.greeting_evening
+                    },
+                )
+            } else {
+                stringResource(
+                    when (greeting) {
+                        Greeting.Morning -> R.string.greeting_morning_named
+                        Greeting.Afternoon -> R.string.greeting_afternoon_named
+                        Greeting.Evening -> R.string.greeting_evening_named
+                    },
+                    name,
+                )
+            },
             style = NovilaTheme.typography.headlineMedium,
         )
     }
@@ -203,6 +215,7 @@ private fun TodayScreenContent() {
                 today = PreviewData.today,
                 history = PreviewData.history,
                 hour = 8,
+                name = PreviewData.profile.name,
                 movement = PreviewData.movement,
                 onMood = {},
                 onOpenTraining = {},

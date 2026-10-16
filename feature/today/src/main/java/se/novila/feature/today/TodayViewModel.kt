@@ -15,14 +15,15 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import se.novila.data.HealthStore
 import se.novila.data.HealthStore.SavedDays
+import se.novila.data.ProfileStore
 import se.novila.data.Week
 import se.novila.movement.MovementRepository
 import se.novila.movement.MovementState
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-/** The dashboard: the week so far and [hour] of day when it was read, for the greeting. */
-data class TodayUiState(val week: Week, val hour: Int)
+/** The dashboard: the week so far, and [hour] of day when it was read and the user's [name] for the greeting. */
+data class TodayUiState(val week: Week, val hour: Int, val name: String = "")
 
 /** The Today tab. Scoped to its entry; reads the same stores as the other tabs, so their changes show up here. */
 @ViewModelKey
@@ -31,16 +32,26 @@ data class TodayUiState(val week: Week, val hour: Int)
 class TodayViewModel(
     private val store: HealthStore,
     private val movementRepository: MovementRepository,
+    private val profileStore: ProfileStore,
 ) : ViewModel() {
     private val now = MutableStateFlow(LocalDateTime.now())
 
-    /** The dashboard, or null before the store's first read. */
-    val state: StateFlow<TodayUiState?> = combine(now, store.days.filterNotNull()) { now, days -> read(days, now) }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, store.days.value?.let { read(it, now.value) })
+    /** The dashboard, or null before the stores' first reads, so the greeting never changes once shown. */
+    val state: StateFlow<TodayUiState?> =
+        combine(now, store.days.filterNotNull(), profileStore.profile.filterNotNull()) { now, days, profile ->
+            read(days, now, profile.name)
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, initial())
+
+    private fun initial(): TodayUiState? {
+        val days = store.days.value ?: return null
+        val profile = profileStore.profile.value ?: return null
+        return read(days, now.value, profile.name)
+    }
 
     val movement: StateFlow<MovementState> = movementRepository.state
 
-    private fun read(days: SavedDays, now: LocalDateTime) = TodayUiState(days.week(now.toLocalDate()), now.hour)
+    private fun read(days: SavedDays, now: LocalDateTime, name: String) =
+        TodayUiState(days.week(now.toLocalDate()), now.hour, name)
 
     /**
      * Called on resume, so "today" and the greeting stay correct. Health Connect only allows reads while the app is
