@@ -6,10 +6,9 @@ plugins {
 
 novila {
     activity()
-    coroutines()
-    healthConnect()
-    lifecycle()
     navigation()
+    // The Metro graph (AppGraph) and the ViewModel factory every entry uses.
+    viewModels()
 }
 
 dependencies {
@@ -18,6 +17,7 @@ dependencies {
     implementation(projects.feature.sleep)
     implementation(projects.feature.nutrition)
 
+    // Everything that contributes to the graph must be on the app's classpath, so Metro can find it.
     implementation(projects.core.coach)
     implementation(projects.core.data)
     implementation(projects.core.designsystem)

@@ -13,7 +13,7 @@ import java.time.LocalDate
  * - a temporary failure keeps showing the cached reading instead of hiding the numbers
  * - when access is gone or the source is missing, the cache is cleared so old data never shows
  *
- * Swap the source or the cache where the repository is created (HealthViewModel); nothing else changes.
+ * Swap the source or the cache where the repository is created (AppGraph in :app); nothing else changes.
  */
 class MovementRepository(
     private val source: MovementSource,

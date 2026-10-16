@@ -1,37 +1,44 @@
 package se.novila.feature.today.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.LifecycleResumeEffect
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.serialization.Serializable
 import se.novila.feature.today.TodayScreen
-import se.novila.model.DayEntry
-import se.novila.movement.MovementState
+import se.novila.feature.today.TodayViewModel
 
 /** The Today tab: the dashboard. */
 @Serializable data object TodayRoute : NavKey
 
 /**
- * Today's entry. The other tabs are opened through the callbacks, so this module never depends on another feature.
+ * Today's entry, with its own [TodayViewModel] scoped to the entry. The other tabs are opened through the callbacks,
+ * so this module never depends on another feature.
  */
 fun EntryProviderScope<NavKey>.todayEntry(
-    today: DayEntry,
-    history: List<DayEntry>,
-    hour: Int,
-    movement: MovementState,
-    onMood: (Int) -> Unit,
     onOpenTraining: () -> Unit,
     onOpenSleep: () -> Unit,
     onOpenNutrition: () -> Unit,
     contentPadding: PaddingValues,
 ) {
     entry<TodayRoute> {
+        val viewModel = metroViewModel<TodayViewModel>()
+        // Read again on resume so "today" is correct after midnight.
+        LifecycleResumeEffect(viewModel) {
+            viewModel.refresh()
+            onPauseOrDispose { }
+        }
+        val state by viewModel.state.collectAsStateWithLifecycle()
+        val movement by viewModel.movement.collectAsStateWithLifecycle()
         TodayScreen(
-            today = today,
-            history = history,
-            hour = hour,
+            today = state.week.today,
+            history = state.week.history,
+            hour = state.hour,
             movement = movement,
-            onMood = onMood,
+            onMood = viewModel::setMood,
             onOpenTraining = onOpenTraining,
             onOpenSleep = onOpenSleep,
             onOpenNutrition = onOpenNutrition,

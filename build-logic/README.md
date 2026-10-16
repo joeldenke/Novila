@@ -36,7 +36,9 @@ novila {
     coroutines()               // kotlinx.coroutines
     serialization(json = true) // @Serializable: compiler plugin, runtime and JSON
     navigation()               // Navigation 3 routes and entries, :core:navigation (every feature has it)
-    lifecycle()                // ViewModels and collectAsStateWithLifecycle
+    lifecycle()                // ViewModels, collectAsStateWithLifecycle and ViewModels per Navigation 3 entry
+    metro()                    // Metro DI: compiler plugin and runtime (@Inject, @SingleIn, @ContributesBinding)
+    viewModels()               // metro() + lifecycle() + metrox-viewmodel-compose: @ViewModelKey, metroViewModel()
     activity()                 // ComponentActivity and setContent
     healthConnect()            // the Health Connect client (see CLAUDE.md first)
 }

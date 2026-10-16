@@ -10,14 +10,18 @@ CI är därför den enda sanningen om att något bygger och fungerar.
 - Navigation 3 (`androidx.navigation3`) med en back stack per flik: Idag, Träning, Sömn, Kost
 - Alla versioner i `gradle/libs.versions.toml`. Hårdkoda aldrig versioner i byggfiler.
 - Data lokalt i SharedPreferences via `HealthStore`, kodat av `DayEntryCodec` (versionerat format, v3 sedan passläget)
-- En delad `HealthViewModel` (`StateFlow`); skärmarna i `feature/*` är tillståndslösa
+- DI med [Metro](https://zacsweers.github.io/metro/) (`dev.zacsweers.metro`, Kotlin-kompilatorplugin, ingen KSP).
+  Varje skärm har en egen ViewModel (`StateFlow`) i sin feature, skapad av Metro och scopad till sin Navigation 3-entry.
+  Ingen delad ViewModel. Skärmarna i `feature/*` är tillståndslösa.
 
 ## Struktur
 Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, `:feature:today` → `se.novila.feature.today`):
-- `:app` – bara skalet: `MainActivity`, `NovilaApp` (flikar, toppbar, `NavDisplay`), `TopLevelDestination` och
-  `HealthViewModel`, som kopplar data till skärmarna och väljer källor. Ingen skärm eller logik som går att lägga i en modul.
+- `:app` – bara skalet: `NovilaApplication` (håller grafen), `MainActivity` (ger `LocalMetroViewModelFactory`),
+  `NovilaApp` (flikar, toppbar, `NavDisplay`), `TopLevelDestination` och `di/`: `AppGraph` (Metro-grafen, där källor
+  som `MovementRepository` väljs) och `NovilaViewModelFactory`. Ingen skärm, ViewModel eller logik som går att lägga
+  i en modul.
 - `:feature:today`, `:feature:training`, `:feature:sleep`, `:feature:nutrition` – en modul per flik med skärmar, kort,
-  strängar och `@Preview`/skärmdumpar. Varje feature äger sin navigation (`navigation/`): `@Serializable`-rutter
+  strängar, ViewModels och `@Preview`/skärmdumpar. Varje feature äger sin navigation (`navigation/`): `@Serializable`-rutter
   (`NavKey`) och `EntryProviderScope<NavKey>.<feature>Entries(...)`, som `:app` lägger i sin `entryProvider`.
   Features beror aldrig på varandra (`ArchitectureTest`); flikbyten går via callbacks från `:app`.
 - `:core:designsystem` – `se.novila.designsystem`, enda modulen som använder Material 3 direkt
@@ -25,18 +29,20 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   - `component` – `Novila*`-komponenter som wrappar Material 3
 - `:core:ui` – det flera features delar: `ScreenList`, formatering (`hoursText`, `stepsText` …), veckokorten,
   flikikonerna och `PreviewData` (samma person i alla previews)
-- `:core:navigation` – `NavigationState` (en back stack per flik) och `Navigator`
-- `:core:data` – lagring i SharedPreferences (`HealthStore`, `CoachStore`) och `GeminiNanoCoachModel`
+- `:core:navigation` – `NavigationState` (en back stack per flik, varje entry med egen sparad state och
+  `ViewModelStore` via `rememberViewModelStoreNavEntryDecorator`) och `Navigator`
+- `:core:data` – lagring i SharedPreferences (`HealthStore`, `CoachStore`, singletons i `AppScope` vars `changes` får
+  alla ViewModels att läsa om efter en sparning) och `GeminiNanoCoachModel` (bunden som `CoachLanguageModel`)
 - `:core:healthconnect` – Health Connect som `MovementSource`, behörigheterna i modulens manifest och integritetsskärmen
   (`HealthDataInfoActivity`)
 - Ren Kotlin, utan Android (`novila.jvm.library`, testas på sekunder):
   - `:core:model` – `DayEntry` (`DayEntryCodec`), kost, dagens balans och insikter
   - `:core:movement` – rörelsedata oberoende av källa: `MovementSource` (källa), `MovementCache` (cache) och
-    `MovementRepository` (det enda UI:t läser). Källa och cache väljs på ett ställe, i `HealthViewModel`.
+    `MovementRepository` (det enda UI:t läser). Källa och cache väljs på ett ställe, i `AppGraph`.
   - `:core:exercise` – träningspass oberoende av källa: `Exercise`, `ExerciseSource` och `TrainingProgramGenerator`, som
     bygger veckans program (WHO:s råd: 150–300 min kondition och styrka två dagar, högst +10 % kondition per vecka).
     `StrengthSessions` fyller styrkedagarna med övningar, set, repetitioner och vila efter nivå. `Workout` är passläget
-    (set, vila och nedräkning). Timern körs i `HealthViewModel`. Avklarade pass sparas som `strengthMinutes` per dag
+    (set, vila och nedräkning). Timern körs i `WorkoutViewModel`. Avklarade pass sparas som `strengthMinutes` per dag
     och blir generatorns historik.
   - `:core:coach` – träningscoachen, helt på enheten: `CoachPreferences` (mål, dagar, tid per pass, fokus, hänsyn,
     rehabområde och fas), `CoachCatalog` (rörelsemönster, dosering och belastning per övning) och `CoachPlanner`, som
@@ -159,14 +165,18 @@ där pluginet `firebase@firebase` inte alltid installeras.
   SDK-nivåer, Java-nivå, namespace, signering, lint och testuppsättning sätts bara i `build-logic`.
 - Modulens `build.gradle.kts` innehåller bara `plugins`, `novila { }` och `dependencies`. Bibliotek som flera moduler
   använder hämtas via `novila { coroutines(); lifecycle(); … }` (`NovilaExtension`), så varje modul tar bara det den
-  använder. Lägg till en funktion där hellre än att kopiera samma beroenden mellan moduler.
+  använder. Lägg till en funktion där hellre än att kopiera samma beroenden mellan moduler. Metro: `novila { metro() }`
+  för moduler med `@Inject`-klasser, `novila { viewModels() }` för moduler med ViewModels (Metro, lifecycle och
+  `metrox-viewmodel-compose`). Lägg aldrig till Metro-pluginet eller `metrox`-artefakter direkt i en modul.
 - Logik utan Android blir en `novila.jvm.library`-modul. Den kompilerar och testar utan resurser och Robolectric.
 - Isolated Projects är påslaget (`org.gradle.isolated-projects=true`): modulerna konfigureras parallellt, och varje bygge
   fallerar om bygglogik når in i en annan modul. Aldrig `allprojects {}`, `subprojects {}`, `rootProject.<…>` eller
   `project(":x")` för att läsa eller ändra en annan modul; beroenden deklareras med `projects.<…>` eller
   `dependencies.project(...)`. Behövs en fil i roten, använd `project.isolated.rootProject.projectDirectory`.
-  KSP (t.ex. för DI eller Room) kräver `ksp.project.isolation.enabled=true` i `gradle.properties`, annars fallerar
-  bygget med "cannot access task dependencies directly" (google/ksp#2844). CI har `workers.max=3` i stället för 2:
+  KSP (t.ex. för Room) kräver `ksp.project.isolation.enabled=true` i `gradle.properties`, annars fallerar
+  bygget med "cannot access task dependencies directly" (google/ksp#2844). Flaggan är redan satt, så att KSP fungerar
+  den dag ett bibliotek kräver det; ta aldrig bort den. Metro (DI) är en Kotlin-kompilatorplugin, inte KSP, och
+  behöver ingen flagga. CI har `workers.max=3` i stället för 2:
   Gradle 9.8 fryser med Isolated Projects när workers ≤ antalet byggen (roten och `build-logic`), gradle#39040.
   Tillbaka till 2 efter uppgradering till Gradle 9.9.
 - Nya moduler: lägg till `include(...)` i `settings.gradle.kts`, beroende via `projects.<…>` (typsäkra accessorer).
@@ -211,9 +221,19 @@ där pluginet `firebase@firebase` inte alltid installeras.
 - `ArchitectureTest` (i `:app`, läser alla moduler) bevakar båda reglerna i CI, och att features inte beror på varandra.
 - **Navigation:** nya skärmar blir en `@Serializable`-rutt som implementerar `NavKey` i featurens `navigation/`, plus en
   `entry<…>` i featurens `…Entries`-funktion. Navigation inom en flik går via `Navigator` (`:core:navigation`); till
-  en annan flik via callbacks som `:app` kopplar. Allt en entry visar kommer in som parametrar, så att `:app` senare
-  kan bytas mot DI (t.ex. en multibinding av entry-installers och ViewModels per feature) utan att skärmarna ändras.
-  Följ skillen `navigation-3`.
+  en annan flik via callbacks som `:app` kopplar. Entryn hämtar sin ViewModel och skickar state och callbacks till en
+  tillståndslös skärm, så skärmen går att förhandsgranska. Följ skillen `navigation-3`.
+- **ViewModels och DI (Metro):** en ViewModel per skärm, i skärmens feature, aldrig i `:app` och aldrig delad mellan
+  skärmar. Annotera `@ViewModelKey @ContributesIntoMap(AppScope::class) @Inject`; behöver den ruttens argument, använd
+  `@AssistedInject` och en `@AssistedFactory @ManualViewModelAssistedFactoryKey @ContributesIntoMap(AppScope::class)`
+  `Factory : ManualViewModelAssistedFactory` (se `WorkoutViewModel`). Hämta den i entryn med `metroViewModel()` eller
+  `assistedMetroViewModel<VM, VM.Factory> { create(route.x) }`, aldrig `viewModel()`, så den scopas till entryn och
+  rensas när entryn poppas. Det skärmar delar (lagring, källor) ligger i `:core:*` som `@SingleIn(AppScope::class)`
+  med en `Flow` som berättar om ändringar; ViewModels delar aldrig state direkt. Läs om "idag" i `refresh()` från
+  `LifecycleResumeEffect` i entryn. `ArchitectureTest` bevakar `viewModel()` och ViewModels i `:app`.
+- **Metro-grafen:** allt som bidrar till `AppScope` måste ligga på `:app`:s classpath (direkt `implementation`),
+  annars hittar `AppGraph` det inte. Nya bindningar: `@Inject` på klassen, `@ContributesBinding` för ett gränssnitt,
+  eller `@Provides` i `AppGraph` när en källa väljs.
 - Logik som går att testa utan Android ska ligga i rena Kotlin-moduler (`novila.jvm.library`) med enhetstester.
 - Ändra lagringsformat bara genom att höja versionen i `DayEntryCodec` och migrera gammal data.
 - Lägg till `contentDescription` på ikoner och emoji-knappar, eller `null` när de är dekorativa.
@@ -225,7 +245,7 @@ där pluginet `firebase@firebase` inte alltid installeras.
 - **Health Connect:** appen läser bara dagens steg och aktiva kalorier (`READ_STEPS`,
   `READ_ACTIVE_CALORIES_BURNED`), i förgrunden. Inget skrivs, ingen historik eller bakgrundsläsning, och cachen ligger
   bara i minnet (`InMemoryMovementCache`). En cache på disk ändrar vad integritetsskärmen och Play-deklarationen
-  ska säga, så den kräver ägarens ok. Ny källa: implementera `MovementSource` och byt den i `HealthViewModel`.
+  ska säga, så den kräver ägarens ok. Ny källa: implementera `MovementSource` och byt den i `AppGraph`.
   Varje datatyp måste motiveras i Play Consoles *Health apps declaration*, så lägg inte till typer eller
   behörigheter utan att ägaren ber om det. `HealthConnectManifestTest` håller manifestet och `MOVEMENT_PERMISSIONS`
   i synk. `HealthDataInfoActivity` (integritetsskärmen Health Connect länkar till) är obligatorisk och ska

@@ -11,6 +11,8 @@ import java.io.File
  *   alone can't enforce this.)
  * - UI text comes from string resources, never string literals.
  * - Features never depend on each other: the app connects them through navigation.
+ * - ViewModels belong to the feature that shows them and are created by Metro (`metroViewModel()`), scoped to their
+ *   Navigation 3 entry. No shared ViewModel in :app and no `viewModel()` without Metro's factory.
  *
  * The sources are declared as inputs of the test task (novila.android.application), so it reruns when they change.
  */
@@ -50,6 +52,15 @@ class ArchitectureTest {
             File(feature, "build.gradle.kts").takeIf { it.isFile }?.readText()?.contains("projects.feature.") == true
         }
         assertTrue("Connect features through navigation in :app instead: ${offenders.names()}", offenders.isEmpty())
+    }
+
+    @Test fun `ViewModels are created by Metro and live in features`() {
+        val plainViewModel = sources().filter { file ->
+            file.readLines().any { it.trim() == "import androidx.lifecycle.viewmodel.compose.viewModel" }
+        }
+        assertTrue("Use metroViewModel(), not viewModel(): ${plainViewModel.names()}", plainViewModel.isEmpty())
+        val inApp = sources().filter { it.startsWith(File(root, "app")) && it.readText().contains(": ViewModel()") }
+        assertTrue("Give each screen its own ViewModel in its feature instead of: ${inApp.names()}", inApp.isEmpty())
     }
 
     private fun List<File>.names() = joinToString { it.relativeTo(root).path }

@@ -9,8 +9,10 @@ import androidx.compose.runtime.saveable.rememberSerializable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.NavEntryDecorator
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberDecoratedNavEntries
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -66,14 +68,22 @@ class NavigationState(
         }
 }
 
-/** Flattens the stacks in use into decorated entries for `NavDisplay`. */
+/**
+ * Flattens the stacks in use into decorated entries for `NavDisplay`.
+ *
+ * Every entry gets its own saved state and its own `ViewModelStore`, so `metroViewModel()` in an entry gives a
+ * ViewModel scoped to that entry: it survives rotation and switching tabs, and is cleared when the entry is popped.
+ * All stacks are decorated, not only the ones shown, so another tab's entries keep their ViewModels while that tab
+ * is in the background.
+ */
 @Composable
 fun NavigationState.toEntries(
     entryProvider: (NavKey) -> NavEntry<NavKey>,
 ): SnapshotStateList<NavEntry<NavKey>> {
     val decoratedEntries = backStacks.mapValues { (_, stack) ->
-        val decorators = listOf(
-            rememberSaveableStateHolderNavEntryDecorator<NavKey>(),
+        val decorators = listOf<NavEntryDecorator<NavKey>>(
+            rememberSaveableStateHolderNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator(),
         )
         rememberDecoratedNavEntries(
             backStack = stack,
