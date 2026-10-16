@@ -16,6 +16,8 @@ internal fun Project.configureAndroid(android: CommonExtension) {
         lint.abortOnError = true
         lint.warningsAsErrors = false
         lint.lintConfig = lintPolicy
+        // lint.xml is about app code (UI, strings, locale). Analyzing every module's tests doubled lint's work.
+        lint.ignoreTestSources = true
     }
 }
 

@@ -34,6 +34,7 @@ class JvmLibraryConventionPlugin : Plugin<Project> {
                 abortOnError = true
                 warningsAsErrors = false
                 lintConfig = lintPolicy
+                ignoreTestSources = true
             }
             configureKover("jvm")
             tasks.withType<Test>().configureEach {
