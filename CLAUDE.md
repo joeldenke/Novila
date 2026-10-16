@@ -216,7 +216,7 @@ där pluginet `firebase@firebase` inte alltid installeras.
   veckans trend, insikter, veckans sömn (`NovilaLineChart`) och kost (`NovilaBarChart`) och mående.
   Kort är vita med hårfin kant (`NovilaTheme.surfaces`).
 - **Målade scener:** introduktionens scener är målade bilder i samma nordiska stil (falröd stuga, björk, gran, sjö,
-  midsommarljus), WebP i featurens `drawable-nodpi`, beskurna till 1,4:1 och helst under 150 kB. De visas bara via
+  midsommarljus), WebP i featurens `drawable-nodpi`, beskurna till 1,4:1, högst cirka 1120 px breda och helst under 200 kB. De visas bara via
   `NovilaSceneImage`, som sköter hörn, entré, parallax och dimning i mörkt läge. Rita inte landskap i kod: det har
   provats och når inte upp till målade bilder. Nya scener tas fram i samma stil som de befintliga.
 - **Inga emojis i UI:t.** Novila ska kännas som en professionell hälsoapp: använd vektorikoner och ritade komponenter
