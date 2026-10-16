@@ -162,6 +162,10 @@ där pluginet `firebase@firebase` inte alltid installeras.
   fallerar om bygglogik når in i en annan modul. Aldrig `allprojects {}`, `subprojects {}`, `rootProject.<…>` eller
   `project(":x")` för att läsa eller ändra en annan modul; beroenden deklareras med `projects.<…>` eller
   `dependencies.project(...)`. Behövs en fil i roten, använd `project.isolated.rootProject.projectDirectory`.
+  KSP (t.ex. för DI eller Room) kräver `ksp.project.isolation.enabled=true` i `gradle.properties`, annars fallerar
+  bygget med "cannot access task dependencies directly" (google/ksp#2844). CI har `workers.max=3` i stället för 2:
+  Gradle 9.8 fryser med Isolated Projects när workers ≤ antalet byggen (roten och `build-logic`), gradle#39040.
+  Tillbaka till 2 efter uppgradering till Gradle 9.9.
 - Nya moduler: lägg till `include(...)` i `settings.gradle.kts`, beroende via `projects.<…>` (typsäkra accessorer).
 - Nya Gradle-plugins deklareras med `apply false` i rotens `build.gradle.kts`, så att alla moduler delar en classloader.
 
