@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="reminders_channel">Reminders</string>
+    <string name="reminders_channel_description">The reminders you turn on in Novila: logging sleep, training and food.</string>
+    <string name="reminder_sleep_title">How did you sleep?</string>
+    <string name="reminder_sleep_text">Log last night\'s sleep while you remember it.</string>
+    <string name="reminder_training_title">Today\'s session</string>
+    <string name="reminder_training_text">Your program has a session planned for today.</string>
+    <string name="reminder_nutrition_title">What did you eat today?</string>
+    <string name="reminder_nutrition_text">Log today\'s food and water for your nutrition score.</string>
+</resources>

@@ -101,4 +101,23 @@
     <string name="goals_suggestion_in_use">You are using these goals.</string>
     <string name="goals_suggestion_needs_profile">Add your birth year or weight to your profile, and Novila suggests goals that fit you.</string>
     <string name="goals_about">Today, Sleep and Nutrition measure your days against these goals. Water counts towards the nutrition score; the food portions follow the Swedish Food Agency\'s dietary advice. A glass is 2 dl.</string>
+
+    <!-- Reminders -->
+    <string name="settings_reminders">Reminders</string>
+    <string name="settings_reminders_row">Choose what and when</string>
+    <string name="settings_reminders_summary">Only about what you haven\'t logged yet</string>
+    <string name="reminders_intro">Novila only reminds you about what you haven\'t logged yet, and only on the days it matters. Reminders come as notifications; the first time, your phone asks whether Novila may show them.</string>
+    <string name="reminders_off_title">Notifications are off</string>
+    <string name="reminders_off_body">Novila isn\'t allowed to show notifications, so your reminders won\'t appear. Turn them on in your phone\'s settings.</string>
+    <string name="reminders_open_settings">Open settings</string>
+    <string name="reminder_sleep">Log your sleep</string>
+    <string name="reminder_sleep_summary">In the morning, if last night isn\'t logged.</string>
+    <string name="reminder_training">Training</string>
+    <string name="reminder_training_summary">On days with a session in your program, if you haven\'t trained yet.</string>
+    <string name="reminder_nutrition">Log your food</string>
+    <string name="reminder_nutrition_summary">In the evening, if nothing is logged today.</string>
+    <string name="reminders_on">Remind me</string>
+    <string name="reminders_time">Time</string>
+    <string name="reminders_time_title">Choose a time</string>
+    <string name="reminders_save">Save</string>
 </resources>

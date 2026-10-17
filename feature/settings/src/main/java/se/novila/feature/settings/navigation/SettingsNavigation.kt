@@ -1,17 +1,27 @@
 package se.novila.feature.settings.navigation
 
+import android.Manifest
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
+import androidx.activity.compose.LocalActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
@@ -25,12 +35,16 @@ import se.novila.feature.settings.GoalsViewModel
 import se.novila.feature.settings.ProfileScreen
 import se.novila.feature.settings.ProfileViewModel
 import se.novila.feature.settings.R
+import se.novila.feature.settings.RemindersActions
+import se.novila.feature.settings.RemindersScreen
+import se.novila.feature.settings.RemindersViewModel
 import se.novila.feature.settings.SettingsActions
 import se.novila.feature.settings.SettingsScreen
 import se.novila.feature.settings.SettingsViewModel
 import se.novila.healthconnect.HealthConnectSource
 import se.novila.healthconnect.HealthDataInfoScreen
 import se.novila.healthconnect.rememberHealthPermissionRequest
+import se.novila.model.Reminder
 import se.novila.navigation.Navigator
 import se.novila.healthconnect.R as HealthConnectR
 import se.novila.ui.R as UiR
@@ -50,10 +64,13 @@ import se.novila.ui.R as UiR
 /** The user's daily goals for steps, sleep and water. */
 @Serializable data object GoalsRoute : NavKey
 
+/** Reminders to log sleep, train and log food, each at its own time. */
+@Serializable data object RemindersRoute : NavKey
+
 /**
- * Settings and the screens opened from it. Settings, the profile and the goals have their own ViewModels, scoped to
- * their entries; the other two are static text. Navigation inside goes through [navigator], on whichever tab Settings
- * was opened from.
+ * Settings and the screens opened from it. Settings, the profile, the goals and the reminders have their own
+ * ViewModels, scoped to their entries; the other two are static text. Navigation inside goes through [navigator], on
+ * whichever tab Settings was opened from.
  */
 fun EntryProviderScope<NavKey>.settingsEntries(navigator: Navigator, contentPadding: PaddingValues) {
     entry<SettingsRoute> {
@@ -81,6 +98,7 @@ fun EntryProviderScope<NavKey>.settingsEntries(navigator: Navigator, contentPadd
             actions = SettingsActions(
                 onOpenProfile = { navigator.navigate(ProfileRoute) },
                 onOpenGoals = { navigator.navigate(GoalsRoute) },
+                onOpenReminders = { navigator.navigate(RemindersRoute) },
                 onTheme = viewModel::setTheme,
                 onDynamicColor = viewModel::setDynamicColor,
                 onChooseLanguage = { openLanguageSettings(context) },
@@ -117,6 +135,7 @@ fun EntryProviderScope<NavKey>.settingsEntries(navigator: Navigator, contentPadd
             contentPadding = contentPadding,
         )
     }
+    entry<RemindersRoute> { RemindersEntry(contentPadding) }
     entry<HealthDataRoute> {
         val context = LocalContext.current
         HealthDataInfoScreen(
@@ -135,7 +154,70 @@ fun settingsTitle(route: NavKey?): String? = when (route) {
     DisclaimerRoute -> stringResource(R.string.disclaimer_title)
     ProfileRoute -> stringResource(R.string.profile_title)
     GoalsRoute -> stringResource(R.string.goals_title)
+    RemindersRoute -> stringResource(R.string.settings_reminders)
     else -> null
+}
+
+/**
+ * The Reminders screen. Turning a reminder on asks for permission to notify first (Android 13+), and only turns it on
+ * if the user says yes. Said no for good, the screen leads to the phone's notification settings instead of asking
+ * again. Whether Novila may notify is read again on every resume, never remembered.
+ */
+@Composable
+private fun RemindersEntry(contentPadding: PaddingValues) {
+    val viewModel = metroViewModel<RemindersViewModel>()
+    LifecycleResumeEffect(viewModel) {
+        viewModel.refresh()
+        onPauseOrDispose { }
+    }
+    // Nothing to show until the reminders are read, a moment at app start.
+    val state = viewModel.state.collectAsStateWithLifecycle().value ?: return
+    val context = LocalContext.current
+    val activity = LocalActivity.current
+    var pending by rememberSaveable { mutableStateOf<Reminder?>(null) }
+    var refused by rememberSaveable { mutableStateOf(false) }
+    val askToNotify = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        pending?.let { if (granted) viewModel.setOn(it, on = true) }
+        pending = null
+        // No rationale to show after a no means the dialog won't come again: only the settings can change it.
+        refused = !granted && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && activity != null &&
+            !ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.POST_NOTIFICATIONS)
+        viewModel.refresh()
+    }
+    RemindersScreen(
+        reminders = state.reminders,
+        notificationsOff = refused || (state.reminders.anyOn && !state.notificationsAllowed),
+        actions = RemindersActions(
+            onToggle = { reminder, on ->
+                if (on && needsNotificationPermission(context)) {
+                    pending = reminder
+                    askToNotify.launch(Manifest.permission.POST_NOTIFICATIONS)
+                } else {
+                    viewModel.setOn(reminder, on)
+                }
+            },
+            onTime = viewModel::setTime,
+            onOpenNotificationSettings = { openNotificationSettings(context) },
+        ),
+        contentPadding = contentPadding,
+    )
+}
+
+/** Android 13+ asks before an app may notify; earlier, notifications are on unless the user turned them off. */
+private fun needsNotificationPermission(context: Context): Boolean =
+    Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+        ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) !=
+        PackageManager.PERMISSION_GRANTED
+
+/** The phone's notification settings for Novila, where the user can allow notifications again. */
+private fun openNotificationSettings(context: Context) {
+    val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+        .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+    try {
+        context.startActivity(intent)
+    } catch (e: ActivityNotFoundException) {
+        Log.w("Settings", "No notification settings", e)
+    }
 }
 
 /** The phone's language setting for Novila alone (Android 13+), where English or Swedish can be chosen. */

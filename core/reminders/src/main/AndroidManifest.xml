@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Reminders: everything the app declares for them, merged into the app's manifest. Every permission and exported
+  component ends up in app/badging/debug-badging.txt, which CI compares against the built APK (checkDebugBadging).
+  See CLAUDE.md before adding permissions.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Asked for (Android 13+) when the user turns on the first reminder, never at start. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <application>
+        <!--
+          WorkManager is set up by NovilaApplication (Configuration.Provider), with ReminderWorkerFactory from the
+          Metro graph, so its default initializer is removed. The provider stays for androidx.startup's other users.
+        -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
+    </application>
+</manifest>

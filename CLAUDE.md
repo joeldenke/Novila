@@ -28,7 +28,7 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   `NovilaSceneImage` med parallax), namn, mål och tid för coachen, Health Connect och en sammanfattning i `NovilaHeroBanner`.
   Visas ensam (utan flikar) tills `AppSettings.onboarded` är satt; `NovilaApp` ger den en egen entry via
   `rememberStandaloneEntries`. Kan visas igen från Inställningar.
-- `:feature:settings` – Inställningar (profil, egna mål, tema, Health Connect, ansvarsfriskrivning, radera data, introduktionen, version).
+- `:feature:settings` – Inställningar (profil, egna mål, tema, påminnelser, Health Connect, ansvarsfriskrivning, radera data, introduktionen, version).
   Ingen flik: öppnas med kugghjulet i toppraden (på Idag i hälsningen) och läggs på aktuell fliks back stack. `Navigator` flyttar
   den om den öppnas från en annan flik, så samma nyckel aldrig ligger i två stackar som visas samtidigt.
 - `:core:designsystem` – `se.novila.designsystem`, enda modulen som använder Material 3 direkt
@@ -44,8 +44,13 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   `CoachLanguageModel`). `PreferencesStore` flyttar gamla SharedPreferences hit vid första läsningen, håller datan i
   minnet och köar sparningar i storens egen scope (i ordning, klara även när ViewModeln rensas). Tills första läsningen
   är klar är ViewModelns state `null` och entryn ritar inget. Använd aldrig SharedPreferences för ny data.
-  `SelectedDay` är dagen en skärm visar och ändrar (i dag, eller en tidigare dag inom `EditableDays`, 30 dagar
+  `RemindersStore` håller påminnelserna (på/av och tid). `trainingWeek` planerar veckan på samma sätt för
+  Träningsfliken och träningspåminnelsen. `SelectedDay` är dagen en skärm visar och ändrar (i dag, eller en tidigare dag inom `EditableDays`, 30 dagar
   bakåt); Sömn och Kost har varsin i sin ViewModel och sparar på den dagen.
+- `:core:reminders` – påminnelserna (logga sömn, träning, logga kost): `ReminderScheduler` lägger en engångsjobb i
+  WorkManager per påminnelse vid nästa tid, `ReminderWorker` läser dagen, visar notisen bara om något fortfarande
+  saknas (träning bara de dagar `trainingWeek` har ett pass) och lägger nästa dag själv. `ReminderWorkerFactory` ger
+  workern storarna från Metro via `NovilaApplication` (`Configuration.Provider`). Se *Påminnelser* under Regler.
 - `:core:healthconnect` – Health Connect som `MovementSource` (dagens steg och kalorier) och `ExerciseSource`
   (`HealthConnectExerciseSource`, träningspass), behörigheterna i modulens manifest (`HEALTH_PERMISSIONS`, frågas i en
   dialog via `rememberHealthPermissionRequest`) och integritetsskärmen (`HealthDataInfoActivity`)
@@ -302,5 +307,12 @@ där pluginet `firebase@firebase` inte alltid installeras.
   aldrig enheten. Modellen får aldrig bestämma övningar, doser eller rehabråd: den förklarar bara planen från
   `CoachPlanner`, och svaret visas med en AI-reservation. Inga emojis eller markdown (`CoachPrompt.clean`). Att använda
   modellen till mer än så, eller byta till en molnmodell, kräver ägarens ok.
+- **Påminnelser:** bara WorkManager, ett engångsjobb per påminnelse och dag (`ReminderScheduler`). Inga
+  periodiska jobb, ingen tjänst i förgrunden, inga exakta larm (`SCHEDULE_EXACT_ALARM`) och inget som körs mellan
+  påminnelserna. Workern läser bara det som redan är sparat, visar notisen om något saknas och lägger nästa dag; den
+  lyckas alltid, eftersom nästa dag hänger på den. Kommer den mer än två timmar sent skippas notisen. `POST_NOTIFICATIONS`
+  frågas först när användaren slår på en påminnelse, aldrig vid start, och om notiser får visas kollas varje gång
+  (aldrig sparat). WorkManagers standardstart är borttagen i `:core:reminders` manifest; appen ger konfigurationen.
+  Nya workers skapas av en fabrik i grafen och behöver en `-keepnames`-regel i `app/proguard-rules.pro`.
 - Hälsodata stannar på enheten. Inga nätverksanrop, analysverktyg eller Firebase-SDK:er i appen utan att ägaren ber om det.
 - Pinna GitHub Actions till commit-SHA med versionskommentar. Dependabot håller dem uppdaterade.

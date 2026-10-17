@@ -12,6 +12,7 @@ import se.novila.healthconnect.HealthConnectExerciseSource
 import se.novila.healthconnect.HealthConnectSource
 import se.novila.movement.InMemoryMovementCache
 import se.novila.movement.MovementRepository
+import se.novila.reminders.ReminderWorkerFactory
 import kotlin.time.Clock
 
 /**
@@ -25,6 +26,9 @@ import kotlin.time.Clock
 interface AppGraph : ViewModelGraph {
     /** The app's settings, which [se.novila.MainActivity] reads for the theme before any screen is shown. */
     val settingsStore: SettingsStore
+
+    /** Creates the reminders' work with the stores from this graph, for WorkManager's configuration. */
+    val reminderWorkerFactory: ReminderWorkerFactory
 
     /**
      * Movement for Today and Training, one repository for the app. Swap [HealthConnectSource] for another
