@@ -28,6 +28,8 @@ import se.novila.model.DayEntry
 import se.novila.model.DayTip
 import se.novila.model.Goals
 import se.novila.model.Greeting
+import se.novila.model.SleepAnalysis
+import se.novila.model.analyzeSleep
 import se.novila.model.balance
 import se.novila.model.greetingFor
 import se.novila.model.nutritionScore
@@ -49,8 +51,8 @@ import se.novila.ui.R as UiR
 
 /**
  * The dashboard: greeting (by [name] when the profile has one), today's balance as rings, one tile per part with its
- * trend, what the week's logs say, the week's sleep and nutrition, and today's mood. Everything is measured against
- * the user's [goals]. Blocks arrive one by one.
+ * trend, what the logs say (the strongest finding about the user's [sleep] first, then the week), the week's sleep
+ * and nutrition, and today's mood. Everything is measured against the user's [goals]. Blocks arrive one by one.
  */
 @Composable
 fun TodayScreen(
@@ -59,6 +61,7 @@ fun TodayScreen(
     hour: Int,
     name: String,
     goals: Goals,
+    sleep: SleepAnalysis,
     movement: MovementState,
     onMood: (Int) -> Unit,
     onOpenTraining: () -> Unit,
@@ -71,7 +74,11 @@ fun TodayScreen(
     // Today's steps once Health Connect is connected, otherwise null.
     val steps = (movement as? MovementState.Connected)?.today?.steps
     val week = remember(today, history) { weekOf(today, history) }
-    val insights = remember(week, steps, goals) { weekInsights(week, steps, goals = goals) }
+    // The week's insights, one fewer when the sleep findings have something to say first.
+    val sleepFinding = sleep.change != null || sleep.links.isNotEmpty()
+    val insights = remember(week, steps, goals, sleepFinding) {
+        weekInsights(week, steps, limit = if (sleepFinding) 2 else 3, goals = goals)
+    }
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
         item(key = "header") { NovilaReveal(order = 0) { Header(today, greetingFor(hour), name, onOpenSettings) } }
         item(key = "balance") { NovilaReveal(order = 1) { BalanceCard(today, steps, goals) } }
@@ -80,7 +87,7 @@ fun TodayScreen(
                 PillarTiles(today, week, steps, goals, onOpenTraining, onOpenSleep, onOpenNutrition)
             }
         }
-        item(key = "insights") { NovilaReveal(order = 3) { InsightsCard(insights) } }
+        item(key = "insights") { NovilaReveal(order = 3) { InsightsCard(insights, sleep) } }
         item(key = "sleep-week") { NovilaReveal(order = 4) { SleepWeekCard(week, goals) } }
         item(key = "nutrition-week") { NovilaReveal(order = 5) { NutritionWeekCard(week, goals) } }
         item(key = "mood") { NovilaReveal(order = 6) { MoodCard(today.mood, onMood) } }
@@ -221,6 +228,7 @@ private fun TodayScreenContent() {
                 hour = 8,
                 name = PreviewData.profile.name,
                 goals = Goals(),
+                sleep = analyzeSleep(PreviewData.days()),
                 movement = PreviewData.movement,
                 onMood = {},
                 onOpenTraining = {},

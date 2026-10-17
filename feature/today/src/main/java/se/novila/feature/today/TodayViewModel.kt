@@ -19,16 +19,25 @@ import se.novila.data.HealthStore.SavedDays
 import se.novila.data.ProfileStore
 import se.novila.data.Week
 import se.novila.model.Goals
+import se.novila.model.SLEEP_WINDOW_NIGHTS
+import se.novila.model.SleepAnalysis
+import se.novila.model.analyzeSleep
 import se.novila.movement.MovementRepository
 import se.novila.movement.MovementState
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 /**
- * The dashboard: the week so far, and [hour] of day when it was read, the user's [name] for the greeting and the
- * [goals] the day is measured against.
+ * The dashboard: the week so far, and [hour] of day when it was read, the user's [name] for the greeting, the
+ * [goals] the day is measured against and what the user's logs say about their [sleep].
  */
-data class TodayUiState(val week: Week, val hour: Int, val name: String = "", val goals: Goals = Goals())
+data class TodayUiState(
+    val week: Week,
+    val hour: Int,
+    val name: String = "",
+    val goals: Goals = Goals(),
+    val sleep: SleepAnalysis = SleepAnalysis(change = null, links = emptyList(), bedtimes = null, nightsLogged = 0),
+)
 
 /** The Today tab. Scoped to its entry; reads the same stores as the other tabs, so their changes show up here. */
 @ViewModelKey
@@ -62,8 +71,11 @@ class TodayViewModel(
 
     val movement: StateFlow<MovementState> = movementRepository.state
 
-    private fun read(days: SavedDays, now: LocalDateTime, name: String, goals: Goals) =
-        TodayUiState(days.week(now.toLocalDate()), now.hour, name, goals)
+    private fun read(days: SavedDays, now: LocalDateTime, name: String, goals: Goals): TodayUiState {
+        val today = now.toLocalDate()
+        val sleep = analyzeSleep(days.lastDays(SLEEP_WINDOW_NIGHTS + 1, today).reversed(), goals)
+        return TodayUiState(days.week(today), now.hour, name, goals, sleep)
+    }
 
     /**
      * Called on resume, so "today" and the greeting stay correct. Health Connect only allows reads while the app is

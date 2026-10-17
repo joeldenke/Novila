@@ -17,7 +17,7 @@ samband som de andra inte har. Handloggning finns kvar som reserv för den som i
 |---|---|---|
 | Idag | Hälsning med namn, dagens balans (ringar), en ruta per del, insikter, veckans sömn och kost, mående | Snyggt, men bara veckan |
 | Träning | Veckoprogram (WHO), coach med mål, dagar, fokus och hänsyn, rehab (knä, ländrygg, fas 1–3), 13 illustrerade övningar, passläge med timer, konditionspass (loggade och från Health Connect), RPE och smärta efter passet, Gemini Nano-kommentar | Appens starkaste del |
-| Sömn | Timmar i halvtimmessteg, och en graf över vecka, fyra veckor eller år | Tunnast: bara en siffra per natt |
+| Sömn | Läggtid och uppvakning, kvalitet och orsaker, vad som påverkar sömnen, graf över vecka, fyra veckor eller år | Bra, och blir bättre med sömn från klockan |
 | Kost | Portioner per livsmedelsgrupp, vatten mot eget mål, sött, poäng 0–100, "nästa steg", poängen över vecka, fyra veckor eller år | Bra och enkelt |
 | Rörelse | Dagens steg och aktiva kalorier, och fem veckors träningspass, från Health Connect, i förgrunden | Steg bara för i dag |
 | Inställningar | Tema, profil, egna mål, ansvarsfriskrivning, radera data | Komplett för sin nivå |
@@ -48,8 +48,10 @@ mer än kommentaren, eller data som lämnar appen.
 - [ ] **Veckoavstämning:** "3 av 4 pass, nästa vecka …"
 
 ### 3. Sömn
-- [ ] **Läggtid och uppvakning** i stället för bara timmar, så att regelbundenheten syns
-- [ ] **Sömnkvalitet (1–5)** och orsaker: sent koffein, skärm, alkohol, stress
+- [x] **Läggtid och uppvakning** i stället för bara timmar, så att regelbundenheten syns
+- [x] **Sömnkvalitet (1–5)** och orsaker: sent koffein, skärm, alkohol, stress, sen måltid, sen träning
+- [x] **Vad påverkar din sömn:** samband mellan dagen före (kost, vatten, träning, sött), orsakerna och nattens
+  längd och kvalitet, med statistisk prövning och antalet nätter; veckans förändring med det som ändrades med den
 - [ ] **Sömn från Health Connect** (`READ_SLEEP`) **(ok)**
 - [ ] **Sömncoach:** mål för läggtid, kvällsrutin och sömnhygien (KBT-I-inspirerat)
 
@@ -85,5 +87,5 @@ mer än kommentaren, eller data som lämnar appen.
 3. Logga konditionspass, och RPE och smärta efter passet ← klar
 4. Redigera tidigare dagar och längre historik ← klar
 5. Påminnelser ← klar
-6. Sömn 2.0, sedan sömn från Health Connect **(ok)**
+6. Sömn 2.0 ← klar; sedan sömn från Health Connect **(ok)**
 7. Widget på hemskärmen

@@ -23,6 +23,33 @@ fun hoursText(hours: Float): String {
     return stringResource(R.string.hours_value, value)
 }
 
+/** A length of time to the nearest five minutes, e.g. "40 min", "1 h 10 min" or "2 h". */
+@Composable
+@ReadOnlyComposable
+fun durationText(minutes: Int): String {
+    val rounded = (minutes + 2) / 5 * 5
+    val hours = rounded / 60
+    val rest = rounded % 60
+    return when {
+        hours == 0 -> stringResource(R.string.duration_minutes, rest)
+        rest == 0 -> stringResource(R.string.duration_hours, hours)
+        else -> stringResource(R.string.duration_hours_minutes, hours, rest)
+    }
+}
+
+/** A number with at most one decimal, in the locale's style, e.g. "3.8" / "3,8". */
+@Composable
+fun decimalText(value: Double): String {
+    val locale = currentLocale()
+    val format = remember(locale) {
+        NumberFormat.getNumberInstance(locale).apply {
+            minimumFractionDigits = 0
+            maximumFractionDigits = 1
+        }
+    }
+    return format.format(value)
+}
+
 /** Step count with the locale's digit grouping, e.g. "8,412" / "8 412". */
 @Composable
 fun stepsText(steps: Long?): String =

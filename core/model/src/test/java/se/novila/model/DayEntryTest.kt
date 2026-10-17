@@ -4,6 +4,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
 import java.time.LocalDate
+import java.time.LocalTime
 import java.util.Locale
 
 class DayEntryTest {
@@ -22,9 +23,45 @@ class DayEntryTest {
             .withCardio(CardioLog(CardioType.Running, 20))
             .withFeedback(effort = 7, pain = 0, phase = 2)
         assertEquals(entry, DayEntryCodec.decode(date, DayEntryCodec.encode(entry)))
-        assertEquals("v4;0;0.0;0;0;0;0;0;0;25;Walking:30,Running:20;7;0;2", DayEntryCodec.encode(entry))
+        assertEquals("v5;0;0.0;0;0;0;0;0;0;25;Walking:30,Running:20;7;0;2;;;0;", DayEntryCodec.encode(entry))
         val empty = DayEntry(date)
         assertEquals(empty, DayEntryCodec.decode(date, DayEntryCodec.encode(empty)))
+    }
+
+    @Test fun `codec round-trips the night with its times, quality and factors`() {
+        val entry = DayEntry(date)
+            .withSleepTimes(LocalTime.of(23, 15), LocalTime.of(6, 45))
+            .withSleepQuality(4)
+            .withSleepFactor(SleepFactor.Screens, on = true)
+            .withSleepFactor(SleepFactor.LateCaffeine, on = true)
+        assertEquals(entry, DayEntryCodec.decode(date, DayEntryCodec.encode(entry)))
+        assertEquals("v5;0;7.5;0;0;0;0;0;0;0;;0;;0;1395;405;4;LateCaffeine,Screens", DayEntryCodec.encode(entry))
+    }
+
+    @Test fun `v4 data from before bedtimes is migrated with its hours`() {
+        val day = DayEntryCodec.decode(date, "v4;5;7.5;4;4;3;2;1;2;25;Walking:30;7;0;2")
+        assertEquals(7.5f, day.sleepHours)
+        assertNull(day.bedtime)
+        assertEquals(0, day.sleepQuality)
+        assertEquals(emptySet<SleepFactor>(), day.sleepFactors)
+        assertEquals(listOf(CardioLog(CardioType.Walking, 30)), day.cardio)
+    }
+
+    @Test fun `bed and wake times give the hours, across midnight`() {
+        val night = DayEntry(date).withSleepTimes(LocalTime.of(22, 50), LocalTime.of(6, 20))
+        assertEquals(7.5f, night.sleepHours)
+        assertEquals(0f, DayEntry(date).withSleepTimes(LocalTime.of(7, 0), LocalTime.of(7, 0)).sleepHours)
+        assertEquals(MAX_SLEEP_HOURS, DayEntry(date).withSleepTimes(LocalTime.of(18, 0), LocalTime.of(9, 0)).sleepHours)
+        // Hours set by hand no longer match the times.
+        assertNull(night.withSleep(8f).bedtime)
+    }
+
+    @Test fun `unknown factors and out of range values are skipped`() {
+        val day = DayEntryCodec.decode(date, "v5;0;0;0;0;0;0;0;0;0;;0;;0;9999;x;9;Alcohol,Snoring")
+        assertNull(day.bedtime)
+        assertNull(day.wakeTime)
+        assertEquals(MAX_SLEEP_QUALITY, day.sleepQuality)
+        assertEquals(setOf(SleepFactor.Alcohol), day.sleepFactors)
     }
 
     @Test fun `v3 data from before cardio logging is migrated`() {

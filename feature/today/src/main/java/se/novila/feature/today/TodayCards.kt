@@ -10,7 +10,10 @@ import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.today.R
 import se.novila.model.Insight
+import se.novila.model.SleepAnalysis
 import se.novila.ui.common.hoursText
+import se.novila.ui.common.sleepChangeText
+import se.novila.ui.common.sleepLinkText
 import se.novila.ui.common.stepsText
 import kotlin.math.abs
 import se.novila.ui.R as UiR
@@ -38,11 +41,23 @@ private enum class Mood(val label: Int) {
     Great(R.string.mood_5),
 }
 
-/** What the week's logs say, worked out on the phone. Explains how to get insights while there are none. */
+/**
+ * What the logs say, worked out on the phone: this week's change in [sleep] and what came with it, or else the
+ * strongest link between the user's days and nights, then the week's [insights]. Explains how to get insights while
+ * there are none.
+ */
 @Composable
-fun InsightsCard(insights: List<Insight>) {
+fun InsightsCard(insights: List<Insight>, sleep: SleepAnalysis) {
     NovilaCard(title = stringResource(R.string.insights_title)) {
-        if (insights.isEmpty()) {
+        val change = sleep.change
+        val link = sleep.links.firstOrNull()
+        val sleepText = when {
+            change != null -> sleepChangeText(change)
+            link != null -> sleepLinkText(link)
+            else -> null
+        }
+        sleepText?.let { NovilaInsight(painterResource(UiR.drawable.ic_sleep), it, NovilaTheme.pillars.sleep) }
+        if (insights.isEmpty() && sleepText == null) {
             NovilaText(
                 stringResource(R.string.insights_empty),
                 style = NovilaTheme.typography.bodyMedium,

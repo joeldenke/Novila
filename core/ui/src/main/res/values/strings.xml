@@ -51,6 +51,46 @@
         <item quantity="other">%1$d points lower than %2$s</item>
     </plurals>
 
+    <!-- What affects sleep, from the user's own logs -->
+    <string name="duration_minutes" translatable="false">%1$d min</string>
+    <string name="duration_hours" translatable="false">%1$d h</string>
+    <string name="duration_hours_minutes" translatable="false">%1$d h %2$d min</string>
+    <string name="sleep_driver_ate_well">After days you ate well</string>
+    <string name="sleep_driver_drank_enough">After days you drank enough water</string>
+    <string name="sleep_driver_trained">After days you trained</string>
+    <string name="sleep_driver_treats">After days with sweets and snacks</string>
+    <string name="sleep_driver_late_caffeine">After late caffeine</string>
+    <string name="sleep_driver_screens">After screens in bed</string>
+    <string name="sleep_driver_alcohol">After alcohol</string>
+    <string name="sleep_driver_stress">After stressful evenings</string>
+    <string name="sleep_driver_late_meal">After a late meal</string>
+    <string name="sleep_driver_late_exercise">After late exercise</string>
+    <string name="sleep_link_sentence">%1$s, %2$s.</string>
+    <string name="sleep_link_longer">you slept %1$s longer</string>
+    <string name="sleep_link_shorter">you slept %1$s less</string>
+    <string name="sleep_link_better">your sleep felt better: %1$s against %2$s of 5</string>
+    <string name="sleep_link_worse">your sleep felt worse: %1$s against %2$s of 5</string>
+    <string name="sleep_link_nights">%1$d nights with, %2$d without</string>
+    <string name="sleep_change_longer">This week you slept %1$s more per night than the week before.</string>
+    <string name="sleep_change_shorter">This week you slept %1$s less per night than the week before.</string>
+    <string name="sleep_change_better">This week your sleep felt better than the week before: %1$s against %2$s of 5.</string>
+    <string name="sleep_change_worse">This week your sleep felt worse than the week before: %1$s against %2$s of 5.</string>
+    <string name="sleep_change_with">At the same time, %1$s.</string>
+    <string name="sleep_change_and">%1$s and %2$s</string>
+    <string name="sleep_changed_ate_well">you ate well on %1$d of 7 days (%2$d the week before)</string>
+    <string name="sleep_changed_drank_enough">you drank enough water on %1$d of 7 days (%2$d the week before)</string>
+    <string name="sleep_changed_trained">you trained on %1$d of 7 days (%2$d the week before)</string>
+    <string name="sleep_changed_treats">you had sweets and snacks on %1$d of 7 days (%2$d the week before)</string>
+    <string name="sleep_changed_late_caffeine">you had late caffeine on %1$d of 7 evenings (%2$d the week before)</string>
+    <string name="sleep_changed_screens">you had screens in bed on %1$d of 7 evenings (%2$d the week before)</string>
+    <string name="sleep_changed_alcohol">you had alcohol on %1$d of 7 evenings (%2$d the week before)</string>
+    <string name="sleep_changed_stress">your evening was stressful %1$d of 7 times (%2$d the week before)</string>
+    <string name="sleep_changed_late_meal">you ate late on %1$d of 7 evenings (%2$d the week before)</string>
+    <string name="sleep_changed_late_exercise">you trained late on %1$d of 7 evenings (%2$d the week before)</string>
+    <string name="sleep_change_confirmed">Your earlier nights show the same link.</string>
+    <string name="sleep_change_unconfirmed">One week can be chance. Keep logging to see if it holds.</string>
+    <string name="sleep_bedtime_spread">Your bedtime varies by about %1$s from night to night. A steady bedtime, weekends too, helps your sleep.</string>
+
     <!-- Health Connect -->
     <string name="kcal_value" translatable="false">%1$s kcal</string>
     <string name="movement_steps">Steps</string>
