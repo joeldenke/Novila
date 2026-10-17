@@ -60,7 +60,7 @@ fun ExerciseDetailScreen(
                 if (motion.isHold) {
                     AnatomyFigure(motion = motion, contentDescription = description, modifier = figure)
                 } else {
-                    AnatomyPlayer(motion, description, repetitions = REPETITIONS, figureModifier = figure)
+                    AnatomyPlayer(motion, description, repetitions = REPETITIONS, aspectRatio = DETAIL_ASPECT_RATIO)
                 }
                 if (planned != null) {
                     NovilaText(

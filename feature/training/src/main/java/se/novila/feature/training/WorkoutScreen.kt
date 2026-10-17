@@ -74,7 +74,7 @@ fun WorkoutScreen(
             step == null -> {
                 item(key = "finished") { Finished(workout) }
                 item(key = "feedback") {
-                    Feedback(state?.feedback ?: SessionFeedbackDraft(), onEffort, onPain, onFinish)
+                    Feedback(state.feedback, onEffort, onPain, onFinish)
                 }
             }
 

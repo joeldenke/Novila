@@ -1,9 +1,6 @@
 package se.novila.feature.training
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -68,12 +65,7 @@ class TrainingScreenTest {
         val squat = ExerciseLibrary.byId("squat")!!
         composeRule.setContent {
             NovilaTheme {
-                AnatomyPlayer(
-                    squat,
-                    contentDescription = "Squat",
-                    repetitions = 3,
-                    figureModifier = Modifier.fillMaxWidth().aspectRatio(1.2f),
-                )
+                AnatomyPlayer(squat, contentDescription = "Squat", repetitions = 3)
             }
         }
         // The test clock runs the three repetitions to the end, where the player stops.

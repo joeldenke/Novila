@@ -4,9 +4,12 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -79,7 +82,7 @@ fun AnatomyFigure(
 }
 
 /**
- * The figure with controls, like a video player: play and pause, and a slider to drag the movement forwards and
+ * The figure in a soft frame at [aspectRatio], with controls like a video player: play and pause, and a slider to drag the movement forwards and
  * backwards through [repetitions] calm repetitions, to study a moment. It plays them once when shown and stops;
  * play again from the end starts over. Never loops. Still at the hardest moment in previews and screenshots.
  */
@@ -88,8 +91,8 @@ fun AnatomyPlayer(
     motion: ExerciseMotion,
     contentDescription: String,
     repetitions: Int,
-    figureModifier: Modifier,
     modifier: Modifier = Modifier,
+    aspectRatio: Float = 1.2f,
     shape: BodyShape = BodyShape.NEUTRAL,
 ) {
     val still = LocalInspectionMode.current
@@ -106,7 +109,16 @@ fun AnatomyPlayer(
     val scope = rememberCoroutineScope()
     val scrub = stringResource(R.string.exercise_scrub)
     Column(modifier, verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s)) {
-        AnatomyCanvas(motion, { progress.value }, contentDescription, figureModifier, shape)
+        AnatomyCanvas(
+            motion,
+            { progress.value },
+            contentDescription,
+            Modifier
+                .fillMaxWidth()
+                .aspectRatio(aspectRatio)
+                .background(NovilaTheme.colors.surfaceContainerLow, NovilaTheme.shapes.small),
+            shape,
+        )
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.m),

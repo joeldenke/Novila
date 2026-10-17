@@ -138,6 +138,9 @@ Misstag som redan har gjorts i det här repot. Gör dem inte igen.
 - **gcloud i molnsessioner:** miljön sätter `CLOUDSDK_AUTH_ACCESS_TOKEN`, som skriver över `gcloud auth login`.
   Kör `unset CLOUDSDK_AUTH_ACCESS_TOKEN` efter inloggningen, annars svarar alla anrop `CREDENTIALS_MISSING`.
 - **GitHub API:** GraphQL och `gh pr create` fungerar inte här. Använd REST (`gh api repos/.../pulls`).
+- **Modifier-parametrar:** en composable får bara ha en `Modifier`-parameter, och den heter `modifier` (lint
+  `ModifierParameter`). Behöver en del inuti egen form, ta värden (t.ex. `aspectRatio`) i stället för en andra
+  `Modifier` som `figureModifier`.
 - **Spotless och Isolated Projects:** ge Spotless filträd (`fileTree(...)`) som `target`, aldrig glob-strängar som
   `"**/*.kt"`. För en glob slår Spotless upp varje undermoduls `build`-katalog, och då fallerar bygget med
   "cannot access 'Project.layout' functionality on subprojects". Isolated Projects stoppar sådant i varje bygge.
