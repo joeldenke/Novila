@@ -4,6 +4,7 @@
     <string name="program_title">Veckans program</string>
     <string name="program_summary">%1$d minuter kondition och styrka %2$d dagar i veckan.</string>
     <string name="program_basis">Bygger på WHO:s råd om fysisk aktivitet och dina senaste pass. Konditionstiden ökar med högst en tiondel i veckan.</string>
+    <string name="program_done">Klart</string>
     <string name="exercise_walking">Rask promenad</string>
     <string name="exercise_running">Löpning</string>
     <string name="exercise_cycling">Cykling</string>
@@ -112,7 +113,10 @@
     <string name="exercises_title">Alla övningar</string>
     <string name="exercises_body">Övningar med kroppsvikt som du kan göra hemma, utan redskap.</string>
     <string name="exercise_open">Visa hur man gör %1$s</string>
-    <string name="exercise_replay">Spela igen</string>
+    <string name="exercise_play">Spela rörelsen</string>
+    <string name="exercise_pause">Pausa</string>
+    <string name="exercise_scrub">Dra genom rörelsen</string>
+    <string name="exercise_repetition">Repetition %1$d av %2$d</string>
     <string name="exercise_in_program">I ditt program: %1$s, %2$s</string>
     <string name="exercise_muscles_title">Muskler</string>
     <string name="exercise_primary_legend">Huvudmuskler: %1$s</string>
@@ -181,8 +185,6 @@
     <string name="movement_install">Hämta Health Connect</string>
     <!-- Träningscoach -->
     <string name="coach_title">Träningscoach</string>
-    <string name="coach_card_inactive">Låt coachen bygga en vecka efter ditt mål, din tid och övningarna i Novila.</string>
-    <string name="coach_card_active">Ditt program är byggt av coachen: %1$s, %2$d dagar i veckan, ungefär %3$d minuter åt gången.</string>
     <string name="coach_open">Öppna coachen</string>
     <string name="coach_adjust">Anpassa programmet</string>
     <string name="coach_intro">Coachen planerar din vecka här i telefonen, utifrån dina svar, dina senaste pass och övningarna i Novila. Inget skickas någonstans.</string>
@@ -281,4 +283,25 @@
     <string name="cardio_log">Jag gjorde det</string>
     <string name="cardio_log_more">Logga ett till</string>
     <string name="cardio_undo">Ångra</string>
+
+    <!-- Veckan i överblick på Träning -->
+    <string name="overview_title">Den här veckan</string>
+    <string name="overview_minutes_of">av %1$d min</string>
+    <string name="overview_today">I dag: %1$s, %2$d min</string>
+    <string name="overview_done">Klart för i dag</string>
+    <string name="overview_rest">Vilodag</string>
+    <string name="overview_workout_body">%1$d övningar, set för set med vila. Figuren visar takten.</string>
+    <string name="overview_rehab_body">%1$d lugna övningar. Avbryt om smärtan går över 3 av 10.</string>
+    <string name="overview_cardio_body">Tryck när du är klar, så räknar programmet med det. Klockans pass räknas också.</string>
+    <string name="overview_mobility_body">Lugn stretch för höfter, rygg och axlar, i din egen takt.</string>
+    <string name="overview_done_next">%1$d minuter i dag. %2$s.</string>
+    <string name="overview_done_week">%1$d minuter i dag. Det var veckans sista pass.</string>
+    <string name="overview_week_done">Inget mer planerat den här veckan. Vila gott.</string>
+    <string name="overview_next">Nästa: %1$s, %2$s, %3$d min</string>
+    <string name="overview_day_done">%1$s: klart, %2$d minuter</string>
+    <string name="overview_day_planned">%1$s: %2$s, %3$d minuter planerat</string>
+    <string name="overview_day_rest">%1$s: vila</string>
+    <string name="overview_day_today">I dag, %1$s</string>
+    <string name="overview_log_other">Logga ett pass</string>
+    <string name="cardio_log_title">Logga ett pass</string>
 </resources>

@@ -1,110 +1,168 @@
 package se.novila.feature.training
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import se.novila.designsystem.component.NovilaActionChip
+import se.novila.designsystem.component.NovilaReveal
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.exercise.ExerciseState
-import se.novila.exercise.TrainingProgram
 import se.novila.model.CardioLog
 import se.novila.movement.MovementState
 import se.novila.ui.common.ScreenList
 import se.novila.ui.preview.PreviewData
 import java.time.DayOfWeek
 
+/**
+ * The Training tab, most useful first: the week at a glance with today's one main action, a few actions that fit
+ * right now, the next strength session, the week's program, movement from Health Connect and the exercise library.
+ */
 @Composable
 fun TrainingScreen(
+    state: TrainingUiState,
     movement: MovementState,
-    program: TrainingProgram,
-    coach: CoachUiState,
-    today: DayOfWeek,
-    onConnectHealth: () -> Unit,
-    onOpenHealthSettings: () -> Unit,
-    onInstallHealth: () -> Unit,
-    onOpenExercise: (String) -> Unit,
-    onStartWorkout: (DayOfWeek) -> Unit,
-    onOpenCoach: () -> Unit,
+    actions: TrainingActions,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
-    strengthMinutesToday: Int = 0,
-    cardioToday: CardioToday = CardioToday(),
     exercise: ExerciseState = ExerciseState.Unavailable,
-    onLogCardio: (CardioLog) -> Unit = {},
-    onUndoCardio: () -> Unit = {},
 ) {
-    val strengthDays = program.sessions.filter { it.exercises.isNotEmpty() }
-    // The sun goes to the next strength day still to do: today's, unless it's done, or a later one.
-    val next = strengthDays.firstOrNull { it.day > today || (it.day == today && strengthMinutesToday == 0) }
-    val plannedCardio = program.sessions.firstOrNull { it.day == today && it.type.cardioType != null }
+    val today = state.today
+    val plan = remember(state) { state.todayPlan() }
+    // Today's session is started from the overview, so the card shows the next one still to do after it.
+    val next = state.program.sessions.firstOrNull { session ->
+        session.exercises.isNotEmpty() && (session.day > today || (session.day == today && plan is TodayPlan.Workout))
+    }
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
-        item(key = "movement") {
-            MovementCard(movement, onConnectHealth, onOpenHealthSettings, onInstallHealth, exercise)
-        }
-        item(key = "program") {
-            TrainingProgramCard(program, today)
-        }
-        item(key = "cardio") {
-            CardioCard(cardioToday, plannedCardio, onLog = onLogCardio, onUndo = onUndoCardio)
-        }
-        item(key = "coach") {
-            CoachCard(coach, onOpen = onOpenCoach)
-        }
-        strengthDays.forEach { session ->
-            item(key = "strength-${session.day}") {
-                StrengthSessionCard(
-                    session = session,
-                    onOpenExercise = onOpenExercise,
-                    onStart = { onStartWorkout(session.day) },
-                    next = session == next,
-                    minutesDone = strengthMinutesToday.takeIf { session.day == today && it > 0 },
+        item(key = "overview") {
+            NovilaReveal(order = 0) {
+                TrainingOverview(
+                    program = state.program,
+                    today = today,
+                    weekDone = state.weekDone,
+                    plan = plan,
+                    onStartWorkout = actions.onStartWorkout,
+                    onLogCardio = actions.onLogCardio,
                 )
             }
         }
+        item(key = "actions") {
+            NovilaReveal(order = 1) { QuickActions(state.coach, movement, actions) }
+        }
+        if (next != null) {
+            item(key = "next-session") {
+                NovilaReveal(order = 2) {
+                    StrengthSessionCard(
+                        session = next,
+                        onOpenExercise = actions.onOpenExercise,
+                        // Today's session already has the overview's button.
+                        onStart = { actions.onStartWorkout(next.day) }.takeIf { next.day != today },
+                        next = false,
+                    )
+                }
+            }
+        }
+        item(key = "program") {
+            NovilaReveal(order = 3) {
+                TrainingProgramCard(state.program, today, state.weekDone, onStartWorkout = actions.onStartWorkout)
+            }
+        }
+        item(key = "movement") {
+            MovementCard(
+                movement,
+                actions.onConnectHealth,
+                actions.onOpenHealthSettings,
+                actions.onInstallHealth,
+                exercise,
+            )
+        }
         item(key = "exercises") {
-            ExerciseLibraryCard(onOpenExercise)
+            ExerciseLibraryCard(actions.onOpenExercise)
+        }
+    }
+}
+
+/** What the Training tab can do, from the entry: navigation, Health Connect and logging. */
+data class TrainingActions(
+    val onStartWorkout: (DayOfWeek) -> Unit = {},
+    val onLogCardio: (CardioLog) -> Unit = {},
+    val onOpenCardioLog: () -> Unit = {},
+    val onOpenCoach: () -> Unit = {},
+    val onOpenExercise: (String) -> Unit = {},
+    val onConnectHealth: () -> Unit = {},
+    val onOpenHealthSettings: () -> Unit = {},
+    val onInstallHealth: () -> Unit = {},
+)
+
+/**
+ * Small actions that fit right now: log a workout that wasn't planned, set up or adjust the coach, and connect
+ * Health Connect while it isn't.
+ */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun QuickActions(coach: CoachUiState, movement: MovementState, actions: TrainingActions) {
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s),
+        verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s),
+    ) {
+        NovilaActionChip(stringResource(R.string.overview_log_other), onClick = actions.onOpenCardioLog)
+        NovilaActionChip(
+            stringResource(if (coach.active) R.string.coach_adjust else R.string.coach_open),
+            onClick = actions.onOpenCoach,
+        )
+        if (movement is MovementState.NeedsPermission && !movement.denied) {
+            NovilaActionChip(stringResource(R.string.movement_connect), onClick = actions.onConnectHealth)
         }
     }
 }
 
 @Composable
 private fun TrainingScreenContent(
-    movement: MovementState,
+    state: TrainingUiState,
+    movement: MovementState = PreviewData.movement,
     exercise: ExerciseState = ExerciseState.Unavailable,
-    cardioToday: CardioToday = CardioToday(),
 ) {
     NovilaTheme {
         TrainingScreen(
+            state = state,
             movement = movement,
-            program = TrainingPreviewData.program,
-            coach = TrainingPreviewData.newCoach,
-            today = PreviewData.today.date.dayOfWeek,
-            onConnectHealth = {},
-            onOpenHealthSettings = {},
-            onInstallHealth = {},
-            onOpenExercise = {},
-            onStartWorkout = {},
-            onOpenCoach = {},
+            actions = TrainingActions(),
             contentPadding = PaddingValues(),
-            cardioToday = cardioToday,
             exercise = exercise,
         )
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun TrainingScreenPreview() = TrainingScreenContent(
-    PreviewData.movement,
-    ExerciseState.Connected(TrainingPreviewData.workouts),
-    CardioToday(recordedMinutes = 32),
+/** Thursday, a strength day, with Monday's strength and Tuesday's run done. */
+private val strengthDay = TrainingUiState(
+    program = TrainingPreviewData.program,
+    coach = TrainingPreviewData.newCoach,
+    today = DayOfWeek.THURSDAY,
+    strengthMinutesToday = 0,
+    weekDone = mapOf(DayOfWeek.MONDAY to 28, DayOfWeek.TUESDAY to 32),
 )
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, heightDp = 1600)
 @Composable
-private fun TrainingScreenWorkoutsPreview() =
-    TrainingScreenContent(PreviewData.movement, ExerciseState.NeedsPermission())
+private fun TrainingScreenPreview() = TrainingScreenContent(
+    strengthDay,
+    exercise = ExerciseState.Connected(TrainingPreviewData.workouts),
+)
 
-@Preview(showBackground = true)
+/** Friday's run, not logged yet: one tap logs it. */
+@Preview(showBackground = true, heightDp = 1600)
 @Composable
-private fun TrainingScreenConnectPreview() = TrainingScreenContent(MovementState.NeedsPermission())
+private fun TrainingScreenCardioPreview() = TrainingScreenContent(
+    strengthDay.copy(today = DayOfWeek.FRIDAY, weekDone = strengthDay.weekDone + (DayOfWeek.THURSDAY to 30)),
+    exercise = ExerciseState.NeedsPermission(),
+)
+
+@Preview(showBackground = true, heightDp = 1600)
+@Composable
+private fun TrainingScreenConnectPreview() =
+    TrainingScreenContent(strengthDay.copy(today = DayOfWeek.SATURDAY), MovementState.NeedsPermission())

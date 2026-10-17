@@ -64,9 +64,4 @@ class TrainingViewModel(
     fun logCardio(log: CardioLog) {
         store.update(date.value) { it.withCardio(log) }
     }
-
-    /** Takes back the last cardio session logged today. */
-    fun undoCardio() {
-        store.update(date.value) { it.withoutLastCardio() }
-    }
 }

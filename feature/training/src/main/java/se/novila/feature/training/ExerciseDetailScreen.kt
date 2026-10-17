@@ -10,10 +10,6 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,7 +19,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import se.novila.anatomy.ExerciseLibrary
 import se.novila.anatomy.ExerciseMotion
-import se.novila.designsystem.component.NovilaAccentButton
 import se.novila.designsystem.component.NovilaCard
 import se.novila.designsystem.component.NovilaScaffold
 import se.novila.designsystem.component.NovilaText
@@ -37,8 +32,8 @@ private const val DETAIL_ASPECT_RATIO = 1.2f
 private const val REPETITIONS = 3
 
 /**
- * How to do one exercise: the anatomy figure plays a few calm repetitions and stops, with the
- * muscles it trains, the steps and one thing to keep in mind. With [planned], it also shows the dose
+ * How to do one exercise: the anatomy figure plays a few calm repetitions and stops, and can be paused and dragged
+ * through like a video ([AnatomyPlayer]), with the muscles it trains, the steps and one thing to keep in mind. With [planned], it also shows the dose
  * from this week's program.
  */
 @Composable
@@ -48,25 +43,25 @@ fun ExerciseDetailScreen(
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
-    var replays by rememberSaveable(motion.id) { mutableIntStateOf(0) }
     val text = moveText(motion.id)
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
         item(key = "figure") {
             NovilaCard {
-                AnatomyFigure(
-                    motion = motion,
-                    contentDescription = stringResource(
-                        R.string.move_figure_description,
-                        moveName(motion.id),
-                        muscleList(motion.primary),
-                    ),
-                    repetitions = if (motion.isHold) 0 else REPETITIONS,
-                    replay = replays,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(DETAIL_ASPECT_RATIO)
-                        .background(NovilaTheme.colors.surfaceContainerLow, NovilaTheme.shapes.small),
+                val description = stringResource(
+                    R.string.move_figure_description,
+                    moveName(motion.id),
+                    muscleList(motion.primary),
                 )
+                val figure = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(DETAIL_ASPECT_RATIO)
+                    .background(NovilaTheme.colors.surfaceContainerLow, NovilaTheme.shapes.small)
+                // A hold has no movement to play or drag through.
+                if (motion.isHold) {
+                    AnatomyFigure(motion = motion, contentDescription = description, modifier = figure)
+                } else {
+                    AnatomyPlayer(motion, description, repetitions = REPETITIONS, figureModifier = figure)
+                }
                 if (planned != null) {
                     NovilaText(
                         stringResource(
@@ -76,13 +71,6 @@ fun ExerciseDetailScreen(
                         ),
                         style = NovilaTheme.typography.titleSmall,
                         color = NovilaTheme.pillars.training.color,
-                    )
-                }
-                if (!motion.isHold) {
-                    NovilaAccentButton(
-                        text = stringResource(R.string.exercise_replay),
-                        onClick = { replays++ },
-                        modifier = Modifier.fillMaxWidth(),
                     )
                 }
             }
