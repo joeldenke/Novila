@@ -71,6 +71,21 @@ class ColorContrastTest {
         )
     }
 
+    @Test fun `pillars stay readable when dynamic color gives a light container in dark mode`() {
+        // Like a wallpaper scheme on Android 16: light cyan tertiary container under a light tertiary.
+        val scheme = NovilaDarkColors.copy(
+            tertiary = Color(0xFF80D4DE),
+            tertiaryContainer = Color(0xFFADE3EA),
+            onTertiaryContainer = Color(0xFF00363D),
+        )
+        val nutrition = scheme.pillars().nutrition
+        val failures = listOf(
+            "icon" to contrast(nutrition.color, nutrition.container) to NON_TEXT,
+            "text" to contrast(nutrition.onContainer, nutrition.container) to TEXT,
+        ).filter { (pair, minimum) -> pair.second < minimum }
+        assertTrue("Below minimum -> $failures", failures.isEmpty())
+    }
+
     @Test fun `text on cards meets 4,5 to 1`() = assertPairs(TEXT, surfaces) { (scheme, card) ->
         listOf(
             "onSurface/card" to (scheme.onSurface to card.card),
