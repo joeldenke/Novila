@@ -11,6 +11,8 @@ import org.robolectric.RuntimeEnvironment
 import se.novila.model.DayEntry
 import se.novila.model.DayEntryCodec
 import se.novila.model.FoodGroup
+import se.novila.model.HistoryRange
+import se.novila.model.averageSleep
 import se.novila.model.portions
 import se.novila.model.withPortions
 import java.time.LocalDate
@@ -40,6 +42,17 @@ class HealthStoreTest {
 
         assertEquals(DayEntry(today), days.day(today))
         assertEquals(6, days.week(today).history.size)
+    }
+
+    @Test fun `days older than a week show up in the history`() {
+        val store = HealthStore(context, stores.scope)
+        val spring = LocalDate.of(2026, 4, 2)
+        store.update(spring) { it.withSleep(8f) }
+
+        val history = store.days.await { it.day(spring).sleepHours > 0f }.history(HistoryRange.Year, today)
+
+        assertEquals(8f, history.periods.single { it.start == LocalDate.of(2026, 4, 1) }.days.averageSleep())
+        assertEquals(8f, store.history(HistoryRange.Year, today)?.days?.single { it.date == spring }?.sleepHours)
     }
 
     @Test fun `saves apply in order, each to the day as the last one left it`() {

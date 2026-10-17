@@ -58,6 +58,26 @@ fun weekdayLabels(days: List<DayEntry>): List<String> {
     }
 }
 
+/** Day and short month per date for chart axes, e.g. "Sep 20" / "20 sep". */
+@Composable
+fun shortDateLabels(dates: List<LocalDate>): List<String> {
+    val formatter = rememberDateFormatter("dMMM")
+    return remember(dates, formatter) { dates.map { it.format(formatter).trimEnd('.') } }
+}
+
+/** Short month per date for chart axes, e.g. "Oct" / "Okt". */
+@Composable
+fun monthLabels(dates: List<LocalDate>): List<String> {
+    val locale = currentLocale()
+    return remember(dates, locale) {
+        dates.map { date ->
+            date.month.getDisplayName(TextStyle.SHORT, locale)
+                .trimEnd('.')
+                .replaceFirstChar { it.titlecase(locale) }
+        }
+    }
+}
+
 /** Full weekday and date with a capital first letter, e.g. "Wednesday, October 14" / "Onsdag 14 oktober". */
 @Composable
 fun longDateText(date: LocalDate): String {

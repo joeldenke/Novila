@@ -19,6 +19,33 @@
     <string name="week_nutrition_title">Kost i veckan</string>
     <string name="week_nutrition_caption">Snittpoäng · en bra dag är %1$d eller mer</string>
     <string name="week_nutrition_description">Kostpoäng de senaste sju dagarna, %1$s i snitt.</string>
+    <!-- Historik över en vecka, fyra veckor eller ett år -->
+    <string name="history_week">Vecka</string>
+    <string name="history_month">Månad</string>
+    <string name="history_year">År</string>
+    <string name="history_sleep_title_month">Sömn, senaste fyra veckorna</string>
+    <string name="history_sleep_title_year">Sömn, senaste året</string>
+    <string name="history_sleep_description_month">Sömn de senaste fyra veckorna, en punkt per vecka, %1$s per natt i snitt.</string>
+    <string name="history_sleep_description_year">Sömn de senaste tolv månaderna, en punkt per månad, %1$s per natt i snitt.</string>
+    <string name="history_nutrition_title_month">Kost, senaste fyra veckorna</string>
+    <string name="history_nutrition_title_year">Kost, senaste året</string>
+    <string name="history_nutrition_description_month">Kostpoäng de senaste fyra veckorna, en stapel per vecka, %1$s i snitt.</string>
+    <string name="history_nutrition_description_year">Kostpoäng de senaste tolv månaderna, en stapel per månad, %1$s i snitt.</string>
+    <string name="history_before_week">veckan innan</string>
+    <string name="history_before_month">de fyra veckorna innan</string>
+    <string name="history_before_year">året innan</string>
+    <string name="history_sleep_more">%1$s mer per natt än %2$s</string>
+    <string name="history_sleep_less">%1$s mindre per natt än %2$s</string>
+    <string name="history_same">Samma som %1$s</string>
+    <plurals name="history_nutrition_higher">
+        <item quantity="one">%1$d poäng högre än %2$s</item>
+        <item quantity="other">%1$d poäng högre än %2$s</item>
+    </plurals>
+    <plurals name="history_nutrition_lower">
+        <item quantity="one">%1$d poäng lägre än %2$s</item>
+        <item quantity="other">%1$d poäng lägre än %2$s</item>
+    </plurals>
+
     <string name="movement_steps">Steg</string>
     <string name="movement_open_settings">Öppna Health Connect</string>
 

@@ -7,10 +7,10 @@ Bocka av här när något blir klart, och flytta upp det som blir viktigare.
 
 | Del | Funktioner | Bedömning |
 |---|---|---|
-| Idag | Hälsning med namn, dagens balans (ringar), en ruta per del, insikter, veckans sömn och kost, mående | Snyggt, men allt slutar efter 7 dagar |
+| Idag | Hälsning med namn, dagens balans (ringar), en ruta per del, insikter, veckans sömn och kost, mående | Snyggt, men bara veckan |
 | Träning | Veckoprogram (WHO), coach med mål, dagar, fokus och hänsyn, rehab (knä, ländrygg, fas 1–3), 13 illustrerade övningar, passläge med timer, konditionspass (loggade och från Health Connect), RPE och smärta efter passet, Gemini Nano-kommentar | Appens starkaste del |
-| Sömn | Timmar i halvtimmessteg och en veckograf | Tunnast: bara en siffra |
-| Kost | Portioner per livsmedelsgrupp, vatten mot eget mål, sött, poäng 0–100, "nästa steg" | Bra och enkelt |
+| Sömn | Timmar i halvtimmessteg, och en graf över vecka, fyra veckor eller år | Tunnast: bara en siffra per natt |
+| Kost | Portioner per livsmedelsgrupp, vatten mot eget mål, sött, poäng 0–100, "nästa steg", poängen över vecka, fyra veckor eller år | Bra och enkelt |
 | Rörelse | Dagens steg och aktiva kalorier, och fem veckors träningspass, från Health Connect, i förgrunden | Steg bara för i dag |
 | Inställningar | Tema, profil, egna mål, ansvarsfriskrivning, radera data | Komplett för sin nivå |
 
@@ -23,7 +23,8 @@ mer än kommentaren, eller data som lämnar appen.
 - [x] **Introduktion vid första start:** karusell, mål, profil, Health Connect och coachen, så att planen finns från dag ett
 - [ ] **Påminnelser** (pass, logga sömn, läggdags) **(ok: `POST_NOTIFICATIONS`)**
 - [x] **Redigera tidigare dagar.** Sömn och kost går att ändra upp till 30 dagar bakåt (dagväljaren på Sömn och Kost).
-- [ ] **Historik längre än 7 dagar:** månad och år, och trender över tid
+- [x] **Historik längre än 7 dagar:** Sömn och Kost visar vecka, fyra veckor (en punkt per vecka) eller år (en per
+  månad), med snittet jämfört med perioden innan. Träningsminuter och mående över tid återstår.
 - [x] **Egna mål** för steg, sömn och vatten, med förslag utifrån ålder och vikt i profilen. Portionerna följer
   Livsmedelsverkets kostråd, som kostpoängen bygger på.
 - [ ] **Export och import** som lokal fil, utan moln **(ok)**
@@ -73,7 +74,7 @@ mer än kommentaren, eller data som lämnar appen.
 1. Introduktion vid första start ← klar
 2. Egna mål ← klar
 3. Logga konditionspass, och RPE och smärta efter passet ← klar
-4. Redigera tidigare dagar och längre historik
+4. Redigera tidigare dagar och längre historik ← klar
 5. Påminnelser **(ok)**
 6. Sömn 2.0, sedan sömn från Health Connect **(ok)**
 7. Widget på hemskärmen

@@ -24,14 +24,15 @@ fun EntryProviderScope<NavKey>.nutritionEntry(contentPadding: PaddingValues) {
         // Nothing to show until the saved days are read, a moment at app start.
         val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
         NutritionScreen(
-            day = state.week.today,
-            history = state.week.history,
+            day = state.day,
+            history = state.history,
             goals = state.goals,
             onPortions = viewModel::changePortions,
             onTreats = viewModel::changeTreats,
             contentPadding = contentPadding,
             today = state.today,
             onSelectDay = viewModel::selectDay,
+            onRange = viewModel::selectRange,
         )
     }
 }

@@ -13,6 +13,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.model.Goals
+import se.novila.model.HistoryRange
 import se.novila.ui.preview.PreviewData
 import java.time.LocalDate
 
@@ -26,7 +27,7 @@ class SleepScreenTest {
             NovilaTheme {
                 SleepScreen(
                     day = PreviewData.today,
-                    history = PreviewData.history,
+                    history = PreviewData.history(HistoryRange.Week),
                     goals = Goals(),
                     onSleep = {},
                     contentPadding = PaddingValues(),
@@ -47,7 +48,7 @@ class SleepScreenTest {
             NovilaTheme {
                 SleepScreen(
                     day = PreviewData.history.first(),
-                    history = PreviewData.history.drop(1),
+                    history = PreviewData.history(HistoryRange.Week, until = PreviewData.history.first().date),
                     goals = Goals(),
                     onSleep = {},
                     contentPadding = PaddingValues(),
@@ -57,5 +58,25 @@ class SleepScreenTest {
         }
         composeRule.onNodeWithText("Yesterday").assertExists()
         composeRule.onNodeWithText("Sleep the night before").assertExists()
+    }
+
+    @Test fun `picks a longer range and compares it with the one before`() {
+        val ranges = mutableListOf<HistoryRange>()
+        composeRule.setContent {
+            NovilaTheme {
+                SleepScreen(
+                    day = PreviewData.today,
+                    history = PreviewData.history(HistoryRange.Month),
+                    goals = Goals(),
+                    onSleep = {},
+                    contentPadding = PaddingValues(),
+                    onRange = { ranges += it },
+                )
+            }
+        }
+        composeRule.onNodeWithText("Sleep, last four weeks").assertExists()
+        composeRule.onNodeWithText("the four weeks before", substring = true).assertExists()
+        composeRule.onNodeWithText("Year").performClick()
+        assertEquals(listOf(HistoryRange.Year), ranges)
     }
 }

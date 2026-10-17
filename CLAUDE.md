@@ -34,7 +34,8 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
 - `:core:designsystem` – `se.novila.designsystem`, enda modulen som använder Material 3 direkt
   - `theme` – `NovilaTheme`: färger, typografi, former och spacing-tokens
   - `component` – `Novila*`-komponenter som wrappar Material 3
-- `:core:ui` – det flera features delar: `ScreenList`, formatering (`hoursText`, `stepsText` …), `DayPicker`, veckokorten,
+- `:core:ui` – det flera features delar: `ScreenList`, formatering (`hoursText`, `stepsText` …), `DayPicker`, historikkorten
+  (`SleepHistoryCard`, `NutritionHistoryCard`: vecka, fyra veckor eller år, jämfört med perioden innan),
   flikikonerna och `PreviewData` (samma person i alla previews)
 - `:core:navigation` – `NavigationState` (en back stack per flik, varje entry med egen sparad state och
   `ViewModelStore` via `rememberViewModelStoreNavEntryDecorator`) och `Navigator`
@@ -49,7 +50,8 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   (`HealthConnectExerciseSource`, träningspass), behörigheterna i modulens manifest (`HEALTH_PERMISSIONS`, frågas i en
   dialog via `rememberHealthPermissionRequest`) och integritetsskärmen (`HealthDataInfoActivity`)
 - Ren Kotlin, utan Android (`novila.jvm.library`, testas på sekunder):
-  - `:core:model` – `DayEntry` (`DayEntryCodec`), kost, dagens balans, insikter, `Profile`, `Goals` (egna mål för
+  - `:core:model` – `DayEntry` (`DayEntryCodec`), kost, dagens balans, insikter, `History` (dagarna över en
+    `HistoryRange` i perioder, plus lika många dagar före att jämföra med; Sömn och Kost läser den via `HealthStore`), `Profile`, `Goals` (egna mål för
     steg, sömn och vatten; balans, insikter och kostpoäng mäts mot dem) och `AppSettings` (`ThemeMode`)
   - `:core:movement` – rörelsedata oberoende av källa: `MovementSource` (källa), `MovementCache` (cache) och
     `MovementRepository` (det enda UI:t läser). Källa och cache väljs på ett ställe, i `AppGraph`.
