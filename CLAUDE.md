@@ -217,7 +217,8 @@ där pluginet `firebase@firebase` inte alltid installeras.
   Kort är vita med hårfin kant (`NovilaTheme.surfaces`).
 - **Målade scener:** introduktionens scener är målade bilder i samma nordiska stil (falröd stuga, björk, gran, sjö,
   midsommarljus), WebP i featurens `drawable-nodpi`, beskurna till 1,4:1, högst cirka 1120 px breda och helst under 200 kB. De visas bara via
-  `NovilaSceneImage`, som sköter hörn, entré, parallax och dimning i mörkt läge. Rita inte landskap i kod: det har
+  `NovilaSceneImage`, som sköter hörn, entré och parallax. I mörkt läge blir dagscener skymning (`ColorMatrix`:
+  mindre mättnad och ljus, aldrig en grå slöja) och nederkanten flyter ut i ytan; nattscenen behåller sitt ljus. Rita inte landskap i kod: det har
   provats och når inte upp till målade bilder. Nya scener tas fram i samma stil som de befintliga.
 - **Inga emojis i UI:t.** Novila ska kännas som en professionell hälsoapp: använd vektorikoner och ritade komponenter
   (t.ex. `NovilaLevelPicker` för mående), aldrig emoji-tecken.
@@ -231,6 +232,9 @@ där pluginet `firebase@firebase` inte alltid installeras.
   tema. Ritar inget förrän inställningarna är lästa, så temat aldrig blinkar.
 - **Rörelse:** lugn och engångs. Animationer spelas när innehållet visas (`NovilaReveal`, diagram som ritar in sig)
   via `NovilaMotion` i `:core:designsystem`. Inga oändliga animationer: de får skärmdumpstesterna att hänga.
+  I en pager styrs rörelsen av fingret, läst när det ritas: `Modifier.novilaPagerDepth` (block i lager som tonar
+  över), `NovilaPagerBackdrop` (delens färg tonar till nästa) och `NovilaPageIndicator(offset = …)`. Lagren och
+  indikatorn står still när sidan gör det, så previews och skärmdumpar visar slutläget.
 - **Kostpoäng:** `nutritionScore()` (0–100) viktar livsmedelsgrupper efter Livsmedelsverkets kostråd (`FoodGroup`) med
   avdrag för sött och snacks. Ändra vikterna bara medvetet: `NutritionTest` och dagens balans bygger på dem.
 - **Inga hårdkodade texter:** all text som visas eller läses upp ska komma från `strings.xml`.
