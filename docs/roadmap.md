@@ -22,7 +22,7 @@ mer än kommentaren, eller data som lämnar appen.
 ### 1. Grunder för alla användare
 - [x] **Introduktion vid första start:** karusell, mål, profil, Health Connect och coachen, så att planen finns från dag ett
 - [ ] **Påminnelser** (pass, logga sömn, läggdags) **(ok: `POST_NOTIFICATIONS`)**
-- [ ] **Redigera tidigare dagar.** I dag går bara idag att ändra.
+- [x] **Redigera tidigare dagar.** Sömn och kost går att ändra upp till 30 dagar bakåt (dagväljaren på Sömn och Kost).
 - [ ] **Historik längre än 7 dagar:** månad och år, och trender över tid
 - [x] **Egna mål** för steg, sömn och vatten, med förslag utifrån ålder och vikt i profilen. Portionerna följer
   Livsmedelsverkets kostråd, som kostpoängen bygger på.

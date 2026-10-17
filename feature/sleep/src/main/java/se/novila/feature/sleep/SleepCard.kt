@@ -13,12 +13,15 @@ import se.novila.model.MAX_SLEEP_HOURS
 import se.novila.ui.common.hoursText
 import se.novila.ui.R as UiR
 
-/** Last night's hours on a half-hour slider, and the user's sleep goal from [goals]. */
+/**
+ * The night's hours on a half-hour slider, and the user's sleep goal from [goals]. Last night when [isToday],
+ * otherwise the night before the shown day.
+ */
 @Composable
-fun SleepCard(hours: Float, goals: Goals, onChange: (Float) -> Unit) {
+fun SleepCard(hours: Float, goals: Goals, onChange: (Float) -> Unit, isToday: Boolean = true) {
     val sleep = NovilaTheme.pillars.sleep
     NovilaCard(
-        title = stringResource(R.string.sleep_title),
+        title = stringResource(if (isToday) R.string.sleep_title else R.string.sleep_title_day),
         icon = painterResource(UiR.drawable.ic_sleep),
         role = sleep,
     ) {

@@ -27,13 +27,16 @@ import se.novila.ui.common.nextPortionText
 import kotlin.math.roundToInt
 import se.novila.ui.R as UiR
 
-/** Today's nutrition score, the smartest next step and how each food group contributes. */
+/**
+ * The day's nutrition score, the smartest next step and how each food group contributes. Titled as today's when
+ * [isToday].
+ */
 @Composable
-fun NutritionScoreCard(today: DayEntry, goals: Goals) {
+fun NutritionScoreCard(today: DayEntry, goals: Goals, isToday: Boolean = true) {
     val nutrition = NovilaTheme.pillars.nutrition
     val score = today.nutritionScore(goals)
     NovilaCard(
-        title = stringResource(R.string.nutrition_score_title),
+        title = stringResource(if (isToday) R.string.nutrition_score_title else R.string.nutrition_score_title_day),
         icon = painterResource(UiR.drawable.ic_nutrition),
         role = nutrition,
     ) {
@@ -74,7 +77,10 @@ fun NutritionScoreCard(today: DayEntry, goals: Goals) {
         val penalty = score?.treatPenalty ?: 0
         if (penalty > 0) {
             NovilaText(
-                stringResource(R.string.nutrition_treat_penalty, penalty),
+                stringResource(
+                    if (isToday) R.string.nutrition_treat_penalty else R.string.nutrition_treat_penalty_day,
+                    penalty,
+                ),
                 style = NovilaTheme.typography.bodySmall,
                 color = NovilaTheme.colors.onSurfaceVariant,
             )
@@ -87,16 +93,17 @@ fun NutritionScoreCard(today: DayEntry, goals: Goals) {
     }
 }
 
-/** Steppers for each food group, water against the user's goal, and for treats. */
+/** Steppers for each food group, water against the user's goal, and for treats, for today or an earlier day. */
 @Composable
 fun FoodLogCard(
     today: DayEntry,
     goals: Goals,
     onPortions: (FoodGroup, Int) -> Unit,
     onTreats: (Int) -> Unit,
+    isToday: Boolean = true,
 ) {
     val nutrition = NovilaTheme.pillars.nutrition
-    NovilaCard(title = stringResource(R.string.food_log_title)) {
+    NovilaCard(title = stringResource(if (isToday) R.string.food_log_title else R.string.food_log_title_day)) {
         Column(verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.m)) {
             FoodGroup.entries.forEach { group ->
                 val name = foodName(group)
@@ -115,7 +122,10 @@ fun FoodLogCard(
             val treats = stringResource(R.string.food_treats)
             NovilaStepper(
                 title = treats,
-                value = stringResource(R.string.food_treats_value, today.food.treats),
+                value = stringResource(
+                    if (isToday) R.string.food_treats_value else R.string.food_treats_value_day,
+                    today.food.treats,
+                ),
                 onDecrement = { onTreats(-1) },
                 onIncrement = { onTreats(+1) },
                 decrementDescription = stringResource(R.string.food_remove, treats),

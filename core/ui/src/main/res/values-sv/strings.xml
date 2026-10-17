@@ -24,4 +24,10 @@
 
     <!-- Settings, opened from every tab -->
     <string name="settings_title">Inställningar</string>
+
+    <!-- Tillbaka till en tidigare dag -->
+    <string name="day_today">I dag</string>
+    <string name="day_yesterday">I går</string>
+    <string name="day_previous">Föregående dag</string>
+    <string name="day_next">Nästa dag</string>
 </resources>

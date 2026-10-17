@@ -23,6 +23,14 @@ fun EntryProviderScope<NavKey>.sleepEntry(contentPadding: PaddingValues) {
         }
         // Nothing to show until the saved days are read, a moment at app start.
         val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
-        SleepScreen(state.week.today, state.week.history, state.goals, viewModel::setSleep, contentPadding)
+        SleepScreen(
+            day = state.week.today,
+            history = state.week.history,
+            goals = state.goals,
+            onSleep = viewModel::setSleep,
+            contentPadding = contentPadding,
+            today = state.today,
+            onSelectDay = viewModel::selectDay,
+        )
     }
 }
