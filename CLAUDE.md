@@ -320,4 +320,7 @@ där pluginet `firebase@firebase` inte alltid installeras.
   appen ger konfigurationen.
   Nya workers skapas av en fabrik i grafen och behöver en `-keepnames`-regel i `app/proguard-rules.pro`.
 - Hälsodata stannar på enheten. Inga nätverksanrop, analysverktyg eller Firebase-SDK:er i appen utan att ägaren ber om det.
+  Appen har ingen `INTERNET`-behörighet: ML Kit drar in Googles telemetri (`datatransport`), som ber om den för att
+  skicka användningsstatistik, så den tas bort i appens manifest (`tools:node="remove"`). Lägg aldrig tillbaka den
+  utan ägarens ok; Google Health API-källan kräver den, se ovan.
 - Pinna GitHub Actions till commit-SHA med versionskommentar. Dependabot håller dem uppdaterade.
