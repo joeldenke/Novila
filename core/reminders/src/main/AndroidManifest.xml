@@ -22,5 +22,9 @@
         <service
             android:name="androidx.work.impl.foreground.SystemForegroundService"
             tools:node="remove" />
+        <!-- WorkManager's diagnostics over adb (protected by DUMP): not used, so not exported either. -->
+        <receiver
+            android:name="androidx.work.impl.diagnostics.DiagnosticsReceiver"
+            tools:node="remove" />
     </application>
 </manifest>
