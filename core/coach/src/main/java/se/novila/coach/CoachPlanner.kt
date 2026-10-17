@@ -37,10 +37,22 @@ sealed interface CoachNote {
 
     /** How much pain is fine during a rehab session, and what to do when it is more. */
     data object PainGuide : CoachNote
+
+    /**
+     * The dose follows the latest sessions: how hard they felt ([EffortCheck.effort], RPE) or that the latest one hurt
+     * ([EffortCheck.pain]).
+     */
+    data class Effort(val check: EffortCheck) : CoachNote
+
+    /** The coach's suggestion for the rehab phase, from the pain after the latest sessions. */
+    data class Rehab(val check: RehabCheck) : CoachNote
 }
 
-/** A program from the coach and the [notes] that explain it. */
-data class CoachPlan(val program: TrainingProgram, val notes: List<CoachNote>)
+/**
+ * A program from the coach and the [notes] that explain it. [suggestedPhase] is the rehab phase the coach suggests
+ * moving to, or null when the current one is right; the user decides.
+ */
+data class CoachPlan(val program: TrainingProgram, val notes: List<CoachNote>, val suggestedPhase: Int? = null)
 
 /**
  * Novila's training coach. It builds a week from the user's [CoachPreferences], their recent workouts
@@ -52,6 +64,8 @@ data class CoachPlan(val program: TrainingProgram, val notes: List<CoachNote>)
  *   time with the exercises that best train the muscles still lacking, weighted towards the focus areas,
  *   varied between the week's sessions. Exercises that don't suit the considerations are never used.
  * - Sets, repetitions and rest follow the strength level and the goal; the time estimate includes a warm-up.
+ * - The user's feedback after the latest sessions adjusts the dose, and suggests the next rehab phase
+ *   ([CoachFeedback]).
  * Plain Kotlin and deterministic: the same answers give the same program until [CoachPreferences.variation]
  * changes, so it is unit tested.
  */
@@ -73,11 +87,20 @@ object CoachPlanner {
         6 to DayOfWeek.entries.take(6),
     )
 
-    fun plan(preferences: CoachPreferences, history: List<Exercise>, today: LocalDate): CoachPlan {
+    fun plan(
+        preferences: CoachPreferences,
+        history: List<Exercise>,
+        today: LocalDate,
+        feedback: List<SessionFeedback> = emptyList(),
+    ): CoachPlan {
         val weekStart = TrainingProgramGenerator.weekStart(today)
         val recent = TrainingProgramGenerator.summarize(history, weekStart)
         val days = DAYS.getValue(preferences.daysPerWeek.coerceIn(CoachPreferences.MIN_DAYS, CoachPreferences.MAX_DAYS))
-        if (preferences.goal == CoachGoal.Rehab) return rehab(preferences, days, weekStart)
+        if (preferences.goal == CoachGoal.Rehab) {
+            val check = CoachFeedback.rehab(feedback, preferences.rehabPhase, today)
+            return rehab(preferences, days, weekStart, check)
+        }
+        val effort = CoachFeedback.effort(feedback, today)
 
         val strengthCount = strengthDays(preferences)
         val strengthDays = spreadOut(days, strengthCount)
@@ -100,7 +123,7 @@ object CoachPlanner {
         val strengthSessions = mutableListOf<PlannedSession>()
         strengthDays.forEachIndexed { index, day ->
             val previous = strengthSessions.lastOrNull()?.exercises.orEmpty().map { it.exerciseId }.toSet()
-            val exercises = session(preferences, recent.level, index, previous)
+            val exercises = session(preferences, recent.level, index, previous, effort?.advice)
             strengthSessions += PlannedSession(day, ExerciseType.Strength, sessionMinutes(exercises), exercises)
         }
         val sessions = strengthSessions +
@@ -110,7 +133,7 @@ object CoachPlanner {
 
         return CoachPlan(
             program = TrainingProgram(weekStart, weeklyCardio, sessions.sortedBy { it.day }),
-            notes = notes(preferences, recent.level, strengthCount, weeklyCardio),
+            notes = notes(preferences, recent.level, strengthCount, weeklyCardio, effort),
         )
     }
 
@@ -119,7 +142,12 @@ object CoachPlanner {
      * between. The exercises are chosen by hand per area and phase (see [REHAB]) rather than by score, so the
      * program is predictable; the considerations still leave out what doesn't suit.
      */
-    private fun rehab(preferences: CoachPreferences, days: List<DayOfWeek>, weekStart: LocalDate): CoachPlan {
+    private fun rehab(
+        preferences: CoachPreferences,
+        days: List<DayOfWeek>,
+        weekStart: LocalDate,
+        check: RehabCheck?,
+    ): CoachPlan {
         val phase = preferences.rehabPhase.coerceIn(1, CoachPreferences.MAX_REHAB_PHASE)
         val rehabDays = spreadOut(days, REHAB_DAYS)
         val walkDays = days - rehabDays.toSet()
@@ -137,11 +165,13 @@ object CoachPlanner {
                 add(CoachNote.Goal(CoachGoal.Rehab))
                 add(CoachNote.RehabPhase(preferences.rehabArea, phase))
                 add(CoachNote.PainGuide)
+                check?.let { add(CoachNote.Rehab(it)) }
                 add(CoachNote.RestBetweenStrengthDays)
                 Consideration.entries.filter {
                     it in preferences.considerations
                 }.forEach { add(CoachNote.Considered(it)) }
             },
+            suggestedPhase = check?.phase?.takeIf { it != phase },
         )
     }
 
@@ -200,6 +230,7 @@ object CoachPlanner {
         level: StrengthLevel,
         index: Int,
         previous: Set<String>,
+        effort: EffortAdvice?,
     ): List<PlannedExercise> {
         val candidates = CoachCatalog.exercises.filter {
             it.suits(preferences.considerations) && it.level <= level && ExerciseLibrary.byId(it.id) != null
@@ -230,7 +261,7 @@ object CoachPlanner {
             motion.secondary.forEach { need[it] = need.getValue(it) * SECONDARY_DONE }
         }
 
-        fun dosed(exercise: CoachExercise) = dose(exercise, level, preferences.goal, preferences.focus)
+        fun dosed(exercise: CoachExercise) = dose(exercise, level, preferences.goal, preferences.focus, effort)
 
         fun timeWith(exercise: CoachExercise) = (chosen + exercise).map(::dosed).total()
 
@@ -263,13 +294,14 @@ object CoachPlanner {
 
     /**
      * Sets, repetitions or seconds and rest from the level, adjusted for the goal. An exercise for a
-     * [focus] area gets one set more.
+     * [focus] area gets one set more. [effort] after the latest sessions takes a set away, or adds repetitions.
      */
     internal fun dose(
         exercise: CoachExercise,
         level: StrengthLevel,
         goal: CoachGoal,
         focus: Set<BodyArea> = emptySet(),
+        effort: EffortAdvice? = null,
     ): PlannedExercise {
         val primary = ExerciseLibrary.byId(exercise.id)?.primary.orEmpty()
         val focusSet = if (focus.any { area -> primary.any { it in area.muscles } }) 1 else 0
@@ -283,13 +315,15 @@ object CoachPlanner {
             CoachGoal.Endurance -> maxOf(30.seconds, level.rest - 30.seconds)
             CoachGoal.Health, CoachGoal.Mobility, CoachGoal.Rehab -> level.rest
         }
+        val fewerSets = if (effort == EffortAdvice.Easier) 1 else 0
+        val harder = effort == EffortAdvice.Harder
         return PlannedExercise(
             exerciseId = exercise.id,
-            sets = min(sets + focusSet, MAX_SETS),
+            sets = (min(sets + focusSet, MAX_SETS) - fewerSets).coerceAtLeast(1),
             amount = if (exercise.dosage == Dosage.Seconds) {
-                level.seconds + extraSeconds
+                level.seconds + extraSeconds + (if (harder) HARDER_SECONDS else 0)
             } else {
-                level.repetitions + extraReps
+                level.repetitions + extraReps + (if (harder) HARDER_REPETITIONS else 0)
             },
             dosage = exercise.dosage,
             perSide = exercise.perSide,
@@ -319,9 +353,11 @@ object CoachPlanner {
         level: StrengthLevel,
         strengthDays: Int,
         weeklyCardio: Int,
+        effort: EffortCheck?,
     ): List<CoachNote> = buildList {
         add(CoachNote.Goal(preferences.goal))
         add(CoachNote.Level(level))
+        effort?.let { add(CoachNote.Effort(it)) }
         if (strengthDays > 1) add(CoachNote.RestBetweenStrengthDays)
         if (preferences.focus.isNotEmpty()) add(CoachNote.Focus(preferences.focus))
         Consideration.entries.filter { it in preferences.considerations }.forEach { add(CoachNote.Considered(it)) }
@@ -357,6 +393,8 @@ object CoachPlanner {
         setOf(MovementPattern.Push),
         setOf(MovementPattern.Core, MovementPattern.Back),
     )
+    private const val HARDER_REPETITIONS = 2
+    private const val HARDER_SECONDS = 10
     private const val FOCUS_WEIGHT = 2.5
     private const val SECONDARY_SHARE = 0.5
     private const val PRIMARY_DONE = 0.25

@@ -7,9 +7,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import se.novila.designsystem.component.NovilaAccentButton
+import se.novila.designsystem.component.NovilaButton
 import se.novila.designsystem.component.NovilaCard
 import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
+import se.novila.exercise.ExerciseState
 import se.novila.feature.training.R
 import se.novila.movement.MovementState
 import se.novila.movement.TodayMovement
@@ -18,8 +20,8 @@ import se.novila.ui.common.stepsText
 import se.novila.ui.R as UiR
 
 /**
- * Today's steps and active calories from Health Connect, or what the user can do to see them.
- * Shows nothing on devices without Health Connect.
+ * Today's steps and active calories from Health Connect, or what the user can do to see them, and whether the
+ * program counts the workouts Health Connect recorded ([exercise]). Shows nothing on devices without Health Connect.
  */
 @Composable
 fun MovementCard(
@@ -27,6 +29,7 @@ fun MovementCard(
     onConnect: () -> Unit,
     onOpenSettings: () -> Unit,
     onInstall: () -> Unit,
+    exercise: ExerciseState = ExerciseState.Unavailable,
 ) {
     if (movement == MovementState.Unavailable) return
     val training = NovilaTheme.pillars.training
@@ -36,7 +39,10 @@ fun MovementCard(
         role = training,
     ) {
         when (movement) {
-            is MovementState.Connected -> MovementValues(movement.today)
+            is MovementState.Connected -> {
+                MovementValues(movement.today)
+                Workouts(exercise, onConnect, onOpenSettings)
+            }
 
             is MovementState.NeedsPermission -> {
                 MovementBody(stringResource(R.string.movement_connect_body))
@@ -72,6 +78,31 @@ private fun MovementValues(today: TodayMovement) {
         style = NovilaTheme.typography.bodySmall,
         color = NovilaTheme.colors.onSurfaceVariant,
     )
+}
+
+/** Access to workouts was added after steps and calories, so someone who connected before is asked for it here. */
+@Composable
+private fun Workouts(exercise: ExerciseState, onConnect: () -> Unit, onOpenSettings: () -> Unit) {
+    when (exercise) {
+        is ExerciseState.Connected -> NovilaText(
+            stringResource(R.string.movement_workouts_connected, exercise.exercises.size),
+            style = NovilaTheme.typography.bodySmall,
+            color = NovilaTheme.colors.onSurfaceVariant,
+        )
+
+        is ExerciseState.NeedsPermission -> {
+            MovementBody(stringResource(R.string.movement_workouts_body))
+            NovilaButton(
+                text = stringResource(
+                    if (exercise.denied) UiR.string.movement_open_settings else R.string.movement_workouts_connect,
+                ),
+                onClick = if (exercise.denied) onOpenSettings else onConnect,
+                role = NovilaTheme.pillars.training,
+            )
+        }
+
+        ExerciseState.Unavailable -> Unit
+    }
 }
 
 @Composable

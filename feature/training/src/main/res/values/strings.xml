@@ -143,6 +143,22 @@
     <string name="workout_save">Save the session</string>
     <string name="workout_none">No session is running. Start one from a strength day under Training.</string>
     <string name="workout_timer_description">%1$d seconds left</string>
+    <string name="workout_feedback_title">How did it go?</string>
+    <string name="workout_effort_title">How hard was the session?</string>
+    <string name="workout_pain_title">How much did it hurt?</string>
+    <string name="workout_scale_value">%1$d of 10, %2$s</string>
+    <string name="workout_not_answered">Not answered. Drag the slider.</string>
+    <string name="workout_effort_easy">easy</string>
+    <string name="workout_effort_moderate">moderate</string>
+    <string name="workout_effort_hard">hard</string>
+    <string name="workout_effort_very_hard">very hard</string>
+    <string name="workout_effort_max">close to all you have</string>
+    <string name="workout_pain_none">no pain</string>
+    <string name="workout_pain_fine">fine, if it has settled by tomorrow morning</string>
+    <string name="workout_pain_some">a bit too much</string>
+    <string name="workout_pain_too_much">too much</string>
+    <string name="workout_pain_care">That is more than training should hurt. Rest, and see a doctor or physiotherapist if the pain stays or gets worse.</string>
+    <string name="workout_feedback_hint">Both are optional. The coach eases or raises next week\'s dose from your answers, and suggests when to change rehab phase.</string>
     <string name="muscle_chest">chest</string>
     <string name="muscle_shoulders">shoulders</string>
     <string name="muscle_biceps">biceps</string>
@@ -159,10 +175,13 @@
     <string name="movement_title">Today\'s movement</string>
     <string name="movement_active_calories">Active calories</string>
     <string name="movement_source">From Health Connect. Novila only reads it and stores nothing.</string>
-    <string name="movement_connect_body">See today\'s steps and active calories from your watch or phone, via Health Connect. Novila only reads them and the data stays on your phone.</string>
+    <string name="movement_connect_body">See today\'s steps and active calories from your watch or phone, via Health Connect, and let the week\'s program count the workouts your watch recorded. Novila only reads them and the data stays on your phone.</string>
     <string name="movement_connect">Connect Health Connect</string>
     <string name="movement_denied_body">Access was declined. You can allow it for Novila in Health Connect.</string>
     <string name="movement_install_body">Health Connect needs to be installed or updated to show your steps and active calories.</string>
+    <string name="movement_workouts_connected">The program also counts %1$d workouts from Health Connect in the last five weeks.</string>
+    <string name="movement_workouts_body">Let the program count the workouts your watch or another app recorded in Health Connect.</string>
+    <string name="movement_workouts_connect">Read workouts</string>
     <string name="movement_install">Get Health Connect</string>
     <!-- Training coach -->
     <string name="coach_title">Training coach</string>
@@ -231,6 +250,17 @@
     <string name="coach_note_goal_rehab">Rehab: slow, controlled exercises three days a week with a rest day in between, and walks on the other days.</string>
     <string name="coach_note_rehab_phase">%1$s, phase %2$d of %3$d. Move on when the sessions feel easy and the pain does not increase the day after, often after a couple of weeks.</string>
     <string name="coach_note_pain">Pain up to 3 out of 10 during a session is fine if it has settled by the next morning. If it gets worse, go back a phase.</string>
+    <string name="coach_note_effort_pain">The latest session hurt %1$d of 10, so the coach takes away one set per exercise this week. See a doctor or physiotherapist if the pain stays.</string>
+    <string name="coach_note_effort_easier">The latest sessions felt %1$d of 10, close to all you have. The coach takes away one set per exercise this week, so you recover.</string>
+    <string name="coach_note_effort_same">The latest sessions felt %1$d of 10. Just right, so the dose stays.</string>
+    <string name="coach_note_effort_harder">The latest sessions felt only %1$d of 10. The coach adds two repetitions, or ten seconds, per set.</string>
+    <string name="coach_note_rehab_move_on">%1$d sessions in a row with pain at most 3 of 10. The coach suggests moving on to phase %2$d.</string>
+    <string name="coach_note_rehab_keep_going">%1$d of %2$d calm sessions in this phase. After %2$d sessions in a row with pain at most 3 of 10, the coach suggests the next phase.</string>
+    <string name="coach_note_rehab_stay">The latest session hurt %1$d of 10. Stay in this phase until the pain is at most 3 of 10 and has settled by the next morning.</string>
+    <string name="coach_note_rehab_step_back">The latest session hurt %1$d of 10, more than the program should. The coach suggests going back to phase %2$d.</string>
+    <string name="coach_note_rehab_seek_care">The latest session hurt %1$d of 10 already in the first phase. Rest for a few days and talk to a physiotherapist or your health centre before going on.</string>
+    <string name="coach_note_rehab_done">The last phase is calm: %1$d sessions in a row with pain at most 3 of 10. Keep going, or change the goal to Health for ordinary training.</string>
+    <string name="coach_rehab_change_phase">Change to phase %1$d</string>
     <string name="coach_ai_title">The coach\'s comment</string>
     <string name="coach_ai_unavailable">Gemini Nano is not available on this phone, so the coach explains the week with its own reasons above.</string>
     <string name="coach_ai_downloadable">Your phone can run Gemini Nano, Google\'s AI model that runs on the phone. Get it and the coach can explain your week in its own words. Your plan and answers never leave the phone.</string>
@@ -242,4 +272,17 @@
     <string name="coach_ai_writing">The coach is writing…</string>
     <string name="coach_ai_failed">Nothing could be written right now. Try again in a while.</string>
     <string name="coach_ai_disclaimer">Written by Gemini Nano on your phone. AI can be wrong: the program above is what counts.</string>
+
+    <!-- Cardio logged by hand -->
+    <string name="cardio_title">Cardio today</string>
+    <string name="cardio_planned">Today\'s program: %1$s, %2$d minutes. Log it when you\'re done.</string>
+    <string name="cardio_unplanned">No cardio in today\'s program. Log a walk, run, ride or swim anyway: the program counts it.</string>
+    <string name="cardio_logged">Logged today: %1$d minutes. Next week\'s program builds on it.</string>
+    <string name="cardio_recorded">Health Connect recorded %1$d minutes of cardio today, which already count. Only log what your watch missed.</string>
+    <string name="cardio_minutes">How long</string>
+    <string name="cardio_fewer_minutes">Five minutes less</string>
+    <string name="cardio_more_minutes">Five minutes more</string>
+    <string name="cardio_log">I did it</string>
+    <string name="cardio_log_more">Log another</string>
+    <string name="cardio_undo">Undo</string>
 </resources>

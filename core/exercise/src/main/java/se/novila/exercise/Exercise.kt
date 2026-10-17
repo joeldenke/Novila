@@ -27,11 +27,27 @@ data class Exercise(
     val duration: Duration,
 )
 
+/** What the app can show about recorded workouts, whatever the source is. */
+sealed interface ExerciseState {
+    /** The source isn't on this device, or not set up. The program builds on Novila's own sessions alone. */
+    data object Unavailable : ExerciseState
+
+    /**
+     * Not connected yet. [denied] after the user said no: the source then stops asking, so access
+     * can only be given in its own settings.
+     */
+    data class NeedsPermission(val denied: Boolean = false) : ExerciseState
+
+    /** Workouts that started on the asked day or later, oldest first. */
+    data class Connected(val exercises: List<Exercise>) : ExerciseState
+}
+
 /**
- * Where workouts come from (the Google Health API to begin with). Like MovementSource, implementations
- * never throw: a missing sign-in or a network problem is a failed [Result].
+ * Where workouts come from (Health Connect in the app, the Google Health API later). Like MovementSource,
+ * implementations never throw: a missing sign-in or a network problem is a failed [Result], so the repository keeps
+ * what it showed. Everything else is an [ExerciseState].
  */
 fun interface ExerciseSource {
     /** Workouts that started on [from] or later, oldest first. */
-    suspend fun read(from: LocalDate): Result<List<Exercise>>
+    suspend fun read(from: LocalDate): Result<ExerciseState>
 }

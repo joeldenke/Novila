@@ -5,6 +5,7 @@ import se.novila.coach.CoachPlan
 import se.novila.coach.CoachPreferences
 import se.novila.exercise.TrainingProgram
 import se.novila.exercise.Workout
+import se.novila.model.CardioLog
 import java.time.DayOfWeek
 
 /** What the training screens show for one day. */
@@ -14,7 +15,16 @@ data class TrainingUiState(
     val coach: CoachUiState,
     val today: DayOfWeek,
     val strengthMinutesToday: Int,
+    val cardioToday: CardioToday = CardioToday(),
 )
+
+/** Today's cardio: what the user [logged] by hand and the minutes a watch or another app recorded. */
+data class CardioToday(val logged: List<CardioLog> = emptyList(), val recordedMinutes: Int = 0) {
+    val loggedMinutes: Int get() = logged.sumOf { it.minutes }
+}
+
+/** What the user says after a strength session: effort (RPE 1–10) and pain (0–10), null until answered. */
+data class SessionFeedbackDraft(val effort: Int? = null, val pain: Int? = null)
 
 /**
  * The coach's [preferences] (the defaults before it is set up) and the [plan] they give. [active] when the
@@ -33,5 +43,12 @@ data class AssistantUiState(
     val failed: Boolean = false,
 )
 
-/** A strength session in progress, with the seconds left of a timed step (a rest or a hold). */
-data class WorkoutUiState(val workout: Workout, val secondsLeft: Int?)
+/**
+ * A strength session in progress, with the seconds left of a timed step (a rest or a hold), and once it is done what
+ * the user says about it.
+ */
+data class WorkoutUiState(
+    val workout: Workout,
+    val secondsLeft: Int?,
+    val feedback: SessionFeedbackDraft = SessionFeedbackDraft(),
+)

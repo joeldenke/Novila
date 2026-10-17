@@ -60,7 +60,7 @@
 
     <string name="onboarding_movement_eyebrow">Movement</string>
     <string name="onboarding_movement_title">Count every step</string>
-    <string name="onboarding_movement_body">Connect Health Connect, and Novila shows today\'s steps and active calories from your watch or phone. Novila only reads them, while the app is open.</string>
+    <string name="onboarding_movement_body">Connect Health Connect, and Novila shows today\'s steps and active calories from your watch or phone, and the program counts your watch\'s workouts. Novila only reads them, while the app is open.</string>
     <string name="onboarding_movement_connect">Connect Health Connect</string>
     <string name="onboarding_movement_connected">Connected. %1$s steps so far today.</string>
     <string name="onboarding_movement_denied">Access was declined. You can allow it in Health Connect whenever you like.</string>

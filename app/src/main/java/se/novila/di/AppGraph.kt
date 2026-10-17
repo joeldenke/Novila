@@ -7,6 +7,8 @@ import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 import dev.zacsweers.metrox.viewmodel.ViewModelGraph
 import se.novila.data.SettingsStore
+import se.novila.exercise.ExerciseRepository
+import se.novila.healthconnect.HealthConnectExerciseSource
 import se.novila.healthconnect.HealthConnectSource
 import se.novila.movement.InMemoryMovementCache
 import se.novila.movement.MovementRepository
@@ -34,6 +36,15 @@ interface AppGraph : ViewModelGraph {
         source = HealthConnectSource(context),
         cache = InMemoryMovementCache(),
     )
+
+    /**
+     * Workouts recorded by a watch or another app, for the training program. In memory only. Swap
+     * [HealthConnectExerciseSource] for another ExerciseSource (such as the Google Health API) here.
+     */
+    @Provides
+    @SingleIn(AppScope::class)
+    fun exerciseRepository(context: Context): ExerciseRepository =
+        ExerciseRepository(HealthConnectExerciseSource(context))
 
     /** The time, for ViewModels that count it (the workout timer). Tests can pass their own [Clock]. */
     @Provides

@@ -138,6 +138,22 @@
     <string name="workout_save">Spara passet</string>
     <string name="workout_none">Inget pass pågår. Starta ett från en styrkedag under Träning.</string>
     <string name="workout_timer_description">%1$d sekunder kvar</string>
+    <string name="workout_feedback_title">Hur gick det?</string>
+    <string name="workout_effort_title">Hur ansträngande var passet?</string>
+    <string name="workout_pain_title">Hur ont gjorde det?</string>
+    <string name="workout_scale_value">%1$d av 10, %2$s</string>
+    <string name="workout_not_answered">Inte besvarat. Dra i reglaget.</string>
+    <string name="workout_effort_easy">lätt</string>
+    <string name="workout_effort_moderate">måttligt</string>
+    <string name="workout_effort_hard">ansträngande</string>
+    <string name="workout_effort_very_hard">mycket ansträngande</string>
+    <string name="workout_effort_max">nästan allt du har</string>
+    <string name="workout_pain_none">ingen smärta</string>
+    <string name="workout_pain_fine">okej, om det har lagt sig till i morgon bitti</string>
+    <string name="workout_pain_some">lite för mycket</string>
+    <string name="workout_pain_too_much">för mycket</string>
+    <string name="workout_pain_care">Det är mer än träning ska göra ont. Vila, och sök vård om smärtan sitter i eller blir värre.</string>
+    <string name="workout_feedback_hint">Båda är frivilliga. Coachen sänker eller höjer nästa veckas dos efter dina svar, och föreslår när du kan byta rehabfas.</string>
     <string name="muscle_chest">bröst</string>
     <string name="muscle_shoulders">axlar</string>
     <string name="muscle_biceps">biceps</string>
@@ -155,10 +171,13 @@
     <string name="movement_title">Dagens rörelse</string>
     <string name="movement_active_calories">Aktiva kalorier</string>
     <string name="movement_source">Från Health Connect. Novila läser bara och sparar ingenting.</string>
-    <string name="movement_connect_body">Se dagens steg och aktiva kalorier från din klocka eller telefon via Health Connect. Novila läser dem bara och datan stannar i telefonen.</string>
+    <string name="movement_connect_body">Se dagens steg och aktiva kalorier från din klocka eller telefon via Health Connect, och låt veckans program räkna med passen klockan har registrerat. Novila läser dem bara och datan stannar i telefonen.</string>
     <string name="movement_connect">Anslut Health Connect</string>
     <string name="movement_denied_body">Åtkomst nekades. Du kan tillåta den för Novila i Health Connect.</string>
     <string name="movement_install_body">Health Connect behöver installeras eller uppdateras för att visa dina steg och aktiva kalorier.</string>
+    <string name="movement_workouts_connected">Programmet räknar även med %1$d pass från Health Connect de senaste fem veckorna.</string>
+    <string name="movement_workouts_body">Låt programmet räkna med passen som klockan eller en annan app har registrerat i Health Connect.</string>
+    <string name="movement_workouts_connect">Läs träningspass</string>
     <string name="movement_install">Hämta Health Connect</string>
     <!-- Träningscoach -->
     <string name="coach_title">Träningscoach</string>
@@ -227,6 +246,17 @@
     <string name="coach_note_goal_rehab">Rehabilitering: lugna, kontrollerade övningar tre dagar i veckan med en vilodag emellan, och promenader de andra dagarna.</string>
     <string name="coach_note_rehab_phase">%1$s, fas %2$d av %3$d. Gå vidare när passen känns lätta och smärtan inte ökar dagen efter, ofta efter ett par veckor.</string>
     <string name="coach_note_pain">Smärta upp till 3 av 10 under passet är okej om den har lagt sig till nästa morgon. Blir den värre, gå tillbaka en fas.</string>
+    <string name="coach_note_effort_pain">Senaste passet gjorde ont %1$d av 10, så coachen tar bort ett set per övning den här veckan. Sök vård om smärtan sitter i.</string>
+    <string name="coach_note_effort_easier">De senaste passen kändes %1$d av 10, nästan allt du har. Coachen tar bort ett set per övning den här veckan, så att du hinner återhämta dig.</string>
+    <string name="coach_note_effort_same">De senaste passen kändes %1$d av 10. Lagom, så dosen är densamma.</string>
+    <string name="coach_note_effort_harder">De senaste passen kändes bara %1$d av 10. Coachen lägger till två repetitioner, eller tio sekunder, per set.</string>
+    <string name="coach_note_rehab_move_on">%1$d pass i rad med smärta högst 3 av 10. Coachen föreslår att du går vidare till fas %2$d.</string>
+    <string name="coach_note_rehab_keep_going">%1$d av %2$d lugna pass i den här fasen. Efter %2$d pass i rad med smärta högst 3 av 10 föreslår coachen nästa fas.</string>
+    <string name="coach_note_rehab_stay">Senaste passet gjorde ont %1$d av 10. Stanna i den här fasen tills smärtan är högst 3 av 10 och har lagt sig till nästa morgon.</string>
+    <string name="coach_note_rehab_step_back">Senaste passet gjorde ont %1$d av 10, mer än programmet ska göra. Coachen föreslår att du går tillbaka till fas %2$d.</string>
+    <string name="coach_note_rehab_seek_care">Senaste passet gjorde ont %1$d av 10 redan i första fasen. Vila några dagar och prata med en fysioterapeut eller vårdcentralen innan du fortsätter.</string>
+    <string name="coach_note_rehab_done">Sista fasen går lugnt: %1$d pass i rad med smärta högst 3 av 10. Fortsätt så, eller byt mål till Hälsa för vanlig träning.</string>
+    <string name="coach_rehab_change_phase">Byt till fas %1$d</string>
     <string name="coach_ai_title">Coachens kommentar</string>
     <string name="coach_ai_unavailable">Gemini Nano finns inte på den här telefonen, så coachen förklarar veckan med sina egna skäl ovan.</string>
     <string name="coach_ai_downloadable">Din telefon kan köra Gemini Nano, Googles AI-modell som körs i telefonen. Hämta den så kan coachen förklara veckan med egna ord. Planen och dina svar lämnar aldrig telefonen.</string>
@@ -238,4 +268,17 @@
     <string name="coach_ai_writing">Coachen skriver…</string>
     <string name="coach_ai_failed">Det gick inte att skriva något just nu. Försök igen om en stund.</string>
     <string name="coach_ai_disclaimer">Skrivet av Gemini Nano i din telefon. AI kan ha fel: det är programmet ovan som gäller.</string>
+
+    <!-- Kondition loggad för hand -->
+    <string name="cardio_title">Kondition i dag</string>
+    <string name="cardio_planned">Dagens program: %1$s, %2$d minuter. Logga passet när du är klar.</string>
+    <string name="cardio_unplanned">Ingen kondition i dagens program. Logga en promenad, löptur, cykeltur eller simning ändå: programmet räknar med den.</string>
+    <string name="cardio_logged">Loggat i dag: %1$d minuter. Nästa veckas program bygger på det.</string>
+    <string name="cardio_recorded">Health Connect har registrerat %1$d minuter kondition i dag, som redan räknas. Logga bara det klockan missade.</string>
+    <string name="cardio_minutes">Hur länge</string>
+    <string name="cardio_fewer_minutes">Fem minuter mindre</string>
+    <string name="cardio_more_minutes">Fem minuter mer</string>
+    <string name="cardio_log">Jag gjorde det</string>
+    <string name="cardio_log_more">Logga ett till</string>
+    <string name="cardio_undo">Ångra</string>
 </resources>

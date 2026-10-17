@@ -3,17 +3,24 @@ package se.novila.healthconnect
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.ActiveCaloriesBurnedRecord
+import androidx.health.connect.client.records.ExerciseSessionRecord
 import androidx.health.connect.client.records.StepsRecord
 import se.novila.movement.MovementState
 
-/**
- * The only Health Connect permissions the app asks for: read today's steps and active calories.
- * Must match the `uses-permission` entries in AndroidManifest.xml (HealthConnectManifestTest).
- */
+/** Read today's steps and active calories, for the movement cards. */
 val MOVEMENT_PERMISSIONS: Set<String> = setOf(
     HealthPermission.getReadPermission(StepsRecord::class),
     HealthPermission.getReadPermission(ActiveCaloriesBurnedRecord::class),
 )
+
+/** Read the last five weeks' workouts, the history the training program builds on. */
+val EXERCISE_PERMISSION: String = HealthPermission.getReadPermission(ExerciseSessionRecord::class)
+
+/**
+ * The only Health Connect permissions the app asks for, all in one dialog. Must match the `uses-permission` entries
+ * in AndroidManifest.xml (HealthConnectManifestTest).
+ */
+val HEALTH_PERMISSIONS: Set<String> = MOVEMENT_PERMISSIONS + EXERCISE_PERMISSION
 
 /**
  * The state to show without reading any data, or null when there is something to read.

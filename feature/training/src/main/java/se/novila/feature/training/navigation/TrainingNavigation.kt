@@ -25,7 +25,7 @@ import se.novila.feature.training.WorkoutScreen
 import se.novila.feature.training.WorkoutViewModel
 import se.novila.feature.training.moveName
 import se.novila.healthconnect.HealthConnectSource
-import se.novila.healthconnect.rememberMovementPermissionRequest
+import se.novila.healthconnect.rememberHealthPermissionRequest
 import se.novila.navigation.Navigator
 import java.time.DayOfWeek
 
@@ -63,8 +63,9 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
         // Nothing to show until the saved days and answers are read, a moment at app start.
         val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
         val movement by viewModel.movement.collectAsStateWithLifecycle()
+        val exercise by viewModel.exercise.collectAsStateWithLifecycle()
         val context = LocalContext.current
-        val connectHealth = rememberMovementPermissionRequest(viewModel::onMovementPermissionsResult)
+        val connectHealth = rememberHealthPermissionRequest(viewModel::onHealthPermissionsResult)
         TrainingScreen(
             movement = movement,
             program = state.program,
@@ -78,6 +79,10 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
             onOpenCoach = { navigator.navigate(CoachRoute) },
             contentPadding = contentPadding,
             strengthMinutesToday = state.strengthMinutesToday,
+            cardioToday = state.cardioToday,
+            exercise = exercise,
+            onLogCardio = viewModel::logCardio,
+            onUndoCardio = viewModel::undoCardio,
         )
     }
     entry<CoachRoute> {
@@ -113,6 +118,8 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
         WorkoutScreen(
             state = state,
             onNext = viewModel::next,
+            onEffort = viewModel::setEffort,
+            onPain = viewModel::setPain,
             onFinish = {
                 viewModel.finish()
                 navigator.goBack()

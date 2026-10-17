@@ -5,6 +5,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import se.novila.exercise.Exercise
+import se.novila.exercise.ExerciseState
 import se.novila.exercise.ExerciseType
 import java.net.URLDecoder
 import java.time.LocalDate
@@ -68,7 +69,7 @@ class GoogleHealthExerciseSourceTest {
     @Test fun `reads all pages into workouts on their local day`() = runBlocking {
         val transport = FakeTransport(mapOf(null to firstPage, "page 2" to secondPage))
         val source = GoogleHealthExerciseSource({ "token" }, transport, { stockholm })
-        val exercises = source.read(from).getOrThrow()
+        val exercises = (source.read(from).getOrThrow() as ExerciseState.Connected).exercises
         assertEquals(
             listOf(
                 // 22:30 UTC is past midnight in Stockholm, so the run counts on the 14th.

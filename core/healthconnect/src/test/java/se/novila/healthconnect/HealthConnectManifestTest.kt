@@ -29,7 +29,7 @@ class HealthConnectManifestTest {
         val declared = elements("uses-permission").map { it.android("name") }
             .filter { it.startsWith("android.permission.health.") }
             .toSet()
-        assertEquals(MOVEMENT_PERMISSIONS, declared)
+        assertEquals(HEALTH_PERMISSIONS, declared)
     }
 
     @Test fun `no writing, background or history access`() {

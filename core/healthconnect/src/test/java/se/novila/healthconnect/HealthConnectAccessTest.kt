@@ -1,11 +1,13 @@
 package se.novila.healthconnect
 
 import androidx.health.connect.client.HealthConnectClient
+import androidx.health.connect.client.records.ExerciseSessionRecord
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import se.novila.exercise.ExerciseType
 import se.novila.movement.MovementState
 
 // Robolectric, because the Health Connect record classes may touch Android APIs when loaded.
@@ -14,8 +16,31 @@ class HealthConnectAccessTest {
     private val steps = "android.permission.health.READ_STEPS"
     private val calories = "android.permission.health.READ_ACTIVE_CALORIES_BURNED"
 
-    @Test fun `asks only for today's steps and active calories`() {
+    private val exercise = "android.permission.health.READ_EXERCISE"
+
+    @Test fun `asks only for steps, active calories and workouts`() {
         assertEquals(setOf(steps, calories), MOVEMENT_PERMISSIONS)
+        assertEquals(setOf(steps, calories, exercise), HEALTH_PERMISSIONS)
+    }
+
+    @Test fun `access to workouts alone doesn't connect movement`() {
+        assertEquals(
+            MovementState.NeedsPermission(),
+            accessState(HealthConnectClient.SDK_AVAILABLE, setOf(exercise)),
+        )
+    }
+
+    @Test fun `Health Connect's workout types map to Novila's`() {
+        mapOf(
+            ExerciseSessionRecord.EXERCISE_TYPE_WALKING to ExerciseType.Walking,
+            ExerciseSessionRecord.EXERCISE_TYPE_HIKING to ExerciseType.Walking,
+            ExerciseSessionRecord.EXERCISE_TYPE_RUNNING_TREADMILL to ExerciseType.Running,
+            ExerciseSessionRecord.EXERCISE_TYPE_BIKING_STATIONARY to ExerciseType.Cycling,
+            ExerciseSessionRecord.EXERCISE_TYPE_SWIMMING_OPEN_WATER to ExerciseType.Swimming,
+            ExerciseSessionRecord.EXERCISE_TYPE_WEIGHTLIFTING to ExerciseType.Strength,
+            ExerciseSessionRecord.EXERCISE_TYPE_YOGA to ExerciseType.Mobility,
+            ExerciseSessionRecord.EXERCISE_TYPE_TENNIS to ExerciseType.Other,
+        ).forEach { (type, expected) -> assertEquals(type.toString(), expected, exerciseType(type)) }
     }
 
     @Test fun `no Health Connect hides movement`() {

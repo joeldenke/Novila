@@ -7,11 +7,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import se.novila.coach.BodyArea
+import se.novila.coach.CoachFeedback
 import se.novila.coach.CoachGoal
 import se.novila.coach.CoachNote
 import se.novila.coach.CoachPreferences
 import se.novila.coach.Consideration
+import se.novila.coach.EffortAdvice
+import se.novila.coach.EffortCheck
+import se.novila.coach.RehabAdvice
 import se.novila.coach.RehabArea
+import se.novila.coach.RehabCheck
 import se.novila.designsystem.component.NovilaButton
 import se.novila.designsystem.component.NovilaCard
 import se.novila.designsystem.component.NovilaText
@@ -99,6 +104,44 @@ fun coachNoteText(note: CoachNote): String = when (note) {
     )
 
     CoachNote.PainGuide -> stringResource(R.string.coach_note_pain)
+
+    is CoachNote.Effort -> effortNoteText(note.check)
+
+    is CoachNote.Rehab -> rehabNoteText(note.check)
+}
+
+@Composable
+private fun effortNoteText(check: EffortCheck): String {
+    val pain = check.pain
+    val effort = check.effort ?: 0
+    return when {
+        pain != null -> stringResource(R.string.coach_note_effort_pain, pain)
+        check.advice == EffortAdvice.Easier -> stringResource(R.string.coach_note_effort_easier, effort)
+        check.advice == EffortAdvice.Harder -> stringResource(R.string.coach_note_effort_harder, effort)
+        else -> stringResource(R.string.coach_note_effort_same, effort)
+    }
+}
+
+@Composable
+private fun rehabNoteText(check: RehabCheck): String {
+    val pain = check.pain ?: 0
+    return when (check.advice) {
+        RehabAdvice.MoveOn -> stringResource(R.string.coach_note_rehab_move_on, check.calmSessions, check.phase)
+
+        RehabAdvice.KeepGoing -> stringResource(
+            R.string.coach_note_rehab_keep_going,
+            check.calmSessions,
+            CoachFeedback.CALM_SESSIONS,
+        )
+
+        RehabAdvice.Stay -> stringResource(R.string.coach_note_rehab_stay, pain)
+
+        RehabAdvice.StepBack -> stringResource(R.string.coach_note_rehab_step_back, pain, check.phase)
+
+        RehabAdvice.SeekCare -> stringResource(R.string.coach_note_rehab_seek_care, pain)
+
+        RehabAdvice.Done -> stringResource(R.string.coach_note_rehab_done, check.calmSessions)
+    }
 }
 
 @get:StringRes

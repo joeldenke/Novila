@@ -9,7 +9,7 @@ CI är därför den enda sanningen om att något bygger och fungerar.
 - Jetpack Compose med eget designsystem ovanpå Material 3 1.5 (beta), compileSdk/targetSdk 37, minSdk 26
 - Navigation 3 (`androidx.navigation3`) med en back stack per flik: Idag, Träning, Sömn, Kost
 - Alla versioner i `gradle/libs.versions.toml`. Hårdkoda aldrig versioner i byggfiler.
-- Data lokalt i Preferences DataStore via `HealthStore`, kodat av `DayEntryCodec` (versionerat format, v3 sedan passläget)
+- Data lokalt i Preferences DataStore via `HealthStore`, kodat av `DayEntryCodec` (versionerat format, v4 sedan konditionsloggning och svar efter passet)
 - DI med [Metro](https://zacsweers.github.io/metro/) (`dev.zacsweers.metro`, Kotlin-kompilatorplugin, ingen KSP).
   Varje skärm har en egen ViewModel (`StateFlow`) i sin feature, skapad av Metro och scopad till sin Navigation 3-entry.
   Ingen delad ViewModel. Skärmarna i `feature/*` är tillståndslösa.
@@ -43,8 +43,9 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   `CoachLanguageModel`). `PreferencesStore` flyttar gamla SharedPreferences hit vid första läsningen, håller datan i
   minnet och köar sparningar i storens egen scope (i ordning, klara även när ViewModeln rensas). Tills första läsningen
   är klar är ViewModelns state `null` och entryn ritar inget. Använd aldrig SharedPreferences för ny data.
-- `:core:healthconnect` – Health Connect som `MovementSource`, behörigheterna i modulens manifest och integritetsskärmen
-  (`HealthDataInfoActivity`)
+- `:core:healthconnect` – Health Connect som `MovementSource` (dagens steg och kalorier) och `ExerciseSource`
+  (`HealthConnectExerciseSource`, träningspass), behörigheterna i modulens manifest (`HEALTH_PERMISSIONS`, frågas i en
+  dialog via `rememberHealthPermissionRequest`) och integritetsskärmen (`HealthDataInfoActivity`)
 - Ren Kotlin, utan Android (`novila.jvm.library`, testas på sekunder):
   - `:core:model` – `DayEntry` (`DayEntryCodec`), kost, dagens balans, insikter, `Profile`, `Goals` (egna mål för
     steg, sömn och vatten; balans, insikter och kostpoäng mäts mot dem) och `AppSettings` (`ThemeMode`)
@@ -53,12 +54,18 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   - `:core:exercise` – träningspass oberoende av källa: `Exercise`, `ExerciseSource` och `TrainingProgramGenerator`, som
     bygger veckans program (WHO:s råd: 150–300 min kondition och styrka två dagar, högst +10 % kondition per vecka).
     `StrengthSessions` fyller styrkedagarna med övningar, set, repetitioner och vila efter nivå. `Workout` är passläget
-    (set, vila och nedräkning). Timern körs i `WorkoutViewModel`. Avklarade pass sparas som `strengthMinutes` per dag
-    och blir generatorns historik.
+    (set, vila och nedräkning). Timern körs i `WorkoutViewModel`. Avklarade pass sparas som `strengthMinutes` per dag,
+    med ansträngning (RPE 1–10), smärta (0–10) och rehabfas om användaren svarar. Konditionspass loggas för hand
+    ("Jag gjorde det", `DayEntry.cardio`). `ExerciseRepository` håller passen från en källa (Health Connect) i minnet, och
+    `TrainingHistory` slår ihop dem med appens egna (per dag och slag räknas den sida som har mest tid, så samma
+    promenad räknas en gång). Det blir generatorns historik.
   - `:core:coach` – träningscoachen, helt på enheten: `CoachPreferences` (mål, dagar, tid per pass, fokus, hänsyn,
     rehabområde och fas), `CoachCatalog` (rörelsemönster, dosering och belastning per övning) och `CoachPlanner`, som
     bygger veckans program ur svaren, senaste passen och övningsbiblioteket och förklarar valen (`CoachNote`). Målet
-    `Rehab` ger ett handvalt, fasindelat program (knä eller ländrygg, fas 1–3) med smärtgräns och vårdråd. Svaren
+    `Rehab` ger ett handvalt, fasindelat program (knä eller ländrygg, fas 1–3) med smärtgräns och vårdråd.
+    `CoachFeedback` läser svaren efter passen: ansträngning och smärta ändrar dosen (ett set mindre eller två
+    repetitioner mer), och smärtan i rehabpassen ger ett förslag på fas (smärtmonitoreringsmodellen: högst 3 av 10 är
+    okej, över 5 är för mycket). Coachen föreslår bara en ny fas; användaren byter. Svaren
     sparas i `CoachStore`; är coachen inte inställd gäller `TrainingProgramGenerator`. Planen är alltid deterministisk
     och testad. Gemini Nano (`GeminiNanoCoachModel`, ML Kit Prompt API via AICore) skriver bara en kommentar om den
     färdiga planen (`CoachPrompt` bygger prompten och tvättar svaret), aldrig själva planen. Se *Gemini Nano* under Regler.
@@ -266,11 +273,14 @@ där pluginet `firebase@firebase` inte alltid installeras.
   Byts nyckeln kan testare inte uppdatera.
 - Nya beroenden: lägg dem i versionskatalogen och motivera dem i PR-beskrivningen.
 - **Health Connect:** appen läser bara dagens steg och aktiva kalorier (`READ_STEPS`,
-  `READ_ACTIVE_CALORIES_BURNED`), i förgrunden. Inget skrivs, ingen historik eller bakgrundsläsning, och cachen ligger
-  bara i minnet (`InMemoryMovementCache`). En cache på disk ändrar vad integritetsskärmen och Play-deklarationen
-  ska säga, så den kräver ägarens ok. Ny källa: implementera `MovementSource` och byt den i `AppGraph`.
+  `READ_ACTIVE_CALORIES_BURNED`) och de senaste fem veckornas träningspass (`READ_EXERCISE`: typ, dag och längd, för
+  träningsprogrammet), i förgrunden. Inget skrivs, ingen bakgrundsläsning och ingen `READ_HEALTH_DATA_HISTORY`
+  (Health Connect ger 30 dagar före första godkännandet, det räcker). Cachen ligger bara i minnet
+  (`InMemoryMovementCache`, `ExerciseRepository`); passen från Health Connect sparas aldrig i `HealthStore`. En cache
+  på disk ändrar vad integritetsskärmen och Play-deklarationen ska säga, så den kräver ägarens ok. Ny källa:
+  implementera `MovementSource` eller `ExerciseSource` och byt den i `AppGraph`.
   Varje datatyp måste motiveras i Play Consoles *Health apps declaration*, så lägg inte till typer eller
-  behörigheter utan att ägaren ber om det. `HealthConnectManifestTest` håller manifestet och `MOVEMENT_PERMISSIONS`
+  behörigheter utan att ägaren ber om det. `HealthConnectManifestTest` håller manifestet och `HEALTH_PERMISSIONS`
   i synk. `HealthDataInfoActivity` (integritetsskärmen Health Connect länkar till) är obligatorisk och ska
   beskriva exakt vad appen läser; ändras läsningen ändras texten.
 - **Google Health API:** `GoogleHealthExerciseSource` läser bara träningspass (scope

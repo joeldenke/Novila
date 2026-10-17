@@ -66,7 +66,7 @@ private fun SessionRow(session: PlannedSession, isToday: Boolean) {
     }
 }
 
-private val ExerciseType.label: Int
+internal val ExerciseType.label: Int
     get() = when (this) {
         ExerciseType.Walking -> R.string.exercise_walking
         ExerciseType.Running -> R.string.exercise_running

@@ -5,6 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import se.novila.exercise.Exercise
 import se.novila.exercise.ExerciseSource
+import se.novila.exercise.ExerciseState
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URI
@@ -40,7 +41,7 @@ class GoogleHealthExerciseSource(
     private val transport: GoogleHealthTransport = HttpTransport,
     private val zone: () -> ZoneId = ZoneId::systemDefault,
 ) : ExerciseSource {
-    override suspend fun read(from: LocalDate): Result<List<Exercise>> = runCatching {
+    override suspend fun read(from: LocalDate): Result<ExerciseState> = runCatching {
         val token = tokens.accessToken() ?: throw GoogleHealthAuthException("Not signed in to Google")
         val timeZone = zone()
         val exercises = mutableListOf<Exercise>()
@@ -51,7 +52,7 @@ class GoogleHealthExerciseSource(
             exercises += GoogleHealthJson.exercises(page, timeZone)
             pageToken = page.nextPageToken?.takeIf { it.isNotEmpty() }
         } while (pageToken != null && ++pages < MAX_PAGES)
-        exercises.filter { it.date >= from }.sortedBy { it.date }
+        ExerciseState.Connected(exercises.filter { it.date >= from }.sortedBy { it.date })
     }.onFailure { if (it is CancellationException) throw it }
 
     companion object {

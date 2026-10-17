@@ -8,12 +8,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
-      Read-only, today's steps and active calories. Nothing is written, nothing is read in the background and no
-      history beyond today is requested. Each type here must be justified in Play Console's Health apps declaration,
-      so keep the list short.
+      Read-only: today's steps and active calories, and the last five weeks' workouts for the training program.
+      Nothing is written, nothing is read in the background and READ_HEALTH_DATA_HISTORY is not requested (Health
+      Connect gives 30 days before the first grant, enough for the program). Each type here must be justified in
+      Play Console's Health apps declaration, so keep the list short.
     -->
     <uses-permission android:name="android.permission.health.READ_STEPS" />
     <uses-permission android:name="android.permission.health.READ_ACTIVE_CALORIES_BURNED" />
+    <uses-permission android:name="android.permission.health.READ_EXERCISE" />
 
     <!-- Lets the app see the Health Connect app on Android 13 and lower (package visibility). -->
     <queries>

@@ -30,7 +30,7 @@ import se.novila.feature.settings.SettingsScreen
 import se.novila.feature.settings.SettingsViewModel
 import se.novila.healthconnect.HealthConnectSource
 import se.novila.healthconnect.HealthDataInfoScreen
-import se.novila.healthconnect.rememberMovementPermissionRequest
+import se.novila.healthconnect.rememberHealthPermissionRequest
 import se.novila.navigation.Navigator
 import se.novila.healthconnect.R as HealthConnectR
 import se.novila.ui.R as UiR
@@ -69,7 +69,7 @@ fun EntryProviderScope<NavKey>.settingsEntries(navigator: Navigator, contentPadd
         val goals = viewModel.goals.collectAsStateWithLifecycle().value ?: return@entry
         val movement by viewModel.movement.collectAsStateWithLifecycle()
         val context = LocalContext.current
-        val connectHealth = rememberMovementPermissionRequest(viewModel::onMovementPermissionsResult)
+        val connectHealth = rememberHealthPermissionRequest(viewModel::onMovementPermissionsResult)
         SettingsScreen(
             settings = settings,
             profile = profile,

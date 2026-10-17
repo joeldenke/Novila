@@ -18,8 +18,8 @@
 
     <!-- Health Connect -->
     <string name="settings_health_connect">Health Connect</string>
-    <string name="settings_health_connected">Connected. Novila reads today\'s steps and active calories while the app is open.</string>
-    <string name="settings_health_not_connected">Not connected. Connect to see today\'s steps and active calories from your watch or phone.</string>
+    <string name="settings_health_connected">Connected. Novila reads today\'s steps and active calories, and the last five weeks\' workouts, while the app is open.</string>
+    <string name="settings_health_not_connected">Not connected. Connect to see today\'s steps and active calories and count your watch\'s workouts in the program.</string>
     <string name="settings_health_denied">Access was declined. You can allow it for Novila in Health Connect.</string>
     <string name="settings_health_needs_install">Health Connect needs to be installed or updated before Novila can read your steps.</string>
     <string name="settings_health_unavailable">Health Connect is not available on this phone.</string>

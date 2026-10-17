@@ -14,7 +14,8 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 KOTLIN_VERSION="$(sed -n 's/^kotlin = "\(.*\)"/\1/p' "$ROOT/gradle/libs.versions.toml")"
 JUNIT_VERSION="$(sed -n 's/^junit = "\(.*\)"/\1/p' "$ROOT/gradle/libs.versions.toml")"
-CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/novila-anatomy/$KOTLIN_VERSION"
+COROUTINES_VERSION="$(sed -n 's/^kotlinxCoroutines = "\(.*\)"/\1/p' "$ROOT/gradle/libs.versions.toml")"
+CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/novila-anatomy/$KOTLIN_VERSION-$COROUTINES_VERSION"
 LIB="$CACHE/lib"
 OUT="$CACHE/classes"
 
@@ -27,9 +28,10 @@ fetch() {
 <dependencies>
 <dependency><groupId>org.jetbrains.kotlin</groupId><artifactId>kotlin-compiler-embeddable</artifactId><version>$KOTLIN_VERSION</version></dependency>
 <dependency><groupId>junit</groupId><artifactId>junit</artifactId><version>$JUNIT_VERSION</version></dependency>
+<dependency><groupId>org.jetbrains.kotlinx</groupId><artifactId>kotlinx-coroutines-core-jvm</artifactId><version>$COROUTINES_VERSION</version></dependency>
 </dependencies></project>
 POM
-  echo "Downloading Kotlin $KOTLIN_VERSION and JUnit $JUNIT_VERSION from Maven Central..." >&2
+  echo "Downloading Kotlin $KOTLIN_VERSION, coroutines and JUnit $JUNIT_VERSION from Maven Central..." >&2
   (cd "$CACHE" && mvn -q dependency:copy-dependencies -DoutputDirectory="$LIB")
 }
 
@@ -45,10 +47,13 @@ compile() {
   local compiler
   compiler="$(find "$LIB" -name '*.jar' | tr '\n' ':')"
   java -cp "$compiler" org.jetbrains.kotlin.cli.jvm.K2JVMCompiler -no-stdlib -nowarn \
-    -cp "$LIB/kotlin-stdlib-$KOTLIN_VERSION.jar:$LIB/junit-$JUNIT_VERSION.jar" -d "$OUT" "$@"
+    -cp "$(libraries)" -d "$OUT" "$@"
 }
 
-classpath() { echo "$OUT:$LIB/kotlin-stdlib-$KOTLIN_VERSION.jar:$LIB/junit-$JUNIT_VERSION.jar:$(find "$LIB" -name 'hamcrest*.jar')"; }
+# The ExerciseRepository's StateFlow needs coroutines; the compiler jars stay off the classpath.
+libraries() { echo "$LIB/kotlin-stdlib-$KOTLIN_VERSION.jar:$LIB/junit-$JUNIT_VERSION.jar:$LIB/kotlinx-coroutines-core-jvm-$COROUTINES_VERSION.jar"; }
+
+classpath() { echo "$OUT:$(libraries):$(find "$LIB" -name 'hamcrest*.jar')"; }
 
 command="${1:-test}"
 shift || true
@@ -59,6 +64,9 @@ case "$command" in
       "$ROOT/core/exercise/src/test/java/se/novila/exercise/StrengthSessionsTest.kt"
       "$ROOT/core/exercise/src/test/java/se/novila/exercise/TrainingProgramGeneratorTest.kt"
       "$ROOT/core/exercise/src/test/java/se/novila/exercise/WorkoutTest.kt"
+      "$ROOT/core/exercise/src/test/java/se/novila/exercise/ExerciseRepositoryTest.kt"
+      "$ROOT/core/exercise/src/test/java/se/novila/exercise/TrainingHistoryTest.kt"
+      "$ROOT/core/coach/src/test/java/se/novila/coach/CoachFeedbackTest.kt"
       "$ROOT/core/coach/src/test/java/se/novila/coach/CoachPlannerTest.kt"
       "$ROOT/core/coach/src/test/java/se/novila/coach/CoachPreferencesTest.kt"
       "$ROOT/core/coach/src/test/java/se/novila/coach/CoachPromptTest.kt"
@@ -67,7 +75,8 @@ case "$command" in
     compile $(sources) "${tests[@]}"
     java -cp "$(classpath)" org.junit.runner.JUnitCore \
       se.novila.anatomy.AnatomyTest se.novila.exercise.StrengthSessionsTest se.novila.exercise.TrainingProgramGeneratorTest \
-      se.novila.exercise.WorkoutTest se.novila.coach.CoachPlannerTest se.novila.coach.CoachPreferencesTest \
+      se.novila.exercise.WorkoutTest se.novila.exercise.ExerciseRepositoryTest se.novila.exercise.TrainingHistoryTest \
+      se.novila.coach.CoachPlannerTest se.novila.coach.CoachFeedbackTest se.novila.coach.CoachPreferencesTest \
       se.novila.coach.CoachPromptTest
     ;;
   render)

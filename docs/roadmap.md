@@ -8,10 +8,10 @@ Bocka av här när något blir klart, och flytta upp det som blir viktigare.
 | Del | Funktioner | Bedömning |
 |---|---|---|
 | Idag | Hälsning med namn, dagens balans (ringar), en ruta per del, insikter, veckans sömn och kost, mående | Snyggt, men allt slutar efter 7 dagar |
-| Träning | Veckoprogram (WHO), coach med mål, dagar, fokus och hänsyn, rehab (knä, ländrygg, fas 1–3), 13 illustrerade övningar, passläge med timer, Gemini Nano-kommentar | Appens starkaste del |
+| Träning | Veckoprogram (WHO), coach med mål, dagar, fokus och hänsyn, rehab (knä, ländrygg, fas 1–3), 13 illustrerade övningar, passläge med timer, konditionspass (loggade och från Health Connect), RPE och smärta efter passet, Gemini Nano-kommentar | Appens starkaste del |
 | Sömn | Timmar i halvtimmessteg och en veckograf | Tunnast: bara en siffra |
 | Kost | Portioner per livsmedelsgrupp, vatten mot eget mål, sött, poäng 0–100, "nästa steg" | Bra och enkelt |
-| Rörelse | Dagens steg och aktiva kalorier från Health Connect, i förgrunden | Bara dagens värden |
+| Rörelse | Dagens steg och aktiva kalorier, och fem veckors träningspass, från Health Connect, i förgrunden | Steg bara för i dag |
 | Inställningar | Tema, profil, egna mål, ansvarsfriskrivning, radera data | Komplett för sin nivå |
 
 ## Det som saknas
@@ -29,8 +29,8 @@ mer än kommentaren, eller data som lämnar appen.
 - [ ] **Export och import** som lokal fil, utan moln **(ok)**
 
 ### 2. Träning
-- [ ] **Logga konditionspass** ("Jag gjorde det"), och läs dem från Health Connect (`ExerciseSessionRecord`) **(ok)**
-- [ ] **Ansträngning (RPE) och smärta (0–10) efter passet**, så att coachen själv föreslår dos och rehabfas
+- [x] **Logga konditionspass** ("Jag gjorde det"), och läs dem från Health Connect (`ExerciseSessionRecord`) **(ok)**
+- [x] **Ansträngning (RPE) och smärta (0–10) efter passet**, så att coachen själv föreslår dos och rehabfas
 - [ ] **Progression per övning:** spara set och reps, och höj stegvis
 - [ ] **Fler övningar och redskap:** varianter, hantlar, gummiband, gym
 - [ ] **Fler rehabområden:** axel, nacke, höft
@@ -72,7 +72,7 @@ mer än kommentaren, eller data som lämnar appen.
 
 1. Introduktion vid första start ← klar
 2. Egna mål ← klar
-3. Logga konditionspass, och RPE och smärta efter passet
+3. Logga konditionspass, och RPE och smärta efter passet ← klar
 4. Redigera tidigare dagar och längre historik
 5. Påminnelser **(ok)**
 6. Sömn 2.0, sedan sömn från Health Connect **(ok)**

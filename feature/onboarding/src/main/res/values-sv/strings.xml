@@ -60,7 +60,7 @@
 
     <string name="onboarding_movement_eyebrow">Rörelse</string>
     <string name="onboarding_movement_title">Varje steg räknas</string>
-    <string name="onboarding_movement_body">Koppla Health Connect, så visar Novila dagens steg och aktiva kalorier från din klocka eller telefon. Novila läser dem bara, medan appen är öppen.</string>
+    <string name="onboarding_movement_body">Koppla Health Connect, så visar Novila dagens steg och aktiva kalorier från din klocka eller telefon, och programmet räknar med klockans träningspass. Novila läser dem bara, medan appen är öppen.</string>
     <string name="onboarding_movement_connect">Koppla Health Connect</string>
     <string name="onboarding_movement_connected">Kopplat. %1$s steg hittills i dag.</string>
     <string name="onboarding_movement_denied">Åtkomsten nekades. Du kan tillåta den i Health Connect när du vill.</string>
