@@ -36,16 +36,17 @@ import se.novila.designsystem.component.NovilaCard
 import se.novila.designsystem.component.NovilaChoiceCard
 import se.novila.designsystem.component.NovilaHeroBanner
 import se.novila.designsystem.component.NovilaIcon
-import se.novila.designsystem.component.NovilaIllustration
 import se.novila.designsystem.component.NovilaInsight
 import se.novila.designsystem.component.NovilaPageIndicator
+import se.novila.designsystem.component.NovilaPagerBackdrop
 import se.novila.designsystem.component.NovilaReveal
 import se.novila.designsystem.component.NovilaScaffold
-import se.novila.designsystem.component.NovilaScene
+import se.novila.designsystem.component.NovilaSceneImage
 import se.novila.designsystem.component.NovilaStepper
 import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.component.NovilaTextButton
 import se.novila.designsystem.component.NovilaTextField
+import se.novila.designsystem.component.novilaPagerDepth
 import se.novila.designsystem.theme.NovilaColorRole
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.onboarding.R
@@ -70,10 +71,12 @@ data class OnboardingActions(
 )
 
 /**
- * The intro at first start: a carousel through the app's parts, each with its own drawn scene that comes alive and
- * moves in layers as the user swipes, then the user's name, goal and time, Health Connect, and a summary of the
- * first week. Swipe or use the buttons; system back goes to the previous page. "Skip" jumps past the tour to the
- * questions, and every question has a ready answer, so the user can get started in two taps.
+ * The intro at first start: a carousel through the app's parts, each with its own painted Nordic scene, then the
+ * user's name, goal and time, Health Connect, and a summary of the first week. Swiping has depth: the scene lags
+ * behind its page and steps back, the text and cards travel past it in layers and cross-fade with the next page, the
+ * light behind shifts to the next part's color, and the page indicator follows the finger. Swipe or use the buttons;
+ * system back goes to the previous page. "Skip" jumps past the tour to the questions, and every question has a ready
+ * answer, so the user can get started in two taps.
  */
 @Composable
 fun OnboardingScreen(
@@ -100,20 +103,28 @@ fun OnboardingScreen(
                 onNext = {
                     if (current == OnboardingPage.Ready) actions.onFinish() else goTo(pages[current.ordinal + 1])
                 },
+                offset = { pager.currentPageOffsetFraction },
             )
         },
     ) { padding ->
-        HorizontalPager(state = pager, modifier = Modifier.fillMaxSize()) { index ->
-            // How far this page is from the middle, for the scenes' parallax. Read while drawing.
-            val parallax = { index - pager.currentPage - pager.currentPageOffsetFraction }
-            when (pages[index]) {
-                OnboardingPage.Welcome -> WelcomePage(parallax, padding)
-                OnboardingPage.Training -> TourPage(Tour.Training, parallax, padding)
-                OnboardingPage.Sleep -> TourPage(Tour.Sleep, parallax, padding)
-                OnboardingPage.Nutrition -> TourPage(Tour.Nutrition, parallax, padding)
-                OnboardingPage.You -> YouPage(state, actions, padding)
-                OnboardingPage.Movement -> MovementPage(state.movement, actions, parallax, padding)
-                OnboardingPage.Ready -> ReadyPage(state, padding)
+        // The light shifts from one part's color to the next as the user swipes.
+        NovilaPagerBackdrop(
+            colors = pages.map { it.role().container },
+            position = { pager.currentPage + pager.currentPageOffsetFraction },
+        ) {
+            HorizontalPager(state = pager, modifier = Modifier.fillMaxSize()) { index ->
+                // How far this page is from the middle, for the scenes' parallax and the layers' depth. Read while
+                // drawing, so swiping never recomposes.
+                val parallax = { index - pager.currentPage - pager.currentPageOffsetFraction }
+                when (pages[index]) {
+                    OnboardingPage.Welcome -> WelcomePage(parallax, padding)
+                    OnboardingPage.Training -> TourPage(Tour.Training, parallax, padding)
+                    OnboardingPage.Sleep -> TourPage(Tour.Sleep, parallax, padding)
+                    OnboardingPage.Nutrition -> TourPage(Tour.Nutrition, parallax, padding)
+                    OnboardingPage.You -> YouPage(state, actions, parallax, padding)
+                    OnboardingPage.Movement -> MovementPage(state.movement, actions, parallax, padding)
+                    OnboardingPage.Ready -> ReadyPage(state, parallax, padding)
+                }
             }
         }
     }
@@ -129,7 +140,13 @@ private fun OnboardingPage.role(): NovilaColorRole = when (this) {
 
 /** Where the user is, and the way on: skip the tour or go back on the left, the next step in sunlight on the right. */
 @Composable
-private fun Controls(page: OnboardingPage, onSkip: () -> Unit, onBack: () -> Unit, onNext: () -> Unit) {
+private fun Controls(
+    page: OnboardingPage,
+    onSkip: () -> Unit,
+    onBack: () -> Unit,
+    onNext: () -> Unit,
+    offset: () -> Float,
+) {
     val count = OnboardingPage.entries.size
     Column(
         modifier = Modifier
@@ -146,6 +163,7 @@ private fun Controls(page: OnboardingPage, onSkip: () -> Unit, onBack: () -> Uni
             currentPage = page.ordinal,
             contentDescription = stringResource(R.string.onboarding_progress, page.ordinal + 1, count),
             role = page.role(),
+            offset = offset,
         )
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             when {
@@ -170,7 +188,7 @@ private fun Controls(page: OnboardingPage, onSkip: () -> Unit, onBack: () -> Uni
 /** A page with a scene on top, its text below, and anything [more] after that. */
 @Composable
 private fun ScenePage(
-    scene: NovilaScene,
+    @DrawableRes scene: Int,
     parallax: () -> Float,
     contentPadding: PaddingValues,
     more: LazyListScope.() -> Unit = {},
@@ -178,11 +196,33 @@ private fun ScenePage(
 ) {
     ScreenList(contentPadding = contentPadding) {
         item(key = "scene") {
-            NovilaIllustration(scene, Modifier.fillMaxWidth().aspectRatio(SCENE_RATIO), parallax)
+            Scene(scene, parallax)
         }
-        item(key = "text") { NovilaReveal(order = 1) { text() } }
+        item(key = "text") { Layer(order = 1, parallax) { text() } }
         more()
     }
+}
+
+/**
+ * A block on a page that arrives in turn when the page appears ([NovilaReveal]) and, while swiping, travels a little
+ * further than the page and fades, later blocks further, so the page leaves in layers past its scene.
+ */
+@Composable
+private fun Layer(order: Int, parallax: () -> Float, content: @Composable () -> Unit) {
+    NovilaReveal(order = order, modifier = Modifier.novilaPagerDepth(parallax, LAYER_DEPTH + LAYER_STEP * order)) {
+        content()
+    }
+}
+
+/** One of the painted scenes, in the scene format. The night scene is already dark, so dark mode leaves it as it is. */
+@Composable
+private fun Scene(@DrawableRes scene: Int, parallax: () -> Float) {
+    NovilaSceneImage(
+        painter = painterResource(scene),
+        modifier = Modifier.fillMaxWidth().aspectRatio(SCENE_RATIO),
+        parallax = parallax,
+        dimInDark = scene != R.drawable.onboarding_scene_sleep,
+    )
 }
 
 /** An eyebrow in the part's color, a title and a body. */
@@ -205,12 +245,12 @@ private fun PageText(eyebrow: String, title: String, body: String, role: NovilaC
 private fun WelcomePage(parallax: () -> Float, contentPadding: PaddingValues) {
     val training = NovilaTheme.pillars.training
     ScenePage(
-        scene = NovilaScene.Sunrise,
+        scene = R.drawable.onboarding_scene_welcome,
         parallax = parallax,
         contentPadding = contentPadding,
         more = {
             item(key = "pillars") {
-                NovilaReveal(order = 2) {
+                Layer(order = 2, parallax) {
                     Column(verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.m)) {
                         NovilaInsight(
                             painterResource(UiR.drawable.ic_training),
@@ -231,7 +271,7 @@ private fun WelcomePage(parallax: () -> Float, contentPadding: PaddingValues) {
                 }
             }
             item(key = "privacy") {
-                NovilaReveal(order = 3) {
+                Layer(order = 3, parallax) {
                     Footnote(R.drawable.ic_privacy, stringResource(R.string.onboarding_welcome_privacy))
                 }
             }
@@ -250,7 +290,7 @@ private fun WelcomePage(parallax: () -> Float, contentPadding: PaddingValues) {
 /** One part of the app on the tour: its scene, texts and three things it does, in its color. */
 private enum class Tour(
     val page: OnboardingPage,
-    val scene: NovilaScene,
+    @DrawableRes val scene: Int,
     @DrawableRes val icon: Int,
     @StringRes val eyebrow: Int,
     @StringRes val title: Int,
@@ -259,7 +299,7 @@ private enum class Tour(
 ) {
     Training(
         OnboardingPage.Training,
-        NovilaScene.Trail,
+        R.drawable.onboarding_scene_training,
         UiR.drawable.ic_training,
         R.string.onboarding_training_eyebrow,
         R.string.onboarding_training_title,
@@ -272,7 +312,7 @@ private enum class Tour(
     ),
     Sleep(
         OnboardingPage.Sleep,
-        NovilaScene.Night,
+        R.drawable.onboarding_scene_sleep,
         UiR.drawable.ic_sleep,
         R.string.onboarding_sleep_eyebrow,
         R.string.onboarding_sleep_title,
@@ -281,7 +321,7 @@ private enum class Tour(
     ),
     Nutrition(
         OnboardingPage.Nutrition,
-        NovilaScene.Cottage,
+        R.drawable.onboarding_scene_nutrition,
         UiR.drawable.ic_nutrition,
         R.string.onboarding_nutrition_eyebrow,
         R.string.onboarding_nutrition_title,
@@ -305,7 +345,7 @@ private fun TourPage(tour: Tour, parallax: () -> Float, contentPadding: PaddingV
         contentPadding = contentPadding,
         more = {
             points.forEachIndexed { i, point ->
-                item(key = "point-$i") { NovilaReveal(order = 2 + i) { NovilaInsight(icon, point, role) } }
+                item(key = "point-$i") { Layer(order = 2 + i, parallax) { NovilaInsight(icon, point, role) } }
             }
         },
     ) {
@@ -348,12 +388,17 @@ private fun CoachGoal.icon(): Int = when (this) {
 
 /** The user's name, goal and time: everything the coach needs for a first week. */
 @Composable
-private fun YouPage(state: OnboardingUiState, actions: OnboardingActions, contentPadding: PaddingValues) {
+private fun YouPage(
+    state: OnboardingUiState,
+    actions: OnboardingActions,
+    parallax: () -> Float,
+    contentPadding: PaddingValues,
+) {
     val training = NovilaTheme.pillars.training
     val preferences = state.preferences
     ScreenList(contentPadding = contentPadding) {
         item(key = "text") {
-            NovilaReveal(order = 0) {
+            Layer(order = 0, parallax) {
                 PageText(
                     eyebrow = stringResource(R.string.onboarding_you_eyebrow),
                     title = stringResource(R.string.onboarding_you_title),
@@ -363,7 +408,7 @@ private fun YouPage(state: OnboardingUiState, actions: OnboardingActions, conten
             }
         }
         item(key = "name") {
-            NovilaReveal(order = 1) {
+            Layer(order = 1, parallax) {
                 NovilaCard {
                     NovilaTextField(
                         value = state.name,
@@ -376,7 +421,7 @@ private fun YouPage(state: OnboardingUiState, actions: OnboardingActions, conten
             }
         }
         item(key = "goal-title") {
-            NovilaReveal(order = 2) {
+            Layer(order = 2, parallax) {
                 NovilaText(
                     stringResource(R.string.onboarding_goal_title),
                     style = NovilaTheme.typography.titleMedium,
@@ -386,7 +431,7 @@ private fun YouPage(state: OnboardingUiState, actions: OnboardingActions, conten
         }
         GOALS.forEachIndexed { i, goal ->
             item(key = "goal-${goal.name}") {
-                NovilaReveal(order = 3 + i) {
+                Layer(order = 3 + i, parallax) {
                     NovilaChoiceCard(
                         title = stringResource(goal.label()),
                         body = stringResource(goal.description()),
@@ -402,7 +447,7 @@ private fun YouPage(state: OnboardingUiState, actions: OnboardingActions, conten
             item(key = "rehab") { Body(stringResource(R.string.onboarding_goal_rehab)) }
         }
         item(key = "time") {
-            NovilaReveal(order = 3 + GOALS.size) { TimeCard(preferences, actions.onPreferences) }
+            Layer(order = 3 + GOALS.size, parallax) { TimeCard(preferences, actions.onPreferences) }
         }
     }
 }
@@ -446,12 +491,12 @@ private fun MovementPage(
 ) {
     val training = NovilaTheme.pillars.training
     ScenePage(
-        scene = NovilaScene.Steps,
+        scene = R.drawable.onboarding_scene_movement,
         parallax = parallax,
         contentPadding = contentPadding,
         more = {
             item(key = "status") {
-                NovilaReveal(order = 2) {
+                Layer(order = 2, parallax) {
                     Column(verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.m)) {
                         MovementStatus(movement, actions)
                     }
@@ -497,12 +542,13 @@ private fun MovementStatus(movement: MovementState, actions: OnboardingActions) 
 
 /** The first week in the hero card, what to do first in each part, and what is good to know. */
 @Composable
-private fun ReadyPage(state: OnboardingUiState, contentPadding: PaddingValues) {
+private fun ReadyPage(state: OnboardingUiState, parallax: () -> Float, contentPadding: PaddingValues) {
     val preferences = state.preferences
     val name = state.name.trim()
     ScreenList(contentPadding = contentPadding) {
+        item(key = "scene") { Scene(R.drawable.onboarding_scene_ready, parallax) }
         item(key = "hero") {
-            NovilaReveal(order = 0) {
+            Layer(order = 1, parallax) {
                 NovilaHeroBanner {
                     NovilaText(
                         if (name.isEmpty()) {
@@ -541,7 +587,7 @@ private fun ReadyPage(state: OnboardingUiState, contentPadding: PaddingValues) {
             }
         }
         item(key = "know") {
-            NovilaReveal(order = 1) {
+            Layer(order = 2, parallax) {
                 NovilaCard(title = stringResource(R.string.onboarding_ready_know_title)) {
                     NovilaInsight(
                         painterResource(R.drawable.ic_privacy),
@@ -587,8 +633,14 @@ private fun Body(text: String) {
     NovilaText(text, style = NovilaTheme.typography.bodyMedium, color = NovilaTheme.colors.onSurfaceVariant)
 }
 
-/** Scenes are a little wider than tall, so the text below starts above the fold. */
-private const val SCENE_RATIO = 1.1f
+/** How much further than its page the first block travels while swiping, as a share of its width. */
+private const val LAYER_DEPTH = 0.12f
+
+/** How much further each later block travels. */
+private const val LAYER_STEP = 0.06f
+
+/** Scenes are wider than tall, so the text below starts above the fold. */
+private const val SCENE_RATIO = 1.4f
 
 private val previewState = OnboardingUiState(
     name = PreviewData.profile.name,
