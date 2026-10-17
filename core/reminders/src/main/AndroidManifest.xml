@@ -4,8 +4,27 @@
   component ends up in app/badging/debug-badging.txt, which CI compares against the built APK (checkDebugBadging).
   See CLAUDE.md before adding permissions.
 -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Asked for (Android 13+) when the user turns on the first reminder, never at start. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!--
+      WorkManager's foreground work (setForeground) isn't used: a reminder runs for a few milliseconds and never as a
+      foreground service. Its service and permission are removed, so the APK doesn't declare what it never does.
+    -->
+    <uses-permission
+        android:name="android.permission.FOREGROUND_SERVICE"
+        tools:node="remove" />
+
+    <application>
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            tools:node="remove" />
+        <!-- WorkManager's diagnostics over adb (protected by DUMP): not used, so not exported either. -->
+        <receiver
+            android:name="androidx.work.impl.diagnostics.DiagnosticsReceiver"
+            tools:node="remove" />
+    </application>
 </manifest>

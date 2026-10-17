@@ -150,6 +150,10 @@ Misstag som redan har gjorts i det här repot. Gör dem inte igen.
 - **Modifier-parametrar:** en composable får bara ha en `Modifier`-parameter, och den heter `modifier` (lint
   `ModifierParameter`). Behöver en del inuti egen form, ta värden (t.ex. `aspectRatio`) i stället för en andra
   `Modifier` som `figureModifier`.
+- **Providers från tasks:** ett värde härlett ur en `TaskProvider` (`update.map { it.path }`) ger ett beroende på
+  den tasken. Så körde `checkDebugBadging` först `updateDebugBadging`, som skrev över den granskade filen, och
+  kontrollen gick alltid igenom (från #16 till #41). Ge tasks vanliga värden (strängar) för sådant som bara är text.
+  CI jämför dessutom badgingen mot filen i git, och fallerar om bygget skriver till `app/badging`.
 - **Spotless och Isolated Projects:** ge Spotless filträd (`fileTree(...)`) som `target`, aldrig glob-strängar som
   `"**/*.kt"`. För en glob slår Spotless upp varje undermoduls `build`-katalog, och då fallerar bygget med
   "cannot access 'Project.layout' functionality on subprojects". Isolated Projects stoppar sådant i varje bygge.
@@ -316,4 +320,7 @@ där pluginet `firebase@firebase` inte alltid installeras.
   appen ger konfigurationen.
   Nya workers skapas av en fabrik i grafen och behöver en `-keepnames`-regel i `app/proguard-rules.pro`.
 - Hälsodata stannar på enheten. Inga nätverksanrop, analysverktyg eller Firebase-SDK:er i appen utan att ägaren ber om det.
+  Appen har ingen `INTERNET`-behörighet: ML Kit drar in Googles telemetri (`datatransport`), som ber om den för att
+  skicka användningsstatistik, så den tas bort i appens manifest (`tools:node="remove"`). Lägg aldrig tillbaka den
+  utan ägarens ok; Google Health API-källan kräver den, se ovan.
 - Pinna GitHub Actions till commit-SHA med versionskommentar. Dependabot håller dem uppdaterade.

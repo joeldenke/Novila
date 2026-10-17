@@ -200,15 +200,33 @@ jobs:
       - name: Debug build and badging check
         run: |
           set -o pipefail
-          ./gradlew :app:assembleDebug :app:checkDebugBadging 2>&1 | tee build.log
-      - name: Show badging diff
-        if: failure() && hashFiles('app/build/outputs/badging/debug-badging.txt') != ''
+          ./gradlew :app:assembleDebug :app:checkDebugBadging --console=plain 2>&1 | tee build.log
+      # Compares the badging on its own, after the Gradle check, against the reviewed file as committed: the job fails on
+      # any difference, even if the Gradle check didn't run or compared the wrong thing (it once compared the file with
+      # itself, see Badging.kt). Each added permission is shown with the library or manifest it came from (the manifest
+      # merger's report), so the PR says why it's there.
+      - name: Badging diff
+        if: always() && hashFiles('app/build/outputs/badging/debug-badging.txt') != ''
         run: |
           generated=app/build/outputs/badging/debug-badging.txt
-          golden=app/badging/debug-badging.txt
-          [ -f "$golden" ] || golden=/dev/null
+          # The reviewed file as committed, not as on disk: a build that writes to it must not hide a change.
+          golden=$(mktemp)
+          git show HEAD:app/badging/debug-badging.txt > "$golden" 2>/dev/null || golden=/dev/null
+          if ! git diff --quiet -- app/badging; then
+            echo "::error title=Badging file changed by the build::The build wrote to app/badging. Only /record-badging may."
+            exit 1
+          fi
+          report=app/build/outputs/logs/manifest-merger-debug-report.txt
+          # How Gradle ran the check (executed, up to date, skipped), for when the two disagree.
+          check=$(grep -E '^> Task :app:checkDebugBadging' build.log || echo "not in build.log")
+          echo "::notice title=checkDebugBadging::$check"
           diff=$(diff -u "$golden" "$generated" | tail -n +3 | grep -E '^[+-]' || true)
           [ -n "$diff" ] || exit 0
+          origins=""
+          for permission in $(printf '%s\n' "$diff" | sed -n "s/^+uses-permission: name='\([^']*\)'.*/\1/p"); do
+            origin=$(grep -A1 -F "uses-permission#$permission" "$report" 2>/dev/null | sed -n 's/.*ADDED from //p' | head -1)
+            origins+="$permission: ${origin:-unknown}"$'\n'
+          done
           {
             echo "### Badging changed"
             echo
@@ -217,10 +235,20 @@ jobs:
             echo '```diff'
             echo "$diff"
             echo '```'
+            if [ -n "$origins" ]; then
+              echo
+              echo "Where the new permissions come from:"
+              echo
+              echo '```'
+              printf '%s' "$origins"
+              echo '```'
+            fi
           } >> "$GITHUB_STEP_SUMMARY"
-          # One annotation with the whole diff, readable in the PR without opening the log.
-          message=$(printf '%s' "$diff" | sed -e 's/%/%25/g' | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/%0A/g')
-          echo "::error title=Badging changed (comment /record-badging if intended)::$message"
+          # One annotation each for the diff and the origins, readable in the PR without opening the log.
+          encode() { printf '%s' "$1" | sed -e 's/%/%25/g' | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/%0A/g'; }
+          echo "::error title=Badging changed (comment /record-badging if intended)::$(encode "$diff")"
+          [ -z "$origins" ] || echo "::notice title=Where the new permissions come from::$(encode "$origins")"
+          exit 1
 
       - name: Upload badging on failure
         if: failure() && hashFiles('app/build/outputs/badging/debug-badging.txt') != ''
