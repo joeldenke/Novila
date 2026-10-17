@@ -312,7 +312,8 @@ där pluginet `firebase@firebase` inte alltid installeras.
   påminnelserna. Workern läser bara det som redan är sparat, visar notisen om något saknas och lägger nästa dag; den
   lyckas alltid, eftersom nästa dag hänger på den. Kommer den mer än två timmar sent skippas notisen. `POST_NOTIFICATIONS`
   frågas först när användaren slår på en påminnelse, aldrig vid start, och om notiser får visas kollas varje gång
-  (aldrig sparat). WorkManagers standardstart är borttagen i `:core:reminders` manifest; appen ger konfigurationen.
+  (aldrig sparat). WorkManagers standardstart är borttagen i appens manifest (lint `RemoveWorkManagerInitializer`);
+  appen ger konfigurationen.
   Nya workers skapas av en fabrik i grafen och behöver en `-keepnames`-regel i `app/proguard-rules.pro`.
 - Hälsodata stannar på enheten. Inga nätverksanrop, analysverktyg eller Firebase-SDK:er i appen utan att ägaren ber om det.
 - Pinna GitHub Actions till commit-SHA med versionskommentar. Dependabot håller dem uppdaterade.

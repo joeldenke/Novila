@@ -7,7 +7,7 @@ import se.novila.di.AppGraph
 
 /**
  * Holds the app's Metro graph, created on first use, and sets up WorkManager with the reminders' worker factory from
- * it. WorkManager starts on demand (its default initializer is removed in `:core:reminders`), so an app start that
+ * it. WorkManager starts on demand (its default initializer is removed in the app's manifest), so an app start that
  * schedules nothing doesn't touch it.
  */
 class NovilaApplication :
