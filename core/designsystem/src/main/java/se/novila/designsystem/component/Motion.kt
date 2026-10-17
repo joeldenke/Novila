@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.dp
+import kotlin.math.absoluteValue
 
 /**
  * Novila's motion: calm and unhurried, like a still lake. Everything eases out softly and nothing
@@ -64,3 +65,18 @@ fun NovilaReveal(
         content()
     }
 }
+
+/**
+ * Depth for content on a pager page: with [offset] (how far the page is from the middle, in pages, read while
+ * drawing) the content travels [depth] of its width further than its page and fades out before the page has left, so
+ * text and cards move in layers past the scene and cross-fade with the next page. Give blocks further down a larger
+ * [depth] so they follow one after another. A settled page is untouched.
+ */
+fun Modifier.novilaPagerDepth(offset: () -> Float, depth: Float): Modifier = graphicsLayer {
+    val o = offset().coerceIn(-1f, 1f)
+    translationX = o * size.width * depth
+    alpha = (1f - o.absoluteValue * PAGER_FADE).coerceIn(0f, 1f)
+}
+
+/** Content is gone this soon: 1.6 fades it out by the time its page is 60 % away. */
+private const val PAGER_FADE = 1.6f

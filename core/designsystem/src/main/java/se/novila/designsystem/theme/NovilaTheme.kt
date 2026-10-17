@@ -20,7 +20,6 @@ private val LocalNovilaAccent = staticCompositionLocalOf { NovilaLightAccent }
 private val LocalNovilaHero = staticCompositionLocalOf { NovilaLightHero }
 private val LocalNovilaSurfaces = staticCompositionLocalOf { NovilaLightSurfaces }
 private val LocalNovilaAnatomy = staticCompositionLocalOf { NovilaLightAnatomy }
-private val LocalNovilaScenery = staticCompositionLocalOf { NovilaLightScenery }
 
 /**
  * Root theme for the app. Wraps [MaterialTheme] so Material 3 components pick up Novila
@@ -52,7 +51,6 @@ fun NovilaTheme(
         LocalNovilaHero provides if (darkTheme) NovilaDarkHero else NovilaLightHero,
         LocalNovilaSurfaces provides if (darkTheme) NovilaDarkSurfaces else NovilaLightSurfaces,
         LocalNovilaAnatomy provides if (darkTheme) NovilaDarkAnatomy else NovilaLightAnatomy,
-        LocalNovilaScenery provides if (darkTheme) NovilaDarkScenery else NovilaLightScenery,
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
@@ -93,11 +91,6 @@ object NovilaTheme {
     val anatomy: NovilaAnatomyColors
         @Composable @ReadOnlyComposable
         get() = LocalNovilaAnatomy.current
-
-    /** The drawn countryside in illustrations. Only the design system draws it. */
-    internal val scenery: NovilaSceneryColors
-        @Composable @ReadOnlyComposable
-        get() = LocalNovilaScenery.current
 
     val typography: Typography
         @Composable @ReadOnlyComposable
