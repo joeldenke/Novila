@@ -214,14 +214,17 @@ private fun Layer(order: Int, parallax: () -> Float, content: @Composable () -> 
     }
 }
 
-/** One of the painted scenes, in the scene format. The night scene is already dark, so dark mode leaves it as it is. */
+/**
+ * One of the painted scenes, in the scene format. The night forest and the sunset already have their own light, so
+ * dark mode leaves them as they are.
+ */
 @Composable
 private fun Scene(@DrawableRes scene: Int, parallax: () -> Float) {
     NovilaSceneImage(
         painter = painterResource(scene),
         modifier = Modifier.fillMaxWidth().aspectRatio(SCENE_RATIO),
         parallax = parallax,
-        dimInDark = scene != R.drawable.onboarding_scene_sleep,
+        dimInDark = scene != R.drawable.onboarding_scene_sleep && scene != R.drawable.onboarding_scene_ready,
     )
 }
 

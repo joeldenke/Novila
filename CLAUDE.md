@@ -246,7 +246,7 @@ där pluginet `firebase@firebase` inte alltid installeras.
 - **Målade scener:** introduktionens scener är målade bilder i samma nordiska stil (falröd stuga, björk, gran, sjö,
   midsommarljus), WebP i featurens `drawable-nodpi`, beskurna till 1,4:1, högst cirka 1120 px breda och helst under 200 kB. De visas bara via
   `NovilaSceneImage`, som sköter hörn, entré och parallax. I mörkt läge blir dagscener skymning (`ColorMatrix`:
-  mindre mättnad och ljus, aldrig en grå slöja) och nederkanten flyter ut i ytan; nattscenen behåller sitt ljus. Rita inte landskap i kod: det har
+  mindre mättnad och ljus, aldrig en grå slöja) och nederkanten flyter ut i ytan; nattskogen och solnedgången behåller sitt ljus. Rita inte landskap i kod: det har
   provats och når inte upp till målade bilder. Nya scener tas fram i samma stil som de befintliga.
 - **Inga emojis i UI:t.** Novila ska kännas som en professionell hälsoapp: använd vektorikoner och ritade komponenter
   (t.ex. `NovilaLevelPicker` för mående), aldrig emoji-tecken.
