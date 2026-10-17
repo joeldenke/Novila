@@ -201,29 +201,25 @@ jobs:
         run: |
           set -o pipefail
           ./gradlew :app:assembleDebug :app:checkDebugBadging --console=plain 2>&1 | tee build.log
-      # Compares the badging on its own, after the Gradle check: the job fails on any difference between the APK and
-      # the reviewed file, even if the Gradle task didn't run or compared the wrong thing. Each added permission is
-      # shown with the library or manifest it came from (the manifest merger's report), so the PR says why it's there.
+      # Compares the badging on its own, after the Gradle check, against the reviewed file as committed: the job fails on
+      # any difference, even if the Gradle check didn't run or compared the wrong thing (it once compared the file with
+      # itself, see Badging.kt). Each added permission is shown with the library or manifest it came from (the manifest
+      # merger's report), so the PR says why it's there.
       - name: Badging diff
         if: always() && hashFiles('app/build/outputs/badging/debug-badging.txt') != ''
         run: |
           generated=app/build/outputs/badging/debug-badging.txt
-          golden=app/badging/debug-badging.txt
+          # The reviewed file as committed, not as on disk: a build that writes to it must not hide a change.
+          golden=$(mktemp)
+          git show HEAD:app/badging/debug-badging.txt > "$golden" 2>/dev/null || golden=/dev/null
+          if ! git diff --quiet -- app/badging; then
+            echo "::error title=Badging file changed by the build::The build wrote to app/badging. Only /record-badging may."
+            exit 1
+          fi
           report=app/build/outputs/logs/manifest-merger-debug-report.txt
           # How Gradle ran the check (executed, up to date, skipped), for when the two disagree.
           check=$(grep -E '^> Task :app:checkDebugBadging' build.log || echo "not in build.log")
           echo "::notice title=checkDebugBadging::$check"
-          # TEMPORARY diagnosis: how the APK's manifest and package were made, and what the APK declares.
-          tasks=$(grep -E '^> Task :app:(processDebugMainManifest|processDebugManifest|mergeDebugResources|packageDebug|generateDebugBadging|assembleDebug)' build.log | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/%0A/g')
-          echo "::notice title=App tasks::$tasks"
-          manifest=$(find app/build/intermediates -name AndroidManifest.xml -path '*merged_manifest*debug*' | head -1)
-          echo "::notice title=Merged manifest::$manifest has POST_NOTIFICATIONS: $(grep -c POST_NOTIFICATIONS "$manifest" || true)"
-          apk=$(find app/build/outputs/apk/debug -name '*.apk' | head -1)
-          aapt2=$(ls -d "$ANDROID_HOME"/build-tools/*/ | sort -V | tail -1)aapt2
-          perms=$("$aapt2" dump permissions "$apk" | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/%0A/g')
-          echo "::notice title=APK permissions ($apk, $(stat -c %y "$apk"))::$perms"
-          echo "::notice title=Generated badging head::$(head -12 "$generated" | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/%0A/g')"
-          [ -f "$golden" ] || golden=/dev/null
           diff=$(diff -u "$golden" "$generated" | tail -n +3 | grep -E '^[+-]' || true)
           [ -n "$diff" ] || exit 0
           origins=""

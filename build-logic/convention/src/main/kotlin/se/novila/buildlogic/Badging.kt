@@ -46,6 +46,7 @@ import javax.xml.parsers.DocumentBuilderFactory
  */
 internal fun Project.configureBadging(components: ApplicationAndroidComponentsExtension) {
     val sdkDirectory = components.sdkComponents.sdkDirectory
+    val projectPath = path
     components.onVariants { variant ->
         val name = variant.name.replaceFirstChar { it.uppercase() }
         val generate = tasks.register<GenerateBadgingTask>("generate${name}Badging") {
@@ -68,7 +69,10 @@ internal fun Project.configureBadging(components: ApplicationAndroidComponentsEx
             description = "Fails when the ${variant.name} APK's badging differs from badging/$goldenName."
             golden.from(goldenDir.file(goldenName))
             generated.set(generate.flatMap { it.badging })
-            updateTask.set(update.map { it.path })
+            // A plain string, not update.map { it.path }: a value derived from the update task's provider makes this
+            // task depend on it, so the reviewed file was overwritten with the new badging before every check, and the
+            // check always passed.
+            updateTask.set("$projectPath:update${name}Badging")
         }
     }
 }
