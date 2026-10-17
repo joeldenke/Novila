@@ -30,5 +30,5 @@ runs:
         grep -qE 'Task :spotless[A-Za-z]*Check FAILED' build.log \
           && echo "::error title=Formatting::Run ./gradlew spotlessApply, or see the Spotless diff in the log." || true
         find . -path '*/build/outputs/roborazzi/*_compare.png' | head -10 | while IFS= read -r f; do
-          echo "::error title=Screenshot changed::${f##*/} (recorded and pushed to the PR branch; diff in the reports artifact)"
+          echo "::error title=Screenshot changed::${f##*/} (diff in the reports artifact; if intended, put /record-screenshots in the PR description and push)"
         done || true

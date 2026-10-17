@@ -196,10 +196,10 @@ där pluginet `firebase@firebase` inte alltid installeras.
   (`@RunWith(RobolectricTestRunner::class)`), också i `src/test`. Ingen emulator behövs.
 - **Skärmdumpar:** varje `@Preview` testas mot referensbilder i modulens `src/test/screenshots`
   (t.ex. `feature/training/src/test/screenshots`). Filnamnet är paket, fil och preview.
-  Ändras en skärmdump på en PR spelar Tests-jobbet in den nya bilden, pushar den till branchen som en egen commit
-  (*Record screenshot references*) och startar CI på den. Granska bilderna i PR:ens diff: en oavsiktlig ändring
-  rättas i koden, och nästa körning spelar in igen. `/record-screenshots` (workflowen `Record references`) finns kvar
-  för branchar utan PR. Ta aldrig fram referensbilder lokalt; de ska renderas i CI.
+  Ändrar du UI med flit: skriv `/record-screenshots` i PR-beskrivningen. Då spelar Tests-jobbet in ändrade bilder,
+  pushar dem till branchen som en egen commit (*Record screenshot references*) och startar CI på den. Granska bilderna
+  i PR:ens diff. Utan raden fallerar en ändrad skärmdump som vanligt. Beskrivningen läses vid varje push; har du lagt
+  till raden efteråt, kommentera `/record-screenshots` på PR:en (workflowen `Record references`) i stället. Ta aldrig fram referensbilder lokalt; de ska renderas i CI.
 - **Kodstil:** Spotless med ktlint (`android_studio`-stil) kontrolleras i CI. `./gradlew spotlessApply` rättar.
 - **Täckning:** Kover, sammanfattning i CI-körningens summary. **Compose-stabilitet:** artefakten `compose-reports`.
 

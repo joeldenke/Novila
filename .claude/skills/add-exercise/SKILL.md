@@ -111,5 +111,5 @@ tools/anatomy/anatomy.sh render /path/to/ark.png mitt_id
 tools/anatomy/anatomy.sh test
 ```
 - Kör ktlint, eller `./gradlew spotlessApply` om Gradle fungerar.
-- Öppna en PR enligt CLAUDE.md. CI spelar in de ändrade skärmdumparna (övningsbanken och förhandsvisningarna
-  ändras), pushar dem och kör igen; granska bilderna i diffen. Säg aldrig att det fungerar förrän CI är grönt.
+- Öppna en PR enligt CLAUDE.md med `/record-screenshots` i beskrivningen, eftersom övningsbanken och
+  förhandsvisningarna ändras. CI spelar in de ändrade skärmdumparna, pushar dem och kör igen; granska bilderna i diffen. Säg aldrig att det fungerar förrän CI är grönt.
