@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_name">Novila today</string>
+    <string name="widget_description">Today\'s balance, what you logged and something about your day, with a glass of water one tap away.</string>
+    <string name="widget_balance">Today\'s balance</string>
+    <string name="widget_balance_value" translatable="false">%1$d</string>
+    <string name="widget_sleep">Sleep</string>
+    <string name="widget_food">Food</string>
+    <string name="widget_water">Water</string>
+    <string name="widget_food_value" translatable="false">%1$d/100</string>
+    <string name="widget_water_value" translatable="false">%1$d/%2$d</string>
+    <string name="widget_log_water">+ Glass of water</string>
+
+    <string name="widget_latest">Latest: %1$s</string>
+    <string name="widget_latest_walk">walk, %1$d min</string>
+    <string name="widget_latest_run">run, %1$d min</string>
+    <string name="widget_latest_ride">bike ride, %1$d min</string>
+    <string name="widget_latest_swim">swim, %1$d min</string>
+    <string name="widget_latest_strength">strength session, %1$d min</string>
+    <plurals name="widget_latest_food">
+        <item quantity="one">%1$d portion of food</item>
+        <item quantity="other">%1$d portions of food</item>
+    </plurals>
+    <plurals name="widget_latest_water">
+        <item quantity="one">%1$d glass of water</item>
+        <item quantity="other">%1$d glasses of water</item>
+    </plurals>
+    <string name="widget_latest_sleep">slept %1$s</string>
+
+    <string name="widget_cheer_outdoors_summer">Out and moving for %1$d minutes. From April to September, the midday sun lets your skin make vitamin D.</string>
+    <string name="widget_cheer_outdoors_daylight">Out and moving for %1$d minutes. Daylight sets your body clock and helps you sleep tonight, even on a grey day.</string>
+    <string name="widget_cheer_swim">%1$d minutes of swimming: your whole body trained, gently on the joints.</string>
+    <string name="widget_cheer_strength">Strength session done. Muscles grow stronger while you rest, so tonight\'s sleep counts too.</string>
+    <string name="widget_cheer_rested">You slept %1$s. A rested body manages more today.</string>
+    <string name="widget_cheer_short_night">A short night, %1$s. Go easy today and to bed a little earlier tonight.</string>
+    <string name="widget_cheer_vegetables">%1$d portions of vegetables, fruit and berries: the day\'s fibre and vitamins.</string>
+    <string name="widget_cheer_water">Water goal reached. Well done.</string>
+    <string name="widget_cheer_good_food">A food score of %1$d today, in line with the dietary guidelines.</string>
+    <string name="widget_cheer_start">Log last night and today\'s food, and Novila shows what your day adds up to.</string>
+</resources>

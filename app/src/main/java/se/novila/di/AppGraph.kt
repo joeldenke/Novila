@@ -8,6 +8,7 @@ import dev.zacsweers.metro.SingleIn
 import dev.zacsweers.metrox.viewmodel.ViewModelGraph
 import se.novila.data.SettingsStore
 import se.novila.exercise.ExerciseRepository
+import se.novila.feature.widget.WidgetGraph
 import se.novila.healthconnect.HealthConnectExerciseSource
 import se.novila.healthconnect.HealthConnectSource
 import se.novila.movement.InMemoryMovementCache
@@ -20,10 +21,12 @@ import kotlin.time.Clock
  * coach's language model (`@ContributesBinding`) and each feature's ViewModels (`@ViewModelKey
  * @ContributesIntoMap`), which [ViewModelGraph] collects into the factory that `metroViewModel()` uses.
  *
- * Data sources are chosen here and nowhere else.
+ * Data sources are chosen here and nowhere else. The home-screen widget reaches the stores through [WidgetGraph].
  */
 @DependencyGraph(AppScope::class)
-interface AppGraph : ViewModelGraph {
+interface AppGraph :
+    ViewModelGraph,
+    WidgetGraph {
     /** The app's settings, which [se.novila.MainActivity] reads for the theme before any screen is shown. */
     val settingsStore: SettingsStore
 

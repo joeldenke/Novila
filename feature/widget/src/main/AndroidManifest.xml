@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The home-screen widget. The receiver ends up in app/badging/debug-badging.txt: it must be exported, since the
+  launcher (through the system) sends it the widget's updates. It reads nothing from the intent but the widget ids, and
+  only shows and logs what the app already saves on the phone.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <receiver
+            android:name="se.novila.feature.widget.NovilaWidgetReceiver"
+            android:exported="true"
+            android:label="@string/widget_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/novila_widget_info" />
+        </receiver>
+    </application>
+</manifest>

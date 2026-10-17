@@ -10,4 +10,6 @@ dependencies {
     api(platform(libs.compose.bom))
     api(libs.compose.material3)
     api(libs.compose.ui)
+    // NovilaGlanceTheme: the same color schemes for the home-screen widget. Only modules with a widget use it.
+    implementation(libs.androidx.glance.material3)
 }

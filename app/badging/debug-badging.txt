@@ -28,6 +28,7 @@ feature-group: label=''
   uses-feature: name='android.hardware.faketouch'
   uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
 main
+app-widget
 other-activities
 other-receivers
 other-services
@@ -43,6 +44,7 @@ exported-activity: name='androidx.activity.ComponentActivity' permission='none'
 exported-activity-alias: name='se.novila.ViewPermissionUsageActivity' permission='android.permission.START_VIEW_PERMISSION_USAGE'
 exported-service: name='androidx.work.impl.background.systemjob.SystemJobService' permission='android.permission.BIND_JOB_SERVICE'
 exported-service: name='androidx.health.platform.client.impl.sdkservice.HealthDataSdkService' permission='none'
+exported-receiver: name='se.novila.feature.widget.NovilaWidgetReceiver' permission='none'
 exported-receiver: name='androidx.profileinstaller.ProfileInstallReceiver' permission='android.permission.DUMP'
 queries-package: 'com.google.android.apps.healthdata'
 queries-package: 'com.google.android.aicore'

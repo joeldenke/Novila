@@ -18,6 +18,8 @@ metro = "1.4.5"
 work = "2.10.1"
 # Health Connect: read-only steps and active calories, see HealthConnectSource.
 healthConnect = "1.1.0"
+# Home-screen widget (Glance), see NovilaWidget.
+glance = "1.2.0"
 kotlinxSerialization = "1.11.0"
 kotlinxCoroutines = "1.11.0"
 # Gemini Nano on the device through AICore, for the coach's message. See GeminiNanoCoachModel.
@@ -51,6 +53,10 @@ androidx-datastore-preferences = { module = "androidx.datastore:datastore-prefer
 androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "work" }
 androidx-work-testing = { module = "androidx.work:work-testing", version.ref = "work" }
 androidx-health-connect-client = { module = "androidx.health.connect:connect-client", version.ref = "healthConnect" }
+androidx-glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glance" }
+# Novila's color schemes as the widget's colors, in :core:designsystem only (NovilaGlanceTheme).
+androidx-glance-material3 = { module = "androidx.glance:glance-material3", version.ref = "glance" }
+androidx-glance-appwidget-testing = { module = "androidx.glance:glance-appwidget-testing", version.ref = "glance" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerialization" }
 # Google Health API responses (JSON), see GoogleHealthJson.

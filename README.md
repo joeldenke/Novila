@@ -18,6 +18,7 @@ Everything stays on the phone: no account, no cloud, no analytics. The app is in
 | **Nutrition** | Servings per food group, water and sweets, scored 0–100 after the Swedish Food Agency's dietary guidelines, with a suggested next step, and the scores over the week, four weeks or a year compared with the period before |
 | **Movement** | Today's steps and active calories, and the last five weeks' workouts, from Health Connect, read in the foreground only |
 | **Reminders** | Log sleep, train and log food, each at your own time and only when it isn't logged yet. One WorkManager job per reminder and day, nothing else in the background |
+| **Widget** | Today on the home screen: the day's balance, sleep, food score and water, the latest log, something encouraging about what you did (a summer walk mentions vitamin D, a strength session tonight's sleep) and a glass of water in one tap |
 | **Settings** | Theme (system, light, dark, wallpaper colors), profile, Health Connect access, health disclaimer, deleting all data, and the intro again |
 
 A short illustrated intro at first start sets up the goal, profile, coach and Health Connect, so the plan is there
@@ -79,6 +80,7 @@ each other, which a test checks.
 :feature:nutrition       Food groups, water, score
 :feature:onboarding      The intro at first start
 :feature:settings        Settings
+:feature:widget          The home-screen widget (Glance)
 :core:designsystem       NovilaTheme and Novila* components (the only module using Material 3 directly)
 :core:ui                 Shared UI: lists, formatting, history cards, preview data
 :core:reminders          Reminders: WorkManager jobs and notifications

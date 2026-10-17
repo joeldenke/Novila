@@ -20,6 +20,7 @@ dependencies {
     implementation(projects.feature.nutrition)
     implementation(projects.feature.onboarding)
     implementation(projects.feature.settings)
+    implementation(projects.feature.widget)
 
     // Everything that contributes to the graph must be on the app's classpath, so Metro can find it.
     implementation(projects.core.coach)
