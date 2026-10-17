@@ -82,7 +82,7 @@ Strängar och ikoner ligger i modulen som använder dem; det flera moduler anvä
   och `:app:lintDebug`, alla moduler), Tests (`test verifyAndRecordRoborazziDebug koverXmlReportCoverage`) och Build
   (`:app:assembleDebug :app:checkDebugBadging`); kontrollen *Lint, test and build* samlar dem och är den som krävs. Gemensamma steg ligger
   i `.github/actions/`. Cachen sköts av `gradle/actions/setup-gradle` (standardcachen, sparas bara från `main`), och
-  CI-flaggorna för 2-kärniga runners ligger i `.github/ci-gradle.properties`. Bygg aldrig egen cachelogik.
+  CI-flaggorna för de publika runnerna (4 kärnor, 16 GB) ligger i `.github/ci-gradle.properties`. Bygg aldrig egen cachelogik.
   Release-bygget (R8) körs inte på PR:er. Ändrar du `proguard-rules.pro` eller R8-känslig kod,
   säg det i PR-beskrivningen. Fel syns då först vid merge.
 - Kan din miljö inte nå Google Maven: pusha och följ körningen (`gh pr checks`, `gh run view --log-failed`)
@@ -186,9 +186,8 @@ där pluginet `firebase@firebase` inte alltid installeras.
   KSP (t.ex. för Room) kräver `ksp.project.isolation.enabled=true` i `gradle.properties`, annars fallerar
   bygget med "cannot access task dependencies directly" (google/ksp#2844). Flaggan är redan satt, så att KSP fungerar
   den dag ett bibliotek kräver det; ta aldrig bort den. Metro (DI) är en Kotlin-kompilatorplugin, inte KSP, och
-  behöver ingen flagga. CI har `workers.max=3` i stället för 2:
-  Gradle 9.8 fryser med Isolated Projects när workers ≤ antalet byggen (roten och `build-logic`), gradle#39040.
-  Tillbaka till 2 efter uppgradering till Gradle 9.9.
+  behöver ingen flagga. Sätt aldrig `workers.max` till 2 eller lägre på Gradle 9.8: med Isolated Projects fryser
+  bygget när workers ≤ antalet byggen (roten och `build-logic`), gradle#39040. CI kör med standardvärdet (4).
 - Nya moduler: lägg till `include(...)` i `settings.gradle.kts`, beroende via `projects.<…>` (typsäkra accessorer).
 - Nya Gradle-plugins deklareras med `apply false` i rotens `build.gradle.kts`, så att alla moduler delar en classloader.
 
