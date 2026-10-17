@@ -1,12 +1,15 @@
 package se.novila.designsystem.component
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -15,11 +18,14 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import se.novila.designsystem.theme.NovilaColorRole
 import se.novila.designsystem.theme.NovilaTheme
 
@@ -175,4 +181,55 @@ fun NovilaTextField(
         ),
         modifier = modifier.fillMaxWidth(),
     )
+}
+
+/**
+ * Searches as the user types: one line with a [label], the search key on the keyboard and a drawn cross that clears
+ * the [query] ([clearDescription] for screen readers) once there is something to clear.
+ */
+@Composable
+fun NovilaSearchField(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    label: String,
+    clearDescription: String,
+    modifier: Modifier = Modifier,
+    role: NovilaColorRole = NovilaTheme.pillars.training,
+) {
+    OutlinedTextField(
+        value = query,
+        onValueChange = onQueryChange,
+        label = { Text(label) },
+        trailingIcon = if (query.isEmpty()) {
+            null
+        } else {
+            { ClearButton(onClick = { onQueryChange("") }, description = clearDescription) }
+        },
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(
+            capitalization = KeyboardCapitalization.None,
+            imeAction = ImeAction.Search,
+        ),
+        textStyle = NovilaTheme.typography.bodyLarge,
+        shape = NovilaTheme.shapes.small,
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = role.color,
+            focusedLabelColor = role.color,
+            cursorColor = role.color,
+        ),
+        modifier = modifier.fillMaxWidth(),
+    )
+}
+
+/** A drawn cross, centered and crisp at any density. */
+@Composable
+private fun ClearButton(onClick: () -> Unit, description: String) {
+    val color = NovilaTheme.colors.onSurfaceVariant
+    IconButton(onClick = onClick, modifier = Modifier.semantics { contentDescription = description }) {
+        Canvas(Modifier.size(16.dp)) {
+            val stroke = 2.dp.toPx()
+            drawLine(color, Offset.Zero, Offset(size.width, size.height), stroke, StrokeCap.Round)
+            drawLine(color, Offset(size.width, 0f), Offset(0f, size.height), stroke, StrokeCap.Round)
+        }
+    }
 }

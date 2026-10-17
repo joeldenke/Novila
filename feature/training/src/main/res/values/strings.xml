@@ -308,4 +308,18 @@
     <string name="overview_day_today">Today, %1$s</string>
     <string name="overview_log_other">Log a workout</string>
     <string name="cardio_log_title">Log a workout</string>
+
+    <!-- One day's session, and the exercise library -->
+    <string name="session_title">Session on %1$s</string>
+    <string name="session_open">Show the session</string>
+    <string name="session_none">This day has no strength session in this week\'s program any more.</string>
+    <string name="session_muscles_title">What the session trains</string>
+    <string name="session_muscles_body">Tap an exercise to see how it\'s done, with the figure you can pause and drag.</string>
+    <string name="library_show_all">Show all %1$d exercises</string>
+    <string name="library_search_chip">Find an exercise</string>
+    <string name="library_search">Search exercise or muscle</string>
+    <string name="library_clear">Clear the search</string>
+    <string name="library_all">All</string>
+    <string name="library_empty">No exercise matches \"%1$s\".</string>
+    <string name="library_count">%1$d exercises</string>
 </resources>

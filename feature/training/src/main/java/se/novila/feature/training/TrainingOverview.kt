@@ -28,7 +28,8 @@ import java.util.Locale
 
 /**
  * The week at a glance at the top of Training: minutes done against the week's plan, a check for each day trained,
- * and today's session with the one action that matters now ([plan]): start the session or log the cardio.
+ * and today's session with the one action that matters now ([plan]): start the session or log the cardio. A strength
+ * day in the week opens its session ([onOpenSession]).
  */
 @Composable
 fun TrainingOverview(
@@ -39,6 +40,7 @@ fun TrainingOverview(
     onStartWorkout: (DayOfWeek) -> Unit,
     onLogCardio: (CardioLog) -> Unit,
     modifier: Modifier = Modifier,
+    onOpenSession: (DayOfWeek) -> Unit = {},
 ) {
     val locale = LocalConfiguration.current.locales[0]
     val planned = program.sessions.sumOf { it.minutes }
@@ -59,7 +61,7 @@ fun TrainingOverview(
                 modifier = Modifier.weight(1f),
             )
         }
-        NovilaWeekStrip(weekDays(program, today, weekDone, locale))
+        NovilaWeekStrip(weekDays(program, today, weekDone, locale, onOpenSession))
         when (plan) {
             is TodayPlan.Workout -> NovilaAccentButton(
                 text = stringResource(R.string.workout_start),
@@ -125,6 +127,7 @@ private fun weekDays(
     today: DayOfWeek,
     weekDone: Map<DayOfWeek, Int>,
     locale: Locale,
+    onOpenSession: (DayOfWeek) -> Unit,
 ): List<NovilaWeekDay> = DayOfWeek.entries.map { day ->
     val minutes = weekDone[day] ?: 0
     val session = program.sessions.firstOrNull { it.day == day }
@@ -146,6 +149,9 @@ private fun weekDays(
         mark = mark,
         isToday = day == today,
         description = if (day == today) stringResource(R.string.overview_day_today, description) else description,
+        // A strength or rehab day opens its session.
+        onClick = { onOpenSession(day) }.takeIf { session != null && session.exercises.isNotEmpty() },
+        clickLabel = stringResource(R.string.session_open),
     )
 }
 

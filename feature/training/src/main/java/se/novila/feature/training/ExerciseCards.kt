@@ -200,8 +200,9 @@ private fun PlannedExerciseRow(motion: ExerciseMotion, planned: PlannedExercise,
         horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.m),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        // Small in a session's list; the library shows them large.
         ExerciseThumbnail(motion, Modifier.weight(1f))
-        Column(Modifier.weight(2f), verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.xxs)) {
+        Column(Modifier.weight(3f), verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.xxs)) {
             NovilaText(name, style = NovilaTheme.typography.titleSmall)
             NovilaText(
                 dosageText(planned),
@@ -217,20 +218,36 @@ private fun PlannedExerciseRow(motion: ExerciseMotion, planned: PlannedExercise,
     }
 }
 
-/** Every exercise Novila can show, two to a row, each opening its instructions. */
+/**
+ * The exercise library on the Training tab: a few exercises as large tiles, each opening its instructions, and the
+ * way to all of them with search ([onOpenLibrary]).
+ */
 @Composable
-fun ExerciseLibraryCard(onOpenExercise: (String) -> Unit) {
+fun ExerciseLibraryCard(onOpenExercise: (String) -> Unit, onOpenLibrary: () -> Unit) {
     NovilaCard(title = stringResource(R.string.exercises_title)) {
         NovilaText(
             stringResource(R.string.exercises_body),
             style = NovilaTheme.typography.bodyMedium,
             color = NovilaTheme.colors.onSurfaceVariant,
         )
-        ExerciseLibrary.all.chunked(2).forEach { pair ->
-            Row(horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.m)) {
-                pair.forEach { motion -> ExerciseTile(motion, onOpenExercise, Modifier.weight(1f)) }
-                if (pair.size == 1) Spacer(Modifier.weight(1f))
-            }
+        ExerciseGrid(ExerciseLibrary.all.take(LIBRARY_PREVIEW), onOpenExercise)
+        NovilaButton(
+            stringResource(R.string.library_show_all, ExerciseLibrary.all.size),
+            onClick = onOpenLibrary,
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
+}
+
+private const val LIBRARY_PREVIEW = 4
+
+/** Exercises as large tiles, two to a row, each opening its instructions. */
+@Composable
+fun ExerciseGrid(motions: List<ExerciseMotion>, onOpenExercise: (String) -> Unit) {
+    motions.chunked(2).forEach { pair ->
+        Row(horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.m)) {
+            pair.forEach { motion -> ExerciseTile(motion, onOpenExercise, Modifier.weight(1f)) }
+            if (pair.size == 1) Spacer(Modifier.weight(1f))
         }
     }
 }
@@ -281,7 +298,7 @@ private fun ExerciseCardsContent() {
                         next = true,
                     )
                 }
-                item(key = "library") { ExerciseLibraryCard(onOpenExercise = {}) }
+                item(key = "library") { ExerciseLibraryCard(onOpenExercise = {}, onOpenLibrary = {}) }
             }
         }
     }

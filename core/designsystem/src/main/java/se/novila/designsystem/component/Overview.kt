@@ -2,6 +2,7 @@ package se.novila.designsystem.component
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -113,23 +115,44 @@ fun NovilaHeroRing(
 /** How a day of the week stands: something [Done], something [Planned], or a [Rest] day. */
 enum class NovilaDayMark { Done, Planned, Rest }
 
-/** One day in a [NovilaWeekStrip]: a short [label] ("Mon"), its [mark] and what screen readers say about it. */
+/**
+ * One day in a [NovilaWeekStrip]: a short [label] ("Mon"), its [mark] and what screen readers say about it. With
+ * [onClick], the day opens what is planned for it, and [clickLabel] says what.
+ */
 @Immutable
-data class NovilaWeekDay(val label: String, val mark: NovilaDayMark, val isToday: Boolean, val description: String)
+data class NovilaWeekDay(
+    val label: String,
+    val mark: NovilaDayMark,
+    val isToday: Boolean,
+    val description: String,
+    val onClick: (() -> Unit)? = null,
+    val clickLabel: String? = null,
+)
 
 /**
  * The week at a glance on the hero panel: a check for each day with something done, a ring for what is planned and
- * a dot for rest. Today is circled in the sun's color.
+ * a dot for rest. Today is circled in the sun's color. Days with an [NovilaWeekDay.onClick] can be tapped.
  */
 @Composable
 fun NovilaWeekStrip(days: List<NovilaWeekDay>, modifier: Modifier = Modifier) {
     val hero = NovilaTheme.hero
     Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         days.forEach { day ->
+            val onClick = day.onClick
+            val tap = if (onClick != null) {
+                Modifier
+                    .clip(NovilaTheme.shapes.small)
+                    .clickable(onClickLabel = day.clickLabel, role = Role.Button, onClick = onClick)
+            } else {
+                Modifier
+            }
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.xs),
-                modifier = Modifier.clearAndSetSemantics { contentDescription = day.description },
+                modifier = tap
+                    .padding(horizontal = NovilaTheme.spacing.xxs)
+                    // The day's sentence replaces the short label; the tap above stays.
+                    .clearAndSetSemantics { contentDescription = day.description },
             ) {
                 Text(
                     day.label,
