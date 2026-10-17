@@ -14,9 +14,9 @@ Everything stays on the phone: no account, no cloud, no analytics. The app is in
 |---|---|
 | **Today** | A greeting by name, the day's balance as one ring per part, a tile per part with the week's trend, insights, the week's sleep and nutrition charts, and mood |
 | **Training** | A weekly program following WHO's guidelines (150–300 min cardio, strength two days a week, at most +10 % cardio per week). An on-device coach that builds the week from your goal, days, time per session, focus and limitations, including phased rehab programs for knee and lower back. 13 illustrated exercises and a workout mode with sets, rests and countdowns. Cardio is logged with "I did it" or read from Health Connect, and after a session the effort (RPE) and pain you report adjust the dose and suggest the next rehab phase |
-| **Sleep** | Bedtime and wake time (or just hours), how the night felt and what may have affected it, and what affects your sleep: links between the day before (food, water, training, sweets), the evening and the night, tested on your own logs and shown with the nights behind them. A chart over the week, four weeks or a year compared with the period before |
+| **Sleep** | Bedtime and wake time (or just hours, or the night your watch recorded, from Health Connect), how the night felt and what may have affected it, and what affects your sleep: links between the day before (food, water, training, sweets), the evening and the night, tested on your own logs and shown with the nights behind them. A chart over the week, four weeks or a year compared with the period before |
 | **Nutrition** | Servings per food group, water and sweets, scored 0–100 after the Swedish Food Agency's dietary guidelines, with a suggested next step, and the scores over the week, four weeks or a year compared with the period before |
-| **Movement** | Today's steps and active calories, and the last five weeks' workouts, from Health Connect, read in the foreground only |
+| **Movement** | Today's steps and active calories, the last five weeks' workouts and your nights, from Health Connect, read in the foreground only |
 | **Reminders** | Log sleep, train and log food, each at your own time and only when it isn't logged yet. One WorkManager job per reminder and day, nothing else in the background |
 | **Settings** | Theme (system, light, dark, wallpaper colors), profile, Health Connect access, health disclaimer, deleting all data, and the intro again |
 
@@ -28,8 +28,9 @@ from day one. What comes next is in the [roadmap](docs/roadmap.md) (Swedish).
 - **Data stays on the device.** Days, coach answers and settings live in Preferences DataStore. The app makes no
   network calls and has no analytics or Firebase SDKs.
 - **Health Connect is read-only and minimal:** only today's steps and active calories (`READ_STEPS`,
-  `READ_ACTIVE_CALORIES_BURNED`) and the last five weeks' workouts (`READ_EXERCISE`: type, day and length, for the
-  training program), while the app is open. Nothing is written, no background reads, no extra history access, and
+  `READ_ACTIVE_CALORIES_BURNED`), the last five weeks' workouts (`READ_EXERCISE`: type, day and length, for the
+  training program) and the nights (`READ_SLEEP`: bedtime, wake time and time asleep, filling in Sleep when you
+  haven't logged it), while the app is open. Nothing is written, no background reads, no extra history access, and
   what is read stays in memory only. The privacy screen Health Connect links to says exactly that.
 - **Reminders are off until you turn them on.** Notifications are asked for only then. Each reminder is one
   WorkManager job a day that reads what is already saved on the phone and notifies only when something is missing.
@@ -84,10 +85,11 @@ each other, which a test checks.
 :core:reminders          Reminders: WorkManager jobs and notifications
 :core:navigation         Back stack per tab, Navigator
 :core:data               DataStore stores and the Gemini Nano coach model
-:core:healthconnect      Health Connect as a movement and workout source, privacy screen
+:core:healthconnect      Health Connect as a movement, workout and sleep source, privacy screen
 :core:model              Pure Kotlin: day entries, nutrition score, daily balance, insights, settings
 :core:movement           Pure Kotlin: movement data independent of source
 :core:exercise           Pure Kotlin: exercises, weekly program generator, workout mode
+:core:sleep              Pure Kotlin: recorded nights independent of source
 :core:coach              Pure Kotlin: the training coach and its rehab programs
 :core:anatomy            Pure Kotlin: poses, skeleton, muscles and cameras for exercise illustrations
 :core:googlehealth       Pure Kotlin: Google Health API as an exercise source (not wired in yet)

@@ -4,6 +4,7 @@ import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.ActiveCaloriesBurnedRecord
 import androidx.health.connect.client.records.ExerciseSessionRecord
+import androidx.health.connect.client.records.SleepSessionRecord
 import androidx.health.connect.client.records.StepsRecord
 import se.novila.movement.MovementState
 
@@ -16,11 +17,14 @@ val MOVEMENT_PERMISSIONS: Set<String> = setOf(
 /** Read the last five weeks' workouts, the history the training program builds on. */
 val EXERCISE_PERMISSION: String = HealthPermission.getReadPermission(ExerciseSessionRecord::class)
 
+/** Read when the user went to bed, woke up and slept, so a recorded night fills in Sleep. */
+val SLEEP_PERMISSION: String = HealthPermission.getReadPermission(SleepSessionRecord::class)
+
 /**
  * The only Health Connect permissions the app asks for, all in one dialog. Must match the `uses-permission` entries
  * in AndroidManifest.xml (HealthConnectManifestTest).
  */
-val HEALTH_PERMISSIONS: Set<String> = MOVEMENT_PERMISSIONS + EXERCISE_PERMISSION
+val HEALTH_PERMISSIONS: Set<String> = MOVEMENT_PERMISSIONS + EXERCISE_PERMISSION + SLEEP_PERMISSION
 
 /**
  * The state to show without reading any data, or null when there is something to read.

@@ -11,6 +11,9 @@
     <string name="sleep_save">Save</string>
     <string name="sleep_cancel">Cancel</string>
     <string name="sleep_hours_hint">Or drag to set the hours</string>
+    <string name="sleep_from_watch">From your watch, through Health Connect. Change it to log the night yourself.</string>
+    <string name="sleep_watch_body">Novila can fill in your nights from a watch or another app through Health Connect. What you log yourself always comes first.</string>
+    <string name="sleep_watch_connect">Read sleep from Health Connect</string>
     <string name="sleep_quality_title">How did you sleep?</string>
     <string name="sleep_quality_hint">Choose how rested you feel</string>
     <string name="sleep_quality_1">Poorly</string>
