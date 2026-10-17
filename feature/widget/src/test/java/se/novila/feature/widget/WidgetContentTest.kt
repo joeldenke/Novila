@@ -41,12 +41,12 @@ class WidgetContentTest {
         DayEntry(june, sleepHours = 7f).withCardio(CardioLog(CardioType.Walking, 30)),
     ) {
         onNode(hasText("Latest: walk, 30 min")).assertExists()
-        onNode(hasText("vitamin D", substring = true)).assertExists()
+        onNode(hasText("vitamin D")).assertExists()
     }
 
     @Test fun `nothing logged asks for the night and the food`() = show(DayEntry(june)) {
-        onNode(hasText("Log last night", substring = true)).assertExists()
-        onNode(hasText("Latest:", substring = true)).assertDoesNotExist()
+        onNode(hasText("Log last night")).assertExists()
+        onNode(hasText("Latest:")).assertDoesNotExist()
     }
 
     @Test fun `nothing but the background before the stores are read`() = show(day = null) {
