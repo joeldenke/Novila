@@ -30,7 +30,7 @@ class HealthStore internal constructor(context: Context, scope: CoroutineScope) 
     private val store = PreferencesStore(context, NAME, scope)
 
     /** Every saved day, read from disk once and then kept in memory. Null until the first read is done. */
-    val days: StateFlow<SavedDays?> = store.snapshots(::SavedDays)
+    val days: StateFlow<SavedDays?> = store.snapshots { SavedDays(it) }
 
     /** The history over each range in [ranges] up to each date in [dates], read again whenever a day is saved. */
     fun histories(dates: Flow<LocalDate>, ranges: Flow<HistoryRange>): Flow<History> =
@@ -57,9 +57,18 @@ class HealthStore internal constructor(context: Context, scope: CoroutineScope) 
         fun keyOf(date: LocalDate) = stringPreferencesKey(date.toString())
     }
 
-    /** The days as saved at one moment. */
-    class SavedDays internal constructor(private val prefs: Preferences) {
-        fun day(date: LocalDate): DayEntry = DayEntryCodec.decode(date, prefs[keyOf(date)])
+    /**
+     * The days as saved at one moment, each shown through [shown] (as saved unless [showing] gives another view, such
+     * as a watch's night filling in sleep that wasn't logged).
+     */
+    class SavedDays internal constructor(
+        private val prefs: Preferences,
+        private val shown: (DayEntry) -> DayEntry = { it },
+    ) {
+        fun day(date: LocalDate): DayEntry = shown(DayEntryCodec.decode(date, prefs[keyOf(date)]))
+
+        /** The same days, each shown through [change] as well. Only for reading: saves always start from disk. */
+        fun showing(change: (DayEntry) -> DayEntry): SavedDays = SavedDays(prefs) { change(shown(it)) }
 
         /** [count] days up to [today], newest first. */
         fun lastDays(count: Int, today: LocalDate): List<DayEntry> =

@@ -78,6 +78,19 @@ class HealthStoreTest {
         assertEquals(30, HealthStore(context, stores.scope).days.await().day(today).strengthMinutes)
     }
 
+    @Test fun `days can be shown changed without saving the change`() {
+        val store = HealthStore(context, stores.scope)
+        store.update(today) { it.withMood(3) }
+        val saved = store.days.await { it.day(today).mood == 3 }
+
+        val shown = saved.showing { it.withSleep(7f) }.showing { it.copy(waterGlasses = 2) }
+
+        assertEquals(7f, shown.day(today).sleepHours)
+        assertEquals(2, shown.week(today).history.first().waterGlasses)
+        assertEquals(7f, shown.history(HistoryRange.Week, today).days.last().sleepHours)
+        assertEquals(DayEntry(today, mood = 3), saved.day(today))
+    }
+
     @Test fun `clearing forgets every day`() {
         val store = HealthStore(context, stores.scope)
         store.update(today) { it.withSleep(7f) }

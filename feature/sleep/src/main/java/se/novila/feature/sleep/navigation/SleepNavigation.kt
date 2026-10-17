@@ -1,6 +1,7 @@
 package se.novila.feature.sleep.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
@@ -10,6 +11,8 @@ import kotlinx.serialization.Serializable
 import se.novila.feature.sleep.SleepActions
 import se.novila.feature.sleep.SleepScreen
 import se.novila.feature.sleep.SleepViewModel
+import se.novila.healthconnect.HealthConnectSource
+import se.novila.healthconnect.rememberHealthPermissionRequest
 
 /** The Sleep tab. */
 @Serializable data object SleepRoute : NavKey
@@ -24,6 +27,8 @@ fun EntryProviderScope<NavKey>.sleepEntry(contentPadding: PaddingValues) {
         }
         // Nothing to show until the saved days are read, a moment at app start.
         val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
+        val context = LocalContext.current
+        val connectHealth = rememberHealthPermissionRequest(viewModel::onHealthPermissionsResult)
         SleepScreen(
             day = state.day,
             history = state.history,
@@ -37,9 +42,13 @@ fun EntryProviderScope<NavKey>.sleepEntry(contentPadding: PaddingValues) {
                 onFactor = viewModel::setFactor,
                 onSelectDay = viewModel::selectDay,
                 onRange = viewModel::selectRange,
+                onConnectHealth = connectHealth,
+                onOpenHealthSettings = { HealthConnectSource.openSettings(context) },
             ),
             contentPadding = contentPadding,
             today = state.today,
+            watch = state.watch,
+            fromWatch = state.fromWatch,
         )
     }
 }

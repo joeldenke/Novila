@@ -13,6 +13,7 @@ import se.novila.model.HistoryRange
 import se.novila.model.SleepAnalysis
 import se.novila.model.SleepFactor
 import se.novila.model.analyzeSleep
+import se.novila.sleep.SleepState
 import se.novila.ui.common.DayPicker
 import se.novila.ui.common.ScreenList
 import se.novila.ui.common.SleepHistoryCard
@@ -29,12 +30,15 @@ data class SleepActions(
     val onFactor: (SleepFactor, Boolean) -> Unit = { _, _ -> },
     val onSelectDay: (LocalDate) -> Unit = {},
     val onRange: (HistoryRange) -> Unit = {},
+    val onConnectHealth: () -> Unit = {},
+    val onOpenHealthSettings: () -> Unit = {},
 )
 
 /**
  * The shown [day]'s night (times, hours, how it felt and what may have affected it), what the user's logs say about
  * their sleep ([analysis]) and the [history] up to the day, over a week, four weeks or a year. [today] is the day it
- * really is: the user can go back to an earlier day and fill in a night that was forgotten.
+ * really is: the user can go back to an earlier day and fill in a night that was forgotten. Nights a watch recorded
+ * ([watch]) fill in the ones the user didn't log, [fromWatch] when the shown one is.
  */
 @Composable
 fun SleepScreen(
@@ -46,11 +50,15 @@ fun SleepScreen(
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
     today: LocalDate = day.date,
+    watch: SleepState = SleepState.Unavailable,
+    fromWatch: Boolean = false,
 ) {
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
         item(key = "day") { DayPicker(day.date, today, actions.onSelectDay, NovilaTheme.pillars.sleep) }
         item(key = "sleep") {
-            NovilaReveal(order = 0) { SleepCard(day, goals, actions, isToday = day.date == today) }
+            NovilaReveal(order = 0) {
+                SleepCard(day, goals, actions, isToday = day.date == today, watch = watch, fromWatch = fromWatch)
+            }
         }
         item(key = "details") { NovilaReveal(order = 1) { SleepDetailsCard(day, actions) } }
         item(key = "findings") { NovilaReveal(order = 2) { SleepFindingsCard(analysis) } }
@@ -59,7 +67,13 @@ fun SleepScreen(
 }
 
 @Composable
-private fun SleepScreenContent(day: DayEntry, history: History, today: LocalDate = day.date) {
+private fun SleepScreenContent(
+    day: DayEntry,
+    history: History,
+    today: LocalDate = day.date,
+    watch: SleepState = SleepState.Unavailable,
+    fromWatch: Boolean = false,
+) {
     NovilaTheme {
         SleepScreen(
             day = day,
@@ -69,6 +83,8 @@ private fun SleepScreenContent(day: DayEntry, history: History, today: LocalDate
             actions = SleepActions(),
             contentPadding = PaddingValues(),
             today = today,
+            watch = watch,
+            fromWatch = fromWatch,
         )
     }
 }
@@ -90,3 +106,22 @@ private fun SleepScreenEarlierDayPreview() = SleepScreenContent(
 @Preview(showBackground = true, heightDp = 2200)
 @Composable
 private fun SleepScreenYearPreview() = SleepScreenContent(PreviewData.today, PreviewData.history(HistoryRange.Year))
+
+/** Last night as a watch recorded it, through Health Connect. */
+@Preview(showBackground = true, heightDp = 2200)
+@Composable
+private fun SleepScreenFromWatchPreview() = SleepScreenContent(
+    day = PreviewData.today,
+    history = PreviewData.history(HistoryRange.Week),
+    watch = SleepState.Connected(emptyList()),
+    fromWatch = true,
+)
+
+/** Health Connect is connected, but not for sleep yet. */
+@Preview(showBackground = true, heightDp = 2200)
+@Composable
+private fun SleepScreenConnectWatchPreview() = SleepScreenContent(
+    day = PreviewData.today,
+    history = PreviewData.history(HistoryRange.Week),
+    watch = SleepState.NeedsPermission(),
+)

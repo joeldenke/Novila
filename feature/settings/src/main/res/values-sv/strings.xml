@@ -13,8 +13,8 @@
 
     <!-- Health Connect -->
     <string name="settings_health_connect">Health Connect</string>
-    <string name="settings_health_connected">Ansluten. Novila läser dagens steg och aktiva kalorier, och de senaste fem veckornas träningspass, medan appen är öppen.</string>
-    <string name="settings_health_not_connected">Inte ansluten. Anslut för att se dagens steg och aktiva kalorier och få med klockans träningspass i programmet.</string>
+    <string name="settings_health_connected">Ansluten. Novila läser dagens steg och aktiva kalorier, de senaste fem veckornas träningspass och dina nätter medan appen är öppen.</string>
+    <string name="settings_health_not_connected">Inte ansluten. Anslut för att se dagens steg och aktiva kalorier, få med klockans träningspass i programmet och fylla i sömnen från den.</string>
     <string name="settings_health_denied">Åtkomst nekades. Du kan tillåta den för Novila i Health Connect.</string>
     <string name="settings_health_needs_install">Health Connect behöver installeras eller uppdateras innan Novila kan läsa dina steg.</string>
     <string name="settings_health_unavailable">Health Connect finns inte på den här telefonen.</string>
