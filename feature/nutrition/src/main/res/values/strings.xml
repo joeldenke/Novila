@@ -6,12 +6,15 @@
 
     <!-- Nutrition -->
     <string name="nutrition_score_title">Today\'s nutrition score</string>
+    <string name="nutrition_score_title_day">Nutrition score</string>
     <string name="nutrition_next_title">Next step</string>
     <string name="nutrition_done_title">All food groups on target</string>
-    <string name="nutrition_done_body">Every food group has reached today\'s goal.</string>
+    <string name="nutrition_done_body">Every food group has reached its daily goal.</string>
     <string name="nutrition_treat_penalty">Sweets and snacks: −%1$d points today. One a day is free.</string>
+    <string name="nutrition_treat_penalty_day">Sweets and snacks: −%1$d points that day. One a day is free.</string>
     <string name="nutrition_about">Weighted after the Swedish Food Agency\'s dietary advice: vegetables and fruit count the most.</string>
     <string name="food_log_title">Log today</string>
+    <string name="food_log_title_day">Change the day</string>
     <string name="food_vegetables">Vegetables &amp; fruit</string>
     <string name="food_meals">Meals</string>
     <string name="food_protein">Protein</string>
@@ -19,6 +22,7 @@
     <string name="food_treats">Sweets &amp; snacks</string>
     <string name="food_progress">%1$d of %2$d</string>
     <string name="food_treats_value">%1$d today</string>
+    <string name="food_treats_value_day">%1$d that day</string>
     <string name="food_add">Add %1$s</string>
     <string name="food_remove">Remove %1$s</string>
 </resources>

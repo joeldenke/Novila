@@ -73,4 +73,27 @@ class NovilaInputTest {
 
         assertEquals(1, count)
     }
+
+    @Test fun `day switcher steps both ways and stops at the end of its range`() {
+        var steps = 0
+        composeRule.setContent {
+            NovilaTheme {
+                NovilaDaySwitcher(
+                    label = "Yesterday",
+                    onPrevious = { steps-- },
+                    onNext = { steps++ },
+                    previousDescription = "Day before",
+                    nextDescription = "Day after",
+                    role = NovilaTheme.pillars.sleep,
+                    nextEnabled = false,
+                )
+            }
+        }
+
+        composeRule.onNodeWithText("Yesterday").assertExists()
+        composeRule.onNodeWithContentDescription("Day before").performClick()
+        composeRule.onNodeWithContentDescription("Day after").assertIsNotEnabled().performClick()
+
+        assertEquals(-1, steps)
+    }
 }

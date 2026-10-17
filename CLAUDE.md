@@ -34,7 +34,7 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
 - `:core:designsystem` – `se.novila.designsystem`, enda modulen som använder Material 3 direkt
   - `theme` – `NovilaTheme`: färger, typografi, former och spacing-tokens
   - `component` – `Novila*`-komponenter som wrappar Material 3
-- `:core:ui` – det flera features delar: `ScreenList`, formatering (`hoursText`, `stepsText` …), veckokorten,
+- `:core:ui` – det flera features delar: `ScreenList`, formatering (`hoursText`, `stepsText` …), `DayPicker`, veckokorten,
   flikikonerna och `PreviewData` (samma person i alla previews)
 - `:core:navigation` – `NavigationState` (en back stack per flik, varje entry med egen sparad state och
   `ViewModelStore` via `rememberViewModelStoreNavEntryDecorator`) och `Navigator`
@@ -43,6 +43,8 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   `CoachLanguageModel`). `PreferencesStore` flyttar gamla SharedPreferences hit vid första läsningen, håller datan i
   minnet och köar sparningar i storens egen scope (i ordning, klara även när ViewModeln rensas). Tills första läsningen
   är klar är ViewModelns state `null` och entryn ritar inget. Använd aldrig SharedPreferences för ny data.
+  `SelectedDay` är dagen en skärm visar och ändrar (i dag, eller en tidigare dag inom `EditableDays`, 30 dagar
+  bakåt); Sömn och Kost har varsin i sin ViewModel och sparar på den dagen.
 - `:core:healthconnect` – Health Connect som `MovementSource` (dagens steg och kalorier) och `ExerciseSource`
   (`HealthConnectExerciseSource`, träningspass), behörigheterna i modulens manifest (`HEALTH_PERMISSIONS`, frågas i en
   dialog via `rememberHealthPermissionRequest`) och integritetsskärmen (`HealthDataInfoActivity`)

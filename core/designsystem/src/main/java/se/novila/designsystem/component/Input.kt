@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import se.novila.designsystem.theme.NovilaColorRole
 import se.novila.designsystem.theme.NovilaTheme
@@ -101,6 +102,66 @@ private fun RoundButton(
             val color = if (enabled) content else content.copy(alpha = 0.5f)
             drawLine(color, center - Offset(arm, 0f), center + Offset(arm, 0f), stroke, StrokeCap.Round)
             if (plus) drawLine(color, center - Offset(0f, arm), center + Offset(0f, arm), stroke, StrokeCap.Round)
+        }
+    }
+}
+
+/**
+ * Steps between days: [label] (e.g. "Yesterday") between round back and forward arrows, drawn like the stepper's
+ * symbols. Either arrow can be turned off at the end of a range, such as forward on today.
+ */
+@Composable
+fun NovilaDaySwitcher(
+    label: String,
+    onPrevious: () -> Unit,
+    onNext: () -> Unit,
+    previousDescription: String,
+    nextDescription: String,
+    role: NovilaColorRole,
+    modifier: Modifier = Modifier,
+    previousEnabled: Boolean = true,
+    nextEnabled: Boolean = true,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s),
+    ) {
+        ArrowButton(back = true, onPrevious, previousEnabled, previousDescription, role)
+        Text(
+            label,
+            style = NovilaTheme.typography.titleMedium,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.weight(1f),
+        )
+        ArrowButton(back = false, onNext, nextEnabled, nextDescription, role)
+    }
+}
+
+@Composable
+private fun ArrowButton(
+    back: Boolean,
+    onClick: () -> Unit,
+    enabled: Boolean,
+    description: String,
+    role: NovilaColorRole,
+) {
+    Surface(
+        onClick = onClick,
+        enabled = enabled,
+        shape = CircleShape,
+        color = if (enabled) role.container else role.container.copy(alpha = 0.4f),
+        modifier = Modifier.size(40.dp).semantics { contentDescription = description },
+    ) {
+        // Drawn like the stepper's symbols: a chevron, optically centered on its point.
+        Canvas(Modifier.fillMaxWidth().fillMaxHeight()) {
+            val arm = 5.dp.toPx()
+            val stroke = 2.dp.toPx()
+            val color = if (enabled) role.onContainer else role.onContainer.copy(alpha = 0.5f)
+            val direction = if (back) -1f else 1f
+            val tip = center + Offset(direction * arm / 2, 0f)
+            drawLine(color, tip, tip - Offset(direction * arm, arm), stroke, StrokeCap.Round)
+            drawLine(color, tip, tip - Offset(direction * arm, -arm), stroke, StrokeCap.Round)
         }
     }
 }

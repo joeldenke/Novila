@@ -31,4 +31,10 @@
 
     <!-- Settings, opened from every tab -->
     <string name="settings_title">Settings</string>
+
+    <!-- Going back to an earlier day -->
+    <string name="day_today">Today</string>
+    <string name="day_yesterday">Yesterday</string>
+    <string name="day_previous">Previous day</string>
+    <string name="day_next">Next day</string>
 </resources>
