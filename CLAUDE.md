@@ -78,11 +78,11 @@ Strängar och ikoner ligger i modulen som använder dem; det flera moduler anvä
 - **Commit-meddelanden, branchnamn, PR-titlar och PR-beskrivningar skrivs på engelska.**
   PR-titeln (vid squash: commit-rubriken) blir en rad i testarnas release notes, så skriv den som en tydlig
   sammanfattning. `scripts/release-notes.sh` listar allt på `main` sedan förra lyckade distributionen.
-- `CI`-workflowen måste vara grön innan PR:en är klar. Den kör fyra jobb parallellt: Format (`spotlessCheck`), Lint
-  (`:app:lintDebug`, alla moduler), Tests (`test verifyRoborazziDebug koverXmlReportCoverage`) och Build
+- `CI`-workflowen måste vara grön innan PR:en är klar. Den kör tre jobb parallellt: Format and lint (`spotlessCheck`
+  och `:app:lintDebug`, alla moduler), Tests (`test verifyAndRecordRoborazziDebug koverXmlReportCoverage`) och Build
   (`:app:assembleDebug :app:checkDebugBadging`); kontrollen *Lint, test and build* samlar dem och är den som krävs. Gemensamma steg ligger
   i `.github/actions/`. Cachen sköts av `gradle/actions/setup-gradle` (standardcachen, sparas bara från `main`), och
-  CI-flaggorna för 2-kärniga runners ligger i `.github/ci-gradle.properties`. Bygg aldrig egen cachelogik.
+  CI-flaggorna för de publika runnerna (4 kärnor, 16 GB) ligger i `.github/ci-gradle.properties`. Bygg aldrig egen cachelogik.
   Release-bygget (R8) körs inte på PR:er. Ändrar du `proguard-rules.pro` eller R8-känslig kod,
   säg det i PR-beskrivningen. Fel syns då först vid merge.
 - Kan din miljö inte nå Google Maven: pusha och följ körningen (`gh pr checks`, `gh run view --log-failed`)
@@ -186,9 +186,8 @@ där pluginet `firebase@firebase` inte alltid installeras.
   KSP (t.ex. för Room) kräver `ksp.project.isolation.enabled=true` i `gradle.properties`, annars fallerar
   bygget med "cannot access task dependencies directly" (google/ksp#2844). Flaggan är redan satt, så att KSP fungerar
   den dag ett bibliotek kräver det; ta aldrig bort den. Metro (DI) är en Kotlin-kompilatorplugin, inte KSP, och
-  behöver ingen flagga. CI har `workers.max=3` i stället för 2:
-  Gradle 9.8 fryser med Isolated Projects när workers ≤ antalet byggen (roten och `build-logic`), gradle#39040.
-  Tillbaka till 2 efter uppgradering till Gradle 9.9.
+  behöver ingen flagga. Sätt aldrig `workers.max` till 2 eller lägre på Gradle 9.8: med Isolated Projects fryser
+  bygget när workers ≤ antalet byggen (roten och `build-logic`), gradle#39040. CI kör med standardvärdet (4).
 - Nya moduler: lägg till `include(...)` i `settings.gradle.kts`, beroende via `projects.<…>` (typsäkra accessorer).
 - Nya Gradle-plugins deklareras med `apply false` i rotens `build.gradle.kts`, så att alla moduler delar en classloader.
 
@@ -197,8 +196,10 @@ där pluginet `firebase@firebase` inte alltid installeras.
   (`@RunWith(RobolectricTestRunner::class)`), också i `src/test`. Ingen emulator behövs.
 - **Skärmdumpar:** varje `@Preview` testas mot referensbilder i modulens `src/test/screenshots`
   (t.ex. `feature/training/src/test/screenshots`). Filnamnet är paket, fil och preview.
-  Ändrar du UI med flit: kommentera `/record-screenshots` på PR:en. Workflowen `Record references` tar nya bilder,
-  pushar dem till branchen och startar CI. Ta aldrig fram referensbilder lokalt; de ska renderas i CI.
+  Ändrar du UI med flit: skriv `/record-screenshots` i PR-beskrivningen. Då spelar Tests-jobbet in ändrade bilder,
+  pushar dem till branchen som en egen commit (*Record screenshot references*) och startar CI på den. Granska bilderna
+  i PR:ens diff. Utan raden fallerar en ändrad skärmdump som vanligt. Beskrivningen läses vid varje push; har du lagt
+  till raden efteråt, kommentera `/record-screenshots` på PR:en (workflowen `Record references`) i stället. Ta aldrig fram referensbilder lokalt; de ska renderas i CI.
 - **Kodstil:** Spotless med ktlint (`android_studio`-stil) kontrolleras i CI. `./gradlew spotlessApply` rättar.
 - **Täckning:** Kover, sammanfattning i CI-körningens summary. **Compose-stabilitet:** artefakten `compose-reports`.
 

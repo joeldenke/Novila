@@ -51,8 +51,8 @@ class AndroidUnitTestConventionPlugin : Plugin<Project> {
             // every Robolectric test fails with IllegalAccessException (robolectric#11434).
             test.jvmArgs("--add-exports=java.base/jdk.internal.access=ALL-UNNAMED")
             test.jvmArgs(TEST_JVM_ARGS)
-            // Rendering screenshots needs more than Gradle's 512 MB default. Two test JVMs (one per CPU on CI) plus
-            // the Gradle daemon still fit in a 7 GB runner.
+            // Rendering screenshots needs more than Gradle's 512 MB default. Four test JVMs (one per CPU on CI) plus
+            // the Gradle daemon still fit in a 16 GB runner.
             test.maxHeapSize = "1g"
         }
     }

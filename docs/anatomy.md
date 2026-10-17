@@ -100,4 +100,4 @@ tools/anatomy/anatomy.sh run Solve.kt            # egen fil, t.ex. en vinkellös
 
 Skriptet hämtar Kotlin-kompilatorn (samma version som `libs.versions.toml`) och JUnit från Maven Central via
 `mvn`. Kontaktarket ritas med Java2D och ungefärliga färger. Det är bara en kontroll, aldrig en referensbild:
-skärmdumparna tas alltid i CI med `/record-screenshots`.
+skärmdumparna tas alltid i CI (`/record-screenshots` i PR-beskrivningen).

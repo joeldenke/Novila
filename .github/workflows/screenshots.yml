@@ -1,5 +1,6 @@
 # Records reference files in CI, so they never have to be made locally:
-#   - Roborazzi reference screenshots (`/record-screenshots`)
+#   - Roborazzi reference screenshots (`/record-screenshots`). CI already records changed ones on a PR whose
+#     description contains /record-screenshots (ci.yml, Tests job), so this is for a single re-record without a push.
 #   - the APK's badging, app/badging/debug-badging.txt (`/record-badging`), after a deliberate change
 #     to permissions, SDK levels or exported components. The pushed diff is what reviewers check.
 #
