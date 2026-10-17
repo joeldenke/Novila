@@ -17,6 +17,7 @@ telefonen: inget konto, inget moln, inga analysverktyg. Appen finns på svenska 
 | **Sömn** | Timmar per natt, och en graf över veckan, fyra veckor eller ett år jämförd med perioden innan |
 | **Kost** | Portioner per livsmedelsgrupp, vatten och sött, poäng 0–100 efter Livsmedelsverkets kostråd, ett förslag på nästa steg, och poängen över veckan, fyra veckor eller ett år jämförd med perioden innan |
 | **Rörelse** | Dagens steg och aktiva kalorier, och de senaste fem veckornas träningspass, från Health Connect, bara medan appen är öppen |
+| **Påminnelser** | Logga sömnen, träna och logga kosten, var och en på egen tid och bara om det inte redan är loggat. Ett WorkManager-jobb per påminnelse och dag, inget annat i bakgrunden |
 | **Inställningar** | Tema (automatiskt, ljust, mörkt, bakgrundsfärger), profil, Health Connect, ansvarsfriskrivning, radera all data och introduktionen igen |
 
 En kort illustrerad introduktion vid första start ställer in mål, profil, coach och Health Connect, så att planen
@@ -30,6 +31,8 @@ finns från dag ett. Vad som kommer härnäst står i [roadmapen](docs/roadmap.m
   `READ_ACTIVE_CALORIES_BURNED`) och de senaste fem veckornas träningspass (`READ_EXERCISE`: typ, dag och längd, för
   träningsprogrammet), medan appen är öppen. Inget skrivs, ingen bakgrundsläsning, ingen extra historikåtkomst, och
   det som läses ligger bara i minnet. Integritetsskärmen som Health Connect länkar till säger exakt det.
+- **Påminnelserna är av tills du slår på dem.** Notiser frågas först då. Varje påminnelse är ett WorkManager-jobb
+  om dagen som läser det som redan finns sparat på telefonen och visar en notis bara om något saknas.
 - **AI:n körs på telefonen.** Träningsplanen är deterministisk, testad Kotlin. Gemini Nano (via AICore) skriver
   bara en kort kommentar om den färdiga planen, prompten lämnar aldrig enheten och svaret visas med en
   AI-reservation. Modellen väljer aldrig övningar, doser eller rehabråd.
@@ -77,6 +80,7 @@ varandra, vilket ett test kontrollerar.
 :feature:settings        Inställningar
 :core:designsystem       NovilaTheme och Novila*-komponenter (enda modulen som använder Material 3 direkt)
 :core:ui                 Delat UI: listor, formatering, historikkort, previewdata
+:core:reminders          Påminnelser: WorkManager-jobb och notiser
 :core:navigation         Back stack per flik, Navigator
 :core:data               Lagring i DataStore och coachens Gemini Nano-modell
 :core:healthconnect      Health Connect som källa för rörelse och träningspass, integritetsskärmen

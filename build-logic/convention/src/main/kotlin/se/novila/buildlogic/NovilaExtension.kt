@@ -81,6 +81,15 @@ abstract class NovilaExtension @Inject constructor(private val project: Project)
     /** Activities with Compose content (`setContent`). */
     fun activity() = implementation("androidx-activity-compose")
 
+    /**
+     * WorkManager for work that must run later, also after a restart (the reminders), and its test helpers. See
+     * *Påminnelser* in CLAUDE.md before scheduling anything new.
+     */
+    fun workManager() {
+        implementation("androidx-work-runtime")
+        project.dependencies.add("testImplementation", project.libs.library("androidx-work-testing"))
+    }
+
     /** The Health Connect client. See *Health Connect* in CLAUDE.md before using it anywhere new. */
     fun healthConnect() = implementation("androidx-health-connect-client")
 }

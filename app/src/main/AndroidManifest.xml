@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  The app's own manifest is just the application and its launcher activity. Modules add what they need
-  (Health Connect: core/healthconnect/src/main/AndroidManifest.xml). Every permission, query and exported component
-  of the merged manifest ends up in app/badging/debug-badging.txt, which CI compares against the built APK
-  (checkDebugBadging). See CLAUDE.md before adding permissions.
+  The app's own manifest is just the application, its launcher activity and WorkManager's on-demand setup. Modules
+  add what they need (Health Connect: core/healthconnect/src/main/AndroidManifest.xml, reminders:
+  core/reminders/src/main/AndroidManifest.xml). Every permission, query and exported component of the merged manifest
+  ends up in app/badging/debug-badging.txt, which CI compares against the built APK (checkDebugBadging). See CLAUDE.md
+  before adding permissions.
 -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <application
         android:name=".NovilaApplication"
@@ -22,5 +24,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!--
+          WorkManager is set up on demand by NovilaApplication (Configuration.Provider), with the reminders' worker
+          factory from the Metro graph, so its default initializer is removed. The provider stays for androidx.startup's
+          other users.
+        -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
     </application>
 </manifest>

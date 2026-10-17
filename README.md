@@ -17,6 +17,7 @@ Everything stays on the phone: no account, no cloud, no analytics. The app is in
 | **Sleep** | Hours slept per night, and a chart over the week, four weeks or a year compared with the period before |
 | **Nutrition** | Servings per food group, water and sweets, scored 0–100 after the Swedish Food Agency's dietary guidelines, with a suggested next step, and the scores over the week, four weeks or a year compared with the period before |
 | **Movement** | Today's steps and active calories, and the last five weeks' workouts, from Health Connect, read in the foreground only |
+| **Reminders** | Log sleep, train and log food, each at your own time and only when it isn't logged yet. One WorkManager job per reminder and day, nothing else in the background |
 | **Settings** | Theme (system, light, dark, wallpaper colors), profile, Health Connect access, health disclaimer, deleting all data, and the intro again |
 
 A short illustrated intro at first start sets up the goal, profile, coach and Health Connect, so the plan is there
@@ -30,6 +31,8 @@ from day one. What comes next is in the [roadmap](docs/roadmap.md) (Swedish).
   `READ_ACTIVE_CALORIES_BURNED`) and the last five weeks' workouts (`READ_EXERCISE`: type, day and length, for the
   training program), while the app is open. Nothing is written, no background reads, no extra history access, and
   what is read stays in memory only. The privacy screen Health Connect links to says exactly that.
+- **Reminders are off until you turn them on.** Notifications are asked for only then. Each reminder is one
+  WorkManager job a day that reads what is already saved on the phone and notifies only when something is missing.
 - **AI runs on the phone.** The training plan is deterministic, tested Kotlin. Gemini Nano (through AICore)
   only writes a short comment about the finished plan, the prompt never leaves the device, and the answer is
   shown with an AI disclaimer. The model never picks exercises, doses or rehab advice.
@@ -78,6 +81,7 @@ each other, which a test checks.
 :feature:settings        Settings
 :core:designsystem       NovilaTheme and Novila* components (the only module using Material 3 directly)
 :core:ui                 Shared UI: lists, formatting, history cards, preview data
+:core:reminders          Reminders: WorkManager jobs and notifications
 :core:navigation         Back stack per tab, Navigator
 :core:data               DataStore stores and the Gemini Nano coach model
 :core:healthconnect      Health Connect as a movement and workout source, privacy screen

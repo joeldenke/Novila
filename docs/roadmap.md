@@ -3,6 +3,14 @@
 En genomgång av vad Novila kan i dag och vad som saknas för att bli en hälsocoach som kan allt. Sparad oktober 2026.
 Bocka av här när något blir klart, och flytta upp det som blir viktigare.
 
+## Princip: klockan mäter, Novila förstår och föreslår
+
+Novila tävlar inte med Google Fit, Fitbit eller klockornas egna appar om att mäta. Steg, puls, pass och sömn mäts
+bättre av klockan, och då läser Novila dem via Health Connect i stället för att mäta själv. Det Novila tillför är
+tolkningen: coachen och rehab, kosten mot Livsmedelsverkets råd, dagens balans och insikter som kopplar ihop delarna,
+allt på telefonen. Varje ny funktion ska antingen läsa det som redan mäts eller tillföra tolkning, coachning eller
+samband som de andra inte har. Handloggning finns kvar som reserv för den som inte har klocka.
+
 ## Vad Novila kan i dag
 
 | Del | Funktioner | Bedömning |
@@ -21,7 +29,8 @@ mer än kommentaren, eller data som lämnar appen.
 
 ### 1. Grunder för alla användare
 - [x] **Introduktion vid första start:** karusell, mål, profil, Health Connect och coachen, så att planen finns från dag ett
-- [ ] **Påminnelser** (pass, logga sömn, läggdags) **(ok: `POST_NOTIFICATIONS`)**
+- [x] **Påminnelser:** logga sömnen, träning (de dagar programmet har ett pass) och logga kosten, var och en på egen
+  tid och bara om det inte redan är loggat. WorkManager, ett jobb per påminnelse och dag. Läggdags återstår.
 - [x] **Redigera tidigare dagar.** Sömn och kost går att ändra upp till 30 dagar bakåt (dagväljaren på Sömn och Kost).
 - [x] **Historik längre än 7 dagar:** Sömn och Kost visar vecka, fyra veckor (en punkt per vecka) eller år (en per
   månad), med snittet jämfört med perioden innan. Träningsminuter och mående över tid återstår.
@@ -75,6 +84,6 @@ mer än kommentaren, eller data som lämnar appen.
 2. Egna mål ← klar
 3. Logga konditionspass, och RPE och smärta efter passet ← klar
 4. Redigera tidigare dagar och längre historik ← klar
-5. Påminnelser **(ok)**
+5. Påminnelser ← klar
 6. Sömn 2.0, sedan sömn från Health Connect **(ok)**
 7. Widget på hemskärmen

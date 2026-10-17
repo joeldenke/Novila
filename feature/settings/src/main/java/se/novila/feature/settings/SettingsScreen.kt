@@ -40,6 +40,7 @@ import se.novila.ui.R as UiR
 data class SettingsActions(
     val onOpenProfile: () -> Unit = {},
     val onOpenGoals: () -> Unit = {},
+    val onOpenReminders: () -> Unit = {},
     val onTheme: (ThemeMode) -> Unit = {},
     val onDynamicColor: (Boolean) -> Unit = {},
     val onChooseLanguage: () -> Unit = {},
@@ -53,8 +54,8 @@ data class SettingsActions(
 )
 
 /**
- * Settings: the user's profile and daily goals, appearance, Health Connect access, health disclaimer, the user's
- * data and the app version.
+ * Settings: the user's profile and daily goals, appearance, reminders, Health Connect access, health disclaimer, the
+ * user's data and the app version.
  *
  * @param canUseDynamicColor wallpaper colors exist (Android 12+)
  * @param canChooseLanguage the phone has per-app language settings (Android 13+)
@@ -77,6 +78,7 @@ fun SettingsScreen(
         item(key = "appearance") {
             AppearanceCard(settings, canUseDynamicColor, canChooseLanguage, actions)
         }
+        item(key = "reminders") { RemindersCard(actions.onOpenReminders) }
         item(key = "health-connect") { HealthConnectCard(movement, actions) }
         item(key = "disclaimer") { DisclaimerCard(actions.onOpenDisclaimer) }
         item(key = "data") { DataCard(actions.onDeleteData) }
@@ -154,6 +156,19 @@ private fun ThemeMode.label(): Int = when (this) {
     ThemeMode.System -> R.string.settings_theme_system
     ThemeMode.Light -> R.string.settings_theme_light
     ThemeMode.Dark -> R.string.settings_theme_dark
+}
+
+/** Reminders to log and train, on their own screen. */
+@Composable
+private fun RemindersCard(onOpenReminders: () -> Unit) {
+    NovilaCard(title = stringResource(R.string.settings_reminders)) {
+        NovilaListRow(
+            title = stringResource(R.string.settings_reminders_row),
+            summary = stringResource(R.string.settings_reminders_summary),
+            onClick = onOpenReminders,
+            trailing = { Chevron() },
+        )
+    }
 }
 
 /** Whether Novila may read movement from Health Connect, and the one thing the user can do about it. */

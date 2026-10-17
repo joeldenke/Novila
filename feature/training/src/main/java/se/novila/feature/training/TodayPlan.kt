@@ -1,5 +1,6 @@
 package se.novila.feature.training
 
+import se.novila.data.cardioType
 import se.novila.exercise.ExerciseType
 import se.novila.exercise.PlannedSession
 import se.novila.model.CardioLog

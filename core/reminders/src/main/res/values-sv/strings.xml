@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="reminders_channel">Påminnelser</string>
+    <string name="reminders_channel_description">Påminnelserna du slår på i Novila: logga sömn, träning och mat.</string>
+    <string name="reminder_sleep_title">Hur sov du?</string>
+    <string name="reminder_sleep_text">Logga nattens sömn medan du minns den.</string>
+    <string name="reminder_training_title">Dagens pass</string>
+    <string name="reminder_training_text">Ditt program har ett pass planerat i dag.</string>
+    <string name="reminder_nutrition_title">Vad har du ätit i dag?</string>
+    <string name="reminder_nutrition_text">Logga dagens mat och vatten för kostpoängen.</string>
+</resources>

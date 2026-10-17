@@ -96,4 +96,23 @@
     <string name="goals_suggestion_in_use">Du använder de här målen.</string>
     <string name="goals_suggestion_needs_profile">Fyll i födelseår eller vikt i profilen, så föreslår Novila mål som passar dig.</string>
     <string name="goals_about">Idag, Sömn och Kost mäter dina dagar mot de här målen. Vattnet räknas in i kostpoängen; portionerna mat följer Livsmedelsverkets kostråd. Ett glas är 2 dl.</string>
+
+    <!-- Påminnelser -->
+    <string name="settings_reminders">Påminnelser</string>
+    <string name="settings_reminders_row">Välj vad och när</string>
+    <string name="settings_reminders_summary">Bara om det du inte har loggat än</string>
+    <string name="reminders_intro">Novila påminner bara om det du inte redan har loggat, och bara de dagar det gäller. Påminnelserna kommer som notiser; första gången frågar telefonen om Novila får visa dem.</string>
+    <string name="reminders_off_title">Notiser är avstängda</string>
+    <string name="reminders_off_body">Novila får inte visa notiser, så påminnelserna syns inte. Slå på dem i telefonens inställningar.</string>
+    <string name="reminders_open_settings">Öppna inställningar</string>
+    <string name="reminder_sleep">Logga sömnen</string>
+    <string name="reminder_sleep_summary">På morgonen, om natten inte är loggad.</string>
+    <string name="reminder_training">Träning</string>
+    <string name="reminder_training_summary">De dagar programmet har ett pass, om du inte redan har tränat.</string>
+    <string name="reminder_nutrition">Logga kosten</string>
+    <string name="reminder_nutrition_summary">På kvällen, om inget är loggat i dag.</string>
+    <string name="reminders_on">Påminn mig</string>
+    <string name="reminders_time">Tid</string>
+    <string name="reminders_time_title">Välj tid</string>
+    <string name="reminders_save">Spara</string>
 </resources>

@@ -9,6 +9,8 @@ novila {
     navigation()
     // The Metro graph (AppGraph) and the ViewModel factory every entry uses.
     viewModels()
+    // WorkManager's configuration, with the reminders' worker factory (NovilaApplication).
+    workManager()
 }
 
 dependencies {
@@ -27,6 +29,7 @@ dependencies {
     implementation(projects.core.healthconnect)
     implementation(projects.core.model)
     implementation(projects.core.movement)
+    implementation(projects.core.reminders)
     implementation(projects.core.ui)
 
     implementation(libs.androidx.navigation3.ui)

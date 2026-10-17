@@ -45,6 +45,7 @@ include(":core:healthconnect")
 include(":core:model")
 include(":core:movement")
 include(":core:navigation")
+include(":core:reminders")
 include(":core:ui")
 
 include(":feature:nutrition")

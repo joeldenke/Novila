@@ -14,6 +14,8 @@ datastore = "1.2.1"
 # Metro: compile-time dependency injection (Kotlin compiler plugin). Must support the Kotlin version above,
 # see https://zacsweers.github.io/metro/latest/compatibility/.
 metro = "1.4.5"
+# Reminders: one-time work per reminder, kept across restarts by WorkManager. See ReminderScheduler.
+work = "2.10.1"
 # Health Connect: read-only steps and active calories, see HealthConnectSource.
 healthConnect = "1.1.0"
 kotlinxSerialization = "1.11.0"
@@ -46,6 +48,8 @@ metrox-viewmodel-compose = { module = "dev.zacsweers.metro:metrox-viewmodel-comp
 androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }
 androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "navigation3" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "work" }
+androidx-work-testing = { module = "androidx.work:work-testing", version.ref = "work" }
 androidx-health-connect-client = { module = "androidx.health.connect:connect-client", version.ref = "healthConnect" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerialization" }

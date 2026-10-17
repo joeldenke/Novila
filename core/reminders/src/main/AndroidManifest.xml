@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Reminders: everything the app declares for them, merged into the app's manifest. Every permission and exported
+  component ends up in app/badging/debug-badging.txt, which CI compares against the built APK (checkDebugBadging).
+  See CLAUDE.md before adding permissions.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Asked for (Android 13+) when the user turns on the first reminder, never at start. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+</manifest>

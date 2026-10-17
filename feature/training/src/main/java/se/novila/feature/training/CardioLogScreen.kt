@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import se.novila.data.cardioType
 import se.novila.designsystem.component.NovilaScaffold
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.model.CardioLog
