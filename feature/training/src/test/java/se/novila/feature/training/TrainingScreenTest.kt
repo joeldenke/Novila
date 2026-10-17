@@ -1,10 +1,13 @@
 package se.novila.feature.training
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTextReplacement
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -20,7 +23,7 @@ import java.time.DayOfWeek
 
 // Tall enough for the overview and the cards below it, so nothing has to be scrolled to.
 @RunWith(RobolectricTestRunner::class)
-@Config(qualifiers = "w411dp-h2000dp")
+@Config(qualifiers = "w411dp-h3000dp")
 class TrainingScreenTest {
     @get:Rule val composeRule = createComposeRule()
 
@@ -73,5 +76,27 @@ class TrainingScreenTest {
         composeRule.onNodeWithContentDescription("Play the movement").performClick()
         composeRule.onNodeWithText("Repetition 3 of 3").assertExists()
         composeRule.onNodeWithContentDescription("Drag through the movement").assertExists()
+    }
+
+    @Test fun `a strength day in the week strip and the program opens its session`() {
+        val opened = mutableListOf<DayOfWeek>()
+        show(state, TrainingActions(onOpenSession = { opened += it }))
+        composeRule.onNodeWithContentDescription("Thursday: Strength, full body, 30 minutes planned").performClick()
+        composeRule.onNodeWithText("Thu").performClick()
+        assertEquals(listOf(DayOfWeek.THURSDAY, DayOfWeek.THURSDAY), opened)
+    }
+
+    @Test fun `the library finds exercises by name and muscle`() {
+        composeRule.setContent {
+            NovilaTheme { ExerciseLibraryScreen(onOpenExercise = {}, contentPadding = PaddingValues()) }
+        }
+        composeRule.onNodeWithText("13 exercises").assertExists()
+        composeRule.onNode(hasSetTextAction()).performTextInput("push")
+        composeRule.onNodeWithText("Push-up").assertExists()
+        composeRule.onNodeWithText("Squat").assertDoesNotExist()
+        composeRule.onNode(hasSetTextAction()).performTextReplacement("calves")
+        composeRule.onNodeWithText("Calf raise").assertExists()
+        composeRule.onNodeWithContentDescription("Clear the search").performClick()
+        composeRule.onNodeWithText("13 exercises").assertExists()
     }
 }

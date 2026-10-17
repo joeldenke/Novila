@@ -304,4 +304,18 @@
     <string name="overview_day_today">I dag, %1$s</string>
     <string name="overview_log_other">Logga ett pass</string>
     <string name="cardio_log_title">Logga ett pass</string>
+
+    <!-- En dags pass, och övningsbiblioteket -->
+    <string name="session_title">Pass på %1$s</string>
+    <string name="session_open">Visa passet</string>
+    <string name="session_none">Den här dagen har inget styrkepass i veckans program längre.</string>
+    <string name="session_muscles_title">Det här tränar passet</string>
+    <string name="session_muscles_body">Tryck på en övning för att se hur den görs, med figuren du kan pausa och dra i.</string>
+    <string name="library_show_all">Visa alla %1$d övningar</string>
+    <string name="library_search_chip">Hitta en övning</string>
+    <string name="library_search">Sök övning eller muskel</string>
+    <string name="library_clear">Rensa sökningen</string>
+    <string name="library_all">Alla</string>
+    <string name="library_empty">Ingen övning matchar \"%1$s\".</string>
+    <string name="library_count">%1$d övningar</string>
 </resources>

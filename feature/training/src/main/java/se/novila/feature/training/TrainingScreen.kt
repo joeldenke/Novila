@@ -48,6 +48,7 @@ fun TrainingScreen(
                     plan = plan,
                     onStartWorkout = actions.onStartWorkout,
                     onLogCardio = actions.onLogCardio,
+                    onOpenSession = actions.onOpenSession,
                 )
             }
         }
@@ -69,7 +70,7 @@ fun TrainingScreen(
         }
         item(key = "program") {
             NovilaReveal(order = 3) {
-                TrainingProgramCard(state.program, today, state.weekDone, onStartWorkout = actions.onStartWorkout)
+                TrainingProgramCard(state.program, today, state.weekDone, onOpenSession = actions.onOpenSession)
             }
         }
         item(key = "movement") {
@@ -82,7 +83,7 @@ fun TrainingScreen(
             )
         }
         item(key = "exercises") {
-            ExerciseLibraryCard(actions.onOpenExercise)
+            ExerciseLibraryCard(actions.onOpenExercise, actions.onOpenLibrary)
         }
     }
 }
@@ -90,6 +91,8 @@ fun TrainingScreen(
 /** What the Training tab can do, from the entry: navigation, Health Connect and logging. */
 data class TrainingActions(
     val onStartWorkout: (DayOfWeek) -> Unit = {},
+    val onOpenSession: (DayOfWeek) -> Unit = {},
+    val onOpenLibrary: () -> Unit = {},
     val onLogCardio: (CardioLog) -> Unit = {},
     val onOpenCardioLog: () -> Unit = {},
     val onOpenCoach: () -> Unit = {},
@@ -111,6 +114,7 @@ private fun QuickActions(coach: CoachUiState, movement: MovementState, actions: 
         verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s),
     ) {
         NovilaActionChip(stringResource(R.string.overview_log_other), onClick = actions.onOpenCardioLog)
+        NovilaActionChip(stringResource(R.string.library_search_chip), onClick = actions.onOpenLibrary)
         NovilaActionChip(
             stringResource(if (coach.active) R.string.coach_adjust else R.string.coach_open),
             onClick = actions.onOpenCoach,

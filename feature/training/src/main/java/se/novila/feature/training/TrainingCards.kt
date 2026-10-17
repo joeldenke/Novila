@@ -24,14 +24,14 @@ import se.novila.ui.R as UiR
 
 /**
  * This week's program: one row per workout, with today's in the training color and the days already trained marked
- * done ([done]). With [onStartWorkout], a strength day's row starts its session.
+ * done ([done]). With [onOpenSession], a strength day's row opens its session.
  */
 @Composable
 fun TrainingProgramCard(
     program: TrainingProgram,
     today: DayOfWeek,
     done: Map<DayOfWeek, Int> = emptyMap(),
-    onStartWorkout: ((DayOfWeek) -> Unit)? = null,
+    onOpenSession: ((DayOfWeek) -> Unit)? = null,
 ) {
     val training = NovilaTheme.pillars.training
     NovilaCard(
@@ -49,8 +49,8 @@ fun TrainingProgramCard(
             color = NovilaTheme.colors.onSurfaceVariant,
         )
         program.sessions.forEach { session ->
-            val start = onStartWorkout?.takeIf { session.exercises.isNotEmpty() }
-            SessionRow(session, isToday = session.day == today, done = (done[session.day] ?: 0) > 0, onStart = start)
+            val open = onOpenSession?.takeIf { session.exercises.isNotEmpty() }
+            SessionRow(session, isToday = session.day == today, done = (done[session.day] ?: 0) > 0, onOpen = open)
         }
         NovilaText(
             stringResource(R.string.program_basis),
@@ -61,15 +61,15 @@ fun TrainingProgramCard(
 }
 
 @Composable
-private fun SessionRow(session: PlannedSession, isToday: Boolean, done: Boolean, onStart: ((DayOfWeek) -> Unit)?) {
+private fun SessionRow(session: PlannedSession, isToday: Boolean, done: Boolean, onOpen: ((DayOfWeek) -> Unit)?) {
     val locale = LocalConfiguration.current.locales[0]
     val color = if (isToday) NovilaTheme.pillars.training.color else NovilaTheme.colors.onSurface
     val style = if (isToday) NovilaTheme.typography.titleSmall else NovilaTheme.typography.bodyMedium
     val name = stringResource(session.type.label)
-    // A strength day's row starts its session; the whole row is the touch target.
-    val clickable = if (onStart != null) {
-        Modifier.clickable(onClickLabel = stringResource(R.string.workout_start), role = Role.Button) {
-            onStart(session.day)
+    // A strength day's row opens its session; the whole row is the touch target.
+    val clickable = if (onOpen != null) {
+        Modifier.clickable(onClickLabel = stringResource(R.string.session_open), role = Role.Button) {
+            onOpen(session.day)
         }
     } else {
         Modifier

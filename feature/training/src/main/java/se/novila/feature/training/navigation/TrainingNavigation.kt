@@ -19,14 +19,18 @@ import se.novila.feature.training.CardioLogViewModel
 import se.novila.feature.training.CoachScreen
 import se.novila.feature.training.CoachViewModel
 import se.novila.feature.training.ExerciseDetailScreen
+import se.novila.feature.training.ExerciseLibraryScreen
 import se.novila.feature.training.ExerciseViewModel
 import se.novila.feature.training.R
+import se.novila.feature.training.SessionScreen
+import se.novila.feature.training.SessionViewModel
 import se.novila.feature.training.TrainingActions
 import se.novila.feature.training.TrainingScreen
 import se.novila.feature.training.TrainingViewModel
 import se.novila.feature.training.WorkoutScreen
 import se.novila.feature.training.WorkoutViewModel
 import se.novila.feature.training.moveName
+import se.novila.feature.training.sessionTitle
 import se.novila.healthconnect.HealthConnectSource
 import se.novila.healthconnect.rememberHealthPermissionRequest
 import se.novila.navigation.Navigator
@@ -43,6 +47,17 @@ import java.time.DayOfWeek
 
 /** Logging a workout by hand, planned or not. */
 @Serializable data object CardioLogRoute : NavKey
+
+/** Every exercise, with search. */
+@Serializable data object ExerciseLibraryRoute : NavKey
+
+/** One strength or rehab day of this week's program, before starting it ([day] is ISO, Monday is 1). */
+@Serializable
+data class SessionRoute(val day: Int) : NavKey {
+    constructor(day: DayOfWeek) : this(day.value)
+
+    val dayOfWeek: DayOfWeek get() = DayOfWeek.of(day)
+}
 
 /** A guided strength session, set by set, for the program's strength day [day] (ISO, Monday is 1). */
 @Serializable
@@ -78,6 +93,8 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
             actions = TrainingActions(
                 onStartWorkout = { day -> navigator.navigate(WorkoutRoute(day)) },
                 onLogCardio = viewModel::logCardio,
+                onOpenSession = { day -> navigator.navigate(SessionRoute(day)) },
+                onOpenLibrary = { navigator.navigate(ExerciseLibraryRoute) },
                 onOpenCardioLog = { navigator.navigate(CardioLogRoute) },
                 onOpenCoach = { navigator.navigate(CoachRoute) },
                 onOpenExercise = openExercise,
@@ -88,6 +105,25 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
             contentPadding = contentPadding,
             exercise = exercise,
         )
+    }
+    entry<SessionRoute> { route ->
+        val viewModel = assistedMetroViewModel<SessionViewModel, SessionViewModel.Factory> {
+            create(route.dayOfWeek)
+        }
+        LifecycleResumeEffect(viewModel) {
+            viewModel.refresh()
+            onPauseOrDispose { }
+        }
+        val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
+        SessionScreen(
+            state = state,
+            onStart = { navigator.navigate(WorkoutRoute(route.dayOfWeek)) },
+            onOpenExercise = openExercise,
+            contentPadding = contentPadding,
+        )
+    }
+    entry<ExerciseLibraryRoute> {
+        ExerciseLibraryScreen(onOpenExercise = openExercise, contentPadding = contentPadding)
     }
     entry<CardioLogRoute> {
         val viewModel = metroViewModel<CardioLogViewModel>()
@@ -158,6 +194,8 @@ fun trainingDetailTitle(route: NavKey?): String? = when (route) {
     is ExerciseRoute -> moveName(route.exerciseId)
     CoachRoute -> stringResource(R.string.coach_title)
     CardioLogRoute -> stringResource(R.string.cardio_log_title)
+    ExerciseLibraryRoute -> stringResource(R.string.exercises_title)
+    is SessionRoute -> sessionTitle(route.dayOfWeek)
     is WorkoutRoute -> stringResource(R.string.workout_title)
     else -> null
 }
