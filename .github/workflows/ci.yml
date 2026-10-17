@@ -213,6 +213,16 @@ jobs:
           # How Gradle ran the check (executed, up to date, skipped), for when the two disagree.
           check=$(grep -E '^> Task :app:checkDebugBadging' build.log || echo "not in build.log")
           echo "::notice title=checkDebugBadging::$check"
+          # TEMPORARY diagnosis: how the APK's manifest and package were made, and what the APK declares.
+          tasks=$(grep -E '^> Task :app:(processDebugMainManifest|processDebugManifest|mergeDebugResources|packageDebug|generateDebugBadging|assembleDebug)' build.log | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/%0A/g')
+          echo "::notice title=App tasks::$tasks"
+          manifest=$(find app/build/intermediates -name AndroidManifest.xml -path '*merged_manifest*debug*' | head -1)
+          echo "::notice title=Merged manifest::$manifest has POST_NOTIFICATIONS: $(grep -c POST_NOTIFICATIONS "$manifest" || true)"
+          apk=$(find app/build/outputs/apk/debug -name '*.apk' | head -1)
+          aapt2=$(ls -d "$ANDROID_HOME"/build-tools/*/ | sort -V | tail -1)aapt2
+          perms=$("$aapt2" dump permissions "$apk" | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/%0A/g')
+          echo "::notice title=APK permissions ($apk, $(stat -c %y "$apk"))::$perms"
+          echo "::notice title=Generated badging head::$(head -12 "$generated" | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/%0A/g')"
           [ -f "$golden" ] || golden=/dev/null
           diff=$(diff -u "$golden" "$generated" | tail -n +3 | grep -E '^[+-]' || true)
           [ -n "$diff" ] || exit 0
