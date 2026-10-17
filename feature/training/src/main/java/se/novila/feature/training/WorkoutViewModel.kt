@@ -14,9 +14,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import se.novila.data.HealthStore
+import se.novila.exercise.ExerciseType
 import se.novila.exercise.Workout
+import se.novila.model.MAX_EFFORT
+import se.novila.model.MAX_PAIN
 import java.time.DayOfWeek
 import java.time.LocalDate
 import kotlin.time.Clock
@@ -24,7 +28,8 @@ import kotlin.time.Clock
 /**
  * A guided strength session for the program's [day]. Scoped to the workout entry: the session and its timer survive
  * rotation, and leaving the screen without finishing clears the ViewModel, which discards the session (nothing was
- * saved yet) and stops the timer.
+ * saved yet) and stops the timer. Once it is done, the user can say how hard it was and how much it hurt, which is
+ * saved with the session for the coach.
  */
 @AssistedInject
 class WorkoutViewModel(
@@ -40,6 +45,9 @@ class WorkoutViewModel(
     val state: StateFlow<WorkoutUiState?> = _state.asStateFlow()
     private var timer: Job? = null
 
+    /** The rehab phase the session belongs to, or 0 when it isn't a rehab session. */
+    private var rehabPhase = 0
+
     init {
         // The stores are almost always read by now; only a screen restored at app start waits for them.
         val today = LocalDate.now()
@@ -47,9 +55,9 @@ class WorkoutViewModel(
     }
 
     private fun start(state: TrainingUiState, day: DayOfWeek) {
-        state.program.sessions
-            .firstOrNull { it.day == day && it.exercises.isNotEmpty() }
-            ?.let { show(Workout.start(it, clock.now())) }
+        val session = state.program.sessions.firstOrNull { it.day == day && it.exercises.isNotEmpty() } ?: return
+        if (session.type == ExerciseType.Rehab && state.coach.active) rehabPhase = state.coach.preferences.rehabPhase
+        show(Workout.start(session, clock.now()))
     }
 
     /** The user finished a set or skipped a rest. */
@@ -57,11 +65,30 @@ class WorkoutViewModel(
         _state.value?.let { show(it.workout.next(clock.now())) }
     }
 
-    /** Saves a finished session as today's strength training, so next week's program builds on it. */
+    /** How hard the finished session was, RPE 1–10. */
+    fun setEffort(effort: Int) {
+        _state.update { it?.copy(feedback = it.feedback.copy(effort = effort.coerceIn(1, MAX_EFFORT))) }
+    }
+
+    /** How much the finished session hurt, 0–10. */
+    fun setPain(pain: Int) {
+        _state.update { it?.copy(feedback = it.feedback.copy(pain = pain.coerceIn(0, MAX_PAIN))) }
+    }
+
+    /**
+     * Saves a finished session as today's strength training, with what the user said about it, so next week's program
+     * builds on it and the coach can adjust the dose.
+     */
     fun finish() {
-        val workout = _state.value?.workout ?: return
+        val state = _state.value ?: return
+        val workout = state.workout
         val now = clock.now()
-        if (workout.isFinished) store.update(LocalDate.now()) { it.withStrengthSession(workout.minutes(now)) }
+        if (workout.isFinished) {
+            store.update(LocalDate.now()) {
+                it.withStrengthSession(workout.minutes(now))
+                    .withFeedback(state.feedback.effort, state.feedback.pain, rehabPhase)
+            }
+        }
         timer?.cancel()
         _state.value = null
     }

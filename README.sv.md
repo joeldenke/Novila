@@ -13,10 +13,10 @@ telefonen: inget konto, inget moln, inga analysverktyg. Appen finns på svenska 
 | Del | Funktioner |
 |---|---|
 | **Idag** | Hälsning med namn, dagens balans som en ring per del, en ruta per del med veckans trend, insikter, veckans sömn och kost i diagram, och mående |
-| **Träning** | Veckoprogram efter WHO:s råd (150–300 min kondition, styrka två dagar i veckan, högst +10 % kondition per vecka). En coach på enheten som bygger veckan ur ditt mål, dina dagar, tid per pass, fokus och hänsyn, med fasindelade rehabprogram för knä och ländrygg. 13 illustrerade övningar och ett passläge med set, vila och nedräkning |
+| **Träning** | Veckoprogram efter WHO:s råd (150–300 min kondition, styrka två dagar i veckan, högst +10 % kondition per vecka). En coach på enheten som bygger veckan ur ditt mål, dina dagar, tid per pass, fokus och hänsyn, med fasindelade rehabprogram för knä och ländrygg. 13 illustrerade övningar och ett passläge med set, vila och nedräkning. Konditionspass loggas med "Jag gjorde det" eller läses från Health Connect, och efter passet ändrar ansträngning (RPE) och smärta dosen och ger förslag på nästa rehabfas |
 | **Sömn** | Timmar per natt och veckan som graf |
 | **Kost** | Portioner per livsmedelsgrupp, vatten och sött, poäng 0–100 efter Livsmedelsverkets kostråd, och ett förslag på nästa steg |
-| **Rörelse** | Dagens steg och aktiva kalorier från Health Connect, bara medan appen är öppen |
+| **Rörelse** | Dagens steg och aktiva kalorier, och de senaste fem veckornas träningspass, från Health Connect, bara medan appen är öppen |
 | **Inställningar** | Tema (automatiskt, ljust, mörkt, bakgrundsfärger), profil, Health Connect, ansvarsfriskrivning, radera all data och introduktionen igen |
 
 En kort illustrerad introduktion vid första start ställer in mål, profil, coach och Health Connect, så att planen
@@ -27,8 +27,9 @@ finns från dag ett. Vad som kommer härnäst står i [roadmapen](docs/roadmap.m
 - **Datan stannar på enheten.** Dagar, coachens svar och inställningar ligger i Preferences DataStore. Appen gör
   inga nätverksanrop och har inga analysverktyg eller Firebase-SDK:er.
 - **Health Connect läses minimalt och bara läses:** dagens steg och aktiva kalorier (`READ_STEPS`,
-  `READ_ACTIVE_CALORIES_BURNED`), medan appen är öppen. Inget skrivs, ingen historik, ingen bakgrundsläsning, och
-  cachen ligger bara i minnet. Integritetsskärmen som Health Connect länkar till säger exakt det.
+  `READ_ACTIVE_CALORIES_BURNED`) och de senaste fem veckornas träningspass (`READ_EXERCISE`: typ, dag och längd, för
+  träningsprogrammet), medan appen är öppen. Inget skrivs, ingen bakgrundsläsning, ingen extra historikåtkomst, och
+  det som läses ligger bara i minnet. Integritetsskärmen som Health Connect länkar till säger exakt det.
 - **AI:n körs på telefonen.** Träningsplanen är deterministisk, testad Kotlin. Gemini Nano (via AICore) skriver
   bara en kort kommentar om den färdiga planen, prompten lämnar aldrig enheten och svaret visas med en
   AI-reservation. Modellen väljer aldrig övningar, doser eller rehabråd.
@@ -78,7 +79,7 @@ varandra, vilket ett test kontrollerar.
 :core:ui                 Delat UI: listor, formatering, veckokort, previewdata
 :core:navigation         Back stack per flik, Navigator
 :core:data               Lagring i DataStore och coachens Gemini Nano-modell
-:core:healthconnect      Health Connect som rörelsekälla, integritetsskärmen
+:core:healthconnect      Health Connect som källa för rörelse och träningspass, integritetsskärmen
 :core:model              Ren Kotlin: dagar, kostpoäng, dagens balans, insikter, inställningar
 :core:movement           Ren Kotlin: rörelsedata oberoende av källa
 :core:exercise           Ren Kotlin: övningar, veckoprogrammet, passläget

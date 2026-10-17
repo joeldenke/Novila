@@ -5,7 +5,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import se.novila.designsystem.theme.NovilaTheme
+import se.novila.exercise.ExerciseState
 import se.novila.exercise.TrainingProgram
+import se.novila.model.CardioLog
 import se.novila.movement.MovementState
 import se.novila.ui.common.ScreenList
 import se.novila.ui.preview.PreviewData
@@ -26,16 +28,24 @@ fun TrainingScreen(
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
     strengthMinutesToday: Int = 0,
+    cardioToday: CardioToday = CardioToday(),
+    exercise: ExerciseState = ExerciseState.Unavailable,
+    onLogCardio: (CardioLog) -> Unit = {},
+    onUndoCardio: () -> Unit = {},
 ) {
     val strengthDays = program.sessions.filter { it.exercises.isNotEmpty() }
     // The sun goes to the next strength day still to do: today's, unless it's done, or a later one.
     val next = strengthDays.firstOrNull { it.day > today || (it.day == today && strengthMinutesToday == 0) }
+    val plannedCardio = program.sessions.firstOrNull { it.day == today && it.type.cardioType != null }
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
         item(key = "movement") {
-            MovementCard(movement, onConnectHealth, onOpenHealthSettings, onInstallHealth)
+            MovementCard(movement, onConnectHealth, onOpenHealthSettings, onInstallHealth, exercise)
         }
         item(key = "program") {
             TrainingProgramCard(program, today)
+        }
+        item(key = "cardio") {
+            CardioCard(cardioToday, plannedCardio, onLog = onLogCardio, onUndo = onUndoCardio)
         }
         item(key = "coach") {
             CoachCard(coach, onOpen = onOpenCoach)
@@ -58,7 +68,11 @@ fun TrainingScreen(
 }
 
 @Composable
-private fun TrainingScreenContent(movement: MovementState) {
+private fun TrainingScreenContent(
+    movement: MovementState,
+    exercise: ExerciseState = ExerciseState.Unavailable,
+    cardioToday: CardioToday = CardioToday(),
+) {
     NovilaTheme {
         TrainingScreen(
             movement = movement,
@@ -72,13 +86,24 @@ private fun TrainingScreenContent(movement: MovementState) {
             onStartWorkout = {},
             onOpenCoach = {},
             contentPadding = PaddingValues(),
+            cardioToday = cardioToday,
+            exercise = exercise,
         )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun TrainingScreenPreview() = TrainingScreenContent(PreviewData.movement)
+private fun TrainingScreenPreview() = TrainingScreenContent(
+    PreviewData.movement,
+    ExerciseState.Connected(TrainingPreviewData.workouts),
+    CardioToday(recordedMinutes = 32),
+)
+
+@Preview(showBackground = true)
+@Composable
+private fun TrainingScreenWorkoutsPreview() =
+    TrainingScreenContent(PreviewData.movement, ExerciseState.NeedsPermission())
 
 @Preview(showBackground = true)
 @Composable

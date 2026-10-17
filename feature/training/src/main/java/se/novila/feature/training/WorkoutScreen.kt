@@ -15,20 +15,25 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import se.novila.anatomy.ExerciseLibrary
+import se.novila.coach.CoachFeedback
 import se.novila.designsystem.component.NovilaAccentButton
 import se.novila.designsystem.component.NovilaButton
 import se.novila.designsystem.component.NovilaCard
 import se.novila.designsystem.component.NovilaProgressBar
 import se.novila.designsystem.component.NovilaScaffold
+import se.novila.designsystem.component.NovilaSlider
 import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.exercise.Dosage
 import se.novila.exercise.Workout
 import se.novila.exercise.WorkoutStep
 import se.novila.feature.training.R
+import se.novila.model.MAX_EFFORT
+import se.novila.model.MAX_PAIN
 import se.novila.ui.common.ScreenList
 import se.novila.ui.preview.PreviewData
 import kotlin.math.roundToInt
@@ -40,12 +45,15 @@ private const val FIGURE_ASPECT_RATIO = 1.2f
 
 /**
  * A strength session, one step at a time: the set to do now, with the figure setting a calm pace, or the
- * rest with a countdown and what comes next. Keeps the screen on while it is shown.
+ * rest with a countdown and what comes next. When it is done, the user says how hard it was ([onEffort]) and how
+ * much it hurt ([onPain]) before saving it. Keeps the screen on while it is shown.
  */
 @Composable
 fun WorkoutScreen(
     state: WorkoutUiState?,
     onNext: () -> Unit,
+    onEffort: (Int) -> Unit,
+    onPain: (Int) -> Unit,
     onFinish: () -> Unit,
     onShowHow: (String) -> Unit,
     contentPadding: PaddingValues,
@@ -63,7 +71,12 @@ fun WorkoutScreen(
         when {
             workout == null -> item(key = "none") { NoWorkout() }
 
-            step == null -> item(key = "finished") { Finished(workout, onFinish) }
+            step == null -> {
+                item(key = "finished") { Finished(workout) }
+                item(key = "feedback") {
+                    Feedback(state?.feedback ?: SessionFeedbackDraft(), onEffort, onPain, onFinish)
+                }
+            }
 
             step is WorkoutStep.Work -> {
                 item(key = "progress") { Progress(workout, step) }
@@ -213,7 +226,7 @@ private fun Countdown(seconds: Int) {
 }
 
 @Composable
-private fun Finished(workout: Workout, onFinish: () -> Unit) {
+private fun Finished(workout: Workout) {
     NovilaCard(title = stringResource(R.string.workout_finished_title)) {
         NovilaText(
             stringResource(
@@ -224,6 +237,60 @@ private fun Finished(workout: Workout, onFinish: () -> Unit) {
             ),
             style = NovilaTheme.typography.bodyLarge,
         )
+    }
+}
+
+/**
+ * How hard the session was (RPE, Borg CR10) and how much it hurt, each on a slider that stays unanswered until it is
+ * touched. Both are optional; the coach adjusts the dose and suggests the rehab phase from them.
+ */
+@Composable
+private fun Feedback(
+    feedback: SessionFeedbackDraft,
+    onEffort: (Int) -> Unit,
+    onPain: (Int) -> Unit,
+    onFinish: () -> Unit,
+) {
+    val training = NovilaTheme.pillars.training
+    val effortTitle = stringResource(R.string.workout_effort_title)
+    val painTitle = stringResource(R.string.workout_pain_title)
+    NovilaCard(title = stringResource(R.string.workout_feedback_title)) {
+        Answer(
+            title = effortTitle,
+            value = feedback.effort?.let { stringResource(R.string.workout_scale_value, it, effortLabel(it)) },
+        )
+        NovilaSlider(
+            value = (feedback.effort ?: 1).toFloat(),
+            onValueChange = { onEffort(it.roundToInt()) },
+            valueRange = 1f..MAX_EFFORT.toFloat(),
+            steps = MAX_EFFORT - 2,
+            role = training,
+            modifier = Modifier.semantics { contentDescription = effortTitle },
+        )
+        Answer(
+            title = painTitle,
+            value = feedback.pain?.let { stringResource(R.string.workout_scale_value, it, painLabel(it)) },
+        )
+        NovilaSlider(
+            value = (feedback.pain ?: 0).toFloat(),
+            onValueChange = { onPain(it.roundToInt()) },
+            valueRange = 0f..MAX_PAIN.toFloat(),
+            steps = MAX_PAIN - 1,
+            role = training,
+            modifier = Modifier.semantics { contentDescription = painTitle },
+        )
+        val pain = feedback.pain
+        if (pain != null && pain >= CoachFeedback.TOO_MUCH_PAIN) {
+            NovilaText(
+                stringResource(R.string.workout_pain_care),
+                style = NovilaTheme.typography.titleSmall,
+            )
+        }
+        NovilaText(
+            stringResource(R.string.workout_feedback_hint),
+            style = NovilaTheme.typography.bodySmall,
+            color = NovilaTheme.colors.onSurfaceVariant,
+        )
         NovilaAccentButton(
             text = stringResource(R.string.workout_save),
             onClick = onFinish,
@@ -231,6 +298,40 @@ private fun Finished(workout: Workout, onFinish: () -> Unit) {
         )
     }
 }
+
+/** A question and its answer so far, or that it isn't answered. */
+@Composable
+private fun Answer(title: String, value: String?) {
+    NovilaText(title, style = NovilaTheme.typography.titleSmall)
+    NovilaText(
+        value ?: stringResource(R.string.workout_not_answered),
+        style = NovilaTheme.typography.bodyMedium,
+        color = if (value != null) NovilaTheme.pillars.training.color else NovilaTheme.colors.onSurfaceVariant,
+    )
+}
+
+/** Words for the Borg CR10 scale. */
+@Composable
+private fun effortLabel(effort: Int): String = stringResource(
+    when {
+        effort <= 2 -> R.string.workout_effort_easy
+        effort <= 4 -> R.string.workout_effort_moderate
+        effort <= 6 -> R.string.workout_effort_hard
+        effort <= 8 -> R.string.workout_effort_very_hard
+        else -> R.string.workout_effort_max
+    },
+)
+
+/** Words for the pain scale, after the pain monitoring model: up to 3 is fine, more than 5 is too much. */
+@Composable
+private fun painLabel(pain: Int): String = stringResource(
+    when {
+        pain == 0 -> R.string.workout_pain_none
+        pain <= CoachFeedback.CALM_PAIN -> R.string.workout_pain_fine
+        pain < CoachFeedback.TOO_MUCH_PAIN -> R.string.workout_pain_some
+        else -> R.string.workout_pain_too_much
+    },
+)
 
 @Composable
 private fun NoWorkout() {
@@ -260,7 +361,15 @@ private fun previewWorkout(steps: Int): WorkoutUiState {
 private fun WorkoutContent(state: WorkoutUiState) {
     NovilaTheme {
         NovilaScaffold { padding ->
-            WorkoutScreen(state, onNext = {}, onFinish = {}, onShowHow = {}, contentPadding = padding)
+            WorkoutScreen(
+                state,
+                onNext = {},
+                onEffort = {},
+                onPain = {},
+                onFinish = {},
+                onShowHow = {},
+                contentPadding = padding,
+            )
         }
     }
 }
@@ -273,6 +382,12 @@ private fun WorkoutSetPreview() = WorkoutContent(previewWorkout(steps = 0))
 @Composable
 private fun WorkoutRestPreview() = WorkoutContent(previewWorkout(steps = 1))
 
-@Preview(heightDp = 900, uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
+@Preview(heightDp = 1100, uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
 private fun WorkoutFinishedDarkPreview() = WorkoutContent(previewWorkout(steps = Int.MAX_VALUE))
+
+@Preview(heightDp = 1100)
+@Composable
+private fun WorkoutFeedbackPreview() = WorkoutContent(
+    previewWorkout(steps = Int.MAX_VALUE).copy(feedback = SessionFeedbackDraft(effort = 7, pain = 6)),
+)

@@ -16,6 +16,54 @@ class DayEntryTest {
         assertEquals(entry, DayEntryCodec.decode(date, DayEntryCodec.encode(entry)))
     }
 
+    @Test fun `codec round-trips cardio and feedback`() {
+        val entry = DayEntry(date, strengthMinutes = 25)
+            .withCardio(CardioLog(CardioType.Walking, 30))
+            .withCardio(CardioLog(CardioType.Running, 20))
+            .withFeedback(effort = 7, pain = 0, phase = 2)
+        assertEquals(entry, DayEntryCodec.decode(date, DayEntryCodec.encode(entry)))
+        assertEquals("v4;0;0.0;0;0;0;0;0;0;25;Walking:30,Running:20;7;0;2", DayEntryCodec.encode(entry))
+        val empty = DayEntry(date)
+        assertEquals(empty, DayEntryCodec.decode(date, DayEntryCodec.encode(empty)))
+    }
+
+    @Test fun `v3 data from before cardio logging is migrated`() {
+        assertEquals(
+            DayEntry(date, waterGlasses = 5, sleepHours = 7.5f, mood = 4, food = FoodLog(4, 3, 2, 1, 2))
+                .withStrengthSession(32),
+            DayEntryCodec.decode(date, "v3;5;7.5;4;4;3;2;1;2;32"),
+        )
+    }
+
+    @Test fun `unknown cardio types are skipped`() {
+        val day = DayEntryCodec.decode(date, "v4;0;0;0;0;0;0;0;0;0;Rowing:20,Walking:15,Walking:x;0;;0")
+        assertEquals(listOf(CardioLog(CardioType.Walking, 15)), day.cardio)
+        assertNull(day.pain)
+    }
+
+    @Test fun `feedback keeps the hardest session of the day`() {
+        val day = DayEntry(date).withFeedback(effort = 8, pain = 2).withFeedback(effort = 5, pain = 4)
+        assertEquals(8, day.effort)
+        assertEquals(4, day.pain)
+        assertEquals(0, day.rehabPhase)
+        val unanswered = DayEntry(date).withFeedback(effort = null, pain = null)
+        assertEquals(0, unanswered.effort)
+        assertNull(unanswered.pain)
+        assertEquals(MAX_EFFORT, DayEntry(date).withFeedback(effort = 15, pain = -2).effort)
+        assertEquals(0, DayEntry(date).withFeedback(effort = 15, pain = -2).pain)
+    }
+
+    @Test fun `cardio adds up within a day and can be taken back`() {
+        val day = DayEntry(date)
+            .withCardio(CardioLog(CardioType.Walking, 30))
+            .withCardio(CardioLog(CardioType.Cycling, 0))
+        assertEquals(31, day.cardioMinutes)
+        assertEquals(30, day.withoutLastCardio().cardioMinutes)
+        assertEquals(MAX_CARDIO_MINUTES, day.withCardio(CardioLog(CardioType.Running, 10_000)).cardioMinutes)
+        val full = day.withCardio(CardioLog(CardioType.Running, 10_000))
+        assertEquals(full, full.withCardio(CardioLog(CardioType.Running, 5)))
+    }
+
     @Test fun `v2 data from before session mode is migrated`() {
         assertEquals(
             DayEntry(date, waterGlasses = 5, sleepHours = 7.5f, mood = 4, food = FoodLog(4, 3, 2, 1, 2)),
@@ -42,6 +90,7 @@ class DayEntryTest {
         assertEquals(DayEntry(date), DayEntryCodec.decode(date, "v9;1;2;3"))
         assertEquals(DayEntry(date), DayEntryCodec.decode(date, "v2;1;2;3"))
         assertEquals(DayEntry(date), DayEntryCodec.decode(date, "v3;1;2;3;4;5;6;7;8"))
+        assertEquals(DayEntry(date), DayEntryCodec.decode(date, "v4;1;2;3;4;5;6;7;8;9"))
     }
 
     @Test fun `portions never go below zero`() {

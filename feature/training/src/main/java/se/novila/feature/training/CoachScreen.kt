@@ -150,6 +150,15 @@ fun CoachScreen(
                 coach.plan.notes.forEach { note ->
                     NovilaInsight(painterResource(UiR.drawable.ic_training), coachNoteText(note), training)
                 }
+                // The coach suggests a new rehab phase from the pain after the latest sessions; the user decides.
+                val suggested = coach.plan.suggestedPhase
+                if (coach.active && suggested != null) {
+                    NovilaButton(
+                        stringResource(R.string.coach_rehab_change_phase, suggested),
+                        onClick = { onChange(preferences.withRehabPhase(suggested)) },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
                 if (coach.active) {
                     NovilaAccentButton(
                         stringResource(R.string.coach_suggest),

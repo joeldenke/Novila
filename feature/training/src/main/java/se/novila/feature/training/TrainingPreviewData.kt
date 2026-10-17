@@ -7,6 +7,7 @@ import se.novila.coach.CoachPlanner
 import se.novila.coach.CoachPreferences
 import se.novila.coach.Consideration
 import se.novila.coach.RehabArea
+import se.novila.coach.SessionFeedback
 import se.novila.exercise.Exercise
 import se.novila.exercise.ExerciseType
 import se.novila.exercise.TrainingProgramGenerator
@@ -19,7 +20,7 @@ internal object TrainingPreviewData {
     private val date = PreviewData.date
 
     /** Someone who runs a little and has just started with strength training. */
-    private val workouts = (1L..4L).flatMap { week ->
+    val workouts = (1L..4L).flatMap { week ->
         val monday = date.minusWeeks(week).with(DayOfWeek.MONDAY)
         listOf(
             Exercise(ExerciseType.Running, monday.plusDays(1), 35.minutes),
@@ -30,8 +31,8 @@ internal object TrainingPreviewData {
 
     val program = TrainingProgramGenerator.generate(history = workouts, today = date)
 
-    private fun coach(preferences: CoachPreferences, active: Boolean) =
-        CoachUiState(preferences, CoachPlanner.plan(preferences, workouts, date), active)
+    private fun coach(preferences: CoachPreferences, active: Boolean, feedback: List<SessionFeedback> = emptyList()) =
+        CoachUiState(preferences, CoachPlanner.plan(preferences, workouts, date, feedback), active)
 
     /** The coach set up for strength, with sensitive knees and extra leg work. */
     val coach = coach(
@@ -43,12 +44,20 @@ internal object TrainingPreviewData {
             considerations = setOf(Consideration.Knees),
         ),
         active = true,
+        // The last two sessions felt 6 and 7 of 10: the dose stays.
+        feedback = listOf(
+            SessionFeedback(date.minusDays(2), effort = 6, pain = 0),
+            SessionFeedback(date.minusDays(5), effort = 7, pain = 1),
+        ),
     )
 
-    /** A rehab program for the lower back, in its second phase. */
+    /** A rehab program for the lower back, in its second phase, after three calm sessions: the coach suggests phase 3. */
     val rehabCoach = coach(
         CoachPreferences(goal = CoachGoal.Rehab, daysPerWeek = 5, rehabArea = RehabArea.LowerBack, rehabPhase = 2),
         active = true,
+        feedback = listOf(1L, 3L, 5L).map { daysAgo ->
+            SessionFeedback(date.minusDays(daysAgo), effort = 5, pain = 2, rehabPhase = 2)
+        },
     )
 
     /** What Gemini Nano might write about [coach]'s week. */

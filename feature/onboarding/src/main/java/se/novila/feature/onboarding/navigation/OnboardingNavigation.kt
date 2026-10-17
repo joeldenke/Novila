@@ -11,7 +11,7 @@ import se.novila.feature.onboarding.OnboardingActions
 import se.novila.feature.onboarding.OnboardingScreen
 import se.novila.feature.onboarding.OnboardingViewModel
 import se.novila.healthconnect.HealthConnectSource
-import se.novila.healthconnect.rememberMovementPermissionRequest
+import se.novila.healthconnect.rememberHealthPermissionRequest
 
 /** The intro, shown on its own before the tabs until it is done, and again when opened from Settings. */
 @Serializable data object OnboardingRoute : NavKey
@@ -28,7 +28,7 @@ fun EntryProviderScope<NavKey>.onboardingEntry() {
         // Nothing to show until the profile and the coach's answers are read, a moment at app start.
         val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
         val context = LocalContext.current
-        val connectHealth = rememberMovementPermissionRequest(viewModel::onMovementPermissionsResult)
+        val connectHealth = rememberHealthPermissionRequest(viewModel::onMovementPermissionsResult)
         OnboardingScreen(
             state = state,
             actions = OnboardingActions(

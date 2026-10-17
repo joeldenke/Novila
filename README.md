@@ -13,10 +13,10 @@ Everything stays on the phone: no account, no cloud, no analytics. The app is in
 | Part | Features |
 |---|---|
 | **Today** | A greeting by name, the day's balance as one ring per part, a tile per part with the week's trend, insights, the week's sleep and nutrition charts, and mood |
-| **Training** | A weekly program following WHO's guidelines (150–300 min cardio, strength two days a week, at most +10 % cardio per week). An on-device coach that builds the week from your goal, days, time per session, focus and limitations, including phased rehab programs for knee and lower back. 13 illustrated exercises and a workout mode with sets, rests and countdowns |
+| **Training** | A weekly program following WHO's guidelines (150–300 min cardio, strength two days a week, at most +10 % cardio per week). An on-device coach that builds the week from your goal, days, time per session, focus and limitations, including phased rehab programs for knee and lower back. 13 illustrated exercises and a workout mode with sets, rests and countdowns. Cardio is logged with "I did it" or read from Health Connect, and after a session the effort (RPE) and pain you report adjust the dose and suggest the next rehab phase |
 | **Sleep** | Hours slept per night and the week as a chart |
 | **Nutrition** | Servings per food group, water and sweets, scored 0–100 after the Swedish Food Agency's dietary guidelines, with a suggested next step |
-| **Movement** | Today's steps and active calories from Health Connect, read in the foreground only |
+| **Movement** | Today's steps and active calories, and the last five weeks' workouts, from Health Connect, read in the foreground only |
 | **Settings** | Theme (system, light, dark, wallpaper colors), profile, Health Connect access, health disclaimer, deleting all data, and the intro again |
 
 A short illustrated intro at first start sets up the goal, profile, coach and Health Connect, so the plan is there
@@ -27,8 +27,9 @@ from day one. What comes next is in the [roadmap](docs/roadmap.md) (Swedish).
 - **Data stays on the device.** Days, coach answers and settings live in Preferences DataStore. The app makes no
   network calls and has no analytics or Firebase SDKs.
 - **Health Connect is read-only and minimal:** only today's steps and active calories (`READ_STEPS`,
-  `READ_ACTIVE_CALORIES_BURNED`), while the app is open. Nothing is written, no history, no background reads, and
-  the cache is in memory only. The privacy screen Health Connect links to says exactly that.
+  `READ_ACTIVE_CALORIES_BURNED`) and the last five weeks' workouts (`READ_EXERCISE`: type, day and length, for the
+  training program), while the app is open. Nothing is written, no background reads, no extra history access, and
+  what is read stays in memory only. The privacy screen Health Connect links to says exactly that.
 - **AI runs on the phone.** The training plan is deterministic, tested Kotlin. Gemini Nano (through AICore)
   only writes a short comment about the finished plan, the prompt never leaves the device, and the answer is
   shown with an AI disclaimer. The model never picks exercises, doses or rehab advice.
@@ -79,7 +80,7 @@ each other, which a test checks.
 :core:ui                 Shared UI: lists, formatting, week cards, preview data
 :core:navigation         Back stack per tab, Navigator
 :core:data               DataStore stores and the Gemini Nano coach model
-:core:healthconnect      Health Connect as a movement source, privacy screen
+:core:healthconnect      Health Connect as a movement and workout source, privacy screen
 :core:model              Pure Kotlin: day entries, nutrition score, daily balance, insights, settings
 :core:movement           Pure Kotlin: movement data independent of source
 :core:exercise           Pure Kotlin: exercises, weekly program generator, workout mode
