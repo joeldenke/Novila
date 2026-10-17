@@ -9,7 +9,7 @@ CI är därför den enda sanningen om att något bygger och fungerar.
 - Jetpack Compose med eget designsystem ovanpå Material 3 1.5 (beta), compileSdk/targetSdk 37, minSdk 26
 - Navigation 3 (`androidx.navigation3`) med en back stack per flik: Idag, Träning, Sömn, Kost
 - Alla versioner i `gradle/libs.versions.toml`. Hårdkoda aldrig versioner i byggfiler.
-- Data lokalt i Preferences DataStore via `HealthStore`, kodat av `DayEntryCodec` (versionerat format, v4 sedan konditionsloggning och svar efter passet)
+- Data lokalt i Preferences DataStore via `HealthStore`, kodat av `DayEntryCodec` (versionerat format, v5 sedan läggtid, uppvakning, sömnkvalitet och orsaker)
 - DI med [Metro](https://zacsweers.github.io/metro/) (`dev.zacsweers.metro`, Kotlin-kompilatorplugin, ingen KSP).
   Varje skärm har en egen ViewModel (`StateFlow`) i sin feature, skapad av Metro och scopad till sin Navigation 3-entry.
   Ingen delad ViewModel. Skärmarna i `feature/*` är tillståndslösa.
@@ -55,7 +55,8 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   (`HealthConnectExerciseSource`, träningspass), behörigheterna i modulens manifest (`HEALTH_PERMISSIONS`, frågas i en
   dialog via `rememberHealthPermissionRequest`) och integritetsskärmen (`HealthDataInfoActivity`)
 - Ren Kotlin, utan Android (`novila.jvm.library`, testas på sekunder):
-  - `:core:model` – `DayEntry` (`DayEntryCodec`), kost, dagens balans, insikter, `History` (dagarna över en
+  - `:core:model` – `DayEntry` (`DayEntryCodec`), kost, dagens balans, insikter, `analyzeSleep` (se *Sömnens samband*
+    under Regler), `History` (dagarna över en
     `HistoryRange` i perioder, plus lika många dagar före att jämföra med; Sömn och Kost läser den via `HealthStore`), `Profile`, `Goals` (egna mål för
     steg, sömn och vatten; balans, insikter och kostpoäng mäts mot dem) och `AppSettings` (`ThemeMode`)
   - `:core:movement` – rörelsedata oberoende av källa: `MovementSource` (källa), `MovementCache` (cache) och
@@ -263,6 +264,12 @@ där pluginet `firebase@firebase` inte alltid installeras.
   I en pager styrs rörelsen av fingret, läst när det ritas: `Modifier.novilaPagerDepth` (block i lager som tonar
   över), `NovilaPagerBackdrop` (delens färg tonar till nästa) och `NovilaPageIndicator(offset = …)`. Lagren och
   indikatorn står still när sidan gör det, så previews och skärmdumpar visar slutläget.
+- **Sömnens samband:** `analyzeSleep` (`SleepAnalysis`) parar varje natt med dagen före (kostpoäng, vatten mot målet,
+  träning, sött) och med orsakerna användaren angav för natten (`SleepFactor`), över de senaste 90 nätterna. Ett
+  samband (`SleepLink`) visas bara med minst `MIN_NIGHTS` nätter på varje sida, en skillnad som märks (20 min eller ett
+  halvt steg i kvalitet) och Welchs t ≥ 2, och alltid med antalet nätter och "samband, inte bevis". En dag utan loggar
+  är okänd, aldrig en dag utan träning. Veckans förändring (`SleepChange`) visas bara tillsammans med det som ändrades
+  med den, och säger om de tidigare nätterna bekräftar det. Ändra trösklarna bara medvetet: `SleepAnalysisTest`.
 - **Kostpoäng:** `nutritionScore()` (0–100) viktar livsmedelsgrupper efter Livsmedelsverkets kostråd (`FoodGroup`) med
   avdrag för sött och snacks. Ändra vikterna bara medvetet: `NutritionTest` och dagens balans bygger på dem.
 - **Inga hårdkodade texter:** all text som visas eller läses upp ska komma från `strings.xml`.

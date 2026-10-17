@@ -19,6 +19,43 @@
     <string name="week_nutrition_title">Kost i veckan</string>
     <string name="week_nutrition_caption">Snittpoäng · en bra dag är %1$d eller mer</string>
     <string name="week_nutrition_description">Kostpoäng de senaste sju dagarna, %1$s i snitt.</string>
+    <!-- Vad som påverkar sömnen, ur användarens egna loggar -->
+    <string name="sleep_driver_ate_well">Efter dagar du åt bra</string>
+    <string name="sleep_driver_drank_enough">Efter dagar du drack tillräckligt med vatten</string>
+    <string name="sleep_driver_trained">Efter dagar du tränade</string>
+    <string name="sleep_driver_treats">Efter dagar med sött och snacks</string>
+    <string name="sleep_driver_late_caffeine">Efter sent koffein</string>
+    <string name="sleep_driver_screens">Efter skärm i sängen</string>
+    <string name="sleep_driver_alcohol">Efter alkohol</string>
+    <string name="sleep_driver_stress">Efter stressiga kvällar</string>
+    <string name="sleep_driver_late_meal">Efter en sen måltid</string>
+    <string name="sleep_driver_late_exercise">Efter sen träning</string>
+    <string name="sleep_link_sentence">%1$s %2$s.</string>
+    <string name="sleep_link_longer">sov du %1$s längre</string>
+    <string name="sleep_link_shorter">sov du %1$s kortare</string>
+    <string name="sleep_link_better">kändes sömnen bättre: %1$s mot %2$s av 5</string>
+    <string name="sleep_link_worse">kändes sömnen sämre: %1$s mot %2$s av 5</string>
+    <string name="sleep_link_nights">%1$d nätter med, %2$d utan</string>
+    <string name="sleep_change_longer">Den här veckan sov du %1$s mer per natt än veckan innan.</string>
+    <string name="sleep_change_shorter">Den här veckan sov du %1$s mindre per natt än veckan innan.</string>
+    <string name="sleep_change_better">Den här veckan kändes sömnen bättre än veckan innan: %1$s mot %2$s av 5.</string>
+    <string name="sleep_change_worse">Den här veckan kändes sömnen sämre än veckan innan: %1$s mot %2$s av 5.</string>
+    <string name="sleep_change_with">Samtidigt %1$s.</string>
+    <string name="sleep_change_and">%1$s och %2$s</string>
+    <string name="sleep_changed_ate_well">åt du bra %1$d av 7 dagar (%2$d veckan innan)</string>
+    <string name="sleep_changed_drank_enough">drack du tillräckligt med vatten %1$d av 7 dagar (%2$d veckan innan)</string>
+    <string name="sleep_changed_trained">tränade du %1$d av 7 dagar (%2$d veckan innan)</string>
+    <string name="sleep_changed_treats">åt du sött och snacks %1$d av 7 dagar (%2$d veckan innan)</string>
+    <string name="sleep_changed_late_caffeine">fick du i dig sent koffein %1$d av 7 kvällar (%2$d veckan innan)</string>
+    <string name="sleep_changed_screens">hade du skärm i sängen %1$d av 7 kvällar (%2$d veckan innan)</string>
+    <string name="sleep_changed_alcohol">drack du alkohol %1$d av 7 kvällar (%2$d veckan innan)</string>
+    <string name="sleep_changed_stress">var kvällen stressig %1$d av 7 gånger (%2$d veckan innan)</string>
+    <string name="sleep_changed_late_meal">åt du sent %1$d av 7 kvällar (%2$d veckan innan)</string>
+    <string name="sleep_changed_late_exercise">tränade du sent %1$d av 7 kvällar (%2$d veckan innan)</string>
+    <string name="sleep_change_confirmed">Dina tidigare nätter visar samma samband.</string>
+    <string name="sleep_change_unconfirmed">En vecka kan vara slump. Fortsätt logga så ser du om det håller.</string>
+    <string name="sleep_bedtime_spread">Din läggtid varierar med ungefär %1$s från natt till natt. En jämn läggtid, även på helger, hjälper sömnen.</string>
+
     <!-- Historik över en vecka, fyra veckor eller ett år -->
     <string name="history_week">Vecka</string>
     <string name="history_month">Månad</string>

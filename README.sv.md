@@ -14,7 +14,7 @@ telefonen: inget konto, inget moln, inga analysverktyg. Appen finns på svenska 
 |---|---|
 | **Idag** | Hälsning med namn, dagens balans som en ring per del, en ruta per del med veckans trend, insikter, veckans sömn och kost i diagram, och mående |
 | **Träning** | Veckoprogram efter WHO:s råd (150–300 min kondition, styrka två dagar i veckan, högst +10 % kondition per vecka). En coach på enheten som bygger veckan ur ditt mål, dina dagar, tid per pass, fokus och hänsyn, med fasindelade rehabprogram för knä och ländrygg. 13 illustrerade övningar och ett passläge med set, vila och nedräkning. Konditionspass loggas med "Jag gjorde det" eller läses från Health Connect, och efter passet ändrar ansträngning (RPE) och smärta dosen och ger förslag på nästa rehabfas |
-| **Sömn** | Timmar per natt, och en graf över veckan, fyra veckor eller ett år jämförd med perioden innan |
+| **Sömn** | Läggtid och uppvakning (eller bara timmar), hur natten kändes och vad som kan ha påverkat den, och vad som påverkar din sömn: samband mellan dagen före (kost, vatten, träning, sött), kvällen och natten, prövade på dina egna loggar och visade med nätterna bakom. En graf över veckan, fyra veckor eller ett år jämförd med perioden innan |
 | **Kost** | Portioner per livsmedelsgrupp, vatten och sött, poäng 0–100 efter Livsmedelsverkets kostråd, ett förslag på nästa steg, och poängen över veckan, fyra veckor eller ett år jämförd med perioden innan |
 | **Rörelse** | Dagens steg och aktiva kalorier, och de senaste fem veckornas träningspass, från Health Connect, bara medan appen är öppen |
 | **Påminnelser** | Logga sömnen, träna och logga kosten, var och en på egen tid och bara om det inte redan är loggat. Ett WorkManager-jobb per påminnelse och dag, inget annat i bakgrunden |

@@ -7,6 +7,7 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.serialization.Serializable
+import se.novila.feature.sleep.SleepActions
 import se.novila.feature.sleep.SleepScreen
 import se.novila.feature.sleep.SleepViewModel
 
@@ -27,11 +28,18 @@ fun EntryProviderScope<NavKey>.sleepEntry(contentPadding: PaddingValues) {
             day = state.day,
             history = state.history,
             goals = state.goals,
-            onSleep = viewModel::setSleep,
+            analysis = state.analysis,
+            actions = SleepActions(
+                onSleep = viewModel::setSleep,
+                onBedtime = viewModel::setBedtime,
+                onWakeTime = viewModel::setWakeTime,
+                onQuality = viewModel::setQuality,
+                onFactor = viewModel::setFactor,
+                onSelectDay = viewModel::selectDay,
+                onRange = viewModel::selectRange,
+            ),
             contentPadding = contentPadding,
             today = state.today,
-            onSelectDay = viewModel::selectDay,
-            onRange = viewModel::selectRange,
         )
     }
 }
