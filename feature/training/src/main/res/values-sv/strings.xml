@@ -175,7 +175,7 @@
     <string name="movement_title">Dagens rörelse</string>
     <string name="movement_active_calories">Aktiva kalorier</string>
     <string name="movement_source">Från Health Connect. Novila läser bara och sparar ingenting.</string>
-    <string name="movement_connect_body">Se dagens steg och aktiva kalorier från din klocka eller telefon via Health Connect, och låt veckans program räkna med passen klockan har registrerat. Novila läser dem bara och datan stannar i telefonen.</string>
+    <string name="movement_connect_body">Se dagens steg och aktiva kalorier från din klocka eller telefon via Health Connect, låt veckans program räkna med passen klockan har registrerat och fyll i sömnen från den. Novila läser dem bara och datan stannar i telefonen.</string>
     <string name="movement_connect">Anslut Health Connect</string>
     <string name="movement_denied_body">Åtkomst nekades. Du kan tillåta den för Novila i Health Connect.</string>
     <string name="movement_install_body">Health Connect behöver installeras eller uppdateras för att visa dina steg och aktiva kalorier.</string>

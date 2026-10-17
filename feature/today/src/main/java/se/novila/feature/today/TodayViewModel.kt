@@ -24,12 +24,17 @@ import se.novila.model.SleepAnalysis
 import se.novila.model.analyzeSleep
 import se.novila.movement.MovementRepository
 import se.novila.movement.MovementState
+import se.novila.sleep.SleepRepository
+import se.novila.sleep.SleepState
+import se.novila.sleep.nightsByDate
+import se.novila.sleep.withNight
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 /**
  * The dashboard: the week so far, and [hour] of day when it was read, the user's [name] for the greeting, the
- * [goals] the day is measured against and what the user's logs say about their [sleep].
+ * [goals] the day is measured against and what the user's logs say about their [sleep]. Nights a watch recorded fill
+ * in the ones the user didn't log.
  */
 data class TodayUiState(
     val week: Week,
@@ -48,6 +53,7 @@ class TodayViewModel(
     private val movementRepository: MovementRepository,
     private val profileStore: ProfileStore,
     private val goalsStore: GoalsStore,
+    private val sleepRepository: SleepRepository,
 ) : ViewModel() {
     private val now = MutableStateFlow(LocalDateTime.now())
 
@@ -58,20 +64,29 @@ class TodayViewModel(
             store.days.filterNotNull(),
             profileStore.profile.filterNotNull(),
             goalsStore.goals.filterNotNull(),
-        ) { now, days, profile, goals ->
-            read(days, now, profile.name, goals)
+            sleepRepository.state,
+        ) { now, days, profile, goals, watch ->
+            read(days, now, profile.name, goals, watch)
         }.stateIn(viewModelScope, SharingStarted.Eagerly, initial())
 
     private fun initial(): TodayUiState? {
         val days = store.days.value ?: return null
         val profile = profileStore.profile.value ?: return null
         val goals = goalsStore.goals.value ?: return null
-        return read(days, now.value, profile.name, goals)
+        return read(days, now.value, profile.name, goals, sleepRepository.state.value)
     }
 
     val movement: StateFlow<MovementState> = movementRepository.state
 
-    private fun read(days: SavedDays, now: LocalDateTime, name: String, goals: Goals): TodayUiState {
+    private fun read(
+        saved: SavedDays,
+        now: LocalDateTime,
+        name: String,
+        goals: Goals,
+        watch: SleepState,
+    ): TodayUiState {
+        val nights = watch.nightsByDate
+        val days = saved.showing { it.withNight(nights[it.date]) }
         val today = now.toLocalDate()
         val sleep = analyzeSleep(days.lastDays(SLEEP_WINDOW_NIGHTS + 1, today).reversed(), goals)
         return TodayUiState(days.week(today), now.hour, name, goals, sleep)
@@ -79,11 +94,12 @@ class TodayViewModel(
 
     /**
      * Called on resume, so "today" and the greeting stay correct. Health Connect only allows reads while the app is
-     * in the foreground, so movement is read here too.
+     * in the foreground, so movement and the watch's nights are read here too.
      */
     fun refresh() {
         now.value = LocalDateTime.now()
         viewModelScope.launch { movementRepository.refresh(LocalDate.now()) }
+        viewModelScope.launch { sleepRepository.refresh(LocalDate.now()) }
     }
 
     fun setMood(mood: Int) = store.update(LocalDate.now()) { it.withMood(mood) }

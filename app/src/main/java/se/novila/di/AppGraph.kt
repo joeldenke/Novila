@@ -10,10 +10,12 @@ import se.novila.data.SettingsStore
 import se.novila.exercise.ExerciseRepository
 import se.novila.feature.widget.WidgetGraph
 import se.novila.healthconnect.HealthConnectExerciseSource
+import se.novila.healthconnect.HealthConnectSleepSource
 import se.novila.healthconnect.HealthConnectSource
 import se.novila.movement.InMemoryMovementCache
 import se.novila.movement.MovementRepository
 import se.novila.reminders.ReminderWorkerFactory
+import se.novila.sleep.SleepRepository
 import kotlin.time.Clock
 
 /**
@@ -52,6 +54,14 @@ interface AppGraph :
     @SingleIn(AppScope::class)
     fun exerciseRepository(context: Context): ExerciseRepository =
         ExerciseRepository(HealthConnectExerciseSource(context))
+
+    /**
+     * Nights recorded by a watch or another app, which fill in Sleep and Today when the user hasn't logged them. In
+     * memory only. Swap [HealthConnectSleepSource] for another SleepSource here.
+     */
+    @Provides
+    @SingleIn(AppScope::class)
+    fun sleepRepository(context: Context): SleepRepository = SleepRepository(HealthConnectSleepSource(context))
 
     /** The time, for ViewModels that count it (the workout timer). Tests can pass their own [Clock]. */
     @Provides

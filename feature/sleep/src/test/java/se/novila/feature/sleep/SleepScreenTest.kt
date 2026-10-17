@@ -23,6 +23,7 @@ import se.novila.model.HistoryRange
 import se.novila.model.SleepAnalysis
 import se.novila.model.SleepFactor
 import se.novila.model.analyzeSleep
+import se.novila.sleep.SleepState
 import se.novila.ui.preview.PreviewData
 import java.time.LocalDate
 
@@ -35,6 +36,8 @@ class SleepScreenTest {
         range: HistoryRange = HistoryRange.Week,
         analysis: SleepAnalysis = analyzeSleep(PreviewData.days()),
         actions: SleepActions = SleepActions(),
+        watch: SleepState = SleepState.Unavailable,
+        fromWatch: Boolean = false,
     ) {
         composeRule.setContent {
             NovilaTheme {
@@ -46,6 +49,8 @@ class SleepScreenTest {
                     actions = actions,
                     contentPadding = PaddingValues(),
                     today = PreviewData.date,
+                    watch = watch,
+                    fromWatch = fromWatch,
                 )
             }
         }
@@ -102,5 +107,28 @@ class SleepScreenTest {
         scrollTo("the four weeks before", substring = true).assertExists()
         scrollTo("Year").performClick()
         assertEquals(listOf(HistoryRange.Year), ranges)
+    }
+
+    @Test fun `a night from the watch says where it came from`() {
+        show(watch = SleepState.Connected(emptyList()), fromWatch = true)
+        composeRule.onNodeWithText("From your watch", substring = true).assertExists()
+        composeRule.onNodeWithText("Read sleep from Health Connect").assertDoesNotExist()
+    }
+
+    @Test fun `asks for sleep from Health Connect until it is allowed`() {
+        var connected = 0
+        show(watch = SleepState.NeedsPermission(), actions = SleepActions(onConnectHealth = { connected++ }))
+        scrollTo("Read sleep from Health Connect").performClick()
+        assertEquals(1, connected)
+    }
+
+    @Test fun `after a no, Health Connect's settings give access to sleep`() {
+        var settings = 0
+        show(
+            watch = SleepState.NeedsPermission(denied = true),
+            actions = SleepActions(onOpenHealthSettings = { settings++ }),
+        )
+        scrollTo("Open Health Connect").performClick()
+        assertEquals(1, settings)
     }
 }

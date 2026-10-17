@@ -58,8 +58,8 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   WorkManager per påminnelse vid nästa tid, `ReminderWorker` läser dagen, visar notisen bara om något fortfarande
   saknas (träning bara de dagar `trainingWeek` har ett pass) och lägger nästa dag själv. `ReminderWorkerFactory` ger
   workern storarna från Metro via `NovilaApplication` (`Configuration.Provider`). Se *Påminnelser* under Regler.
-- `:core:healthconnect` – Health Connect som `MovementSource` (dagens steg och kalorier) och `ExerciseSource`
-  (`HealthConnectExerciseSource`, träningspass), behörigheterna i modulens manifest (`HEALTH_PERMISSIONS`, frågas i en
+- `:core:healthconnect` – Health Connect som `MovementSource` (dagens steg och kalorier), `ExerciseSource`
+  (`HealthConnectExerciseSource`, träningspass) och `SleepSource` (`HealthConnectSleepSource`, nätter), behörigheterna i modulens manifest (`HEALTH_PERMISSIONS`, frågas i en
   dialog via `rememberHealthPermissionRequest`) och integritetsskärmen (`HealthDataInfoActivity`)
 - Ren Kotlin, utan Android (`novila.jvm.library`, testas på sekunder):
   - `:core:model` – `DayEntry` (`DayEntryCodec`), kost, dagens balans, insikter, widgetens `latestLog` och `cheers`, `analyzeSleep` (se *Sömnens samband*
@@ -76,6 +76,10 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
     ("Jag gjorde det", `DayEntry.cardio`). `ExerciseRepository` håller passen från en källa (Health Connect) i minnet, och
     `TrainingHistory` slår ihop dem med appens egna (per dag och slag räknas den sida som har mest tid, så samma
     promenad räknas en gång). Det blir generatorns historik.
+  - `:core:sleep` – nätter från en klocka oberoende av källa: `Night`, `SleepSource`, `SleepRepository` (bara i minnet)
+    och `nightsOf` (dagens längsta session på minst tre timmar, på morgonen användaren vaknade). `withNight` fyller
+    i en dag utan egen sömn; användarens egen logg vinner alltid. Sömn och Idag visar dagarna så via
+    `SavedDays.showing`, som aldrig sparar något.
   - `:core:coach` – träningscoachen, helt på enheten: `CoachPreferences` (mål, dagar, tid per pass, fokus, hänsyn,
     rehabområde och fas), `CoachCatalog` (rörelsemönster, dosering och belastning per övning) och `CoachPlanner`, som
     bygger veckans program ur svaren, senaste passen och övningsbiblioteket och förklarar valen (`CoachNote`). Målet
@@ -306,12 +310,14 @@ där pluginet `firebase@firebase` inte alltid installeras.
   Byts nyckeln kan testare inte uppdatera.
 - Nya beroenden: lägg dem i versionskatalogen och motivera dem i PR-beskrivningen.
 - **Health Connect:** appen läser bara dagens steg och aktiva kalorier (`READ_STEPS`,
-  `READ_ACTIVE_CALORIES_BURNED`) och de senaste fem veckornas träningspass (`READ_EXERCISE`: typ, dag och längd, för
-  träningsprogrammet), i förgrunden. Inget skrivs, ingen bakgrundsläsning och ingen `READ_HEALTH_DATA_HISTORY`
+  `READ_ACTIVE_CALORIES_BURNED`), de senaste fem veckornas träningspass (`READ_EXERCISE`: typ, dag och längd, för
+  träningsprogrammet) och nätterna upp till två år bakåt (`READ_SLEEP`: läggtid, uppvakning och tid i sömn, för
+  Sömn och Idag), i förgrunden. Inget skrivs, ingen bakgrundsläsning och ingen `READ_HEALTH_DATA_HISTORY`
   (Health Connect ger 30 dagar före första godkännandet, det räcker). Cachen ligger bara i minnet
-  (`InMemoryMovementCache`, `ExerciseRepository`); passen från Health Connect sparas aldrig i `HealthStore`. En cache
+  (`InMemoryMovementCache`, `ExerciseRepository`, `SleepRepository`); pass och nätter från Health Connect sparas
+  aldrig i `HealthStore`. En cache
   på disk ändrar vad integritetsskärmen och Play-deklarationen ska säga, så den kräver ägarens ok. Ny källa:
-  implementera `MovementSource` eller `ExerciseSource` och byt den i `AppGraph`.
+  implementera `MovementSource`, `ExerciseSource` eller `SleepSource` och byt den i `AppGraph`.
   Varje datatyp måste motiveras i Play Consoles *Health apps declaration*, så lägg inte till typer eller
   behörigheter utan att ägaren ber om det. `HealthConnectManifestTest` håller manifestet och `HEALTH_PERMISSIONS`
   i synk. `HealthDataInfoActivity` (integritetsskärmen Health Connect länkar till) är obligatorisk och ska

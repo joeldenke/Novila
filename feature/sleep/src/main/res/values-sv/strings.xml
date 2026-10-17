@@ -11,6 +11,9 @@
     <string name="sleep_save">Spara</string>
     <string name="sleep_cancel">Avbryt</string>
     <string name="sleep_hours_hint">Eller dra för att ange timmarna</string>
+    <string name="sleep_from_watch">Från klockan, via Health Connect. Ändra den för att logga natten själv.</string>
+    <string name="sleep_watch_body">Novila kan fylla i dina nätter från en klocka eller en annan app via Health Connect. Det du loggar själv gäller alltid först.</string>
+    <string name="sleep_watch_connect">Läs sömn från Health Connect</string>
     <string name="sleep_quality_title">Hur sov du?</string>
     <string name="sleep_quality_hint">Välj hur utvilad du känner dig</string>
     <string name="sleep_quality_1">Dåligt</string>

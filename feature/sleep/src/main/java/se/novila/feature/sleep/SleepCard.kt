@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import se.novila.designsystem.component.NovilaButton
 import se.novila.designsystem.component.NovilaCard
 import se.novila.designsystem.component.NovilaListRow
 import se.novila.designsystem.component.NovilaSlider
@@ -21,6 +22,7 @@ import se.novila.feature.sleep.R
 import se.novila.model.DayEntry
 import se.novila.model.Goals
 import se.novila.model.MAX_SLEEP_HOURS
+import se.novila.sleep.SleepState
 import se.novila.ui.common.hoursText
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -33,7 +35,8 @@ internal val DefaultWakeTime: LocalTime = LocalTime.of(7, 0)
 /**
  * The night's sleep: when the user went to bed and woke up, the hours that follow, and the user's sleep goal from
  * [goals]. The half-hour slider sets the hours alone for a quick log. Last night when [isToday], otherwise the night
- * before the shown day.
+ * before the shown day. Says so when the night is one a watch recorded ([fromWatch]), and offers to read nights from
+ * Health Connect while it isn't allowed to ([watch]).
  */
 @Composable
 fun SleepCard(
@@ -41,6 +44,8 @@ fun SleepCard(
     goals: Goals,
     actions: SleepActions,
     isToday: Boolean = true,
+    watch: SleepState = SleepState.Unavailable,
+    fromWatch: Boolean = false,
 ) {
     val sleep = NovilaTheme.pillars.sleep
     var choosing by rememberSaveable { mutableStateOf<SleepTime?>(null) }
@@ -55,6 +60,13 @@ fun SleepCard(
             style = NovilaTheme.typography.bodySmall,
             color = NovilaTheme.colors.onSurfaceVariant,
         )
+        if (fromWatch) {
+            NovilaText(
+                stringResource(R.string.sleep_from_watch),
+                style = NovilaTheme.typography.bodySmall,
+                color = NovilaTheme.colors.onSurfaceVariant,
+            )
+        }
         TimeRow(R.string.sleep_bedtime, day.bedtime) { choosing = SleepTime.Bedtime }
         TimeRow(R.string.sleep_wake_time, day.wakeTime) { choosing = SleepTime.WakeTime }
         NovilaText(
@@ -69,6 +81,7 @@ fun SleepCard(
             steps = (MAX_SLEEP_HOURS * 2).toInt() - 1, // half-hour steps
             role = sleep,
         )
+        if (watch is SleepState.NeedsPermission) WatchAccess(watch.denied, actions)
     }
     choosing?.let { which ->
         val current = when (which) {
@@ -96,6 +109,24 @@ fun SleepCard(
 }
 
 private enum class SleepTime { Bedtime, WakeTime }
+
+/**
+ * Access to sleep was added after steps, calories and workouts, so someone who connected Health Connect before is
+ * asked for it here. After a no, only Health Connect's settings can give it.
+ */
+@Composable
+private fun WatchAccess(denied: Boolean, actions: SleepActions) {
+    NovilaText(
+        stringResource(R.string.sleep_watch_body),
+        style = NovilaTheme.typography.bodyMedium,
+        color = NovilaTheme.colors.onSurfaceVariant,
+    )
+    NovilaButton(
+        text = stringResource(if (denied) UiR.string.movement_open_settings else R.string.sleep_watch_connect),
+        onClick = if (denied) actions.onOpenHealthSettings else actions.onConnectHealth,
+        role = NovilaTheme.pillars.sleep,
+    )
+}
 
 @Composable
 private fun TimeRow(title: Int, time: LocalTime?, onClick: () -> Unit) {

@@ -6,9 +6,9 @@ import androidx.compose.runtime.remember
 import androidx.health.connect.client.PermissionController
 
 /**
- * Health Connect's own permission dialog for [HEALTH_PERMISSIONS] (steps, active calories and workouts), which links
- * to [HealthDataInfoActivity] for the details. Health Connect only shows what isn't granted yet. Returns the function
- * that opens it; [onResult] gets whether the user gave access to anything.
+ * Health Connect's own permission dialog for [HEALTH_PERMISSIONS] (steps, active calories, workouts and sleep), which
+ * links to [HealthDataInfoActivity] for the details. Health Connect only shows what isn't granted yet. Returns the
+ * function that opens it; [onResult] gets whether the user gave access to anything.
  */
 @Composable
 fun rememberHealthPermissionRequest(onResult: (granted: Boolean) -> Unit): () -> Unit {
