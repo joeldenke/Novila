@@ -14,8 +14,8 @@ telefonen: inget konto, inget moln, inga analysverktyg. Appen finns på svenska 
 |---|---|
 | **Idag** | Hälsning med namn, dagens balans som en ring per del, en ruta per del med veckans trend, insikter, veckans sömn och kost i diagram, och mående |
 | **Träning** | Veckoprogram efter WHO:s råd (150–300 min kondition, styrka två dagar i veckan, högst +10 % kondition per vecka). En coach på enheten som bygger veckan ur ditt mål, dina dagar, tid per pass, fokus och hänsyn, med fasindelade rehabprogram för knä och ländrygg. 13 illustrerade övningar och ett passläge med set, vila och nedräkning. Konditionspass loggas med "Jag gjorde det" eller läses från Health Connect, och efter passet ändrar ansträngning (RPE) och smärta dosen och ger förslag på nästa rehabfas |
-| **Sömn** | Timmar per natt och veckan som graf |
-| **Kost** | Portioner per livsmedelsgrupp, vatten och sött, poäng 0–100 efter Livsmedelsverkets kostråd, och ett förslag på nästa steg |
+| **Sömn** | Timmar per natt, och en graf över veckan, fyra veckor eller ett år jämförd med perioden innan |
+| **Kost** | Portioner per livsmedelsgrupp, vatten och sött, poäng 0–100 efter Livsmedelsverkets kostråd, ett förslag på nästa steg, och poängen över veckan, fyra veckor eller ett år jämförd med perioden innan |
 | **Rörelse** | Dagens steg och aktiva kalorier, och de senaste fem veckornas träningspass, från Health Connect, bara medan appen är öppen |
 | **Inställningar** | Tema (automatiskt, ljust, mörkt, bakgrundsfärger), profil, Health Connect, ansvarsfriskrivning, radera all data och introduktionen igen |
 
@@ -71,12 +71,12 @@ varandra, vilket ett test kontrollerar.
 :app                     Bara skalet: Metro-grafen, aktiviteten, flikarna och navigationen
 :feature:today           Dashboarden: balans, rutor, insikter, diagram, mående
 :feature:training        Veckoprogram, coach, övningar, passläge
-:feature:sleep           Sömnlogg och vecka
+:feature:sleep           Sömnlogg och historik
 :feature:nutrition       Livsmedelsgrupper, vatten, poäng
 :feature:onboarding      Introduktionen vid första start
 :feature:settings        Inställningar
 :core:designsystem       NovilaTheme och Novila*-komponenter (enda modulen som använder Material 3 direkt)
-:core:ui                 Delat UI: listor, formatering, veckokort, previewdata
+:core:ui                 Delat UI: listor, formatering, historikkort, previewdata
 :core:navigation         Back stack per flik, Navigator
 :core:data               Lagring i DataStore och coachens Gemini Nano-modell
 :core:healthconnect      Health Connect som källa för rörelse och träningspass, integritetsskärmen

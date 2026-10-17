@@ -2,10 +2,14 @@ package se.novila.ui.preview
 
 import se.novila.model.DayEntry
 import se.novila.model.FoodLog
+import se.novila.model.History
+import se.novila.model.HistoryRange
 import se.novila.model.Profile
+import se.novila.model.historyOf
 import se.novila.movement.MovementState
 import se.novila.movement.TodayMovement
 import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 
 /**
  * Fixed sample data for Compose previews: a realistic week with one rough day early on. Shared by every feature,
@@ -39,4 +43,26 @@ object PreviewData {
         day(5, sleep = 7f, water = 7, mood = 4, food = FoodLog(4, 3, 3, 2, 1)),
         day(6, sleep = 6f, water = 4, mood = 2, food = FoodLog(2, 2, 1, 1, 3)),
     )
+
+    /**
+     * Any day up to [date]: the week above, and before it the same rhythm repeated, with a night or a day's food
+     * forgotten now and then and a little less sleep and more treats further back, so month and year charts show a
+     * trend.
+     */
+    fun dayOn(date: LocalDate): DayEntry {
+        val daysAgo = ChronoUnit.DAYS.between(date, this.date).toInt()
+        if (daysAgo < 0) return DayEntry(date)
+        if (daysAgo == 0) return today
+        if (daysAgo < 7) return history[daysAgo - 1]
+        val like = history[daysAgo % history.size]
+        val earlier = daysAgo / 60 // two months at a time
+        return like.copy(
+            date = date,
+            sleepHours = if (daysAgo % 11 == 0) 0f else (like.sleepHours - earlier * 0.25f).coerceAtLeast(5f),
+            food = if (daysAgo % 13 == 0) FoodLog() else like.food.copy(treats = like.food.treats + earlier / 2),
+        )
+    }
+
+    /** The history over [range] up to [until], from [dayOn]. */
+    fun history(range: HistoryRange, until: LocalDate = date): History = historyOf(range, until, ::dayOn)
 }

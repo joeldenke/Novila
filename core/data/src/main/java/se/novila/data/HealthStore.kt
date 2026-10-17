@@ -13,6 +13,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import se.novila.model.DayEntry
 import se.novila.model.DayEntryCodec
+import se.novila.model.History
+import se.novila.model.HistoryRange
+import se.novila.model.historyOf
 import java.time.LocalDate
 
 /**
@@ -29,12 +32,12 @@ class HealthStore internal constructor(context: Context, scope: CoroutineScope) 
     /** Every saved day, read from disk once and then kept in memory. Null until the first read is done. */
     val days: StateFlow<SavedDays?> = store.snapshots(::SavedDays)
 
-    /** The week up to each date in [dates], read again whenever a day is saved. */
-    fun weeks(dates: Flow<LocalDate>): Flow<Week> =
-        combine(dates, days.filterNotNull()) { date, saved -> saved.week(date) }
+    /** The history over each range in [ranges] up to each date in [dates], read again whenever a day is saved. */
+    fun histories(dates: Flow<LocalDate>, ranges: Flow<HistoryRange>): Flow<History> =
+        combine(dates, ranges, days.filterNotNull()) { date, range, saved -> saved.history(range, date) }
 
-    /** The week up to [today] as saved right now, or null before the first read. */
-    fun week(today: LocalDate): Week? = days.value?.week(today)
+    /** The history over [range] up to [until] as saved right now, or null before the first read. */
+    fun history(range: HistoryRange, until: LocalDate): History? = days.value?.history(range, until)
 
     /**
      * Changes the day at [date] and saves it. Returns at once; saves are written in order, each reading the day as
@@ -64,6 +67,9 @@ class HealthStore internal constructor(context: Context, scope: CoroutineScope) 
 
         /** Today and the six days before it. */
         fun week(today: LocalDate): Week = lastDays(count = 7, today = today).let { Week(it.first(), it.drop(1)) }
+
+        /** The days over [range] up to [until], and as many before them to compare with. */
+        fun history(range: HistoryRange, until: LocalDate): History = historyOf(range, until, ::day)
     }
 }
 

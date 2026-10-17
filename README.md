@@ -14,8 +14,8 @@ Everything stays on the phone: no account, no cloud, no analytics. The app is in
 |---|---|
 | **Today** | A greeting by name, the day's balance as one ring per part, a tile per part with the week's trend, insights, the week's sleep and nutrition charts, and mood |
 | **Training** | A weekly program following WHO's guidelines (150–300 min cardio, strength two days a week, at most +10 % cardio per week). An on-device coach that builds the week from your goal, days, time per session, focus and limitations, including phased rehab programs for knee and lower back. 13 illustrated exercises and a workout mode with sets, rests and countdowns. Cardio is logged with "I did it" or read from Health Connect, and after a session the effort (RPE) and pain you report adjust the dose and suggest the next rehab phase |
-| **Sleep** | Hours slept per night and the week as a chart |
-| **Nutrition** | Servings per food group, water and sweets, scored 0–100 after the Swedish Food Agency's dietary guidelines, with a suggested next step |
+| **Sleep** | Hours slept per night, and a chart over the week, four weeks or a year compared with the period before |
+| **Nutrition** | Servings per food group, water and sweets, scored 0–100 after the Swedish Food Agency's dietary guidelines, with a suggested next step, and the scores over the week, four weeks or a year compared with the period before |
 | **Movement** | Today's steps and active calories, and the last five weeks' workouts, from Health Connect, read in the foreground only |
 | **Settings** | Theme (system, light, dark, wallpaper colors), profile, Health Connect access, health disclaimer, deleting all data, and the intro again |
 
@@ -72,12 +72,12 @@ each other, which a test checks.
 :app                     Shell only: Metro graph, activity, tabs and navigation display
 :feature:today           Dashboard: balance, tiles, insights, charts, mood
 :feature:training        Weekly program, coach, exercises, workout mode
-:feature:sleep           Sleep log and week
+:feature:sleep           Sleep log and history
 :feature:nutrition       Food groups, water, score
 :feature:onboarding      The intro at first start
 :feature:settings        Settings
 :core:designsystem       NovilaTheme and Novila* components (the only module using Material 3 directly)
-:core:ui                 Shared UI: lists, formatting, week cards, preview data
+:core:ui                 Shared UI: lists, formatting, history cards, preview data
 :core:navigation         Back stack per tab, Navigator
 :core:data               DataStore stores and the Gemini Nano coach model
 :core:healthconnect      Health Connect as a movement and workout source, privacy screen

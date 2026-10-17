@@ -24,6 +24,33 @@
     <string name="week_nutrition_caption">Average score · a good day is %1$d or more</string>
     <string name="week_nutrition_description">Nutrition score over the last seven days, %1$s on average.</string>
 
+    <!-- History over a week, four weeks or a year -->
+    <string name="history_week">Week</string>
+    <string name="history_month">Month</string>
+    <string name="history_year">Year</string>
+    <string name="history_sleep_title_month">Sleep, last four weeks</string>
+    <string name="history_sleep_title_year">Sleep, last year</string>
+    <string name="history_sleep_description_month">Sleep over the last four weeks, a point per week, %1$s per night on average.</string>
+    <string name="history_sleep_description_year">Sleep over the last twelve months, a point per month, %1$s per night on average.</string>
+    <string name="history_nutrition_title_month">Nutrition, last four weeks</string>
+    <string name="history_nutrition_title_year">Nutrition, last year</string>
+    <string name="history_nutrition_description_month">Nutrition score over the last four weeks, a bar per week, %1$s on average.</string>
+    <string name="history_nutrition_description_year">Nutrition score over the last twelve months, a bar per month, %1$s on average.</string>
+    <string name="history_before_week">the week before</string>
+    <string name="history_before_month">the four weeks before</string>
+    <string name="history_before_year">the year before</string>
+    <string name="history_sleep_more">%1$s more per night than %2$s</string>
+    <string name="history_sleep_less">%1$s less per night than %2$s</string>
+    <string name="history_same">The same as %1$s</string>
+    <plurals name="history_nutrition_higher">
+        <item quantity="one">%1$d point higher than %2$s</item>
+        <item quantity="other">%1$d points higher than %2$s</item>
+    </plurals>
+    <plurals name="history_nutrition_lower">
+        <item quantity="one">%1$d point lower than %2$s</item>
+        <item quantity="other">%1$d points lower than %2$s</item>
+    </plurals>
+
     <!-- Health Connect -->
     <string name="kcal_value" translatable="false">%1$s kcal</string>
     <string name="movement_steps">Steps</string>
