@@ -14,11 +14,14 @@ import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.serialization.Serializable
 import se.novila.anatomy.ExerciseLibrary
+import se.novila.feature.training.CardioLogScreen
+import se.novila.feature.training.CardioLogViewModel
 import se.novila.feature.training.CoachScreen
 import se.novila.feature.training.CoachViewModel
 import se.novila.feature.training.ExerciseDetailScreen
 import se.novila.feature.training.ExerciseViewModel
 import se.novila.feature.training.R
+import se.novila.feature.training.TrainingActions
 import se.novila.feature.training.TrainingScreen
 import se.novila.feature.training.TrainingViewModel
 import se.novila.feature.training.WorkoutScreen
@@ -37,6 +40,9 @@ import java.time.DayOfWeek
 
 /** The training coach: answers in, a week's program out. */
 @Serializable data object CoachRoute : NavKey
+
+/** Logging a workout by hand, planned or not. */
+@Serializable data object CardioLogRoute : NavKey
 
 /** A guided strength session, set by set, for the program's strength day [day] (ISO, Monday is 1). */
 @Serializable
@@ -67,23 +73,30 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
         val context = LocalContext.current
         val connectHealth = rememberHealthPermissionRequest(viewModel::onHealthPermissionsResult)
         TrainingScreen(
+            state = state,
             movement = movement,
-            program = state.program,
-            coach = state.coach,
-            today = state.today,
-            onConnectHealth = connectHealth,
-            onOpenHealthSettings = { HealthConnectSource.openSettings(context) },
-            onInstallHealth = { HealthConnectSource.openInstall(context) },
-            onOpenExercise = openExercise,
-            onStartWorkout = { day -> navigator.navigate(WorkoutRoute(day)) },
-            onOpenCoach = { navigator.navigate(CoachRoute) },
+            actions = TrainingActions(
+                onStartWorkout = { day -> navigator.navigate(WorkoutRoute(day)) },
+                onLogCardio = viewModel::logCardio,
+                onOpenCardioLog = { navigator.navigate(CardioLogRoute) },
+                onOpenCoach = { navigator.navigate(CoachRoute) },
+                onOpenExercise = openExercise,
+                onConnectHealth = connectHealth,
+                onOpenHealthSettings = { HealthConnectSource.openSettings(context) },
+                onInstallHealth = { HealthConnectSource.openInstall(context) },
+            ),
             contentPadding = contentPadding,
-            strengthMinutesToday = state.strengthMinutesToday,
-            cardioToday = state.cardioToday,
             exercise = exercise,
-            onLogCardio = viewModel::logCardio,
-            onUndoCardio = viewModel::undoCardio,
         )
+    }
+    entry<CardioLogRoute> {
+        val viewModel = metroViewModel<CardioLogViewModel>()
+        LifecycleResumeEffect(viewModel) {
+            viewModel.refresh()
+            onPauseOrDispose { }
+        }
+        val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
+        CardioLogScreen(state, onLog = viewModel::log, onUndo = viewModel::undo, contentPadding = contentPadding)
     }
     entry<CoachRoute> {
         val viewModel = metroViewModel<CoachViewModel>()
@@ -144,6 +157,7 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
 fun trainingDetailTitle(route: NavKey?): String? = when (route) {
     is ExerciseRoute -> moveName(route.exerciseId)
     CoachRoute -> stringResource(R.string.coach_title)
+    CardioLogRoute -> stringResource(R.string.cardio_log_title)
     is WorkoutRoute -> stringResource(R.string.workout_title)
     else -> null
 }

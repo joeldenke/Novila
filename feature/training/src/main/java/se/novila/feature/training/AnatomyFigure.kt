@@ -4,9 +4,20 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -17,8 +28,10 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import kotlinx.coroutines.launch
 import se.novila.anatomy.BodyShape
 import se.novila.anatomy.Bounds
 import se.novila.anatomy.Emphasis
@@ -26,8 +39,12 @@ import se.novila.anatomy.ExerciseMotion
 import se.novila.anatomy.Layer
 import se.novila.anatomy.Point2
 import se.novila.anatomy.Scene
+import se.novila.designsystem.component.NovilaPlayButton
+import se.novila.designsystem.component.NovilaSlider
+import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaAnatomyColors
 import se.novila.designsystem.theme.NovilaTheme
+import se.novila.feature.training.R
 import kotlin.math.max
 import kotlin.math.min
 
@@ -51,7 +68,6 @@ fun AnatomyFigure(
     replay: Any? = null,
     shape: BodyShape = BodyShape.NEUTRAL,
 ) {
-    val colors = NovilaTheme.anatomy
     val still = LocalInspectionMode.current || repetitions <= 0
     val progress = remember(motion, repetitions, replay) { Animatable(if (still) motion.peak else 0f) }
     LaunchedEffect(progress, still) {
@@ -62,9 +78,97 @@ fun AnatomyFigure(
             )
         }
     }
+    AnatomyCanvas(motion, { progress.value }, contentDescription, modifier, shape)
+}
+
+/**
+ * The figure in a soft frame at [aspectRatio], with controls like a video player: play and pause, and a slider to drag the movement forwards and
+ * backwards through [repetitions] calm repetitions, to study a moment. It plays them once when shown and stops;
+ * play again from the end starts over. Never loops. Still at the hardest moment in previews and screenshots.
+ */
+@Composable
+fun AnatomyPlayer(
+    motion: ExerciseMotion,
+    contentDescription: String,
+    repetitions: Int,
+    modifier: Modifier = Modifier,
+    aspectRatio: Float = 1.2f,
+    shape: BodyShape = BodyShape.NEUTRAL,
+) {
+    val still = LocalInspectionMode.current
+    val end = repetitions.toFloat()
+    val progress = remember(motion, repetitions) { Animatable(if (still) motion.peak else 0f) }
+    var playing by remember(motion, repetitions) { mutableStateOf(!still) }
+    LaunchedEffect(progress, playing) {
+        if (!playing) return@LaunchedEffect
+        if (progress.value >= end) progress.snapTo(0f)
+        val left = ((end - progress.value) * motion.repetitionMillis).toInt()
+        progress.animateTo(end, tween(left, easing = LinearEasing))
+        playing = false
+    }
+    val scope = rememberCoroutineScope()
+    val scrub = stringResource(R.string.exercise_scrub)
+    Column(modifier, verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s)) {
+        AnatomyCanvas(
+            motion,
+            { progress.value },
+            contentDescription,
+            Modifier
+                .fillMaxWidth()
+                .aspectRatio(aspectRatio)
+                .background(NovilaTheme.colors.surfaceContainerLow, NovilaTheme.shapes.small),
+            shape,
+        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.m),
+        ) {
+            NovilaPlayButton(
+                playing = playing,
+                onClick = { playing = !playing },
+                description = stringResource(if (playing) R.string.exercise_pause else R.string.exercise_play),
+                role = NovilaTheme.pillars.training,
+            )
+            Column(Modifier.weight(1f)) {
+                NovilaSlider(
+                    value = progress.value.coerceIn(0f, end),
+                    onValueChange = { value ->
+                        // Dragging takes over from playing.
+                        playing = false
+                        scope.launch { progress.snapTo(value) }
+                    },
+                    valueRange = 0f..end,
+                    steps = 0,
+                    role = NovilaTheme.pillars.training,
+                    modifier = Modifier.semantics { this.contentDescription = scrub },
+                )
+                NovilaText(
+                    stringResource(
+                        R.string.exercise_repetition,
+                        (progress.value.toInt() + 1).coerceAtMost(repetitions),
+                        repetitions,
+                    ),
+                    style = NovilaTheme.typography.labelMedium,
+                    color = NovilaTheme.colors.onSurfaceVariant,
+                )
+            }
+        }
+    }
+}
+
+/** Draws [motion] at the moment [progress] gives (repetitions from 0), read while drawing. */
+@Composable
+private fun AnatomyCanvas(
+    motion: ExerciseMotion,
+    progress: () -> Float,
+    contentDescription: String,
+    modifier: Modifier,
+    shape: BodyShape,
+) {
+    val colors = NovilaTheme.anatomy
     val bounds = remember(motion, shape) { motion.bounds(shape) }
     Canvas(modifier.semantics { this.contentDescription = contentDescription }) {
-        drawScene(motion.sceneAt(progress.value, shape), bounds, colors)
+        drawScene(motion.sceneAt(progress(), shape), bounds, colors)
     }
 }
 

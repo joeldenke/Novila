@@ -90,7 +90,7 @@ class ColorContrastTest {
                 "sleep" to (hero.sleep to ground),
                 "nutrition" to (hero.nutrition to ground),
             )
-        }
+        } + ("check/training" to (hero.start to hero.training)) // A done day in NovilaWeekStrip.
     }
 
     @Test fun `anatomy muscles and outline stand out`() = assertPairs(NON_TEXT, anatomy) { (card, figure) ->

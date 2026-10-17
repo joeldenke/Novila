@@ -86,6 +86,10 @@ class TrainingRepository(
                 logged = day.cardio,
                 recordedMinutes = TrainingHistory.minutes(emptyList(), fromSource, today, ExerciseKind.Cardio),
             ),
+            weekDone = history
+                .filter { it.date >= program.weekStart && it.date <= today }
+                .groupBy { it.date.dayOfWeek }
+                .mapValues { (_, done) -> done.sumOf { it.duration.inWholeMinutes }.toInt() },
         )
     }
 

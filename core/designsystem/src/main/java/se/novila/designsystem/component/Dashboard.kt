@@ -129,7 +129,7 @@ private fun LegendRow(segment: NovilaHeroSegment, percent: String, content: Colo
 
 /** Concentric progress rings, outermost first, that sweep in one after another. */
 @Composable
-private fun Rings(segments: List<NovilaHeroSegment>, track: Color, reveal: Float, modifier: Modifier = Modifier) {
+internal fun Rings(segments: List<NovilaHeroSegment>, track: Color, reveal: Float, modifier: Modifier = Modifier) {
     Canvas(modifier) {
         val stroke = 9.dp.toPx()
         val gap = 5.dp.toPx()

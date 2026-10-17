@@ -140,6 +140,9 @@ Misstag som redan har gjorts i det här repot. Gör dem inte igen.
 - **gcloud i molnsessioner:** miljön sätter `CLOUDSDK_AUTH_ACCESS_TOKEN`, som skriver över `gcloud auth login`.
   Kör `unset CLOUDSDK_AUTH_ACCESS_TOKEN` efter inloggningen, annars svarar alla anrop `CREDENTIALS_MISSING`.
 - **GitHub API:** GraphQL och `gh pr create` fungerar inte här. Använd REST (`gh api repos/.../pulls`).
+- **Modifier-parametrar:** en composable får bara ha en `Modifier`-parameter, och den heter `modifier` (lint
+  `ModifierParameter`). Behöver en del inuti egen form, ta värden (t.ex. `aspectRatio`) i stället för en andra
+  `Modifier` som `figureModifier`.
 - **Spotless och Isolated Projects:** ge Spotless filträd (`fileTree(...)`) som `target`, aldrig glob-strängar som
   `"**/*.kt"`. För en glob slår Spotless upp varje undermoduls `build`-katalog, och då fallerar bygget med
   "cannot access 'Project.layout' functionality on subprojects". Isolated Projects stoppar sådant i varje bygge.
@@ -225,7 +228,9 @@ där pluginet `firebase@firebase` inte alltid installeras.
   Förlagan är riktning D i designkanvasen *Novila designriktningar*. Idag är en dashboard: hälsning, `NovilaHeroCard`
   (balansen som ringar per del, skogssiluett och solens sken, `NovilaTheme.hero`), en `NovilaStatTile` per del med
   veckans trend, insikter, veckans sömn (`NovilaLineChart`) och kost (`NovilaBarChart`) och mående.
-  Kort är vita med hårfin kant (`NovilaTheme.surfaces`).
+  Kort är vita med hårfin kant (`NovilaTheme.surfaces`). Träning börjar med veckan i överblick på samma granpanel
+  (`NovilaHeroPanel`: minuter mot veckans plan, `NovilaWeekStrip` och dagens enda huvudåtgärd ur `TodayPlan`), följt
+  av snabbval (`NovilaActionChip`) som passar just nu.
 - **Målade scener:** introduktionens scener är målade bilder i samma nordiska stil (falröd stuga, björk, gran, sjö,
   midsommarljus), WebP i featurens `drawable-nodpi`, beskurna till 1,4:1, högst cirka 1120 px breda och helst under 200 kB. De visas bara via
   `NovilaSceneImage`, som sköter hörn, entré och parallax. I mörkt läge blir dagscener skymning (`ColorMatrix`:
@@ -237,7 +242,8 @@ där pluginet `firebase@firebase` inte alltid installeras.
   handritad animation, så samma rörelse fungerar för varje kropp och kamera. Ny eller ändrad övning: följ skillen
   `add-exercise` (lösta vinklar, kamera från `ViewSelector`, texter på båda språken). `AnatomyTest` kontrollerar att
   planterade händer och fötter står still och säger vilken kamera som gäller. Figuren färgas bara med `NovilaTheme.anatomy` (sjöblå kropp, glödande muskler) och
-  spelar ett bestämt antal repetitioner, aldrig i loop.
+  spelar ett bestämt antal repetitioner, aldrig i loop. I övningsvyn har den spela/pausa och ett reglage för att dra
+  genom rörelsen (`AnatomyPlayer`), som en video men ritad ur samma data.
 - **Tema:** användaren väljer Automatiskt/Ljust/Mörkt och bakgrundsfärger (Android 12+) under Inställningar.
   `MainActivity` läser `SettingsStore` och ger `NovilaApp` `darkTheme`/`dynamicColor`, och systemfälten följer appens
   tema. Ritar inget förrän inställningarna är lästa, så temat aldrig blinkar.

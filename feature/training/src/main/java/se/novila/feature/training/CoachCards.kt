@@ -1,10 +1,7 @@
 package se.novila.feature.training
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import se.novila.coach.BodyArea
 import se.novila.coach.CoachFeedback
@@ -17,44 +14,8 @@ import se.novila.coach.EffortCheck
 import se.novila.coach.RehabAdvice
 import se.novila.coach.RehabArea
 import se.novila.coach.RehabCheck
-import se.novila.designsystem.component.NovilaButton
-import se.novila.designsystem.component.NovilaCard
-import se.novila.designsystem.component.NovilaText
-import se.novila.designsystem.theme.NovilaTheme
 import se.novila.exercise.StrengthLevel
 import se.novila.feature.training.R
-import se.novila.ui.R as UiR
-
-/** The way into the coach from the Training tab, with what it has set up so far. */
-@Composable
-fun CoachCard(coach: CoachUiState, onOpen: () -> Unit) {
-    val preferences = coach.preferences
-    NovilaCard(
-        title = stringResource(R.string.coach_title),
-        icon = painterResource(UiR.drawable.ic_training),
-        role = NovilaTheme.pillars.training,
-    ) {
-        NovilaText(
-            if (coach.active) {
-                stringResource(
-                    R.string.coach_card_active,
-                    stringResource(preferences.goal.label),
-                    preferences.daysPerWeek,
-                    preferences.sessionMinutes,
-                )
-            } else {
-                stringResource(R.string.coach_card_inactive)
-            },
-            style = NovilaTheme.typography.bodyMedium,
-            color = NovilaTheme.colors.onSurfaceVariant,
-        )
-        NovilaButton(
-            stringResource(if (coach.active) R.string.coach_adjust else R.string.coach_open),
-            onClick = onOpen,
-            modifier = Modifier.fillMaxWidth(),
-        )
-    }
-}
 
 /** One of the coach's reasons as a sentence. */
 @Composable

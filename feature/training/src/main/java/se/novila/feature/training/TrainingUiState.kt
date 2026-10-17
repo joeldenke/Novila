@@ -16,6 +16,8 @@ data class TrainingUiState(
     val today: DayOfWeek,
     val strengthMinutesToday: Int,
     val cardioToday: CardioToday = CardioToday(),
+    /** Minutes trained on each day of this week so far, Novila's own sessions and recorded ones counted once. */
+    val weekDone: Map<DayOfWeek, Int> = emptyMap(),
 )
 
 /** Today's cardio: what the user [logged] by hand and the minutes a watch or another app recorded. */
