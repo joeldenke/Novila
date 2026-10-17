@@ -31,9 +31,16 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
 - `:feature:settings` – Inställningar (profil, egna mål, tema, påminnelser, Health Connect, ansvarsfriskrivning, radera data, introduktionen, version).
   Ingen flik: öppnas med kugghjulet i toppraden (på Idag i hälsningen) och läggs på aktuell fliks back stack. `Navigator` flyttar
   den om den öppnas från en annan flik, så samma nyckel aldrig ligger i två stackar som visas samtidigt.
+- `:feature:widget` – widgeten på hemskärmen (Glance): `NovilaWidget` visar dagens balans, sömn, kost och vatten, det
+  senaste användaren loggat (`latestLog`) och dagens första uppmuntran (`cheers`), och `LogWaterAction` loggar ett
+  glas vatten. Ingen flik och ingen ViewModel: receivern och action skapas av systemet och når storarna via
+  `WidgetGraph` (som `AppGraph` utökar, genom `NovilaApplication`). `WidgetUpdates` ritar om widgeten när appen sparar.
+  Läser aldrig Health Connect (bara i förgrunden), så balansen är sömn och kost.
 - `:core:designsystem` – `se.novila.designsystem`, enda modulen som använder Material 3 direkt
   - `theme` – `NovilaTheme`: färger, typografi, former och spacing-tokens
   - `component` – `Novila*`-komponenter som wrappar Material 3
+  - `glance` – `NovilaGlanceTheme` och `NovilaGlance`: samma färger, spacing, hörn och textstorlekar för widgets,
+    som inte kan använda Compose-komponenterna
 - `:core:ui` – det flera features delar: `ScreenList`, formatering (`hoursText`, `stepsText` …), `DayPicker`, historikkorten
   (`SleepHistoryCard`, `NutritionHistoryCard`: vecka, fyra veckor eller år, jämfört med perioden innan),
   flikikonerna och `PreviewData` (samma person i alla previews)
@@ -55,7 +62,7 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   (`HealthConnectExerciseSource`, träningspass) och `SleepSource` (`HealthConnectSleepSource`, nätter), behörigheterna i modulens manifest (`HEALTH_PERMISSIONS`, frågas i en
   dialog via `rememberHealthPermissionRequest`) och integritetsskärmen (`HealthDataInfoActivity`)
 - Ren Kotlin, utan Android (`novila.jvm.library`, testas på sekunder):
-  - `:core:model` – `DayEntry` (`DayEntryCodec`), kost, dagens balans, insikter, `analyzeSleep` (se *Sömnens samband*
+  - `:core:model` – `DayEntry` (`DayEntryCodec`), kost, dagens balans, insikter, widgetens `latestLog` och `cheers`, `analyzeSleep` (se *Sömnens samband*
     under Regler), `History` (dagarna över en
     `HistoryRange` i perioder, plus lika många dagar före att jämföra med; Sömn och Kost läser den via `HealthStore`), `Profile`, `Goals` (egna mål för
     steg, sömn och vatten; balans, insikter och kostpoäng mäts mot dem) och `AppSettings` (`ThemeMode`)
@@ -332,6 +339,11 @@ där pluginet `firebase@firebase` inte alltid installeras.
   (aldrig sparat). WorkManagers standardstart är borttagen i appens manifest (lint `RemoveWorkManagerInitializer`);
   appen ger konfigurationen.
   Nya workers skapas av en fabrik i grafen och behöver en `-keepnames`-regel i `app/proguard-rules.pro`.
+- **Widget:** Glance, färgad bara med `NovilaGlanceTheme`/`NovilaGlance` (pillars som färgroller), texter från
+  `strings.xml`. Det widgeten säger om dagen kommer från `latestLog` och `cheers` i `:core:model` (testat i
+  `DayHighlightsTest`) och påstår aldrig mer än appen vet: ingen väderdata (ingen `INTERNET`), så solen nämns bara
+  via årstiden. Uppdateras när appen sparar (`WidgetUpdates`) och av systemet en gång i timmen, för midnatt; inga
+  egna jobb. Nya knappar är en `ActionCallback` med en keep-regel i `app/proguard-rules.pro`.
 - Hälsodata stannar på enheten. Inga nätverksanrop, analysverktyg eller Firebase-SDK:er i appen utan att ägaren ber om det.
   Appen har ingen `INTERNET`-behörighet: ML Kit drar in Googles telemetri (`datatransport`), som ber om den för att
   skicka användningsstatistik, så den tas bort i appens manifest (`tools:node="remove"`). Lägg aldrig tillbaka den

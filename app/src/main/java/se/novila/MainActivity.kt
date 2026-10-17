@@ -19,6 +19,8 @@ class MainActivity : ComponentActivity() {
         val graph = (application as NovilaApplication).graph
         val viewModelFactory = graph.metroViewModelFactory
         val settingsStore = graph.settingsStore
+        // The widget redraws when the app saves something from here on.
+        graph.widgetUpdates.start()
         setContent {
             // Nothing to show until the settings are read, a moment at app start, so neither the theme nor the intro
             // flickers.

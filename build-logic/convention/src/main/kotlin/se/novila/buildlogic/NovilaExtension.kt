@@ -90,6 +90,15 @@ abstract class NovilaExtension @Inject constructor(private val project: Project)
         project.dependencies.add("testImplementation", project.libs.library("androidx-work-testing"))
     }
 
+    /**
+     * Glance for home-screen widgets, and its unit-test helpers (`runGlanceAppWidgetUnitTest`). Colors and sizes come
+     * from `NovilaGlanceTheme` in :core:designsystem.
+     */
+    fun glance() {
+        implementation("androidx-glance-appwidget")
+        project.dependencies.add("testImplementation", project.libs.library("androidx-glance-appwidget-testing"))
+    }
+
     /** The Health Connect client. See *Health Connect* in CLAUDE.md before using it anywhere new. */
     fun healthConnect() = implementation("androidx-health-connect-client")
 }

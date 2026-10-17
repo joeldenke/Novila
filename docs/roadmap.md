@@ -75,7 +75,8 @@ mer än kommentaren, eller data som lämnar appen.
 - [ ] **Gemini Nano i fler roller**, t.ex. en veckosammanfattning **(ok)**
 
 ### 7. Plattform
-- [ ] **Widget på hemskärmen** (Glance): dagens balans och snabbloggning
+- [x] **Widget på hemskärmen** (Glance): dagens balans, sömn, kost och vatten, senaste loggen, en uppmuntran utifrån
+  det du gjort (`cheers`) och ett glas vatten med ett tryck. Mer snabbloggning (portioner, mående) återstår.
 - [ ] **Snabbinställningsruta och genvägar:** "Starta passet", "Logga vatten"
 - [ ] **Wear OS:** passläget och vilotimern på klockan
 - [ ] **Surfplatta och vikbara skärmar** (skillen `adaptive`)
@@ -89,4 +90,4 @@ mer än kommentaren, eller data som lämnar appen.
 4. Redigera tidigare dagar och längre historik ← klar
 5. Påminnelser ← klar
 6. Sömn 2.0 och sömn från Health Connect ← klar
-7. Widget på hemskärmen
+7. Widget på hemskärmen ← klar

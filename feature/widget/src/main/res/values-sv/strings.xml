@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_name">Novila i dag</string>
+    <string name="widget_description">Dagens balans, det du loggat och något om din dag, med ett glas vatten ett tryck bort.</string>
+    <string name="widget_balance">Dagens balans</string>
+    <string name="widget_sleep">Sömn</string>
+    <string name="widget_food">Kost</string>
+    <string name="widget_water">Vatten</string>
+    <string name="widget_log_water">+ Glas vatten</string>
+
+    <string name="widget_latest">Senast: %1$s</string>
+    <string name="widget_latest_walk">promenad, %1$d min</string>
+    <string name="widget_latest_run">löpning, %1$d min</string>
+    <string name="widget_latest_ride">cykeltur, %1$d min</string>
+    <string name="widget_latest_swim">simning, %1$d min</string>
+    <string name="widget_latest_strength">styrkepass, %1$d min</string>
+    <plurals name="widget_latest_food">
+        <item quantity="one">%1$d portion mat</item>
+        <item quantity="other">%1$d portioner mat</item>
+    </plurals>
+    <plurals name="widget_latest_water">
+        <item quantity="one">%1$d glas vatten</item>
+        <item quantity="other">%1$d glas vatten</item>
+    </plurals>
+    <string name="widget_latest_sleep">sov %1$s</string>
+
+    <string name="widget_cheer_outdoors_summer">Ute och rörde dig i %1$d minuter. Från april till september bildar huden D-vitamin av solen mitt på dagen.</string>
+    <string name="widget_cheer_outdoors_daylight">Ute och rörde dig i %1$d minuter. Dagsljuset ställer kroppens klocka och hjälper sömnen i kväll, även en grå dag.</string>
+    <string name="widget_cheer_swim">%1$d minuters simning: hela kroppen tränad, skonsamt för lederna.</string>
+    <string name="widget_cheer_strength">Styrkepasset är klart. Musklerna blir starkare när du vilar, så nattens sömn räknas också.</string>
+    <string name="widget_cheer_rested">Du sov %1$s. En utvilad kropp orkar mer i dag.</string>
+    <string name="widget_cheer_short_night">En kort natt, %1$s. Ta det lugnt i dag och lägg dig lite tidigare i kväll.</string>
+    <string name="widget_cheer_vegetables">%1$d portioner grönsaker, frukt och bär: dagens fibrer och vitaminer.</string>
+    <string name="widget_cheer_water">Vattenmålet är nått. Snyggt.</string>
+    <string name="widget_cheer_good_food">Kostpoäng %1$d i dag, i linje med kostråden.</string>
+    <string name="widget_cheer_start">Logga natten och dagens mat, så visar Novila vad dagen blir.</string>
+</resources>
