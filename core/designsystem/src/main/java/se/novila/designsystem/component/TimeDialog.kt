@@ -5,7 +5,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimeInput
-import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import se.novila.designsystem.theme.NovilaColorRole
@@ -42,13 +41,8 @@ fun NovilaTimeDialog(
         },
         title = { Text(title, style = NovilaTheme.typography.headlineSmall) },
         text = {
-            TimeInput(
-                state = state,
-                colors = TimePickerDefaults.colors(
-                    timeSelectorSelectedContainerColor = role.container,
-                    timeSelectorSelectedContentColor = role.onContainer,
-                ),
-            )
+            // The theme's own colors: the fields follow NovilaTheme, the buttons the [role].
+            TimeInput(state = state)
         },
         shape = NovilaTheme.shapes.extraLarge,
         containerColor = NovilaTheme.surfaces.card,
