@@ -29,7 +29,7 @@ feature-group: label=''
   uses-feature: name='android.hardware.faketouch'
   uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
 main
-app-widget
+provides-component:'app-widget'
 other-activities
 other-receivers
 other-services

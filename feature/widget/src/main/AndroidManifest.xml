@@ -4,7 +4,8 @@
   launcher (through the system) sends it the widget's updates. It reads nothing from the intent but the widget ids, and
   only shows and logs what the app already saves on the phone.
 -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <application>
         <receiver
@@ -18,5 +19,13 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/novila_widget_info" />
         </receiver>
+
+        <!--
+          Glance's service for lists in widgets (LazyColumn), exported to the launcher. The widget has no lists, so the
+          service is removed and the APK doesn't export what it never uses.
+        -->
+        <service
+            android:name="androidx.glance.appwidget.GlanceRemoteViewsService"
+            tools:node="remove" />
     </application>
 </manifest>
