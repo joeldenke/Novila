@@ -8,6 +8,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import se.novila.designsystem.component.NovilaReveal
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.model.DayEntry
+import se.novila.model.Goals
 import se.novila.model.weekOf
 import se.novila.ui.common.ScreenList
 import se.novila.ui.common.SleepWeekCard
@@ -17,14 +18,15 @@ import se.novila.ui.preview.PreviewData
 fun SleepScreen(
     today: DayEntry,
     history: List<DayEntry>,
+    goals: Goals,
     onSleep: (Float) -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
     val week = remember(today, history) { weekOf(today, history) }
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
-        item(key = "sleep") { NovilaReveal(order = 0) { SleepCard(today.sleepHours, onSleep) } }
-        item(key = "week") { NovilaReveal(order = 1) { SleepWeekCard(week) } }
+        item(key = "sleep") { NovilaReveal(order = 0) { SleepCard(today.sleepHours, goals, onSleep) } }
+        item(key = "week") { NovilaReveal(order = 1) { SleepWeekCard(week, goals) } }
     }
 }
 
@@ -32,6 +34,6 @@ fun SleepScreen(
 @Composable
 private fun SleepScreenPreview() {
     NovilaTheme {
-        SleepScreen(PreviewData.today, PreviewData.history, onSleep = {}, contentPadding = PaddingValues())
+        SleepScreen(PreviewData.today, PreviewData.history, Goals(), onSleep = {}, contentPadding = PaddingValues())
     }
 }

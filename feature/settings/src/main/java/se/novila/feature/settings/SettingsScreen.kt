@@ -25,17 +25,21 @@ import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.settings.R
 import se.novila.model.AppSettings
+import se.novila.model.Goals
 import se.novila.model.Profile
 import se.novila.model.ThemeMode
 import se.novila.movement.MovementState
 import se.novila.movement.TodayMovement
 import se.novila.ui.common.ScreenList
+import se.novila.ui.common.hoursText
+import se.novila.ui.common.stepsText
 import se.novila.ui.preview.PreviewData
 import se.novila.ui.R as UiR
 
 /** What the Settings screen can do. The entry connects these to the ViewModel and to the system. */
 data class SettingsActions(
     val onOpenProfile: () -> Unit = {},
+    val onOpenGoals: () -> Unit = {},
     val onTheme: (ThemeMode) -> Unit = {},
     val onDynamicColor: (Boolean) -> Unit = {},
     val onChooseLanguage: () -> Unit = {},
@@ -49,8 +53,8 @@ data class SettingsActions(
 )
 
 /**
- * Settings: the user's profile, appearance, Health Connect access, health disclaimer, the user's data and the app
- * version.
+ * Settings: the user's profile and daily goals, appearance, Health Connect access, health disclaimer, the user's
+ * data and the app version.
  *
  * @param canUseDynamicColor wallpaper colors exist (Android 12+)
  * @param canChooseLanguage the phone has per-app language settings (Android 13+)
@@ -59,6 +63,7 @@ data class SettingsActions(
 fun SettingsScreen(
     settings: AppSettings,
     profile: Profile,
+    goals: Goals,
     movement: MovementState,
     version: AppVersion,
     canUseDynamicColor: Boolean,
@@ -68,7 +73,7 @@ fun SettingsScreen(
     modifier: Modifier = Modifier,
 ) {
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
-        item(key = "profile") { ProfileCard(profile, actions.onOpenProfile) }
+        item(key = "profile") { ProfileCard(profile, goals, actions) }
         item(key = "appearance") {
             AppearanceCard(settings, canUseDynamicColor, canChooseLanguage, actions)
         }
@@ -79,14 +84,25 @@ fun SettingsScreen(
     }
 }
 
-/** Who uses the app: the name, or what the profile is for when it is empty. */
+/** Who uses the app: the name, or what the profile is for when it is empty, and the daily goals. */
 @Composable
-private fun ProfileCard(profile: Profile, onOpenProfile: () -> Unit) {
+private fun ProfileCard(profile: Profile, goals: Goals, actions: SettingsActions) {
     NovilaCard(title = stringResource(R.string.settings_profile)) {
         NovilaListRow(
             title = profile.name.ifEmpty { stringResource(R.string.profile_title) },
             summary = if (profile.name.isEmpty()) stringResource(R.string.settings_profile_empty) else null,
-            onClick = onOpenProfile,
+            onClick = actions.onOpenProfile,
+            trailing = { Chevron() },
+        )
+        NovilaListRow(
+            title = stringResource(R.string.goals_title),
+            summary = stringResource(
+                R.string.settings_goals_summary,
+                stepsText(goals.steps.toLong()),
+                hoursText(goals.sleepHours),
+                goals.waterGlasses,
+            ),
+            onClick = actions.onOpenGoals,
             trailing = { Chevron() },
         )
     }
@@ -279,12 +295,14 @@ private fun SettingsContent(
     movement: MovementState,
     settings: AppSettings = AppSettings(),
     profile: Profile = Profile(),
+    goals: Goals = Goals(),
 ) {
     NovilaTheme {
         NovilaScaffold { padding ->
             SettingsScreen(
                 settings = settings,
                 profile = profile,
+                goals = goals,
                 movement = movement,
                 version = AppVersion(name = "0.1.42-debug", code = 42),
                 canUseDynamicColor = true,
@@ -306,4 +324,5 @@ private fun SettingsDarkPreview() = SettingsContent(
     movement = MovementState.Connected(TodayMovement(steps = 6400, activeKilocalories = 210)),
     settings = AppSettings(theme = ThemeMode.Dark, dynamicColor = false),
     profile = PreviewData.profile,
+    goals = Goals(steps = 10000, sleepHours = 7.5f),
 )

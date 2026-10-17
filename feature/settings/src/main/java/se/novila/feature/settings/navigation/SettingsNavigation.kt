@@ -19,6 +19,9 @@ import androidx.navigation3.runtime.NavKey
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.serialization.Serializable
 import se.novila.feature.settings.DisclaimerScreen
+import se.novila.feature.settings.GoalsActions
+import se.novila.feature.settings.GoalsScreen
+import se.novila.feature.settings.GoalsViewModel
 import se.novila.feature.settings.ProfileScreen
 import se.novila.feature.settings.ProfileViewModel
 import se.novila.feature.settings.R
@@ -44,10 +47,13 @@ import se.novila.ui.R as UiR
 /** The user's profile, on the phone only. */
 @Serializable data object ProfileRoute : NavKey
 
+/** The user's daily goals for steps, sleep and water. */
+@Serializable data object GoalsRoute : NavKey
+
 /**
- * Settings and the screens opened from it. Settings and the profile have their own ViewModels, scoped to their
- * entries; the other two are static text. Navigation inside goes through [navigator], on whichever tab Settings was
- * opened from.
+ * Settings and the screens opened from it. Settings, the profile and the goals have their own ViewModels, scoped to
+ * their entries; the other two are static text. Navigation inside goes through [navigator], on whichever tab Settings
+ * was opened from.
  */
 fun EntryProviderScope<NavKey>.settingsEntries(navigator: Navigator, contentPadding: PaddingValues) {
     entry<SettingsRoute> {
@@ -60,18 +66,21 @@ fun EntryProviderScope<NavKey>.settingsEntries(navigator: Navigator, contentPadd
         // Nothing to show until the settings are read, a moment at app start.
         val settings = viewModel.settings.collectAsStateWithLifecycle().value ?: return@entry
         val profile = viewModel.profile.collectAsStateWithLifecycle().value ?: return@entry
+        val goals = viewModel.goals.collectAsStateWithLifecycle().value ?: return@entry
         val movement by viewModel.movement.collectAsStateWithLifecycle()
         val context = LocalContext.current
         val connectHealth = rememberMovementPermissionRequest(viewModel::onMovementPermissionsResult)
         SettingsScreen(
             settings = settings,
             profile = profile,
+            goals = goals,
             movement = movement,
             version = viewModel.version,
             canUseDynamicColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
             canChooseLanguage = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU,
             actions = SettingsActions(
                 onOpenProfile = { navigator.navigate(ProfileRoute) },
+                onOpenGoals = { navigator.navigate(GoalsRoute) },
                 onTheme = viewModel::setTheme,
                 onDynamicColor = viewModel::setDynamicColor,
                 onChooseLanguage = { openLanguageSettings(context) },
@@ -97,6 +106,17 @@ fun EntryProviderScope<NavKey>.settingsEntries(navigator: Navigator, contentPadd
             contentPadding = contentPadding,
         )
     }
+    entry<GoalsRoute> {
+        val viewModel = metroViewModel<GoalsViewModel>()
+        // Nothing to show until the goals and the profile are read, a moment at app start.
+        val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
+        GoalsScreen(
+            goals = state.goals,
+            suggestion = state.suggestion,
+            actions = GoalsActions(onChange = viewModel::change, onUseSuggestion = viewModel::save),
+            contentPadding = contentPadding,
+        )
+    }
     entry<HealthDataRoute> {
         val context = LocalContext.current
         HealthDataInfoScreen(
@@ -114,6 +134,7 @@ fun settingsTitle(route: NavKey?): String? = when (route) {
     HealthDataRoute -> stringResource(HealthConnectR.string.health_info_title)
     DisclaimerRoute -> stringResource(R.string.disclaimer_title)
     ProfileRoute -> stringResource(R.string.profile_title)
+    GoalsRoute -> stringResource(R.string.goals_title)
     else -> null
 }
 

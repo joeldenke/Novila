@@ -2,4 +2,5 @@
 <resources>
     <!-- Sleep -->
     <string name="sleep_title">Sleep last night</string>
+    <string name="sleep_goal">Your goal is %1$s a night.</string>
 </resources>

@@ -9,16 +9,18 @@ import se.novila.designsystem.component.NovilaReveal
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.model.DayEntry
 import se.novila.model.FoodGroup
+import se.novila.model.Goals
 import se.novila.model.weekOf
 import se.novila.ui.common.NutritionWeekCard
 import se.novila.ui.common.ScreenList
 import se.novila.ui.preview.PreviewData
 
-/** Today's nutrition score with its breakdown, logging per food group and the week's scores. */
+/** Today's nutrition score with its breakdown, logging per food group and the week's scores, water against [goals]. */
 @Composable
 fun NutritionScreen(
     today: DayEntry,
     history: List<DayEntry>,
+    goals: Goals,
     onPortions: (FoodGroup, Int) -> Unit,
     onTreats: (Int) -> Unit,
     contentPadding: PaddingValues,
@@ -26,9 +28,9 @@ fun NutritionScreen(
 ) {
     val week = remember(today, history) { weekOf(today, history) }
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
-        item(key = "score") { NovilaReveal(order = 0) { NutritionScoreCard(today) } }
-        item(key = "log") { NovilaReveal(order = 1) { FoodLogCard(today, onPortions, onTreats) } }
-        item(key = "week") { NovilaReveal(order = 2) { NutritionWeekCard(week) } }
+        item(key = "score") { NovilaReveal(order = 0) { NutritionScoreCard(today, goals) } }
+        item(key = "log") { NovilaReveal(order = 1) { FoodLogCard(today, goals, onPortions, onTreats) } }
+        item(key = "week") { NovilaReveal(order = 2) { NutritionWeekCard(week, goals) } }
     }
 }
 
@@ -39,6 +41,7 @@ private fun NutritionScreenPreview() {
         NutritionScreen(
             PreviewData.today,
             PreviewData.history,
+            Goals(),
             onPortions = { _, _ -> },
             onTreats = {},
             contentPadding = PaddingValues(),

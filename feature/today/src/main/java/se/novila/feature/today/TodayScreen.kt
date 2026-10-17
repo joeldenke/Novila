@@ -26,6 +26,7 @@ import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.today.R
 import se.novila.model.DayEntry
 import se.novila.model.DayTip
+import se.novila.model.Goals
 import se.novila.model.Greeting
 import se.novila.model.balance
 import se.novila.model.greetingFor
@@ -48,7 +49,8 @@ import se.novila.ui.R as UiR
 
 /**
  * The dashboard: greeting (by [name] when the profile has one), today's balance as rings, one tile per part with its
- * trend, what the week's logs say, the week's sleep and nutrition, and today's mood. Blocks arrive one by one.
+ * trend, what the week's logs say, the week's sleep and nutrition, and today's mood. Everything is measured against
+ * the user's [goals]. Blocks arrive one by one.
  */
 @Composable
 fun TodayScreen(
@@ -56,6 +58,7 @@ fun TodayScreen(
     history: List<DayEntry>,
     hour: Int,
     name: String,
+    goals: Goals,
     movement: MovementState,
     onMood: (Int) -> Unit,
     onOpenTraining: () -> Unit,
@@ -68,18 +71,18 @@ fun TodayScreen(
     // Today's steps once Health Connect is connected, otherwise null.
     val steps = (movement as? MovementState.Connected)?.today?.steps
     val week = remember(today, history) { weekOf(today, history) }
-    val insights = remember(week, steps) { weekInsights(week, steps) }
+    val insights = remember(week, steps, goals) { weekInsights(week, steps, goals = goals) }
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
         item(key = "header") { NovilaReveal(order = 0) { Header(today, greetingFor(hour), name, onOpenSettings) } }
-        item(key = "balance") { NovilaReveal(order = 1) { BalanceCard(today, steps) } }
+        item(key = "balance") { NovilaReveal(order = 1) { BalanceCard(today, steps, goals) } }
         item(key = "pillars") {
             NovilaReveal(order = 2) {
-                PillarTiles(today, week, steps, onOpenTraining, onOpenSleep, onOpenNutrition)
+                PillarTiles(today, week, steps, goals, onOpenTraining, onOpenSleep, onOpenNutrition)
             }
         }
         item(key = "insights") { NovilaReveal(order = 3) { InsightsCard(insights) } }
-        item(key = "sleep-week") { NovilaReveal(order = 4) { SleepWeekCard(week) } }
-        item(key = "nutrition-week") { NovilaReveal(order = 5) { NutritionWeekCard(week) } }
+        item(key = "sleep-week") { NovilaReveal(order = 4) { SleepWeekCard(week, goals) } }
+        item(key = "nutrition-week") { NovilaReveal(order = 5) { NutritionWeekCard(week, goals) } }
         item(key = "mood") { NovilaReveal(order = 6) { MoodCard(today.mood, onMood) } }
     }
 }
@@ -130,25 +133,25 @@ private fun GreetingText(today: DayEntry, greeting: Greeting, name: String, modi
 }
 
 @Composable
-private fun BalanceCard(today: DayEntry, steps: Long?) {
+private fun BalanceCard(today: DayEntry, steps: Long?, goals: Goals) {
     val hero = NovilaTheme.hero
     NovilaHeroCard(
         title = stringResource(R.string.balance_title),
-        value = today.balance(steps),
+        value = today.balance(steps, goals),
         unit = stringResource(UiR.string.balance_unit),
-        body = when (val tip = today.tip()) {
+        body = when (val tip = today.tip(goals)) {
             DayTip.LogSleep -> stringResource(R.string.tip_log_sleep)
             is DayTip.Eat -> nextPortionText(tip.next)
             DayTip.GoalsMet -> stringResource(R.string.tip_goals_met)
         },
         segments = listOfNotNull(
             steps?.let {
-                NovilaHeroSegment(stringResource(R.string.pillar_movement), stepsProgress(it), hero.training)
+                NovilaHeroSegment(stringResource(R.string.pillar_movement), stepsProgress(it, goals), hero.training)
             },
-            NovilaHeroSegment(stringResource(UiR.string.nav_sleep), today.sleepProgress, hero.sleep),
+            NovilaHeroSegment(stringResource(UiR.string.nav_sleep), today.sleepProgress(goals), hero.sleep),
             NovilaHeroSegment(
                 stringResource(UiR.string.nav_nutrition),
-                today.nutritionScore()?.progress ?: 0f,
+                today.nutritionScore(goals)?.progress ?: 0f,
                 hero.nutrition,
             ),
         ),
@@ -160,6 +163,7 @@ private fun PillarTiles(
     today: DayEntry,
     week: List<DayEntry>,
     steps: Long?,
+    goals: Goals,
     onOpenTraining: () -> Unit,
     onOpenSleep: () -> Unit,
     onOpenNutrition: () -> Unit,
@@ -177,7 +181,7 @@ private fun PillarTiles(
             role = pillars.training,
             onClick = onOpenTraining,
             modifier = tile,
-            progress = steps?.let(::stepsProgress),
+            progress = steps?.let { stepsProgress(it, goals) },
         )
         NovilaStatTile(
             icon = painterResource(UiR.drawable.ic_sleep),
@@ -189,7 +193,7 @@ private fun PillarTiles(
             trend = week.map { day -> day.sleepHours.takeIf { it > 0f } },
             trendRange = TileSleepRange,
         )
-        val score = today.nutritionScore()
+        val score = today.nutritionScore(goals)
         NovilaStatTile(
             icon = painterResource(UiR.drawable.ic_nutrition),
             value = score?.let { stringResource(UiR.string.balance_value, it.total) }
@@ -198,7 +202,7 @@ private fun PillarTiles(
             role = pillars.nutrition,
             onClick = onOpenNutrition,
             modifier = tile,
-            trend = week.map { it.nutritionScore()?.total?.toFloat() },
+            trend = week.map { it.nutritionScore(goals)?.total?.toFloat() },
             trendRange = TileScoreRange,
         )
     }
@@ -216,6 +220,7 @@ private fun TodayScreenContent() {
                 history = PreviewData.history,
                 hour = 8,
                 name = PreviewData.profile.name,
+                goals = Goals(),
                 movement = PreviewData.movement,
                 onMood = {},
                 onOpenTraining = {},

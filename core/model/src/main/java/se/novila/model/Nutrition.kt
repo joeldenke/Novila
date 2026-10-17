@@ -6,7 +6,8 @@ import kotlin.math.roundToInt
  * What the nutrition score is made of, from the Swedish Food Agency's dietary advice
  * (Livsmedelsverkets kostråd): plenty of vegetables and fruit, protein and whole grain at
  * regular meals, and water to drink. [goal] is portions per day; [points] is the group's share
- * of the 100-point score, weighted by how much it matters for a healthy diet.
+ * of the 100-point score, weighted by how much it matters for a healthy diet. Water's goal is the user's own
+ * ([Goals.waterGlasses], see [dailyGoal]); [Water]'s [goal] is the default.
  */
 enum class FoodGroup(val goal: Int, val points: Int) {
     /** Vegetables, fruit and berries, about 100 g a portion: 500 g a day. */
@@ -41,6 +42,9 @@ data class FoodLog(
     val wholeGrain: Int = 0,
     val treats: Int = 0,
 )
+
+/** Portions a day for this group: the dietary advice, or for water the user's own goal. */
+fun FoodGroup.dailyGoal(goals: Goals = Goals()): Int = if (this == FoodGroup.Water) goals.waterGlasses else goal
 
 fun DayEntry.portions(group: FoodGroup): Int = when (group) {
     FoodGroup.Vegetables -> food.vegetables
@@ -77,13 +81,15 @@ data class NutritionScore(val total: Int, val parts: List<ScorePart>, val treatP
  * Each food group earns points in proportion to how close it is to its daily goal, capped at the
  * goal: five portions of vegetables is the advice, a sixth earns nothing more, so no single group
  * can make up for a missing one. Treats beyond [FREE_TREATS] subtract points. Null before anything
- * is logged, so an empty day reads as "not logged" rather than as a bad score.
+ * is logged, so an empty day reads as "not logged" rather than as a bad score. Water counts towards the user's
+ * own goal in [goals].
  */
-fun DayEntry.nutritionScore(): NutritionScore? {
+fun DayEntry.nutritionScore(goals: Goals = Goals()): NutritionScore? {
     if (FoodGroup.entries.all { portions(it) == 0 } && food.treats == 0) return null
     val parts = FoodGroup.entries.map { group ->
         val count = portions(group)
-        ScorePart(group, count, group.points * (count.toFloat() / group.goal).coerceAtMost(1f))
+        val goal = group.dailyGoal(goals)
+        ScorePart(group, count, group.points * (count.toFloat() / goal).coerceAtMost(1f))
     }
     val penalty = ((food.treats - FREE_TREATS).coerceAtLeast(0) * TREAT_PENALTY).coerceAtMost(MAX_TREAT_PENALTY)
     val total = (parts.sumOf { it.points.toDouble() }.roundToInt() - penalty).coerceIn(0, 100)
@@ -97,7 +103,7 @@ data class NextPortion(val group: FoodGroup, val points: Int)
  * The smartest next step for today's nutrition: the group where one more portion is worth the
  * most points. Null when every group is at its goal.
  */
-fun DayEntry.nextPortion(): NextPortion? = FoodGroup.entries
-    .filter { portions(it) < it.goal }
-    .maxByOrNull { it.points.toFloat() / it.goal }
-    ?.let { NextPortion(it, (it.points.toFloat() / it.goal).roundToInt()) }
+fun DayEntry.nextPortion(goals: Goals = Goals()): NextPortion? = FoodGroup.entries
+    .filter { portions(it) < it.dailyGoal(goals) }
+    .maxByOrNull { it.points.toFloat() / it.dailyGoal(goals) }
+    ?.let { NextPortion(it, (it.points.toFloat() / it.dailyGoal(goals)).roundToInt()) }

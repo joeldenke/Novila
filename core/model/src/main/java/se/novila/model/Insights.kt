@@ -11,8 +11,8 @@ fun List<DayEntry>.averageSleep(): Float? =
     map { it.sleepHours }.filter { it > 0f }.takeIf { it.isNotEmpty() }?.average()?.toFloat()
 
 /** Average nutrition score over the days with food logged, or null when none were. */
-fun List<DayEntry>.averageNutrition(): Int? =
-    mapNotNull { it.nutritionScore()?.total }.takeIf { it.isNotEmpty() }?.average()?.roundToInt()
+fun List<DayEntry>.averageNutrition(goals: Goals = Goals()): Int? =
+    mapNotNull { it.nutritionScore(goals)?.total }.takeIf { it.isNotEmpty() }?.average()?.roundToInt()
 
 /**
  * Something worth knowing about the week, worked out on the phone from the user's own logs.
@@ -31,8 +31,8 @@ sealed interface Insight {
     /** Days in a row with a good nutrition score. */
     data class NutritionStreak(val days: Int) : Insight
 
-    /** Today's step goal is reached. */
-    data object StepsGoalReached : Insight
+    /** Today's step goal of [steps] is reached. */
+    data class StepsGoalReached(val steps: Int) : Insight
 
     /** Every logged night this week within an hour of the others. */
     data object SteadySleep : Insight
@@ -40,15 +40,19 @@ sealed interface Insight {
 
 const val MOOD_SLEEP_HOURS = 7f
 
-/** [week] runs from oldest to today (see [weekOf]). At most [limit] insights, the most telling first. */
-fun weekInsights(week: List<DayEntry>, steps: Long?, limit: Int = 3): List<Insight> = listOfNotNull(
-    moodFollowsSleep(week),
-    sleepVsAverage(week),
-    nutritionStreak(week),
-    nutritionTrend(week),
-    Insight.StepsGoalReached.takeIf { steps != null && steps >= STEPS_GOAL },
-    steadySleep(week),
-).take(limit)
+/**
+ * [week] runs from oldest to today (see [weekOf]). At most [limit] insights, the most telling first. Steps and
+ * nutrition are measured against the user's [goals].
+ */
+fun weekInsights(week: List<DayEntry>, steps: Long?, limit: Int = 3, goals: Goals = Goals()): List<Insight> =
+    listOfNotNull(
+        moodFollowsSleep(week),
+        sleepVsAverage(week),
+        nutritionStreak(week, goals),
+        nutritionTrend(week, goals),
+        Insight.StepsGoalReached(goals.steps).takeIf { steps != null && steps >= goals.steps },
+        steadySleep(week),
+    ).take(limit)
 
 /** At least two days on each side of [MOOD_SLEEP_HOURS], and almost a whole mood step between them. */
 private fun moodFollowsSleep(week: List<DayEntry>): Insight? {
@@ -71,17 +75,17 @@ private fun sleepVsAverage(week: List<DayEntry>): Insight? {
 }
 
 /** Three or more good days in a row, ending today or, while today is still going, yesterday. */
-private fun nutritionStreak(week: List<DayEntry>): Insight? {
-    fun good(day: DayEntry) = (day.nutritionScore()?.total ?: 0) >= GOOD_NUTRITION_SCORE
+private fun nutritionStreak(week: List<DayEntry>, goals: Goals): Insight? {
+    fun good(day: DayEntry) = (day.nutritionScore(goals)?.total ?: 0) >= GOOD_NUTRITION_SCORE
     val days = if (week.lastOrNull()?.let(::good) == true) week else week.dropLast(1)
     val streak = days.asReversed().takeWhile(::good).size
     return Insight.NutritionStreak(streak).takeIf { streak >= 3 }
 }
 
 /** The last three full days against the ones before, when the score moved 8 points or more. */
-private fun nutritionTrend(week: List<DayEntry>): Insight? {
+private fun nutritionTrend(week: List<DayEntry>, goals: Goals): Insight? {
     // Today is still in progress, so it would always look worse.
-    val scores = week.dropLast(1).mapNotNull { it.nutritionScore()?.total }
+    val scores = week.dropLast(1).mapNotNull { it.nutritionScore(goals)?.total }
     if (scores.size < 5) return null
     val recent = scores.takeLast(3).average()
     val earlier = scores.dropLast(3).average()

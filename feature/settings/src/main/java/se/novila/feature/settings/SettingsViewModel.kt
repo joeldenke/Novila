@@ -10,10 +10,12 @@ import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import se.novila.data.CoachStore
+import se.novila.data.GoalsStore
 import se.novila.data.HealthStore
 import se.novila.data.ProfileStore
 import se.novila.data.SettingsStore
 import se.novila.model.AppSettings
+import se.novila.model.Goals
 import se.novila.model.Profile
 import se.novila.model.ThemeMode
 import se.novila.movement.MovementRepository
@@ -21,8 +23,8 @@ import se.novila.movement.MovementState
 import java.time.LocalDate
 
 /**
- * Settings: the profile, how the app looks, Health Connect access, the user's data and the app version. Scoped to
- * its entry.
+ * Settings: the profile, the daily goals, how the app looks, Health Connect access, the user's data and the app
+ * version. Scoped to its entry.
  */
 @ViewModelKey
 @ContributesIntoMap(AppScope::class)
@@ -32,6 +34,7 @@ class SettingsViewModel(
     private val healthStore: HealthStore,
     private val coachStore: CoachStore,
     private val profileStore: ProfileStore,
+    private val goalsStore: GoalsStore,
     private val movementRepository: MovementRepository,
     context: Context,
 ) : ViewModel() {
@@ -40,6 +43,9 @@ class SettingsViewModel(
 
     /** The user's profile, or null before the store's first read. */
     val profile: StateFlow<Profile?> = profileStore.profile
+
+    /** The user's daily goals, or null before the store's first read. */
+    val goals: StateFlow<Goals?> = goalsStore.goals
 
     /** Whether Health Connect is connected, and what the user can do if not. */
     val movement: StateFlow<MovementState> = movementRepository.state
@@ -64,12 +70,13 @@ class SettingsViewModel(
     fun showIntro() = settingsStore.setOnboarded(false)
 
     /**
-     * Forgets the profile, everything the user has logged and the coach's answers. Settings stay, since they are not
-     * health data. Health Connect's own data is not Novila's to delete.
+     * Forgets the profile and its goals, everything the user has logged and the coach's answers. Settings stay, since
+     * they are not health data. Health Connect's own data is not Novila's to delete.
      */
     fun deleteAllData() {
         healthStore.clear()
         coachStore.clear()
         profileStore.clear()
+        goalsStore.clear()
     }
 }
