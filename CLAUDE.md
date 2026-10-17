@@ -78,8 +78,8 @@ Strängar och ikoner ligger i modulen som använder dem; det flera moduler anvä
 - **Commit-meddelanden, branchnamn, PR-titlar och PR-beskrivningar skrivs på engelska.**
   PR-titeln (vid squash: commit-rubriken) blir en rad i testarnas release notes, så skriv den som en tydlig
   sammanfattning. `scripts/release-notes.sh` listar allt på `main` sedan förra lyckade distributionen.
-- `CI`-workflowen måste vara grön innan PR:en är klar. Den kör fyra jobb parallellt: Format (`spotlessCheck`), Lint
-  (`:app:lintDebug`, alla moduler), Tests (`test verifyRoborazziDebug koverXmlReportCoverage`) och Build
+- `CI`-workflowen måste vara grön innan PR:en är klar. Den kör tre jobb parallellt: Format and lint (`spotlessCheck`
+  och `:app:lintDebug`, alla moduler), Tests (`test verifyAndRecordRoborazziDebug koverXmlReportCoverage`) och Build
   (`:app:assembleDebug :app:checkDebugBadging`); kontrollen *Lint, test and build* samlar dem och är den som krävs. Gemensamma steg ligger
   i `.github/actions/`. Cachen sköts av `gradle/actions/setup-gradle` (standardcachen, sparas bara från `main`), och
   CI-flaggorna för 2-kärniga runners ligger i `.github/ci-gradle.properties`. Bygg aldrig egen cachelogik.
@@ -197,8 +197,10 @@ där pluginet `firebase@firebase` inte alltid installeras.
   (`@RunWith(RobolectricTestRunner::class)`), också i `src/test`. Ingen emulator behövs.
 - **Skärmdumpar:** varje `@Preview` testas mot referensbilder i modulens `src/test/screenshots`
   (t.ex. `feature/training/src/test/screenshots`). Filnamnet är paket, fil och preview.
-  Ändrar du UI med flit: kommentera `/record-screenshots` på PR:en. Workflowen `Record references` tar nya bilder,
-  pushar dem till branchen och startar CI. Ta aldrig fram referensbilder lokalt; de ska renderas i CI.
+  Ändras en skärmdump på en PR spelar Tests-jobbet in den nya bilden, pushar den till branchen som en egen commit
+  (*Record screenshot references*) och startar CI på den. Granska bilderna i PR:ens diff: en oavsiktlig ändring
+  rättas i koden, och nästa körning spelar in igen. `/record-screenshots` (workflowen `Record references`) finns kvar
+  för branchar utan PR. Ta aldrig fram referensbilder lokalt; de ska renderas i CI.
 - **Kodstil:** Spotless med ktlint (`android_studio`-stil) kontrolleras i CI. `./gradlew spotlessApply` rättar.
 - **Täckning:** Kover, sammanfattning i CI-körningens summary. **Compose-stabilitet:** artefakten `compose-reports`.
 

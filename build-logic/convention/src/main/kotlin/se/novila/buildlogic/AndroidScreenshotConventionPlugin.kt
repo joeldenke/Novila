@@ -11,9 +11,10 @@ import org.gradle.kotlin.dsl.withGroovyBuilder
 /**
  * `novila.android.screenshot`: every `@Preview` in the module becomes a Roborazzi screenshot test on Robolectric
  * (no emulator), on top of `novila.android.unittest`. References live in the module's `src/test/screenshots`;
- * record them in CI by commenting `/record-screenshots` on a PR.
+ * CI records changed ones on a PR and pushes them to its branch.
  *
  * Tasks: `recordRoborazziDebug` (write references), `verifyRoborazziDebug` (fail on diff),
+ * `verifyAndRecordRoborazziDebug` (fail on diff and write the new reference, what CI runs),
  * `compareRoborazziDebug` (write diff images without failing).
  *
  * Roborazzi is configured through its extension by name, so build-logic needs no compile dependency on the

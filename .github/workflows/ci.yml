@@ -1,9 +1,10 @@
-# Runs on every PR to main as four parallel jobs, so the run takes as long as its slowest job. Each job restores
+# Runs on every PR to main as three parallel jobs, so the run takes as long as its slowest job. Each job restores
 # the Gradle User Home that the last run on main saved (setup-gradle), so modules a PR doesn't touch come
 # FROM-CACHE instead of being compiled and tested again.
-#   - Format: Spotless (ktlint).
-#   - Lint: Android lint over every module (:app:lintDebug with checkDependencies).
-#   - Tests: unit and screenshot tests and coverage.
+#   - Format and lint: Spotless (ktlint) and Android lint over every module (:app:lintDebug with checkDependencies),
+#     in one job so they share one setup.
+#   - Tests: unit and screenshot tests and coverage. Changed screenshots are recorded and pushed to the PR branch,
+#     and CI starts again on that commit, so no /record-screenshots round is needed.
 #   - Build: the debug APK and its badging check.
 # "Lint, test and build" collects them and is the required status check in branch protection, so nothing red can
 # be merged. Release builds (R8, release signing) only run on merge to main, in distribute.yml.
@@ -26,27 +27,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  format:
-    name: Format
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - uses: ./.github/actions/setup-gradle-build
-        with:
-          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
-      - name: Spotless (ktlint)
-        run: |
-          set -o pipefail
-          ./gradlew spotlessCheck 2>&1 | tee build.log
-      - name: Annotate failures
-        if: failure()
-        uses: ./.github/actions/annotate-gradle-failures
-
   lint:
-    name: Lint
+    name: Format and lint
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -58,10 +40,10 @@ jobs:
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
       # :app:lintDebug checks the app and every module it depends on together (checkDependencies), which is what
       # unused resources need. :core:googlehealth isn't part of the app yet, so it is linted on its own.
-      - name: Android lint
+      - name: Spotless (ktlint) and Android lint
         run: |
           set -o pipefail
-          ./gradlew :app:lintDebug :core:googlehealth:lint --continue 2>&1 | tee build.log
+          ./gradlew spotlessCheck :app:lintDebug :core:googlehealth:lint --continue 2>&1 | tee build.log
       - name: Annotate failures
         if: failure()
         uses: ./.github/actions/annotate-gradle-failures
@@ -77,6 +59,10 @@ jobs:
     name: Tests
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: write # push recorded screenshots to the PR branch
+      pull-requests: write # say so on the PR
+      actions: write # start CI on the pushed commit
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -85,11 +71,12 @@ jobs:
         with:
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
       # Unit tests of every module (debug variant only, see build-logic), screenshot tests against the committed
-      # references and coverage per module.
+      # references and coverage per module. verifyAndRecord fails on a changed screenshot like verify, and also
+      # writes the new image to src/test/screenshots. Main runs it too, so its cache entries fit PR runs.
       - name: Unit and screenshot tests, coverage
         run: |
           set -o pipefail
-          ./gradlew test verifyRoborazziDebug koverXmlReportCoverage --continue 2>&1 | tee build.log
+          ./gradlew test verifyAndRecordRoborazziDebug koverXmlReportCoverage --continue 2>&1 | tee build.log
 
       - name: Coverage summary
         if: success()
@@ -138,6 +125,48 @@ jobs:
       - name: Annotate failures
         if: failure()
         uses: ./.github/actions/annotate-gradle-failures
+
+      # Commits the screenshots recorded above to the PR branch, where they show up in the PR diff for review, and
+      # starts CI on that commit (pushes by GITHUB_TOKEN trigger nothing). Only for PRs from this repository: a
+      # fork's token can't push, and the run started here is a workflow_dispatch, so it never records again.
+      # The job checked out the PR merged into main, so the images move over to the PR head before the commit.
+      - name: Push recorded screenshots
+        if: >-
+          failure() && github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          screenshots=':(glob)**/src/test/screenshots/**'
+          git add -A -- "$screenshots"
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git diff --cached --name-only -z --diff-filter=AM | tar --null -T - -cf "$RUNNER_TEMP/screenshots.tar"
+          git reset -q --hard
+
+          auth="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
+          git -c "http.https://github.com/.extraheader=$auth" fetch -q --no-tags origin "$HEAD_SHA"
+          git checkout -q --detach FETCH_HEAD
+          tar -xf "$RUNNER_TEMP/screenshots.tar"
+          git add -A -- "$screenshots"
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          changed=$(git diff --cached --name-only | wc -l)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -q -m "Record screenshot references" -m "$(git diff --cached --name-only | sed 's/^/- /')"
+          git -c "http.https://github.com/.extraheader=$auth" push -q origin "HEAD:refs/heads/$BRANCH"
+          gh workflow run ci.yml --ref "$BRANCH"
+
+          run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          body="Recorded $changed changed screenshot(s) and pushed them to this branch. Check them in the diff; CI is running on the new commit. ([run]($run_url))"
+          gh api "repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" -f body="$body" > /dev/null
+          echo "::notice title=Screenshots recorded::Pushed $changed screenshot(s) to $BRANCH, CI restarts on that commit"
 
       - name: Upload test reports on failure
         if: failure()
@@ -205,7 +234,7 @@ jobs:
   check:
     name: Lint, test and build
     if: always()
-    needs: [format, lint, test, build]
+    needs: [lint, test, build]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
