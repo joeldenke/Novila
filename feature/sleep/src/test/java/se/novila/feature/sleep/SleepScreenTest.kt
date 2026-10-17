@@ -5,11 +5,13 @@ import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.hasScrollToNodeAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -82,7 +84,9 @@ class SleepScreenTest {
     @Test fun `the findings say what the logs show, and on how many nights`() {
         show()
         scrollTo("After days you ate well", substring = true).assertExists()
-        scrollTo("nights with", substring = true).assertExists()
+        // Every link says how many nights it stands on.
+        val links = composeRule.onAllNodesWithText("nights with", substring = true).fetchSemanticsNodes()
+        assertTrue(links.isNotEmpty())
         scrollTo("A link isn't proof of cause", substring = true).assertExists()
     }
 
