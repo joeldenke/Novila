@@ -5,6 +5,8 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.graphics.luminance
 
 /**
  * Raw brand palette, "Skog & sol": the Swedish countryside on a summer morning, in Nordic calm.
@@ -202,10 +204,33 @@ data class NovilaAccentColors(
 
 /** Pillars follow the scheme's roles, so they also adapt when dynamic color is on. */
 internal fun ColorScheme.pillars() = NovilaPillarColors(
-    training = NovilaColorRole(primary, onPrimary, primaryContainer, onPrimaryContainer),
-    sleep = NovilaColorRole(secondary, onSecondary, secondaryContainer, onSecondaryContainer),
-    nutrition = NovilaColorRole(tertiary, onTertiary, tertiaryContainer, onTertiaryContainer),
+    training = role(primary, onPrimary, primaryContainer, onPrimaryContainer),
+    sleep = role(secondary, onSecondary, secondaryContainer, onSecondaryContainer),
+    nutrition = role(tertiary, onTertiary, tertiaryContainer, onTertiaryContainer),
 )
+
+/**
+ * The Skog & sol palette always passes ColorContrastTest, but wallpaper colors don't have to: a dark
+ * dynamic scheme can give a light container where the pillar's (also light) icon and chart vanish.
+ * Then the container becomes the pillar color as a soft tint on the surface, with readable text on it.
+ */
+private fun ColorScheme.role(color: Color, onColor: Color, container: Color, onContainer: Color): NovilaColorRole {
+    if (contrast(color, container) >= MIN_ICON_CONTRAST) return NovilaColorRole(color, onColor, container, onContainer)
+    val tinted = color.copy(alpha = TINT_ALPHA).compositeOver(surface)
+    val text = if (contrast(onContainer, tinted) >= MIN_TEXT_CONTRAST) onContainer else onSurface
+    return NovilaColorRole(color, onColor, tinted, text)
+}
+
+private const val MIN_ICON_CONTRAST = 3.0
+private const val MIN_TEXT_CONTRAST = 4.5
+private const val TINT_ALPHA = 0.16f
+
+/** WCAG 2.x contrast ratio between two opaque colors. */
+internal fun contrast(a: Color, b: Color): Double {
+    val la = a.luminance().toDouble()
+    val lb = b.luminance().toDouble()
+    return (maxOf(la, lb) + 0.05) / (minOf(la, lb) + 0.05)
+}
 
 internal val NovilaLightAccent = NovilaAccentColors(sun = NovilaPalette.Sun, onSun = NovilaPalette.OnSun)
 internal val NovilaDarkAccent = NovilaAccentColors(sun = NovilaPalette.SunDark, onSun = NovilaPalette.OnSun)
