@@ -43,6 +43,8 @@ Nano for more than the comment, or data that leaves the app.
 - [x] **Log cardio sessions** ("I did it"), and read them from Health Connect (`ExerciseSessionRecord`) **(ok)**
 - [x] **Effort (RPE) and pain (0–10) after the session**, so the coach itself suggests dose and rehab phase
 - [ ] **Progression per exercise:** save sets and reps, and increase step by step
+- [ ] **Count reps automatically:** `RepetitionCounter` counts reps, depth and tempo from joint angles (done);
+  the camera and an on-device pose model in workout mode remain **(ok)**
 - [ ] **More exercises and equipment:** variations, dumbbells, resistance bands, gym
 - [ ] **More rehab areas:** shoulder, neck, hip
 - [x] **Warm-up and cool-down** in workout mode, and the rest timer as a notification

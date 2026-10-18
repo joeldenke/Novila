@@ -35,9 +35,9 @@ POM
   (cd "$CACHE" && mvn -q dependency:copy-dependencies -DoutputDirectory="$LIB")
 }
 
-# The plain Kotlin modules :core:anatomy, :core:exercise and :core:coach (no Android, so no Gradle needed).
+# The plain Kotlin modules :core:anatomy, :core:exercise, :core:coach and :core:recovery (no Android, so no Gradle needed).
 sources() {
-  find "$ROOT/core/anatomy/src/main" "$ROOT/core/exercise/src/main" "$ROOT/core/coach/src/main" -name '*.kt'
+  find "$ROOT/core/anatomy/src/main" "$ROOT/core/exercise/src/main" "$ROOT/core/coach/src/main" "$ROOT/core/recovery/src/main" -name '*.kt'
   find "$ROOT/tools/anatomy/src" -name '*.kt'
 }
 
@@ -61,6 +61,7 @@ case "$command" in
   test)
     tests=(
       "$ROOT/core/anatomy/src/test/java/se/novila/anatomy/AnatomyTest.kt"
+      "$ROOT/core/anatomy/src/test/java/se/novila/anatomy/RepetitionCounterTest.kt"
       "$ROOT/core/exercise/src/test/java/se/novila/exercise/StrengthSessionsTest.kt"
       "$ROOT/core/exercise/src/test/java/se/novila/exercise/TrainingProgramGeneratorTest.kt"
       "$ROOT/core/exercise/src/test/java/se/novila/exercise/WorkoutTest.kt"
@@ -74,7 +75,8 @@ case "$command" in
     # shellcheck disable=SC2046
     compile $(sources) "${tests[@]}"
     java -cp "$(classpath)" org.junit.runner.JUnitCore \
-      se.novila.anatomy.AnatomyTest se.novila.exercise.StrengthSessionsTest se.novila.exercise.TrainingProgramGeneratorTest \
+      se.novila.anatomy.AnatomyTest se.novila.anatomy.RepetitionCounterTest \
+      se.novila.exercise.StrengthSessionsTest se.novila.exercise.TrainingProgramGeneratorTest \
       se.novila.exercise.WorkoutTest se.novila.exercise.ExerciseRepositoryTest se.novila.exercise.TrainingHistoryTest \
       se.novila.coach.CoachPlannerTest se.novila.coach.CoachFeedbackTest se.novila.coach.CoachPreferencesTest \
       se.novila.coach.CoachPromptTest
