@@ -20,33 +20,56 @@ class WorkoutTest {
     private val session = PlannedSession(DayOfWeek.MONDAY, ExerciseType.Strength, 20, listOf(squat, plank))
     private val start = Instant.fromEpochSeconds(1_000)
 
-    @Test fun `every set is followed by a rest except the last`() {
+    @Test fun `the session warms up first, rests between sets and cools down last`() {
         val steps = Workout.steps(listOf(squat, plank))
-        assertEquals(7, steps.size)
-        assertEquals(listOf(true, false, true, false, true, false, true), steps.map { it is WorkoutStep.Work })
-        val restBeforePlank = steps[3] as WorkoutStep.Rest
+        assertEquals(9, steps.size)
+        val warmUp = steps.first() as WorkoutStep.WarmUp
+        assertEquals(Workout.WARM_UP, warmUp.duration)
+        assertEquals(WorkoutStep.Work(squat, exerciseNumber = 1, set = 1), warmUp.next)
+        val everyOtherSet = listOf(true, false, true, false, true, false, true)
+        assertEquals(everyOtherSet, steps.drop(1).take(7).map { it is WorkoutStep.Work })
+        val restBeforePlank = steps[4] as WorkoutStep.Rest
         assertEquals(60.seconds, restBeforePlank.duration)
         assertEquals(WorkoutStep.Work(plank, exerciseNumber = 2, set = 1), restBeforePlank.next)
+        assertEquals(WorkoutStep.CoolDown(Workout.COOL_DOWN), steps.last())
     }
 
-    @Test fun `repetition sets wait for the user, rests and holds run on a timer`() {
+    @Test fun `warm-up and cool-down are timed, and together five minutes like the coach budgets`() {
+        val workout = Workout.start(session, start)
+        assertTrue(workout.step is WorkoutStep.WarmUp)
+        assertEquals(170, workout.secondsLeft(start + 10.seconds))
+        assertEquals(5.minutes, Workout.WARM_UP + Workout.COOL_DOWN)
+    }
+
+    @Test fun `repetition sets wait for the user, timed steps run on a timer`() {
         var workout = Workout.start(session, start)
+        val warmUp = workout.step as WorkoutStep.WarmUp
+        assertEquals(Workout.WARM_UP, warmUp.duration)
+        assertEquals(170, workout.secondsLeft(start + 10.seconds))
+        assertEquals(1, workout.secondsLeft(start + warmUp.duration - 1.seconds))
+        workout = workout.next(start + warmUp.duration)
+        assertEquals(WorkoutStep.Work(squat, exerciseNumber = 1, set = 1), workout.step)
         assertNull("squat set waits", workout.endsAt)
-        workout = workout.next(start + 40.seconds)
+        workout = workout.next(start + warmUp.duration + 40.seconds)
         assertTrue(workout.step is WorkoutStep.Rest)
-        assertEquals(60, workout.secondsLeft(start + 40.seconds))
-        assertEquals(1, workout.secondsLeft(start + 99_500.milliseconds))
-        assertEquals(0, workout.secondsLeft(start + 200.seconds))
-        workout = workout.next(start + 100.seconds).next(start + 140.seconds).next(start + 200.seconds)
+        assertEquals(60, workout.secondsLeft(start + warmUp.duration + 40.seconds))
+        assertEquals(1, workout.secondsLeft(start + warmUp.duration + 99_500.milliseconds))
+        assertEquals(0, workout.secondsLeft(start + warmUp.duration + 200.seconds))
+        workout = workout
+            .next(start + warmUp.duration + 100.seconds)
+            .next(start + warmUp.duration + 140.seconds)
+            .next(start + warmUp.duration + 200.seconds)
         assertEquals(WorkoutStep.Work(plank, exerciseNumber = 2, set = 1), workout.step)
-        assertEquals(30, workout.secondsLeft(start + 200.seconds))
+        assertEquals(30, workout.secondsLeft(start + warmUp.duration + 200.seconds))
     }
 
-    @Test fun `the session finishes after the last set`() {
+    @Test fun `the session finishes after the cool-down`() {
         var workout = Workout.start(session, start)
-        repeat(6) { workout = workout.next(start + it.minutes) }
         assertFalse(workout.isFinished)
-        assertEquals(3, workout.setsDone)
+        repeat(8) { workout = workout.next(start + it.minutes) }
+        assertFalse("the cool-down still runs", workout.isFinished)
+        assertEquals(WorkoutStep.CoolDown(Workout.COOL_DOWN), workout.step)
+        assertEquals(4, workout.setsDone)
         workout = workout.next(start + 20.minutes)
         assertTrue(workout.isFinished)
         assertEquals(4, workout.setsDone)
@@ -64,7 +87,7 @@ class WorkoutTest {
             val exercises = StrengthSessions.session(level, second = false)
             val time = Workout.steps(exercises).fold(Duration.ZERO) { sum, step ->
                 sum + when (step) {
-                    is WorkoutStep.Rest -> step.duration
+                    is WorkoutStep.Timed -> step.duration
 
                     // About four seconds a repetition.
                     is WorkoutStep.Work ->

@@ -44,7 +44,7 @@ mer än kommentaren, eller data som lämnar appen.
 - [ ] **Progression per övning:** spara set och reps, och höj stegvis
 - [ ] **Fler övningar och redskap:** varianter, hantlar, gummiband, gym
 - [ ] **Fler rehabområden:** axel, nacke, höft
-- [ ] **Uppvärmning och nedvarvning** i passläget, och vilotimern som notis
+- [x] **Uppvärmning och nedvarvning** i passläget, och vilotimern som notis
 - [ ] **Veckoavstämning:** "3 av 4 pass, nästa vecka …"
 
 ### 3. Sömn
