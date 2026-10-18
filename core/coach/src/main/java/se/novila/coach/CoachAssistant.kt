@@ -55,8 +55,7 @@ object CoachPrompt {
             "- $day (${typeName(session.type)}, ${session.minutes} min): $what"
         }
         val goal = when (preferences.goal) {
-            CoachGoal.Rehab ->
-                "gentle training for the ${rehabArea(preferences.rehabArea)}, level ${preferences.rehabPhase} of 3"
+            CoachGoal.Rehab -> gentleTraining(preferences)
             else -> preferences.goal.name.lowercase(Locale.ENGLISH)
         }
         val rehab = if (preferences.goal == CoachGoal.Rehab) {
@@ -106,8 +105,15 @@ object CoachPrompt {
             codePoint == 0x200D
 
     // Rehab sessions are described as gentle training, so the comment never sounds like treatment.
-    private fun typeName(type: ExerciseType) =
-        if (type == ExerciseType.Rehab) "gentle" else type.name.lowercase(Locale.ENGLISH)
+    private fun typeName(type: ExerciseType) = when (type) {
+        ExerciseType.Rehab -> "gentle"
+        else -> type.name.lowercase(Locale.ENGLISH)
+    }
+
+    private fun gentleTraining(preferences: CoachPreferences): String {
+        val area = rehabArea(preferences.rehabArea)
+        return "gentle training for the $area, level ${preferences.rehabPhase} of 3"
+    }
 
     private fun rehabArea(area: RehabArea) = when (area) {
         RehabArea.Knee -> "knee"
