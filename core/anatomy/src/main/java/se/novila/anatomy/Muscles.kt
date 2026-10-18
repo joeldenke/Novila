@@ -7,6 +7,7 @@ enum class MuscleGroup {
     Biceps,
     Triceps,
     Abs,
+    Neck,
     UpperBack,
     Lats,
     LowerBack,
@@ -46,6 +47,7 @@ object MuscleMap {
         ),
         MuscleRegion(MuscleGroup.Abs, BodyPart.UpperTorso, 0.04f, 0.56f, around = 0f, halfWidth = 32f),
         MuscleRegion(MuscleGroup.Abs, BodyPart.LowerTorso, 0.3f, 0.98f, around = 0f, halfWidth = 34f),
+        MuscleRegion(MuscleGroup.Neck, BodyPart.Neck, 0f, 1f, around = 0f, halfWidth = 180f),
         MuscleRegion(MuscleGroup.UpperBack, BodyPart.UpperTorso, 0.68f, 1f, around = 180f, halfWidth = 70f),
         MuscleRegion(
             MuscleGroup.Lats,
