@@ -6,11 +6,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -29,8 +27,8 @@ import se.novila.model.Reminder
 import se.novila.model.ReminderSetting
 import se.novila.model.Reminders
 import se.novila.ui.common.ScreenList
+import se.novila.ui.common.timeText
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 import se.novila.ui.R as UiR
 
 /** What the Reminders screen can do. The entry connects these to the ViewModel and to the system. */
@@ -114,17 +112,6 @@ private fun ReminderCard(reminder: Reminder, setting: ReminderSetting, actions: 
             role = role,
         )
     }
-}
-
-/** The time as the phone shows it: "08:30", or "8:30 AM" with a 12-hour clock. */
-@Composable
-private fun timeText(time: LocalTime): String {
-    val locale = LocalConfiguration.current.locales[0]
-    val is24Hour = DateFormat.is24HourFormat(LocalContext.current)
-    val formatter = remember(locale, is24Hour) {
-        DateTimeFormatter.ofPattern(DateFormat.getBestDateTimePattern(locale, if (is24Hour) "Hm" else "hm"), locale)
-    }
-    return time.format(formatter)
 }
 
 @Composable

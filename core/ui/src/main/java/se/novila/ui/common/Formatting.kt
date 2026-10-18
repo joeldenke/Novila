@@ -1,9 +1,11 @@
 package se.novila.ui.common
 
+import android.text.format.DateFormat
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import se.novila.model.DayEntry
 import se.novila.model.FoodGroup
@@ -12,6 +14,7 @@ import se.novila.model.formatHours
 import se.novila.ui.R
 import java.text.NumberFormat
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
@@ -116,9 +119,20 @@ fun longDateText(date: LocalDate): String {
 private fun rememberDateFormatter(skeleton: String): DateTimeFormatter {
     val locale = currentLocale()
     return remember(locale, skeleton) {
-        val pattern = android.text.format.DateFormat.getBestDateTimePattern(locale, skeleton)
+        val pattern = DateFormat.getBestDateTimePattern(locale, skeleton)
         DateTimeFormatter.ofPattern(pattern, locale)
     }
+}
+
+/** A time of day as the phone shows it: "23:15", or "11:15 PM" with a 12-hour clock. */
+@Composable
+fun timeText(time: LocalTime): String {
+    val locale = currentLocale()
+    val is24Hour = DateFormat.is24HourFormat(LocalContext.current)
+    val formatter = remember(locale, is24Hour) {
+        DateTimeFormatter.ofPattern(DateFormat.getBestDateTimePattern(locale, if (is24Hour) "Hm" else "hm"), locale)
+    }
+    return time.format(formatter)
 }
 
 /** The next step for the nutrition score in words, with the points it is worth. */

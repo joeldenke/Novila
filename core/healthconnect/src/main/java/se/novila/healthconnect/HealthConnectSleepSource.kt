@@ -1,8 +1,6 @@
 package se.novila.healthconnect
 
 import android.content.Context
-import android.os.RemoteException
-import android.util.Log
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.records.SleepSessionRecord
 import androidx.health.connect.client.request.ReadRecordsRequest
@@ -11,7 +9,6 @@ import se.novila.sleep.SleepSession
 import se.novila.sleep.SleepSource
 import se.novila.sleep.SleepState
 import se.novila.sleep.nightsOf
-import java.io.IOException
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
@@ -27,29 +24,15 @@ import java.time.ZoneOffset
 class HealthConnectSleepSource(private val context: Context) : SleepSource {
 
     override suspend fun read(from: LocalDate): Result<SleepState> {
-        if (HealthConnectClient.getSdkStatus(context) != HealthConnectClient.SDK_AVAILABLE) {
-            return Result.success(SleepState.Unavailable)
-        }
-        return try {
-            val client = HealthConnectClient.getOrCreate(context)
-            if (SLEEP_PERMISSION !in client.permissionController.getGrantedPermissions()) {
-                return Result.success(SleepState.NeedsPermission())
-            }
-            Result.success(SleepState.Connected(nightsOf(readSessions(client, from)).filter { it.date >= from }))
-        } catch (e: SecurityException) {
-            // Revoked between the check and the read.
-            Log.w(TAG, "Health Connect access revoked", e)
-            Result.success(SleepState.NeedsPermission())
-        } catch (e: RemoteException) {
-            Log.w(TAG, "Health Connect not reachable", e)
-            Result.failure(e)
-        } catch (e: IOException) {
-            Log.w(TAG, "Health Connect read failed", e)
-            Result.failure(e)
-        } catch (e: IllegalStateException) {
-            // For example the rate limit, or Health Connect being updated.
-            Log.w(TAG, "Health Connect read failed", e)
-            Result.failure(e)
+        val sdkStatus = HealthConnectClient.getSdkStatus(context)
+        return healthConnectRead(
+            context = context,
+            sdkStatus = sdkStatus,
+            unavailable = SleepState.Unavailable,
+            needsPermission = SleepState.NeedsPermission(),
+            required = { SLEEP_PERMISSION in it },
+        ) { client, _ ->
+            SleepState.Connected(nightsOf(readSessions(client, from)).filter { it.date >= from })
         }
     }
 
@@ -86,7 +69,6 @@ class HealthConnectSleepSource(private val context: Context) : SleepSource {
         time.atZone(offset ?: ZoneId.systemDefault()).toLocalDateTime()
 
     private companion object {
-        const val TAG = "HealthConnect"
         const val MAX_PAGES = 10
         val AWAKE_STAGES = setOf(
             SleepSessionRecord.STAGE_TYPE_AWAKE,

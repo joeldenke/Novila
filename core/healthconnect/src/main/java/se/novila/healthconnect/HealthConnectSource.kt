@@ -3,7 +3,6 @@ package se.novila.healthconnect
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.os.RemoteException
 import android.util.Log
 import androidx.core.net.toUri
 import androidx.health.connect.client.HealthConnectClient
@@ -15,7 +14,6 @@ import androidx.health.connect.client.time.TimeRangeFilter
 import se.novila.movement.MovementSource
 import se.novila.movement.MovementState
 import se.novila.movement.TodayMovement
-import java.io.IOException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.math.roundToInt
@@ -30,26 +28,14 @@ class HealthConnectSource(private val context: Context) : MovementSource {
 
     override suspend fun read(date: LocalDate): Result<MovementState> {
         val sdkStatus = HealthConnectClient.getSdkStatus(context)
-        if (sdkStatus != HealthConnectClient.SDK_AVAILABLE) return Result.success(accessState(sdkStatus, emptySet())!!)
-        return try {
-            val client = HealthConnectClient.getOrCreate(context)
-            val granted = client.permissionController.getGrantedPermissions()
-            val state = accessState(sdkStatus, granted) ?: MovementState.Connected(readDay(client, date, granted))
-            Result.success(state)
-        } catch (e: SecurityException) {
-            // Revoked between the check and the read.
-            Log.w(TAG, "Health Connect access revoked", e)
-            Result.success(MovementState.NeedsPermission())
-        } catch (e: RemoteException) {
-            Log.w(TAG, "Health Connect not reachable", e)
-            Result.failure(e)
-        } catch (e: IOException) {
-            Log.w(TAG, "Health Connect read failed", e)
-            Result.failure(e)
-        } catch (e: IllegalStateException) {
-            // For example the rate limit, or Health Connect being updated.
-            Log.w(TAG, "Health Connect read failed", e)
-            Result.failure(e)
+        return healthConnectRead(
+            context = context,
+            sdkStatus = sdkStatus,
+            unavailable = checkNotNull(accessState(sdkStatus, emptySet())),
+            needsPermission = MovementState.NeedsPermission(),
+            required = { granted -> granted.any { it in MOVEMENT_PERMISSIONS } },
+        ) { client, granted ->
+            MovementState.Connected(readDay(client, date, granted))
         }
     }
 
