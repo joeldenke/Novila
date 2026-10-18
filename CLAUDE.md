@@ -272,6 +272,11 @@ där pluginet `firebase@firebase` inte alltid installeras.
   Kort är vita med hårfin kant (`NovilaTheme.surfaces`). Träning börjar med veckan i överblick på samma granpanel
   (`NovilaHeroPanel`: minuter mot veckans plan, `NovilaWeekStrip` och dagens enda huvudåtgärd ur `TodayPlan`), följt
   av snabbval (`NovilaActionChip`) som passar just nu.
+- **Flikarnas delar:** Sömn, Kost och Träning byggs av samma delar i samma ordning, med en rubrik per del
+  (`ScreenSection` och `section(...)` i `:core:ui`, `NovilaSectionHeader`): *Översikt* (läget och delens
+  huvudåtgärd), *Logga* (det användaren loggar själv eller Health Connect läser), *Din plan* (coachen, programmet,
+  receptförslagen) och *Trender* (historik och samband). Nya kort läggs i den del de hör till; en del utan kort får
+  ingen rubrik. Kan användaren gå bakåt i dagar står dagväljaren överst, före Översikt.
 - **Målade scener:** introduktionens scener är målade bilder i samma nordiska stil (falröd stuga, björk, gran, sjö,
   midsommarljus), WebP i featurens `drawable-nodpi`, beskurna till 1,4:1, högst cirka 1120 px breda och helst under 200 kB. De visas bara via
   `NovilaSceneImage`, som sköter hörn, entré och parallax. I mörkt läge blir dagscener skymning (`ColorMatrix`:

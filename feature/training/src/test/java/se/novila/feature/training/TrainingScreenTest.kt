@@ -1,12 +1,15 @@
 package se.novila.feature.training
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.ui.test.hasScrollToNodeAction
 import androidx.compose.ui.test.hasSetTextAction
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTextReplacement
 import org.junit.Assert.assertEquals
@@ -54,6 +57,12 @@ class TrainingScreenTest {
         }
     }
 
+    /** Scrolls the tab to [text], so the lazy list composes it, and returns its node. */
+    private fun scrollTo(text: String) = composeRule.run {
+        onNode(hasScrollToNodeAction()).performScrollToNode(hasText(text))
+        onNodeWithText(text)
+    }
+
     @Test fun `a strength day's main action starts today's session`() {
         val started = mutableListOf<DayOfWeek>()
         show(state, TrainingActions(onStartWorkout = { started += it }))
@@ -70,11 +79,11 @@ class TrainingScreenTest {
         assertEquals(listOf(CardioLog(CardioType.Running, run.minutes)), logged)
     }
 
-    @Test fun `quick actions open the log and the coach`() {
+    @Test fun `logging opens the log and the plan opens the coach`() {
         var opened = ""
         show(state, TrainingActions(onOpenCardioLog = { opened += "log" }, onOpenCoach = { opened += "coach" }))
-        composeRule.onNodeWithText("Log a workout").performClick()
-        composeRule.onNodeWithText("Open the coach").performClick()
+        scrollTo("Log a workout").performClick()
+        scrollTo("Open the coach").performClick()
         assertEquals("logcoach", opened)
     }
 
@@ -109,8 +118,8 @@ class TrainingScreenTest {
         val next = TrainingPreviewData.nextProgram
         val expected = "Next week: ${next.sessions.size} sessions, ${next.sessions.sumOf { it.minutes }} minutes."
         show(reviewed, TrainingActions())
-        composeRule.onNodeWithText("2 sessions of ${reviewed.program.sessions.size} done").assertExists()
-        composeRule.onNodeWithText(expected).assertExists()
+        scrollTo("2 sessions of ${reviewed.program.sessions.size} done").assertExists()
+        scrollTo(expected).assertExists()
     }
 
     @Test fun `there is no weekly review until a session is done`() {

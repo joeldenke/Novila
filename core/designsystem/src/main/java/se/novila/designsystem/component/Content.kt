@@ -22,6 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -91,6 +93,22 @@ fun NovilaCard(
             content()
         }
     }
+}
+
+/**
+ * The title of a part of a screen, above its cards: quiet, so the cards stay in front, with room above to separate
+ * it from the part before. Screen readers announce it as a heading, so users can jump between parts.
+ */
+@Composable
+fun NovilaSectionHeader(title: String, modifier: Modifier = Modifier) {
+    Text(
+        text = title,
+        style = NovilaTheme.typography.titleSmall,
+        color = NovilaTheme.colors.onSurfaceVariant,
+        modifier = modifier
+            .padding(top = NovilaTheme.spacing.s, start = NovilaTheme.spacing.xs)
+            .semantics { heading() },
+    )
 }
 
 /** Centered placeholder for screens without content yet. */
