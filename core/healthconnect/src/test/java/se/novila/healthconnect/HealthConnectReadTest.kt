@@ -44,7 +44,10 @@ class HealthConnectReadTest {
         var seen = -1
         val result = read(
             sdkStatus = HealthConnectClient.SDK_UNAVAILABLE_PROVIDER_UPDATE_REQUIRED,
-            unavailable = { seen = it; "unavailable" },
+            unavailable = {
+                seen = it
+                "unavailable"
+            },
         )
         assertEquals(HealthConnectClient.SDK_UNAVAILABLE_PROVIDER_UPDATE_REQUIRED, seen)
         assertEquals("unavailable", result.getOrThrow())

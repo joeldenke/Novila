@@ -29,7 +29,6 @@ val HEALTH_PERMISSIONS: Set<String> = MOVEMENT_PERMISSIONS + EXERCISE_PERMISSION
 /** The state when Health Connect can't be read at all: not on the device, or too old to run. */
 internal fun unavailableState(sdkStatus: Int): MovementState = when (sdkStatus) {
     HealthConnectClient.SDK_UNAVAILABLE_PROVIDER_UPDATE_REQUIRED -> MovementState.NeedsInstall
-
     else -> MovementState.Unavailable
 }
 
