@@ -14,6 +14,7 @@ import se.novila.data.GoalsStore
 import se.novila.data.HealthStore
 import se.novila.data.ProfileStore
 import se.novila.data.SettingsStore
+import se.novila.data.SleepCoachStore
 import se.novila.model.AppSettings
 import se.novila.model.Goals
 import se.novila.model.Profile
@@ -33,6 +34,7 @@ class SettingsViewModel(
     private val settingsStore: SettingsStore,
     private val healthStore: HealthStore,
     private val coachStore: CoachStore,
+    private val sleepCoachStore: SleepCoachStore,
     private val profileStore: ProfileStore,
     private val goalsStore: GoalsStore,
     private val movementRepository: MovementRepository,
@@ -70,12 +72,13 @@ class SettingsViewModel(
     fun showIntro() = settingsStore.setOnboarded(false)
 
     /**
-     * Forgets the profile and its goals, everything the user has logged and the coach's answers. Settings stay, since
-     * they are not health data. Health Connect's own data is not Novila's to delete.
+     * Forgets the profile and its goals, everything the user has logged and both coaches' answers. Settings stay,
+     * since they are not health data. Health Connect's own data is not Novila's to delete.
      */
     fun deleteAllData() {
         healthStore.clear()
         coachStore.clear()
+        sleepCoachStore.clear()
         profileStore.clear()
         goalsStore.clear()
     }

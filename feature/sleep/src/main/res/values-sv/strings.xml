@@ -32,4 +32,46 @@
     <string name="sleep_findings_empty">Logga nätter och dagar ett par veckor, så hittar Novila vad som påverkar din sömn. %1$d av %2$d nätter loggade.</string>
     <string name="sleep_findings_none">Inget sticker ut i dina loggar än. Novila visar bara ett samband när dina nätter tydligt skiljer sig.</string>
     <string name="sleep_findings_footer">Ur dina egna loggar, på telefonen. Ett samband är inte ett bevis.</string>
+
+    <!-- Sömncoachen -->
+    <string name="sleep_coach_title">Sömncoachen</string>
+    <string name="sleep_coach_open">Ställ in sömncoachen</string>
+    <string name="sleep_coach_adjust">Anpassa sömncoachen</string>
+    <string name="sleep_coach_goal_title">Mål för sömnen</string>
+    <string name="sleep_coach_card_intro">En läggtid att sikta mot, en kvällsrutin och råd ur dina egna nätter.</string>
+    <string name="sleep_coach_intro">Välj en läggtid att sträva mot och en vila innan läggning på kvällen. Novila tittar på dina egna nätter och föreslår vad som hjälper, inspirerat av kognitiv beteendeterapi mot sömnbesvär. Allt stannar på telefonen.</string>
+    <string name="sleep_coach_bedtime">Läggtidsmål</string>
+    <string name="sleep_coach_wake_time">Vaknadmål</string>
+    <string name="sleep_coach_bedtime_title">När vill du ligga i sängen?</string>
+    <string name="sleep_coach_wake_title">När vill du vakna?</string>
+    <string name="sleep_coach_goal_value">%1$s till %2$s</string>
+    <string name="sleep_coach_routine_title">Vila innan läggning</string>
+    <string name="sleep_coach_routine_hint">Välj stegen du vill ha på kvällen. Novila visar dem rätt tid före din läggtid.</string>
+    <string name="sleep_coach_step_prepare">Förbered morgondagen</string>
+    <string name="sleep_coach_step_shower">Varm dusch eller tvätt</string>
+    <string name="sleep_coach_step_screens">Skärmar av</string>
+    <string name="sleep_coach_step_quiet">Lugn stund</string>
+    <string name="sleep_coach_step_worry">Skriv upp oro och morgondagens lista</string>
+    <string name="sleep_coach_step_read">Läs eller sträck ut dig lugnt</string>
+    <string name="sleep_coach_moment">%1$s – %2$s</string>
+    <string name="sleep_coach_week_title">Veckans läggtider</string>
+    <string name="sleep_coach_week_value">%1$d av %2$d nätter nära din läggtid</string>
+    <string name="sleep_coach_week_none">Inga läggtider loggade ännu.</string>
+    <string name="sleep_coach_tips_title">Vad Novila ser i dina nätter</string>
+    <string name="sleep_coach_tips_empty">Dina nätter ligger nära målet. Behåll takten du har.</string>
+    <string name="sleep_coach_tips_footer">Ur dina egna loggar, på telefonen. Ett tips är råd, inte en diagnos.</string>
+    <string name="sleep_coach_tip_regular_bedtime">Dina läggtider varierar. Sträva att vara i sängen inom en halvtimme från målet, natt efter natt.</string>
+    <string name="sleep_coach_tip_fixed_wake">Dina vaknadtider varierar. En fast vaknadtid är den bästa hållplatsen för din sömn.</string>
+    <string name="sleep_coach_tip_out_of_bed">Du ligger länge vaken i sängen. Kommer sömnen inte, stå upp, gör något lugnt och lägg dig igen när du känner dig sömnig. Sängen är för sömn.</string>
+    <string name="sleep_coach_tip_short_nights">Dina nätter har varit kortare än målet. Håll vaknadtiden fast och lägg dig bara när du känner dig sömnig.</string>
+    <string name="sleep_coach_tip_late_caffeine">Du har ofta haft koffein sent. Ta din sista kopp minst sex timmar före läggning.</string>
+    <string name="sleep_coach_tip_screens">Du har ofta haft skärmar i sängen. Skärmar av före läggning gör det lättare att lugna ner dig.</string>
+    <string name="sleep_coach_tip_alcohol">Du har ofta loggat alkohol före en natt. Alkohol gör sömnen mer uppriven i nattens andra halva.</string>
+    <string name="sleep_coach_tip_stress">Du har ofta loggat stress före en natt. Skriv upp det som gnager innan läggning, så stannar det på papperet.</string>
+    <string name="sleep_coach_tip_late_meal">Du har ofta ätit sent. Avsluta stora måltider två till tre timmar före läggning.</string>
+    <string name="sleep_coach_tip_late_exercise">Du har ofta tränat sent. Hård träning passar bäst minst två timmar före sängen.</string>
+    <string name="sleep_coach_start">Starta sömncoachen</string>
+    <string name="sleep_coach_reset">Stäng av sömncoachen</string>
+    <string name="sleep_coach_card_hint">Lägg till en kvällsrutin i coachen, så visas nästa steg här.</string>
+    <string name="sleep_coach_evening_done">Kvällens steg är klara. Sov gott.</string>
 </resources>
