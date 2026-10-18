@@ -22,7 +22,7 @@ Everything stays on the phone: no account, no cloud, no analytics. The app is in
 | **Settings** | Theme (system, light, dark, wallpaper colors), profile, Health Connect access, health disclaimer, deleting all data, and the intro again |
 
 A short illustrated intro at first start sets up the goal, profile, coach and Health Connect, so the plan is there
-from day one. What comes next is in the [roadmap](docs/roadmap.md) (Swedish).
+from day one. What comes next is in the [roadmap](docs/roadmap.md).
 
 ## Privacy by design
 

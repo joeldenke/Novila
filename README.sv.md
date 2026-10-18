@@ -22,7 +22,7 @@ telefonen: inget konto, inget moln, inga analysverktyg. Appen finns på svenska 
 | **Inställningar** | Tema (automatiskt, ljust, mörkt, bakgrundsfärger), profil, Health Connect, ansvarsfriskrivning, radera all data och introduktionen igen |
 
 En kort illustrerad introduktion vid första start ställer in mål, profil, coach och Health Connect, så att planen
-finns från dag ett. Vad som kommer härnäst står i [roadmapen](docs/roadmap.md).
+finns från dag ett. Vad som kommer härnäst står i [roadmapen](docs/roadmap.md) (engelska).
 
 ## Integritet från grunden
 
