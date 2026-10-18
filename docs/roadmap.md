@@ -17,10 +17,10 @@ fallback for people without a watch.
 | Part | Features | Assessment |
 |---|---|---|
 | Today | Greeting by name, the day's balance (rings), a tile per part, insights, the week's sleep and nutrition, mood, energy, stress and a journal line | Polished, but only the week |
-| Training | Weekly program (WHO), coach with goal, days, focus and considerations, rehab (knee, lower back, shoulder, neck, hip, phases 1–3), 15 illustrated exercises, workout mode with timer, cardio sessions (logged and from Health Connect), RPE and pain after the session, Gemini Nano comment, weekly review | The app's strongest part |
+| Training | Weekly program (WHO), coach with goal, days, focus and considerations, rehab (knee, lower back, shoulder, neck, hip, phases 1–3), 15 illustrated exercises, workout mode with timer, cardio sessions (logged and from Health Connect), RPE and pain after the session, recovery from the watch that can lighten today's session, Gemini Nano comment, weekly review | The app's strongest part |
 | Sleep | Bedtime and wake-up (or the watch's night from Health Connect), quality and causes, what affects your sleep, chart over a week, four weeks or a year, sleep coach with bedtime goal, evening routine and advice from your own nights | Good |
 | Nutrition | Servings per food group, water against your own goal, sweets, score 0–100, "next step", the score over a week, four weeks or a year | Good and simple |
-| Movement | Today's steps and active calories, five weeks of workouts and the nights, from Health Connect, in the foreground | Steps only for today |
+| Movement | Today's steps and active calories, five weeks of workouts, the nights and recovery (resting heart rate, HRV), from Health Connect, in the foreground | Steps only for today |
 | Settings | Theme, profile, own goals, disclaimer, delete data | Complete for its level |
 
 ## What is missing
@@ -67,7 +67,10 @@ Nano for more than the comment, or data that leaves the app.
 ### 5. Body and mood
 - [ ] **Weight and measurements over time** (the profile only has one value)
 - [x] **Extended mood:** energy, stress and a journal line
-- [ ] **Recovery:** resting heart rate and HRV from the watch **(ok)**, which can lower the session's intensity
+- [x] **Recovery:** resting heart rate and HRV from the watch **(ok)**, which can lower the session's intensity. A card on
+  Training with today's values and a line about the status; today's session gets a little lighter (fewer sets, shorter
+  cardio) when the resting heart rate is clearly higher or HRV clearly lower than the user's own baseline. In memory
+  only, read in the foreground.
 - [ ] **Breathing and relaxation:** short guided sessions, drawn like the anatomy figure
 
 ### 6. The coach as a whole
@@ -99,3 +102,4 @@ Nano for more than the comment, or data that leaves the app.
 6. Sleep 2.0 and sleep from Health Connect ← done
 7. Home screen widget ← done
 8. Sleep coach (CBT-I) ← done
+9. Recovery (resting heart rate and HRV from the watch) ← done

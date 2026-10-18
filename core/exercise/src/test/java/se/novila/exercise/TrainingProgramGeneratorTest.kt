@@ -3,6 +3,7 @@ package se.novila.exercise
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import se.novila.recovery.RecoveryStatus
 import java.time.DayOfWeek
 import java.time.LocalDate
 import kotlin.time.Duration.Companion.minutes
@@ -72,5 +73,29 @@ class TrainingProgramGeneratorTest {
         val program = TrainingProgramGenerator.generate(listOf(thisWeek, tooOld), today)
         assertEquals(TrainingProgramGenerator.MIN_CARDIO_MINUTES, program.cardioMinutes)
         assertTrue(program.sessions.none { it.type == ExerciseType.Running })
+    }
+
+    @Test fun `low recovery shortens today's strength session and leaves the other days alone`() {
+        val program = TrainingProgramGenerator.generate(emptyList(), today, RecoveryStatus.Low)
+        assertEquals(
+            listOf(DayOfWeek.MONDAY to 20, DayOfWeek.THURSDAY to 15),
+            program.sessions.filter { it.type.kind == ExerciseKind.Strength }.map { it.day to it.minutes },
+        )
+        assertEquals(15, program.sessions.first { it.day == DayOfWeek.WEDNESDAY }.minutes)
+    }
+
+    @Test fun `low recovery lightens today's cardio and leaves the other days alone`() {
+        val tuesday = monday.plusDays(1)
+        val program = TrainingProgramGenerator.generate(emptyList(), tuesday, RecoveryStatus.Low)
+        assertEquals(
+            listOf(DayOfWeek.TUESDAY to 25, DayOfWeek.FRIDAY to 30, DayOfWeek.SUNDAY to 30),
+            program.sessions.filter { it.type.kind == ExerciseKind.Cardio }.map { it.day to it.minutes },
+        )
+    }
+
+    @Test fun `unknown or normal recovery changes nothing`() {
+        val plain = TrainingProgramGenerator.generate(emptyList(), today)
+        assertEquals(plain, TrainingProgramGenerator.generate(emptyList(), today, RecoveryStatus.Normal))
+        assertEquals(plain, TrainingProgramGenerator.generate(emptyList(), today, RecoveryStatus.Unknown))
     }
 }

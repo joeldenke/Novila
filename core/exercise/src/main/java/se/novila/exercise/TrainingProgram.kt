@@ -1,5 +1,6 @@
 package se.novila.exercise
 
+import se.novila.recovery.RecoveryStatus
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters
@@ -33,7 +34,9 @@ data class TrainingProgram(
  * moderate cardio and strength training on at least two days a week. It starts where the user is and
  * raises the cardio time by at most 10 % a week, so a beginner gets a gentle program and an active user
  * isn't held back. Strength days get concrete exercises from [StrengthSessions] at the user's level.
- * Plain Kotlin, so it is unit tested; the source of the workouts doesn't matter.
+ * When the body is still recovering ([RecoveryStatus.Low]), today's session alone is lighter, a day at a
+ * time: the watch's resting heart rate and HRV are what the status comes from. Plain Kotlin, so it is
+ * unit tested; the source of the workouts doesn't matter.
  */
 object TrainingProgramGenerator {
     const val MIN_CARDIO_MINUTES = 90
@@ -42,11 +45,19 @@ object TrainingProgramGenerator {
     private const val HISTORY_WEEKS = 4L
     private const val PROGRESSION = 1.1
     private const val MOBILITY_MINUTES = 15
+    private const val RECOVERY_CARDIO_FACTOR = 0.8
+    private const val RECOVERY_STRENGTH_FACTOR = 0.7
+    private const val RECOVERY_MIN_CARDIO_MINUTES = 10
+    private const val RECOVERY_MIN_STRENGTH_MINUTES = 15
     private val STRENGTH_DAYS = listOf(DayOfWeek.MONDAY, DayOfWeek.THURSDAY)
     private val THREE_CARDIO_DAYS = listOf(DayOfWeek.TUESDAY, DayOfWeek.FRIDAY, DayOfWeek.SUNDAY)
     private val FOUR_CARDIO_DAYS = listOf(DayOfWeek.TUESDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
 
-    fun generate(history: List<Exercise>, today: LocalDate): TrainingProgram {
+    fun generate(
+        history: List<Exercise>,
+        today: LocalDate,
+        recovery: RecoveryStatus = RecoveryStatus.Unknown,
+    ): TrainingProgram {
         val weekStart = weekStart(today)
         val recent = summarize(history, weekStart)
         val cardioTarget = recent.cardioTarget
@@ -77,9 +88,29 @@ object TrainingProgramGenerator {
         return TrainingProgram(
             weekStart = weekStart,
             cardioMinutes = cardioTarget,
-            sessions = sessions.sortedBy { it.day },
+            sessions = sessions.map { session ->
+                if (session.day == today.dayOfWeek) session.lowered(recovery) else session
+            }.sortedBy { it.day },
         )
     }
+
+    /** [session] as today's when the body is still recovering: a little less cardio and a shorter strength session. */
+    private fun PlannedSession.lowered(recovery: RecoveryStatus): PlannedSession =
+        if (recovery != RecoveryStatus.Low) {
+            this
+        } else {
+            when (type.kind) {
+                ExerciseKind.Cardio -> copy(
+                    minutes = roundTo5(minutes * RECOVERY_CARDIO_FACTOR).coerceAtLeast(RECOVERY_MIN_CARDIO_MINUTES),
+                )
+
+                ExerciseKind.Strength -> copy(
+                    minutes = roundTo5(minutes * RECOVERY_STRENGTH_FACTOR).coerceAtLeast(RECOVERY_MIN_STRENGTH_MINUTES),
+                )
+
+                ExerciseKind.Mobility -> this
+            }
+        }
 
     /** The Monday of [today]'s week, when every program starts. */
     fun weekStart(today: LocalDate): LocalDate = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))

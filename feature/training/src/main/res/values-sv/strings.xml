@@ -210,6 +210,19 @@
     <string name="movement_workouts_body">Låt programmet räkna med passen som klockan eller en annan app har registrerat i Health Connect.</string>
     <string name="movement_workouts_connect">Läs träningspass</string>
     <string name="movement_install">Hämta Health Connect</string>
+    <!-- Återhämtning från klockan -->
+    <string name="recovery_title">Återhämtning</string>
+    <string name="recovery_resting_heart_rate">Vilopuls</string>
+    <string name="recovery_hrv">Hjärtfrekvensvariabilitet (HRV)</string>
+    <string name="recovery_bpm" translatable="false">%1$d bpm</string>
+    <string name="recovery_millis" translatable="false">%1$d ms</string>
+    <string name="recovery_normal">Din vilopuls och HRV är som vanligt. Dagens pass är som planerat.</string>
+    <string name="recovery_low">Din vilopuls är högre, eller din HRV lägre, än den brukar. Dagens pass blir lite lättare.</string>
+    <string name="recovery_unknown">Inte tillräckligt många mätningar än för att säga hur du återhämtar dig.</string>
+    <string name="recovery_no_data">Inga mätningar av återhämtning från klockan än.</string>
+    <string name="recovery_connect_body">Låt Novila läsa din vilopuls och hjärtfrekvensvariabilitet från klockan via Health Connect. När kroppen fortfarande återhämtar sig blir dagens träningspass lite lättare. Novila läser det bara och datan stannar i telefonen.</string>
+    <string name="recovery_connect">Anslut återhämtning</string>
+    <string name="recovery_denied_body">Åtkomsten nekades. Du kan tillåta den för Novila i Health Connect.</string>
     <!-- Träningscoach -->
     <string name="coach_title">Träningscoach</string>
     <string name="coach_open">Öppna coachen</string>
@@ -279,6 +292,7 @@
     <string name="coach_rehab_safety_neck">Sök vård direkt vid svindel, svårt att svälja eller feber med stel nacke.</string>
     <string name="coach_rehab_safety_hip">Sök vård om du inte kan belasta höften efter ett fall, eller om höften viker sig.</string>
     <string name="coach_note_goal_rehab">Skonsam träning: lugna, kontrollerade övningar tre dagar i veckan med en vilodag emellan, och promenader de andra dagarna.</string>
+    <string name="coach_note_recovery">Din vilopuls är högre, eller din HRV lägre, än den brukar. Dagens pass blir lättare så att du återhämtar dig.</string>
     <string name="coach_note_rehab_phase">%1$s, nivå %2$d av %3$d. Gå vidare när passen känns lätta och smärtan inte ökar dagen efter, ofta efter ett par veckor.</string>
     <string name="coach_note_pain">Smärta upp till 3 av 10 under passet är okej om den har lagt sig till nästa morgon. Blir den värre, gå tillbaka en nivå.</string>
     <string name="coach_note_effort_pain">Senaste passet gjorde ont %1$d av 10, så coachen tar bort ett set per övning den här veckan. Sök vård om smärtan sitter i.</string>

@@ -30,6 +30,7 @@ dependencies {
     implementation(projects.core.healthconnect)
     implementation(projects.core.model)
     implementation(projects.core.movement)
+    implementation(projects.core.recovery)
     implementation(projects.core.reminders)
     implementation(projects.core.sleep)
     implementation(projects.core.ui)

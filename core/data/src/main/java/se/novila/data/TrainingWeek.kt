@@ -12,6 +12,7 @@ import se.novila.exercise.TrainingProgram
 import se.novila.exercise.TrainingProgramGenerator
 import se.novila.model.CardioType
 import se.novila.model.DayEntry
+import se.novila.recovery.RecoveryStatus
 import java.time.LocalDate
 import kotlin.time.Duration.Companion.minutes
 
@@ -37,7 +38,8 @@ class TrainingWeek(
 /**
  * Plans the week of [today] from the [saved] days, the coach's [answers] and workouts a watch or another app
  * [recorded]. The same walk can be in both, so [TrainingHistory] counts it once. [draft] are answers the user is
- * trying out before setting up the coach.
+ * trying out before setting up the coach. [recovery] from the watch makes today's session lighter when the body
+ * is still recovering.
  */
 fun trainingWeek(
     saved: HealthStore.SavedDays,
@@ -45,6 +47,7 @@ fun trainingWeek(
     recorded: List<Exercise>,
     today: LocalDate,
     draft: CoachPreferences? = null,
+    recovery: RecoveryStatus = RecoveryStatus.Unknown,
 ): TrainingWeek {
     // Strength sessions done in session mode and cardio logged by hand, together with what Health Connect recorded.
     val days = saved.lastDays(count = ExerciseRepository.HISTORY_DAYS.toInt(), today = today)
@@ -52,10 +55,20 @@ fun trainingWeek(
     val feedback = days.mapNotNull(::feedback)
     val active = answers.preferences
     val preferences = active ?: draft ?: CoachPreferences()
-    val plan = CoachPlanner.plan(preferences, history = history, today = today, feedback = feedback)
-    val program = if (active != null) plan.program else TrainingProgramGenerator.generate(history, today)
+    val plan = CoachPlanner.plan(
+        preferences,
+        history = history,
+        today = today,
+        feedback = feedback,
+        recovery = recovery,
+    )
+    val program = if (active != null) {
+        plan.program
+    } else {
+        TrainingProgramGenerator.generate(history, today, recovery)
+    }
     // Next week from the same coach or generator, on a history where this week's sessions already count,
-    // so the weekly review can say what the training leads to.
+    // so the weekly review can say what the training leads to. Recovery only lightens today, so not next week.
     val nextMonday = program.weekStart.plusWeeks(1)
     val nextProgram = if (active != null) {
         CoachPlanner.plan(preferences, history = history, today = nextMonday, feedback = feedback).program

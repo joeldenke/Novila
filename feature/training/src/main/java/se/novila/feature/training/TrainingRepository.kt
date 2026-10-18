@@ -15,37 +15,47 @@ import se.novila.exercise.ExerciseKind
 import se.novila.exercise.ExerciseRepository
 import se.novila.exercise.ExerciseState
 import se.novila.exercise.TrainingHistory
+import se.novila.recovery.RecoveryRepository
+import se.novila.recovery.RecoveryState
+import se.novila.recovery.RecoveryStatus
+import se.novila.recovery.analyzeRecovery
 import java.time.LocalDate
 
 /**
- * The week's program for the Training tab's ViewModels, from the saved days, the coach's answers and the workouts
- * Health Connect recorded. Each ViewModel gets its own; the stores behind it are shared, so a finished session, a
- * logged walk or a changed answer shows up everywhere through [states].
+ * The week's program for the Training tab's ViewModels, from the saved days, the coach's answers, the workouts
+ * Health Connect recorded and the watch's recovery. Each ViewModel gets its own; the stores behind it are shared,
+ * so a finished session, a logged walk or a changed answer shows up everywhere through [states].
  */
 @Inject
 class TrainingRepository(
     private val health: HealthStore,
     private val coach: CoachStore,
     private val exercises: ExerciseRepository,
+    private val recovery: RecoveryRepository,
 ) {
     /**
      * The program for the week of each date in [dates], read again whenever a day or the coach's answers are saved,
-     * or new workouts are read. [drafts] are answers the user is trying out before setting up the coach.
+     * new workouts are read, or recovery changes. [drafts] are answers the user is trying out before setting up the
+     * coach.
      */
-    fun states(dates: Flow<LocalDate>, drafts: Flow<CoachPreferences?> = flowOf(null)): Flow<TrainingUiState> =
-        combine(
+    fun states(dates: Flow<LocalDate>, drafts: Flow<CoachPreferences?> = flowOf(null)): Flow<TrainingUiState> {
+        val inputs = combine(
             dates,
             drafts,
             health.days.filterNotNull(),
             coach.answers.filterNotNull(),
             exercises.state,
-        ) { date, draft, days, saved, recorded -> read(days, saved, recorded, date, draft) }
+        ) { date, draft, days, saved, recorded -> TrainingInputs(date, draft, days, saved, recorded) }
+        return combine(inputs, recovery.state) { input, recovery ->
+            read(input.days, input.saved, input.recorded, input.date, input.draft, recovery)
+        }
+    }
 
     /** The program for the week of [today] as saved right now, or null before the stores' first read. */
     fun current(today: LocalDate, draft: CoachPreferences? = null): TrainingUiState? {
         val days = health.days.value ?: return null
         val saved = coach.answers.value ?: return null
-        return read(days, saved, exercises.state.value, today, draft)
+        return read(days, saved, exercises.state.value, today, draft, recovery.state.value)
     }
 
     /** The program for the week of [today], once the stores are read. */
@@ -57,14 +67,18 @@ class TrainingRepository(
         recorded: ExerciseState,
         today: LocalDate,
         draft: CoachPreferences?,
+        recovery: RecoveryState,
     ): TrainingUiState {
         val fromSource = (recorded as? ExerciseState.Connected)?.exercises.orEmpty()
-        val week = trainingWeek(saved, answers, fromSource, today, draft)
+        val status = (recovery as? RecoveryState.Connected)?.let { analyzeRecovery(it.days, today) }
+            ?: RecoveryStatus.Unknown
+        val week = trainingWeek(saved, answers, fromSource, today, draft, status)
         val program = week.program
         val day = week.days.first()
         return TrainingUiState(
             program = program,
             coach = CoachUiState(week.preferences, week.plan, active = week.active),
+            recovery = status,
             today = today.dayOfWeek,
             strengthMinutesToday = day.strengthMinutes,
             cardioToday = CardioToday(
@@ -79,3 +93,12 @@ class TrainingRepository(
         )
     }
 }
+
+/** The stores' latest values, together, so recovery can be combined in as well. */
+private data class TrainingInputs(
+    val date: LocalDate,
+    val draft: CoachPreferences?,
+    val days: HealthStore.SavedDays,
+    val saved: SavedCoach,
+    val recorded: ExerciseState,
+)

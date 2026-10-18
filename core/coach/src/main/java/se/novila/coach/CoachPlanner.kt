@@ -4,6 +4,7 @@ import se.novila.anatomy.ExerciseLibrary
 import se.novila.anatomy.MuscleGroup
 import se.novila.exercise.Dosage
 import se.novila.exercise.Exercise
+import se.novila.exercise.ExerciseKind
 import se.novila.exercise.ExerciseType
 import se.novila.exercise.PlannedExercise
 import se.novila.exercise.PlannedSession
@@ -11,6 +12,7 @@ import se.novila.exercise.StrengthLevel
 import se.novila.exercise.TrainingProgram
 import se.novila.exercise.TrainingProgramGenerator
 import se.novila.exercise.Workout
+import se.novila.recovery.RecoveryStatus
 import java.time.DayOfWeek
 import java.time.LocalDate
 import kotlin.math.max
@@ -47,6 +49,9 @@ sealed interface CoachNote {
 
     /** The coach's suggestion for the rehab phase, from the pain after the latest sessions. */
     data class Rehab(val check: RehabCheck) : CoachNote
+
+    /** The watch says the body is still recovering (resting heart rate up, HRV down): today's session is lighter. */
+    data object Recovery : CoachNote
 }
 
 /**
@@ -67,7 +72,9 @@ data class CoachPlan(val program: TrainingProgram, val notes: List<CoachNote>, v
  * - Sets, repetitions and rest follow the strength level and the goal; the time estimate includes the warm-up
  *   and the cool-down that [Workout] runs around the sets.
  * - The user's feedback after the latest sessions adjusts the dose, and suggests the next rehab phase
- *   ([CoachFeedback]).
+ *   ([CoachFeedback]). When the watch says the body is still recovering ([RecoveryStatus.Low]), today's
+ *   session alone is lighter: one set less and a lighter cardio. Rehab stays as it is — it is already
+ *   managed by pain, not by numbers.
  * Plain Kotlin and deterministic: the same answers give the same program until [CoachPreferences.variation]
  * changes, so it is unit tested.
  */
@@ -95,6 +102,7 @@ object CoachPlanner {
         history: List<Exercise>,
         today: LocalDate,
         feedback: List<SessionFeedback> = emptyList(),
+        recovery: RecoveryStatus = RecoveryStatus.Unknown,
     ): CoachPlan {
         val weekStart = TrainingProgramGenerator.weekStart(today)
         val recent = TrainingProgramGenerator.summarize(history, weekStart)
@@ -133,11 +141,35 @@ object CoachPlanner {
             cardioDays.map { PlannedSession(it, recent.cardioType, cardioMinutes) } +
             mobilityDays.map { PlannedSession(it, ExerciseType.Mobility, mobilityMinutes) }
         val weeklyCardio = cardioMinutes * cardioDays.size
+        val adjusted = if (recovery == RecoveryStatus.Low) {
+            sessions.map { it.loweredFor(today) }
+        } else {
+            sessions
+        }
 
         return CoachPlan(
-            program = TrainingProgram(weekStart, weeklyCardio, sessions.sortedBy { it.day }),
-            notes = notes(preferences, recent.level, strengthCount, weeklyCardio, effort),
+            program = TrainingProgram(weekStart, weeklyCardio, adjusted.sortedBy { it.day }),
+            notes = notes(preferences, recent.level, strengthCount, weeklyCardio, effort) +
+                if (adjusted != sessions) listOf(CoachNote.Recovery) else emptyList(),
         )
+    }
+
+    /** [this] as today's session when the body is still recovering: one set less, and a lighter cardio. */
+    private fun PlannedSession.loweredFor(today: LocalDate): PlannedSession {
+        if (day != today.dayOfWeek) return this
+        return when (type.kind) {
+            ExerciseKind.Strength -> {
+                val fewer = exercises.map { it.copy(sets = (it.sets - 1).coerceAtLeast(1)) }
+                copy(exercises = fewer, minutes = sessionMinutes(fewer))
+            }
+
+            ExerciseKind.Cardio -> copy(
+                minutes = TrainingProgramGenerator.roundTo5(minutes * RECOVERY_CARDIO_FACTOR)
+                    .coerceAtLeast(RECOVERY_MIN_CARDIO_MINUTES),
+            )
+
+            ExerciseKind.Mobility -> this
+        }
     }
 
     /**
@@ -409,6 +441,10 @@ object CoachPlanner {
     private const val REHAB_DAYS = 3
     private const val REHAB_WALK_MINUTES = 20
     private val REHAB_REST = 60.seconds
+
+    /** Today's cardio is lighter while the body recovers, but never under ten minutes. */
+    private const val RECOVERY_CARDIO_FACTOR = 0.8
+    private const val RECOVERY_MIN_CARDIO_MINUTES = 10
 
     /** Each session gets one of each before anything else, in this order. */
     private val REQUIRED = listOf(

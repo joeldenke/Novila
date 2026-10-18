@@ -14,6 +14,8 @@ import se.novila.exercise.ExerciseType
 import se.novila.exercise.PlannedSession
 import se.novila.exercise.StrengthLevel
 import se.novila.exercise.TrainingProgram
+import se.novila.exercise.TrainingProgramGenerator
+import se.novila.recovery.RecoveryStatus
 import java.time.DayOfWeek
 import java.time.LocalDate
 import kotlin.time.Duration.Companion.minutes
@@ -24,8 +26,11 @@ class CoachPlannerTest {
     private val today = LocalDate.of(2026, 10, 15)
     private val monday = LocalDate.of(2026, 10, 12)
 
-    private fun plan(preferences: CoachPreferences = CoachPreferences(), history: List<Exercise> = emptyList()) =
-        CoachPlanner.plan(preferences, history, today)
+    private fun plan(
+        preferences: CoachPreferences = CoachPreferences(),
+        history: List<Exercise> = emptyList(),
+        recovery: RecoveryStatus = RecoveryStatus.Unknown,
+    ) = CoachPlanner.plan(preferences, history, today, recovery = recovery)
 
     private val TrainingProgram.strength: List<PlannedSession>
         get() = sessions.filter { it.type == ExerciseType.Strength }
@@ -264,5 +269,63 @@ class CoachPlannerTest {
         listOf(1L, 4L).map {
             Exercise(ExerciseType.Strength, monday.minusWeeks(week).plusDays(it), 30.minutes)
         }
+    }
+
+    @Test fun `low recovery gives today's strength session one set less and explains why`() {
+        val plain = plan()
+        val low = plan(recovery = RecoveryStatus.Low)
+        val before = plain.program.sessions.first { it.day == today.dayOfWeek }
+        val after = low.program.sessions.first { it.day == today.dayOfWeek }
+        assertEquals(ExerciseType.Strength, after.type)
+        assertEquals(before.ids(), after.ids())
+        after.exercises.forEach { exercise ->
+            val original = before.exercises.first { it.exerciseId == exercise.exerciseId }
+            assertEquals(exercise.exerciseId, maxOf(1, original.sets - 1), exercise.sets)
+        }
+        assertTrue(low.notes.contains(CoachNote.Recovery))
+        assertTrue(!plain.notes.contains(CoachNote.Recovery))
+        assertEquals(
+            plain.program.sessions.filter { it.day != today.dayOfWeek },
+            low.program.sessions.filter { it.day != today.dayOfWeek },
+        )
+    }
+
+    @Test fun `low recovery lightens today's cardio`() {
+        val preferences = CoachPreferences(CoachGoal.Health, daysPerWeek = 5)
+        val tuesday = monday.plusDays(1)
+        val plain = CoachPlanner.plan(preferences, emptyList(), tuesday)
+        val low = CoachPlanner.plan(preferences, emptyList(), tuesday, recovery = RecoveryStatus.Low)
+        val before = plain.program.sessions.first { it.day == DayOfWeek.TUESDAY }
+        val after = low.program.sessions.first { it.day == DayOfWeek.TUESDAY }
+        assertEquals(ExerciseKind.Cardio, after.type.kind)
+        assertTrue(after.minutes < before.minutes)
+        assertEquals(
+            TrainingProgramGenerator.roundTo5(before.minutes * 0.8).coerceAtLeast(10),
+            after.minutes,
+        )
+    }
+
+    @Test fun `normal or unknown recovery changes nothing`() {
+        val plain = plan()
+        assertEquals(plain, plan(recovery = RecoveryStatus.Normal))
+        assertEquals(plain, plan(recovery = RecoveryStatus.Unknown))
+    }
+
+    @Test fun `a low recovery on a day without a session adds no note`() {
+        val wednesday = monday.plusDays(2)
+        val low = CoachPlanner.plan(CoachPreferences(), emptyList(), wednesday, recovery = RecoveryStatus.Low)
+        assertTrue(low.notes.none { it == CoachNote.Recovery })
+    }
+
+    @Test fun `rehab is left alone when recovery is low`() {
+        val plain = rehab(RehabArea.Knee, phase = 2)
+        val low = CoachPlanner.plan(
+            CoachPreferences(CoachGoal.Rehab, daysPerWeek = 4, rehabArea = RehabArea.Knee, rehabPhase = 2),
+            strengthTwiceAWeek(),
+            today,
+            recovery = RecoveryStatus.Low,
+        )
+        assertEquals(plain.program, low.program)
+        assertTrue(low.notes.none { it == CoachNote.Recovery })
     }
 }
