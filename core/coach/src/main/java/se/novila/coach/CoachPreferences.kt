@@ -9,7 +9,7 @@ import se.novila.anatomy.MuscleGroup
 enum class CoachGoal { Health, Strength, Endurance, Mobility, Rehab }
 
 /** What a rehab program is for. Each has its own exercises per phase, see CoachPlanner. */
-enum class RehabArea { Knee, LowerBack }
+enum class RehabArea { Knee, LowerBack, Shoulder, Neck, Hip }
 
 /** Parts of the body the user wants extra work on. */
 enum class BodyArea(val muscles: Set<MuscleGroup>) {

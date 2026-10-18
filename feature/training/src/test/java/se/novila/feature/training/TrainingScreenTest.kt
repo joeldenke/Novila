@@ -122,14 +122,14 @@ class TrainingScreenTest {
         composeRule.setContent {
             NovilaTheme { ExerciseLibraryScreen(onOpenExercise = {}, contentPadding = PaddingValues()) }
         }
-        composeRule.onNodeWithText("13 exercises").assertExists()
+        composeRule.onNodeWithText("15 exercises").assertExists()
         composeRule.onNode(hasSetTextAction()).performTextInput("push")
         composeRule.onNodeWithText("Push-up").assertExists()
         composeRule.onNodeWithText("Squat").assertDoesNotExist()
         composeRule.onNode(hasSetTextAction()).performTextReplacement("calves")
         composeRule.onNodeWithText("Calf raise").assertExists()
         composeRule.onNodeWithContentDescription("Clear the search").performClick()
-        composeRule.onNodeWithText("13 exercises").assertExists()
+        composeRule.onNodeWithText("15 exercises").assertExists()
     }
 
     @Test fun `a low recovery shows the readings and says today's session is lighter`() {

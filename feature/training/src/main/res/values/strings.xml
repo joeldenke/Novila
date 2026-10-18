@@ -28,6 +28,8 @@
     <string name="move_good_morning">Good morning</string>
     <string name="move_bird_dog">Bird dog</string>
     <string name="move_crunch">Crunch</string>
+    <string name="move_arm_raise">Arm raise</string>
+    <string name="move_neck_nod">Neck nod</string>
     <string-array name="move_squat_steps">
         <item>Stand with your feet hip-width apart, toes turned slightly out.</item>
         <item>Push your hips back and bend your knees until your thighs are about level with the floor.</item>
@@ -106,6 +108,18 @@
         <item>Lower slowly back down.</item>
     </string-array>
     <string name="move_crunch_tip">Your lower back stays on the floor. Don\'t pull on your neck.</string>
+    <string-array name="move_arm_raise_steps">
+        <item>Stand tall with your feet hip-width apart and your arms by your sides.</item>
+        <item>Raise both straight arms in front of you until they are about level with your shoulders.</item>
+        <item>Lower them slowly back down.</item>
+    </string-array>
+    <string name="move_arm_raise_tip">Raise from the shoulder, without shrugging or leaning back.</string>
+    <string-array name="move_neck_nod_steps">
+        <item>Stand or sit tall and look straight ahead.</item>
+        <item>Nod slowly, bringing your chin down towards your chest.</item>
+        <item>Return just as slowly to looking straight ahead.</item>
+    </string-array>
+    <string name="move_neck_nod_tip">Keep the movement small and slow. Stop if it makes the pain worse.</string>
     <string name="move_figure_description">%1$s. Works %2$s.</string>
     <string name="dose_reps" translatable="false">%1$d × %2$d</string>
     <string name="dose_reps_per_side">%1$d × %2$d per side</string>
@@ -180,6 +194,7 @@
     <string name="muscle_biceps">biceps</string>
     <string name="muscle_triceps">triceps</string>
     <string name="muscle_abs">abs</string>
+    <string name="muscle_neck">neck</string>
     <string name="muscle_upper_back">upper back</string>
     <string name="muscle_lats">lats</string>
     <string name="muscle_lower_back">lower back</string>
@@ -264,6 +279,9 @@
     <string name="coach_rehab_title">Gentle training</string>
     <string name="coach_rehab_knee">Knee</string>
     <string name="coach_rehab_lower_back">Lower back</string>
+    <string name="coach_rehab_shoulder">Shoulder</string>
+    <string name="coach_rehab_neck">Neck</string>
+    <string name="coach_rehab_hip">Hip</string>
     <string name="coach_rehab_phase">Level</string>
     <string name="coach_rehab_phase_value">%1$d of %2$d: %3$s</string>
     <string name="coach_rehab_phase_1">a gentle start</string>
@@ -274,6 +292,9 @@
     <string name="coach_rehab_safety">The program is general training, not care. If a physiotherapist has given you exercises, follow them. Seek care for severe or increasing pain, swelling or numbness.</string>
     <string name="coach_rehab_safety_knee">Seek care if the knee locks, gives way or swells up.</string>
     <string name="coach_rehab_safety_lower_back">Seek care at once for numbness around the groin, trouble passing urine or growing weakness in the legs.</string>
+    <string name="coach_rehab_safety_shoulder">Seek care if the shoulder gives way, or if the pain keeps you from sleeping at night.</string>
+    <string name="coach_rehab_safety_neck">Seek care at once for dizziness, trouble swallowing or fever with a stiff neck.</string>
+    <string name="coach_rehab_safety_hip">Seek care if you cannot put weight on the hip after a fall, or if it gives way.</string>
     <string name="coach_note_goal_rehab">Gentle training: slow, controlled exercises three days a week with a rest day in between, and walks on the other days.</string>
     <string name="coach_note_recovery">Your resting heart rate is up, or your HRV is down, compared with your usual. Today\'s session is lighter so you recover.</string>
     <string name="coach_note_rehab_phase">%1$s, level %2$d of %3$d. Move on when the sessions feel easy and the pain does not increase the day after, often after a couple of weeks.</string>

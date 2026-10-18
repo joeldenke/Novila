@@ -238,6 +238,9 @@ private fun RehabCard(preferences: CoachPreferences, onChange: (CoachPreferences
                 when (preferences.rehabArea) {
                     RehabArea.Knee -> R.string.coach_rehab_safety_knee
                     RehabArea.LowerBack -> R.string.coach_rehab_safety_lower_back
+                    RehabArea.Shoulder -> R.string.coach_rehab_safety_shoulder
+                    RehabArea.Neck -> R.string.coach_rehab_safety_neck
+                    RehabArea.Hip -> R.string.coach_rehab_safety_hip
                 },
             ),
             style = NovilaTheme.typography.bodySmall,

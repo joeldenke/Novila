@@ -17,7 +17,7 @@ fallback for people without a watch.
 | Part | Features | Assessment |
 |---|---|---|
 | Today | Greeting by name, the day's balance (rings), a tile per part, insights, the week's sleep and nutrition, mood, energy, stress and a journal line | Polished, but only the week |
-| Training | Weekly program (WHO), coach with goal, days, focus and considerations, rehab (knee, lower back, phases 1–3), 13 illustrated exercises, workout mode with timer, cardio sessions (logged and from Health Connect), RPE and pain after the session, recovery from the watch that can lighten today's session, Gemini Nano comment, weekly review | The app's strongest part |
+| Training | Weekly program (WHO), coach with goal, days, focus and considerations, rehab (knee, lower back, shoulder, neck, hip, phases 1–3), 15 illustrated exercises, workout mode with timer, cardio sessions (logged and from Health Connect), RPE and pain after the session, recovery from the watch that can lighten today's session, Gemini Nano comment, weekly review | The app's strongest part |
 | Sleep | Bedtime and wake-up (or the watch's night from Health Connect), quality and causes, what affects your sleep, chart over a week, four weeks or a year, sleep coach with bedtime goal, evening routine and advice from your own nights | Good |
 | Nutrition | Servings per food group, water against your own goal, sweets, score 0–100, "next step", the score over a week, four weeks or a year | Good and simple |
 | Movement | Today's steps and active calories, five weeks of workouts, the nights and recovery (resting heart rate, HRV), from Health Connect, in the foreground | Steps only for today |
@@ -44,7 +44,7 @@ Nano for more than the comment, or data that leaves the app.
 - [x] **Effort (RPE) and pain (0–10) after the session**, so the coach itself suggests dose and rehab phase
 - [ ] **Progression per exercise:** save sets and reps, and increase step by step
 - [ ] **More exercises and equipment:** variations, dumbbells, resistance bands, gym
-- [ ] **More rehab areas:** shoulder, neck, hip
+- [x] **More rehab areas:** shoulder, neck, hip
 - [x] **Warm-up and cool-down** in workout mode, and the rest timer as a notification
 - [x] **Weekly review:** "3 of 4 sessions, next week …"
 

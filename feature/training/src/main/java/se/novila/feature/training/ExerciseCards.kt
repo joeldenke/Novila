@@ -96,6 +96,10 @@ internal fun moveText(id: String): MoveText? = when (id) {
 
     "crunch" -> MoveText(R.string.move_crunch, R.array.move_crunch_steps, R.string.move_crunch_tip)
 
+    "arm_raise" -> MoveText(R.string.move_arm_raise, R.array.move_arm_raise_steps, R.string.move_arm_raise_tip)
+
+    "neck_nod" -> MoveText(R.string.move_neck_nod, R.array.move_neck_nod_steps, R.string.move_neck_nod_tip)
+
     else -> null
 }
 
@@ -276,6 +280,7 @@ internal val MuscleGroup.label: Int
         MuscleGroup.Biceps -> R.string.muscle_biceps
         MuscleGroup.Triceps -> R.string.muscle_triceps
         MuscleGroup.Abs -> R.string.muscle_abs
+        MuscleGroup.Neck -> R.string.muscle_neck
         MuscleGroup.UpperBack -> R.string.muscle_upper_back
         MuscleGroup.Lats -> R.string.muscle_lats
         MuscleGroup.LowerBack -> R.string.muscle_lower_back

@@ -21,6 +21,12 @@ class CoachPreferencesTest {
     @Test fun `rehab answers survive encoding, and answers from before rehab are still read`() {
         val rehab = CoachPreferences(goal = CoachGoal.Rehab, rehabArea = RehabArea.LowerBack, rehabPhase = 2)
         assertEquals(rehab, CoachPreferencesCodec.decode(CoachPreferencesCodec.encode(rehab)))
+        val shoulder = CoachPreferences(goal = CoachGoal.Rehab, rehabArea = RehabArea.Shoulder, rehabPhase = 1)
+        assertEquals(shoulder, CoachPreferencesCodec.decode(CoachPreferencesCodec.encode(shoulder)))
+        RehabArea.entries.forEach { area ->
+            val preferences = CoachPreferences(goal = CoachGoal.Rehab, rehabArea = area, rehabPhase = 3)
+            assertEquals(preferences, CoachPreferencesCodec.decode(CoachPreferencesCodec.encode(preferences)))
+        }
         assertEquals(
             CoachPreferences(goal = CoachGoal.Strength, daysPerWeek = 5, focus = setOf(BodyArea.Core)),
             CoachPreferencesCodec.decode("c1;Strength;5;30;Core;;0"),

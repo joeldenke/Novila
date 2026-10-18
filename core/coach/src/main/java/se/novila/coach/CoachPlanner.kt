@@ -268,7 +268,10 @@ object CoachPlanner {
         effort: EffortAdvice?,
     ): List<PlannedExercise> {
         val candidates = CoachCatalog.exercises.filter {
-            it.suits(preferences.considerations) && it.level <= level && ExerciseLibrary.byId(it.id) != null
+            it.suits(preferences.considerations) &&
+                it.level <= level &&
+                !it.rehabOnly &&
+                ExerciseLibrary.byId(it.id) != null
         }
         val jitter = Random(preferences.variation * 1_000 + index).let { random ->
             candidates.associate { it.id to if (preferences.variation == 0) 0.0 else random.nextDouble() * 0.9 }
@@ -404,7 +407,9 @@ object CoachPlanner {
 
     /**
      * Rehab exercises per area, phase 1 to 3. The knee starts with the hips and calves and adds knee bends
-     * once they are easy; the lower back starts with holding the trunk still and adds hinging last.
+     * once they are easy; the lower back starts with holding the trunk still and adds hinging last. The
+     * shoulder starts without load through the arm and adds pushing; the neck begins with a slow nod and
+     * keeps the posture work around it; the hip starts with bridges and adds hinging and split stances.
      */
     private val REHAB: Map<RehabArea, List<List<String>>> = mapOf(
         RehabArea.Knee to listOf(
@@ -416,6 +421,21 @@ object CoachPlanner {
             listOf("bird_dog", "glute_bridge", "plank"),
             listOf("bird_dog", "glute_bridge", "squat", "plank"),
             listOf("squat", "good_morning", "glute_bridge", "bird_dog", "plank"),
+        ),
+        RehabArea.Shoulder to listOf(
+            listOf("arm_raise", "bird_dog", "superman"),
+            listOf("arm_raise", "push_up", "plank", "superman"),
+            listOf("push_up", "arm_raise", "plank", "bird_dog", "superman"),
+        ),
+        RehabArea.Neck to listOf(
+            listOf("neck_nod", "bird_dog", "superman"),
+            listOf("neck_nod", "plank", "superman", "bird_dog"),
+            listOf("neck_nod", "arm_raise", "plank", "superman"),
+        ),
+        RehabArea.Hip to listOf(
+            listOf("glute_bridge", "bird_dog", "plank"),
+            listOf("glute_bridge", "squat", "bird_dog", "plank"),
+            listOf("squat", "split_squat", "good_morning", "glute_bridge", "plank"),
         ),
     )
     private const val REHAB_DAYS = 3

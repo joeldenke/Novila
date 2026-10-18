@@ -95,6 +95,15 @@ class CoachPlannerTest {
         }
     }
 
+    @Test fun `rehab-only exercises stay out of ordinary sessions`() {
+        val rehabOnly = CoachCatalog.exercises.filter { it.rehabOnly }.map { it.id }
+        everyAnswer.forEach { preferences ->
+            plan(preferences).program.strength.flatMap { it.ids() }.forEach { id ->
+                assertTrue("$preferences: $id", id !in rehabOnly)
+            }
+        }
+    }
+
     @Test fun `considerations leave out the exercises that don't suit them`() {
         Consideration.entries.forEach { consideration ->
             val used = (CoachGoal.entries - CoachGoal.Rehab).flatMap { goal ->
