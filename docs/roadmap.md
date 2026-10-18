@@ -45,7 +45,7 @@ Nano for more than the comment, or data that leaves the app.
 - [ ] **Progression per exercise:** save sets and reps, and increase step by step
 - [ ] **More exercises and equipment:** variations, dumbbells, resistance bands, gym
 - [x] **More rehab areas:** shoulder, neck, hip
-- [ ] **Warm-up and cool-down** in workout mode, and the rest timer as a notification
+- [x] **Warm-up and cool-down** in workout mode, and the rest timer as a notification
 - [x] **Weekly review:** "3 of 4 sessions, next week …"
 
 ### 3. Sleep

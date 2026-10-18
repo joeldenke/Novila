@@ -7,6 +7,8 @@ novila {
 }
 
 dependencies {
+    // NotificationCompat and NotificationManagerCompat, for the rest timer's notification.
+    implementation(libs.androidx.core.ktx)
     implementation(projects.core.anatomy)
     implementation(projects.core.coach)
     implementation(projects.core.data)

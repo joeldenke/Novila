@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import se.novila.data.HealthStore
 import se.novila.exercise.ExerciseType
 import se.novila.exercise.Workout
+import se.novila.exercise.WorkoutStep
 import se.novila.model.MAX_EFFORT
 import se.novila.model.MAX_PAIN
 import java.time.DayOfWeek
@@ -28,8 +29,8 @@ import kotlin.time.Clock
 /**
  * A guided strength session for the program's [day]. Scoped to the workout entry: the session and its timer survive
  * rotation, and leaving the screen without finishing clears the ViewModel, which discards the session (nothing was
- * saved yet) and stops the timer. Once it is done, the user can say how hard it was and how much it hurt, which is
- * saved with the session for the coach.
+ * saved yet), stops the timer and takes the timer's notifications down. Once it is done, the user can say how hard
+ * it was and how much it hurt, which is saved with the session for the coach.
  */
 @AssistedInject
 class WorkoutViewModel(
@@ -38,6 +39,8 @@ class WorkoutViewModel(
     private val store: HealthStore,
     /** [Clock.System] in the app; a test can step time instead of waiting for it. */
     private val clock: Clock,
+    /** The rest timer as a notification, so a rest is still counted with the screen off. */
+    private val notifications: WorkoutNotifications,
 ) : ViewModel() {
     private val _state = MutableStateFlow<WorkoutUiState?>(null)
 
@@ -60,8 +63,9 @@ class WorkoutViewModel(
         show(Workout.start(session, clock.now()))
     }
 
-    /** The user finished a set or skipped a rest. */
+    /** The user finished a set or skipped a rest: they are acting, so nothing is announced. */
     fun next() {
+        notifications.cancel()
         _state.value?.let { show(it.workout.next(clock.now())) }
     }
 
@@ -90,14 +94,30 @@ class WorkoutViewModel(
             }
         }
         timer?.cancel()
+        notifications.cancel()
         _state.value = null
     }
 
-    /** Shows [workout] and, for a timed step, counts down once a second and moves on when it runs out. */
+    override fun onCleared() {
+        timer?.cancel()
+        notifications.cancel()
+    }
+
+    /**
+     * Shows [workout] and, for a timed step, counts down once a second and moves on when it runs out. The step's
+     * countdown also runs as a notification, and a rest or warm-up that runs out announces the next set.
+     */
     private fun show(workout: Workout) {
         timer?.cancel()
         _state.value = WorkoutUiState(workout, workout.secondsLeft(clock.now()))
-        val endsAt = workout.endsAt ?: return
+        val step = workout.step
+        val endsAt = workout.endsAt
+        if (step is WorkoutStep.Timed && endsAt != null) {
+            notifications.countdown(step, endsAt)
+        } else {
+            notifications.cancelCountdown()
+        }
+        if (endsAt == null) return
         timer = viewModelScope.launch {
             while (true) {
                 val now = clock.now()
@@ -106,6 +126,8 @@ class WorkoutViewModel(
                 // Wake just after the shown second changes.
                 delay((endsAt - now).inWholeMilliseconds % 1000L + 1L)
             }
+            val next = (workout.step as? WorkoutStep.Rest)?.next ?: (workout.step as? WorkoutStep.WarmUp)?.next
+            if (next != null) notifications.ready(next)
             show(workout.next(clock.now()))
         }
     }

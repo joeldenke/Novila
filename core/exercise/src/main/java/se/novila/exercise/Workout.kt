@@ -3,24 +3,36 @@ package se.novila.exercise
 import java.time.DayOfWeek
 import kotlin.math.ceil
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 import kotlin.time.Instant
 
 /** One step of a guided strength session. */
 sealed interface WorkoutStep {
+    /** A step that runs on a clock instead of waiting for the user: a rest, the warm-up or the cool-down. */
+    sealed interface Timed : WorkoutStep {
+        val duration: Duration
+    }
+
     /** Set [set] of [exercise]'s sets (from 1), the [exerciseNumber]th exercise of the session (from 1). */
     data class Work(val exercise: PlannedExercise, val exerciseNumber: Int, val set: Int) : WorkoutStep
 
     /** A pause of [duration] before [next]. */
-    data class Rest(val duration: Duration, val next: Work) : WorkoutStep
+    data class Rest(override val duration: Duration, val next: Work) : Timed
+
+    /** The easy [duration] before the first set: get warm, then do [next]. */
+    data class WarmUp(override val duration: Duration, val next: Work) : Timed
+
+    /** The [duration] of slowing down after the last set, before the session is saved. */
+    data class CoolDown(override val duration: Duration) : Timed
 }
 
 /**
- * A strength session in progress, step by step: every set, then a rest before the next set or the next
- * exercise, but none after the last set. Timed steps (rests and holds) end on their own at [endsAt];
- * the user ends repetition sets. The current time is passed in, so this is plain Kotlin and unit tested
- * without a clock.
+ * A strength session in progress, step by step: a warm-up, then every set with a rest before the next set or
+ * the next exercise, and a cool-down after the last set. Timed steps (rests, the warm-up, the cool-down and
+ * holds) end on their own at [endsAt]; the user ends repetition sets. The current time is passed in, so this
+ * is plain Kotlin and unit tested without a clock.
  */
 data class Workout(
     val day: DayOfWeek,
@@ -64,6 +76,10 @@ data class Workout(
     }
 
     companion object {
+        /** The timed phases around the sets. The coach budgets their five minutes into the session's minutes. */
+        val WARM_UP = 3.minutes
+        val COOL_DOWN = 2.minutes
+
         fun start(session: PlannedSession, now: Instant): Workout {
             val steps = steps(session.exercises)
             return Workout(
@@ -81,15 +97,17 @@ data class Workout(
             val work = exercises.flatMapIndexed { i, exercise ->
                 (1..exercise.sets).map { set -> WorkoutStep.Work(exercise, exerciseNumber = i + 1, set = set) }
             }
-            return work.flatMapIndexed { i, step ->
+            if (work.isEmpty()) return emptyList()
+            val sets = work.flatMapIndexed { i, step ->
                 val next = work.getOrNull(i + 1)
                 if (next == null) listOf(step) else listOf(step, WorkoutStep.Rest(step.exercise.rest, next))
             }
+            return listOf(WorkoutStep.WarmUp(WARM_UP, work.first())) + sets + WorkoutStep.CoolDown(COOL_DOWN)
         }
 
-        /** Rests and holds run on a timer; repetition sets wait for the user. */
+        /** Rests, the warm-up, the cool-down and holds run on a timer; repetition sets wait for the user. */
         private fun endOf(step: WorkoutStep, now: Instant): Instant? = when (step) {
-            is WorkoutStep.Rest -> now + step.duration
+            is WorkoutStep.Timed -> now + step.duration
             is WorkoutStep.Work -> step.exercise.takeIf { it.dosage == Dosage.Seconds }?.let { now + it.amount.seconds }
         }
     }
