@@ -25,26 +25,18 @@ import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.settings.R
 import se.novila.model.AppSettings
-import se.novila.model.Goals
 import se.novila.model.Profile
 import se.novila.model.ThemeMode
 import se.novila.movement.MovementState
 import se.novila.movement.TodayMovement
-import se.novila.recipes.Allergen
-import se.novila.recipes.Diet
-import se.novila.recipes.FoodPreferences
 import se.novila.ui.common.ScreenList
-import se.novila.ui.common.foodPreferencesSummary
-import se.novila.ui.common.hoursText
-import se.novila.ui.common.stepsText
 import se.novila.ui.preview.PreviewData
 import se.novila.ui.R as UiR
 
 /** What the Settings screen can do. The entry connects these to the ViewModel and to the system. */
 data class SettingsActions(
     val onOpenProfile: () -> Unit = {},
-    val onOpenGoals: () -> Unit = {},
-    val onOpenFoodPreferences: () -> Unit = {},
+    val onOpenMyGoals: () -> Unit = {},
     val onOpenReminders: () -> Unit = {},
     val onTheme: (ThemeMode) -> Unit = {},
     val onDynamicColor: (Boolean) -> Unit = {},
@@ -59,8 +51,8 @@ data class SettingsActions(
 )
 
 /**
- * Settings: the user's profile, daily goals and food preferences, appearance, reminders, Health Connect access, health
- * disclaimer, the user's data and the app version.
+ * Settings: the user's profile and the way to My goals, then what is about the app itself: appearance, reminders,
+ * Health Connect access, health disclaimer, the user's data and the app version.
  *
  * @param canUseDynamicColor wallpaper colors exist (Android 12+)
  * @param canChooseLanguage the phone has per-app language settings (Android 13+)
@@ -69,8 +61,6 @@ data class SettingsActions(
 fun SettingsScreen(
     settings: AppSettings,
     profile: Profile,
-    goals: Goals,
-    foodPreferences: FoodPreferences,
     movement: MovementState,
     version: AppVersion,
     canUseDynamicColor: Boolean,
@@ -80,7 +70,7 @@ fun SettingsScreen(
     modifier: Modifier = Modifier,
 ) {
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
-        item(key = "profile") { ProfileCard(profile, goals, foodPreferences, actions) }
+        item(key = "profile") { ProfileCard(profile, actions) }
         item(key = "appearance") {
             AppearanceCard(settings, canUseDynamicColor, canChooseLanguage, actions)
         }
@@ -92,9 +82,9 @@ fun SettingsScreen(
     }
 }
 
-/** Who uses the app: the name, or what the profile is for when it is empty, the daily goals and what they eat. */
+/** Who uses the app: the name, or what the profile is for when it is empty, and all they plan by in My goals. */
 @Composable
-private fun ProfileCard(profile: Profile, goals: Goals, foodPreferences: FoodPreferences, actions: SettingsActions) {
+private fun ProfileCard(profile: Profile, actions: SettingsActions) {
     NovilaCard(title = stringResource(R.string.settings_profile)) {
         NovilaListRow(
             title = profile.name.ifEmpty { stringResource(R.string.profile_title) },
@@ -103,20 +93,9 @@ private fun ProfileCard(profile: Profile, goals: Goals, foodPreferences: FoodPre
             trailing = { Chevron() },
         )
         NovilaListRow(
-            title = stringResource(R.string.goals_title),
-            summary = stringResource(
-                R.string.settings_goals_summary,
-                stepsText(goals.steps.toLong()),
-                hoursText(goals.sleepHours),
-                goals.waterGlasses,
-            ),
-            onClick = actions.onOpenGoals,
-            trailing = { Chevron() },
-        )
-        NovilaListRow(
-            title = stringResource(R.string.food_preferences_title),
-            summary = foodPreferencesSummary(foodPreferences),
-            onClick = actions.onOpenFoodPreferences,
+            title = stringResource(R.string.my_goals_title),
+            summary = stringResource(R.string.settings_my_goals_summary),
+            onClick = actions.onOpenMyGoals,
             trailing = { Chevron() },
         )
     }
@@ -322,16 +301,12 @@ private fun SettingsContent(
     movement: MovementState,
     settings: AppSettings = AppSettings(),
     profile: Profile = Profile(),
-    goals: Goals = Goals(),
-    foodPreferences: FoodPreferences = FoodPreferences(),
 ) {
     NovilaTheme {
         NovilaScaffold { padding ->
             SettingsScreen(
                 settings = settings,
                 profile = profile,
-                goals = goals,
-                foodPreferences = foodPreferences,
                 movement = movement,
                 version = AppVersion(name = "0.1.42-debug", code = 42),
                 canUseDynamicColor = true,
@@ -353,6 +328,4 @@ private fun SettingsDarkPreview() = SettingsContent(
     movement = MovementState.Connected(TodayMovement(steps = 6400, activeKilocalories = 210)),
     settings = AppSettings(theme = ThemeMode.Dark, dynamicColor = false),
     profile = PreviewData.profile,
-    goals = Goals(steps = 10000, sleepHours = 7.5f),
-    foodPreferences = FoodPreferences(Diet.Vegetarian, setOf(Allergen.Peanuts), maxMinutes = 30),
 )

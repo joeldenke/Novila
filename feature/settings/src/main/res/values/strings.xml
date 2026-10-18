@@ -86,6 +86,17 @@
     <!-- Goals -->
     <string name="settings_goals_summary">%1$s steps · %2$s sleep · %3$d glasses of water</string>
     <string name="goals_title">Goals</string>
+    <string name="my_goals_title">My goals</string>
+    <string name="my_goals_intro">Everything Novila plans by, in one place. You can also change each part from Your plan on its tab.</string>
+    <string name="my_goals_daily">Every day</string>
+    <string name="my_goals_daily_row">Steps, sleep and water</string>
+    <string name="my_goals_training_row">The training coach</string>
+    <string name="my_goals_training_on">%1$d days a week, %2$d min a session</string>
+    <string name="my_goals_training_off">Not set up. The week is planned from your recent workouts.</string>
+    <string name="my_goals_sleep_row">The sleep coach</string>
+    <string name="my_goals_sleep_on">To bed at %1$s, up at %2$s</string>
+    <string name="my_goals_sleep_off">Not set up.</string>
+    <string name="settings_my_goals_summary">Daily goals, training, sleep and food</string>
     <string name="food_preferences_title">Food preferences</string>
     <string name="food_preferences_diet">Diet</string>
     <string name="food_preferences_diet_hint">Recipes are suggested for what you eat.</string>

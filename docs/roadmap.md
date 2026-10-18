@@ -16,12 +16,12 @@ fallback for people without a watch.
 
 | Part | Features | Assessment |
 |---|---|---|
-| Today | Greeting by name, the day's balance (rings), a tile per part, insights, the week's sleep and nutrition, mood, energy, stress and a journal line | Polished, but only the week |
+| Today | Greeting by name, the day's balance (rings), *Your day*: a checklist of sleep, today's training, food and water with the one button that does each, a tile per part and insights | Says what to do now |
 | Training | Weekly program (WHO), coach with goal, days, focus and considerations, rehab (knee, lower back, shoulder, neck, hip, phases 1–3), 15 illustrated exercises, workout mode with timer, cardio sessions (logged and from Health Connect), RPE and pain after the session, recovery from the watch that can lighten today's session, Gemini Nano comment, weekly review | The app's strongest part |
 | Sleep | Bedtime and wake-up (or the watch's night from Health Connect), quality and causes, what affects your sleep, chart over a week, four weeks or a year, sleep coach with bedtime goal, evening routine and advice from your own nights | Good |
-| Nutrition | Servings per food group, water against your own goal, sweets, score 0–100, "next step", the score over a week, four weeks or a year | Good and simple |
+| Nutrition | Servings per food group, water against your own goal, sweets, score 0–100, "next step", the score over a week, four weeks or a year, recipe suggestions for what is missing (diet, allergens, time) | Good and simple |
 | Movement | Today's steps and active calories, five weeks of workouts, the nights and recovery (resting heart rate, HRV), from Health Connect, in the foreground | Steps only for today |
-| Settings | Theme, profile, own goals, disclaimer, delete data | Complete for its level |
+| Settings | Profile, *My goals* (daily goals, both coaches and food preferences in one place), theme, reminders, Health Connect, disclaimer, delete data | Complete for its level |
 
 ## What is missing
 
@@ -34,7 +34,7 @@ Nano for more than the comment, or data that leaves the app.
   time and only if not already logged. WorkManager, one job per reminder and day. Bedtime remains.
 - [x] **Edit earlier days.** Sleep and nutrition can be changed up to 30 days back (the day picker on Sleep and Nutrition).
 - [x] **History longer than 7 days:** Sleep and Nutrition show a week, four weeks (one point per week) or a year (one
-  per month), with the average compared to the period before. Training minutes and mood over time remain.
+  per month), with the average compared to the period before. Training minutes over time remain.
 - [x] **Own goals** for steps, sleep and water, with suggestions based on age and weight in the profile. Servings follow
   the Swedish Food Agency's dietary guidelines, which the nutrition score is built on.
 - [ ] **Export and import** as a local file, without the cloud **(ok)**
@@ -63,12 +63,16 @@ Nano for more than the comment, or data that leaves the app.
 ### 4. Nutrition
 - [ ] **Meal logging** ("Breakfast: porridge, berries") that fills in the groups
 - [ ] **Quick picks and favorites**
-- [ ] **Diet profile:** vegetarian, vegan, lactose, gluten
+- [x] **Diet profile:** diet (everything, pescetarian, vegetarian, vegan), the 14 labelled allergens and time in the
+  kitchen, in *My goals*
+- [x] **Recipe suggestions:** Novila's own recipes that fill what today is missing, chosen deterministically and never
+  with an allergen the user avoids; "I ate this" logs a serving. More recipes remain.
 - [ ] **Fluids beyond water**, and a caffeine cut-off time linked to sleep
 
 ### 5. Body and mood
 - [ ] **Weight and measurements over time** (the profile only has one value)
-- [x] **Extended mood:** energy, stress and a journal line
+- [x] ~~**Extended mood:** energy, stress and a journal line~~ Removed from Today in October 2026, together with mood:
+  their purpose was unclear to the owner. The saved fields remain in `DayEntry`.
 - [x] **Recovery:** resting heart rate and HRV from the watch **(ok)**, which can lower the session's intensity. A card on
   Training with today's values and a line about the status; today's session gets a little lighter (fewer sets, shorter
   cardio) when the resting heart rate is clearly higher or HRV clearly lower than the user's own baseline. In memory
@@ -83,7 +87,7 @@ Nano for more than the comment, or data that leaves the app.
 
 ### 7. Platform
 - [x] **Home screen widget** (Glance): the day's balance, sleep, nutrition and water, the latest log, encouragement
-  based on what you have done (`cheers`) and a glass of water with one tap. More quick logging (servings, mood) remains.
+  based on what you have done (`cheers`) and a glass of water with one tap. More quick logging (servings) remains.
 - [ ] **Quick Settings tile and shortcuts:** "Start the session", "Log water"
 - [ ] **Wear OS:** workout mode and the rest timer on the watch
 - [ ] **Tablets and foldables** (the `adaptive` skill)
@@ -93,6 +97,23 @@ Nano for more than the comment, or data that leaves the app.
   become shared code first. Then the design system and the screens in Compose Multiplatform, with Apple Health
   (HealthKit) as `MovementSource`, `ExerciseSource` and `SleepSource`, and an on-device alternative to Gemini Nano.
   Storage, reminders and the widget need their own iOS implementations.
+
+### 8. Structure and clarity
+The app grew one feature at a time and felt scattered. Everything now follows one daily loop: Today says what to do
+now, and every tab has the same parts in the same order.
+- [x] **Today as a checklist:** *Your day* with sleep, training, food and water, each with the button that does it; the
+  week's charts moved to their own tabs (#59)
+- [x] **The same parts on every tab:** Overview, Log, Your plan and Trends on Sleep, Nutrition and Training (#60)
+- [x] **My goals in one place:** daily goals, both coaches and food preferences on one screen; Settings keeps what is
+  about the app (#60)
+- [ ] **No duplicates on Today:** the text under the balance rings says the same as the food task, and the rings and
+  the tiles below show the same three values. Keep the rings as the summary and let them (or the tiles) open the tabs.
+- [ ] **Explain a serving on Nutrition:** "Vegetables 3 of 5" is abstract. A short line per food group, e.g. a
+  serving is about a handful or 100 g, and potatoes don't count.
+- [ ] **A shorter Training tab:** the next session and the week's program show the same sessions; fold the next
+  session into the program, opened by tapping a day.
+- [ ] **A steady CI:** the stores' "survives a restart" tests sometimes time out after 5 s, on `main` as well, and turn
+  CI red. Find what the reopened store waits on and fix it.
 
 ## Order
 
@@ -105,3 +126,6 @@ Nano for more than the comment, or data that leaves the app.
 7. Home screen widget ← done
 8. Sleep coach (CBT-I) ← done
 9. Recovery (resting heart rate and HRV from the watch) ← done
+10. Recipe suggestions and food preferences ← done
+11. Structure: Today as a checklist, the same parts on every tab, My goals ← done
+12. Structure: no duplicates on Today, explain a serving, a shorter Training tab, a steady CI

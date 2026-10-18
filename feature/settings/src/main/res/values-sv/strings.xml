@@ -81,6 +81,17 @@
     <!-- Mål -->
     <string name="settings_goals_summary">%1$s steg · %2$s sömn · %3$d glas vatten</string>
     <string name="goals_title">Mål</string>
+    <string name="my_goals_title">Mina mål</string>
+    <string name="my_goals_intro">Allt Novila planerar efter, på ett ställe. Du kan också ändra varje del från Din plan på dess flik.</string>
+    <string name="my_goals_daily">Varje dag</string>
+    <string name="my_goals_daily_row">Steg, sömn och vatten</string>
+    <string name="my_goals_training_row">Träningscoachen</string>
+    <string name="my_goals_training_on">%1$d dagar i veckan, %2$d min per pass</string>
+    <string name="my_goals_training_off">Inte inställd. Veckan planeras efter dina senaste pass.</string>
+    <string name="my_goals_sleep_row">Sömncoachen</string>
+    <string name="my_goals_sleep_on">Lägg dig %1$s, upp %2$s</string>
+    <string name="my_goals_sleep_off">Inte inställd.</string>
+    <string name="settings_my_goals_summary">Dagliga mål, träning, sömn och kost</string>
     <string name="food_preferences_title">Matpreferenser</string>
     <string name="food_preferences_diet">Kosthållning</string>
     <string name="food_preferences_diet_hint">Recepten föreslås efter det du äter.</string>

@@ -34,6 +34,9 @@ import se.novila.feature.settings.FoodPreferencesViewModel
 import se.novila.feature.settings.GoalsActions
 import se.novila.feature.settings.GoalsScreen
 import se.novila.feature.settings.GoalsViewModel
+import se.novila.feature.settings.MyGoalsActions
+import se.novila.feature.settings.MyGoalsScreen
+import se.novila.feature.settings.MyGoalsViewModel
 import se.novila.feature.settings.ProfileScreen
 import se.novila.feature.settings.ProfileViewModel
 import se.novila.feature.settings.R
@@ -63,6 +66,9 @@ import se.novila.ui.R as UiR
 /** The user's profile, on the phone only. */
 @Serializable data object ProfileRoute : NavKey
 
+/** Everything Novila plans by, in one place: daily goals, both coaches and food preferences. */
+@Serializable data object MyGoalsRoute : NavKey
+
 /** The user's daily goals for steps, sleep and water. */
 @Serializable data object GoalsRoute : NavKey
 
@@ -73,11 +79,17 @@ import se.novila.ui.R as UiR
 @Serializable data object RemindersRoute : NavKey
 
 /**
- * Settings and the screens opened from it. Settings, the profile, the goals, the food preferences and the reminders
- * have their own ViewModels, scoped to their entries; the other two are static text. Navigation inside goes through
- * [navigator], on whichever tab Settings was opened from.
+ * Settings and the screens opened from it. Settings, the profile, My goals, the goals, the food preferences and the
+ * reminders have their own ViewModels, scoped to their entries; the other two are static text. Navigation inside goes
+ * through [navigator], on whichever tab Settings was opened from. My goals leads to the training and the sleep coach,
+ * which other features own, through [onOpenTrainingCoach] and [onOpenSleepCoach] from `:app`.
  */
-fun EntryProviderScope<NavKey>.settingsEntries(navigator: Navigator, contentPadding: PaddingValues) {
+fun EntryProviderScope<NavKey>.settingsEntries(
+    navigator: Navigator,
+    contentPadding: PaddingValues,
+    onOpenTrainingCoach: () -> Unit,
+    onOpenSleepCoach: () -> Unit,
+) {
     entry<SettingsRoute> {
         val viewModel = metroViewModel<SettingsViewModel>()
         // Access may have changed in Health Connect's own settings while the app was in the background.
@@ -88,24 +100,19 @@ fun EntryProviderScope<NavKey>.settingsEntries(navigator: Navigator, contentPadd
         // Nothing to show until the settings are read, a moment at app start.
         val settings = viewModel.settings.collectAsStateWithLifecycle().value ?: return@entry
         val profile = viewModel.profile.collectAsStateWithLifecycle().value ?: return@entry
-        val goals = viewModel.goals.collectAsStateWithLifecycle().value ?: return@entry
-        val food = viewModel.foodPreferences.collectAsStateWithLifecycle().value ?: return@entry
         val movement by viewModel.movement.collectAsStateWithLifecycle()
         val context = LocalContext.current
         val connectHealth = rememberHealthPermissionRequest(viewModel::onMovementPermissionsResult)
         SettingsScreen(
             settings = settings,
             profile = profile,
-            goals = goals,
-            foodPreferences = food,
             movement = movement,
             version = viewModel.version,
             canUseDynamicColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
             canChooseLanguage = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU,
             actions = SettingsActions(
                 onOpenProfile = { navigator.navigate(ProfileRoute) },
-                onOpenGoals = { navigator.navigate(GoalsRoute) },
-                onOpenFoodPreferences = { navigator.navigate(FoodPreferencesRoute) },
+                onOpenMyGoals = { navigator.navigate(MyGoalsRoute) },
                 onOpenReminders = { navigator.navigate(RemindersRoute) },
                 onTheme = viewModel::setTheme,
                 onDynamicColor = viewModel::setDynamicColor,
@@ -117,6 +124,21 @@ fun EntryProviderScope<NavKey>.settingsEntries(navigator: Navigator, contentPadd
                 onOpenDisclaimer = { navigator.navigate(DisclaimerRoute) },
                 onDeleteData = viewModel::deleteAllData,
                 onShowIntro = viewModel::showIntro,
+            ),
+            contentPadding = contentPadding,
+        )
+    }
+    entry<MyGoalsRoute> {
+        val viewModel = metroViewModel<MyGoalsViewModel>()
+        // Nothing to show until the answers are read, a moment at app start.
+        val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
+        MyGoalsScreen(
+            state = state,
+            actions = MyGoalsActions(
+                onOpenGoals = { navigator.navigate(GoalsRoute) },
+                onOpenTrainingCoach = onOpenTrainingCoach,
+                onOpenSleepCoach = onOpenSleepCoach,
+                onOpenFoodPreferences = { navigator.navigate(FoodPreferencesRoute) },
             ),
             contentPadding = contentPadding,
         )
@@ -167,6 +189,7 @@ fun settingsTitle(route: NavKey?): String? = when (route) {
     HealthDataRoute -> stringResource(HealthConnectR.string.health_info_title)
     DisclaimerRoute -> stringResource(R.string.disclaimer_title)
     ProfileRoute -> stringResource(R.string.profile_title)
+    MyGoalsRoute -> stringResource(R.string.my_goals_title)
     GoalsRoute -> stringResource(R.string.goals_title)
     FoodPreferencesRoute -> stringResource(R.string.food_preferences_title)
     RemindersRoute -> stringResource(R.string.settings_reminders)
