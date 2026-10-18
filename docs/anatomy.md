@@ -27,6 +27,7 @@ Keyframe(at, Pose) ──► Movement.poseAt(progress)      ledvinklar, utjämna
 | `ViewSelector.kt` | väljer varje övnings bästa kamera |
 | `ExerciseMotion.kt` | en övning: rörelse, muskler, kontakter, ankare, kamera |
 | `ExerciseLibrary.kt` | alla övningar och deras lösta vinklar |
+| `RepetitionCounter.kt` | räknar repetitioner ur observerade ledvinklar, se *Räkna repetitioner* |
 
 `AnatomyFigure` (Compose, i `:feature:training`) ritar en `Scene`: still på toppen (tumnagel) eller ett antal
 repetitioner, aldrig loop.
@@ -87,12 +88,29 @@ Vid jämnt läge vinner en kropp som vetter åt höger, sedd ovanifrån. Övning
 `AnatomyTest` fallerar med rätt `Camera(...)` om den inte längre är bäst. Valet kostar alltså inget när appen
 körs.
 
+## Räkna repetitioner
+
+Eftersom en övning är ledvinklar kan samma data känna igen den. `RepetitionCounter(motion)` tar emot
+observerade `Pose` med tid (till exempel det en posmodell ser i kameran, omräknat till vinklar) och lägger varje
+observation på linjen från övningens första keyframe till vändläget, den keyframe som ligger längst därifrån.
+Bara vinklarna som rör sig i övningen räknas, så leder övningen inte använder, eller som kameran inte ser,
+spelar ingen roll. Poser långt från linjen ignoreras (benet som inte jobbar i mountain climbers, att gå fram
+till telefonen).
+
+- En repetition räknas när kroppen når minst 80 % av vägen (`FULL_DEPTH`) och kommer tillbaka till start.
+- Försök som bara når halvvägs ger en `Repetition` som inte är `complete`, så appen kan säga "hela vägen ner".
+- `rushed` är sant när repetitionen tog mindre än halva tiden mot övningens lugna tempo (`repetitionMillis`).
+- Hållövningar (plankan) har inget att räkna.
+
+`RepetitionCounterTest` spelar varje övning ur biblioteket med brus på varje vinkel och kräver rätt antal.
+Kameran och posmodellen är inte inkopplade än: de kräver behörigheten `CAMERA` och ägarens ok.
+
 ## Testa och förhandsgranska utan Gradle
 
 Google Maven kan vara blockerat i molnsessioner. Den rena Kotlin-koden går ändå att köra:
 
 ```bash
-tools/anatomy/anatomy.sh test                    # AnatomyTest, StrengthSessionsTest, TrainingProgramGeneratorTest
+tools/anatomy/anatomy.sh test                    # AnatomyTest, RepetitionCounterTest, StrengthSessionsTest m.fl.
 tools/anatomy/anatomy.sh views                   # bästa kamera mot sparad, per övning
 tools/anatomy/anatomy.sh render ark.png squat    # kontaktark: fyra ögonblick och tumnageln
 tools/anatomy/anatomy.sh run Solve.kt            # egen fil, t.ex. en vinkellösare
