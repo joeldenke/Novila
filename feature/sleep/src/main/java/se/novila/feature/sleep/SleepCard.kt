@@ -26,10 +26,6 @@ import se.novila.ui.common.hoursText
 import java.time.LocalTime
 import se.novila.ui.R as UiR
 
-/** Where a time picker opens before the user has given that time. */
-internal val DefaultBedtime: LocalTime = LocalTime.of(23, 0)
-internal val DefaultWakeTime: LocalTime = LocalTime.of(7, 0)
-
 /**
  * The night's sleep: when the user went to bed and woke up, the hours that follow, and the user's sleep goal from
  * [goals]. The half-hour slider sets the hours alone for a quick log. Last night when [isToday], otherwise the night
