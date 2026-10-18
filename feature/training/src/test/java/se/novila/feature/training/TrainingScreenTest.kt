@@ -86,6 +86,24 @@ class TrainingScreenTest {
         assertEquals(listOf(DayOfWeek.THURSDAY, DayOfWeek.THURSDAY), opened)
     }
 
+    @Test fun `the weekly review counts the sessions done and says what next week holds`() {
+        val reviewed = state.copy(
+            today = DayOfWeek.THURSDAY,
+            weekDone = mapOf(DayOfWeek.MONDAY to 28, DayOfWeek.TUESDAY to 32),
+            nextProgram = TrainingPreviewData.nextProgram,
+        )
+        val next = TrainingPreviewData.nextProgram
+        val expected = "Next week: ${next.sessions.size} sessions, ${next.sessions.sumOf { it.minutes }} minutes."
+        show(reviewed, TrainingActions())
+        composeRule.onNodeWithText("2 sessions of ${reviewed.program.sessions.size} done").assertExists()
+        composeRule.onNodeWithText(expected).assertExists()
+    }
+
+    @Test fun `there is no weekly review until a session is done`() {
+        show(state.copy(nextProgram = TrainingPreviewData.nextProgram), TrainingActions())
+        composeRule.onNodeWithText("Weekly review").assertDoesNotExist()
+    }
+
     @Test fun `the library finds exercises by name and muscle`() {
         composeRule.setContent {
             NovilaTheme { ExerciseLibraryScreen(onOpenExercise = {}, contentPadding = PaddingValues()) }

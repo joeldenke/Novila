@@ -75,6 +75,7 @@ class TrainingRepository(
                 .filter { it.date >= program.weekStart && it.date <= today }
                 .groupBy { it.date.dayOfWeek }
                 .mapValues { (_, done) -> done.sumOf { it.duration.inWholeMinutes }.toInt() },
+            nextProgram = week.nextProgram,
         )
     }
 }

@@ -39,7 +39,7 @@
     <string name="sleep_coach_adjust">Adjust the sleep coach</string>
     <string name="sleep_coach_goal_title">Sleep goals</string>
     <string name="sleep_coach_card_intro">A bedtime to aim for, an evening routine and advice from your own nights.</string>
-    <string name="sleep_coach_intro">Choose a bedtime to aim for and a wind-down routine for the evening. Novila looks at your own nights and suggests what helps, inspired by cognitive behavioural therapy for insomnia. Everything stays on your phone.</string>
+    <string name="sleep_coach_intro">Choose a bedtime to aim for and a wind-down routine for the evening. Novila looks at your own nights and suggests habits that tend to help sleep. Everything stays on your phone.</string>
     <string name="sleep_coach_bedtime">Bedtime goal</string>
     <string name="sleep_coach_wake_time">Wake-up goal</string>
     <string name="sleep_coach_bedtime_title">When do you want to be in bed?</string>

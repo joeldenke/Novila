@@ -1,94 +1,101 @@
-# Roadmap: från hälsoapp till komplett hälsocoach
+# Roadmap: from health app to complete health coach
 
-En genomgång av vad Novila kan i dag och vad som saknas för att bli en hälsocoach som kan allt. Sparad oktober 2026.
-Bocka av här när något blir klart, och flytta upp det som blir viktigare.
+A review of what Novila can do today and what is missing to become a health coach that does it all. Saved October 2026.
+Tick items off here when they are done, and move up what becomes more important.
 
-## Princip: klockan mäter, Novila förstår och föreslår
+## Principle: the watch measures, Novila understands and suggests
 
-Novila tävlar inte med Google Fit, Fitbit eller klockornas egna appar om att mäta. Steg, puls, pass och sömn mäts
-bättre av klockan, och då läser Novila dem via Health Connect i stället för att mäta själv. Det Novila tillför är
-tolkningen: coachen och rehab, kosten mot Livsmedelsverkets råd, dagens balans och insikter som kopplar ihop delarna,
-allt på telefonen. Varje ny funktion ska antingen läsa det som redan mäts eller tillföra tolkning, coachning eller
-samband som de andra inte har. Handloggning finns kvar som reserv för den som inte har klocka.
+Novila does not compete with Google Fit, Fitbit or the watches' own apps at measuring. Steps, heart rate, workouts and
+sleep are measured better by the watch, so Novila reads them via Health Connect instead of measuring them itself. What
+Novila adds is the interpretation: the coach and rehab, nutrition against the Swedish Food Agency's dietary guidelines,
+the day's balance and insights that connect the parts, all on the phone. Every new feature should either read what is
+already measured or add interpretation, coaching or connections the others do not have. Manual logging remains as a
+fallback for people without a watch.
 
-## Vad Novila kan i dag
+## What Novila can do today
 
-| Del | Funktioner | Bedömning |
+| Part | Features | Assessment |
 |---|---|---|
-| Idag | Hälsning med namn, dagens balans (ringar), en ruta per del, insikter, veckans sömn och kost, mående, energi, stress och en dagboksrad | Snyggt, men bara veckan |
-| Träning | Veckoprogram (WHO), coach med mål, dagar, fokus och hänsyn, rehab (knä, ländrygg, axel, nacke, höft, fas 1–3), 15 illustrerade övningar, passläge med timer, konditionspass (loggade och från Health Connect), RPE och smärta efter passet, Gemini Nano-kommentar | Appens starkaste del |
-| Sömn | Läggtid och uppvakning (eller klockans natt från Health Connect), kvalitet och orsaker, vad som påverkar sömnen, graf över vecka, fyra veckor eller år, sömncoach med läggtidsmål, kvällsrutin och råd ur egna nätter | Bra |
-| Kost | Portioner per livsmedelsgrupp, vatten mot eget mål, sött, poäng 0–100, "nästa steg", poängen över vecka, fyra veckor eller år | Bra och enkelt |
-| Rörelse | Dagens steg och aktiva kalorier, fem veckors träningspass och nätterna, från Health Connect, i förgrunden | Steg bara för i dag |
-| Inställningar | Tema, profil, egna mål, ansvarsfriskrivning, radera data | Komplett för sin nivå |
+| Today | Greeting by name, the day's balance (rings), a tile per part, insights, the week's sleep and nutrition, mood, energy, stress and a journal line | Polished, but only the week |
+| Training | Weekly program (WHO), coach with goal, days, focus and considerations, rehab (knee, lower back, shoulder, neck, hip, phases 1–3), 15 illustrated exercises, workout mode with timer, cardio sessions (logged and from Health Connect), RPE and pain after the session, Gemini Nano comment, weekly review | The app's strongest part |
+| Sleep | Bedtime and wake-up (or the watch's night from Health Connect), quality and causes, what affects your sleep, chart over a week, four weeks or a year, sleep coach with bedtime goal, evening routine and advice from your own nights | Good |
+| Nutrition | Servings per food group, water against your own goal, sweets, score 0–100, "next step", the score over a week, four weeks or a year | Good and simple |
+| Movement | Today's steps and active calories, five weeks of workouts and the nights, from Health Connect, in the foreground | Steps only for today |
+| Settings | Theme, profile, own goals, disclaimer, delete data | Complete for its level |
 
-## Det som saknas
+## What is missing
 
-Funktioner markerade **(ok)** kräver ägarens ok enligt CLAUDE.md: nya behörigheter eller datatyper, Gemini Nano till
-mer än kommentaren, eller data som lämnar appen.
+Features marked **(ok)** require the owner's approval according to CLAUDE.md: new permissions or data types, Gemini
+Nano for more than the comment, or data that leaves the app.
 
-### 1. Grunder för alla användare
-- [x] **Introduktion vid första start:** karusell, mål, profil, Health Connect och coachen, så att planen finns från dag ett
-- [x] **Påminnelser:** logga sömnen, träning (de dagar programmet har ett pass) och logga kosten, var och en på egen
-  tid och bara om det inte redan är loggat. WorkManager, ett jobb per påminnelse och dag. Läggdags återstår.
-- [x] **Redigera tidigare dagar.** Sömn och kost går att ändra upp till 30 dagar bakåt (dagväljaren på Sömn och Kost).
-- [x] **Historik längre än 7 dagar:** Sömn och Kost visar vecka, fyra veckor (en punkt per vecka) eller år (en per
-  månad), med snittet jämfört med perioden innan. Träningsminuter och mående över tid återstår.
-- [x] **Egna mål** för steg, sömn och vatten, med förslag utifrån ålder och vikt i profilen. Portionerna följer
-  Livsmedelsverkets kostråd, som kostpoängen bygger på.
-- [ ] **Export och import** som lokal fil, utan moln **(ok)**
+### 1. Basics for every user
+- [x] **Introduction on first launch:** carousel, goals, profile, Health Connect and the coach, so the plan exists from day one
+- [x] **Reminders:** log sleep, training (on the days the program has a session) and log nutrition, each at its own
+  time and only if not already logged. WorkManager, one job per reminder and day. Bedtime remains.
+- [x] **Edit earlier days.** Sleep and nutrition can be changed up to 30 days back (the day picker on Sleep and Nutrition).
+- [x] **History longer than 7 days:** Sleep and Nutrition show a week, four weeks (one point per week) or a year (one
+  per month), with the average compared to the period before. Training minutes and mood over time remain.
+- [x] **Own goals** for steps, sleep and water, with suggestions based on age and weight in the profile. Servings follow
+  the Swedish Food Agency's dietary guidelines, which the nutrition score is built on.
+- [ ] **Export and import** as a local file, without the cloud **(ok)**
 
-### 2. Träning
-- [x] **Logga konditionspass** ("Jag gjorde det"), och läs dem från Health Connect (`ExerciseSessionRecord`) **(ok)**
-- [x] **Ansträngning (RPE) och smärta (0–10) efter passet**, så att coachen själv föreslår dos och rehabfas
-- [ ] **Progression per övning:** spara set och reps, och höj stegvis
-- [ ] **Fler övningar och redskap:** varianter, hantlar, gummiband, gym
-- [x] **Fler rehabområden:** axel, nacke, höft
-- [ ] **Uppvärmning och nedvarvning** i passläget, och vilotimern som notis
-- [ ] **Veckoavstämning:** "3 av 4 pass, nästa vecka …"
+### 2. Training
+- [x] **Log cardio sessions** ("I did it"), and read them from Health Connect (`ExerciseSessionRecord`) **(ok)**
+- [x] **Effort (RPE) and pain (0–10) after the session**, so the coach itself suggests dose and rehab phase
+- [ ] **Progression per exercise:** save sets and reps, and increase step by step
+- [ ] **More exercises and equipment:** variations, dumbbells, resistance bands, gym
+- [x] **More rehab areas:** shoulder, neck, hip
+- [ ] **Warm-up and cool-down** in workout mode, and the rest timer as a notification
+- [x] **Weekly review:** "3 of 4 sessions, next week …"
 
-### 3. Sömn
-- [x] **Läggtid och uppvakning** i stället för bara timmar, så att regelbundenheten syns
-- [x] **Sömnkvalitet (1–5)** och orsaker: sent koffein, skärm, alkohol, stress, sen måltid, sen träning
-- [x] **Vad påverkar din sömn:** samband mellan dagen före (kost, vatten, träning, sött), orsakerna och nattens
-  längd och kvalitet, med statistisk prövning och antalet nätter; veckans förändring med det som ändrades med den
-- [x] **Sömn från Health Connect** (`READ_SLEEP`) **(ok)**: klockans natt fyller i Sömn och Idag när användaren inte
-  har loggat själv, bara i minnet. Sömnpåminnelsen vet inte om den (ingen bakgrundsläsning).
-- [x] **Sömncoach:** mål för läggtid, kvällsrutin och sömnhygien (KBT-I-inspirerat)
+### 3. Sleep
+- [x] **Bedtime and wake-up** instead of just hours, so regularity shows
+- [x] **Sleep quality (1–5)** and causes: late caffeine, screens, alcohol, stress, late meal, late training
+- [x] **What affects your sleep:** connections between the day before (nutrition, water, training, sweets), the causes
+  and the night's length and quality, with statistical testing and the number of nights; the week's change with what
+  changed along with it
+- [x] **Sleep from Health Connect** (`READ_SLEEP`) **(ok)**: the watch's night fills in Sleep and Today when the user
+  has not logged it themselves, only in memory. The sleep reminder does not know about it (no background reading).
+- [x] **Sleep coach:** bedtime goal, evening routine and sleep hygiene (CBT-I-inspired)
 
-### 4. Kost
-- [ ] **Måltidsloggning** ("Frukost: gröt, bär") som fyller i grupperna
-- [ ] **Snabbval och favoriter**
-- [ ] **Kostprofil:** vegetarisk, vegansk, laktos, gluten
-- [ ] **Vätska utöver vatten**, och en tidsgräns för koffein kopplad till sömnen
+### 4. Nutrition
+- [ ] **Meal logging** ("Breakfast: porridge, berries") that fills in the groups
+- [ ] **Quick picks and favorites**
+- [ ] **Diet profile:** vegetarian, vegan, lactose, gluten
+- [ ] **Fluids beyond water**, and a caffeine cut-off time linked to sleep
 
-### 5. Kropp och mående
-- [ ] **Vikt och mått över tid** (profilen har bara ett värde)
-- [x] **Utökat mående:** energi, stress och en dagboksrad
-- [ ] **Återhämtning:** vilopuls och HRV från klockan **(ok)**, som kan sänka passets intensitet
-- [ ] **Andning och avslappning:** korta guidade pass, ritade som anatomifiguren
+### 5. Body and mood
+- [ ] **Weight and measurements over time** (the profile only has one value)
+- [x] **Extended mood:** energy, stress and a journal line
+- [ ] **Recovery:** resting heart rate and HRV from the watch **(ok)**, which can lower the session's intensity
+- [ ] **Breathing and relaxation:** short guided sessions, drawn like the anatomy figure
 
-### 6. Coachen som helhet
-- [ ] **En coach för alla delar:** "Du sov 5,5 h. Kör ett lättare pass och lägg dig 22.30."
-- [ ] **Fler insikter:** träning ↔ sömn, träning ↔ mående, kost ↔ energi, mönster per veckodag
-- [ ] **Prestationer och streaks**, återhållsamt och utan att belöna överträning
-- [ ] **Gemini Nano i fler roller**, t.ex. en veckosammanfattning **(ok)**
+### 6. The coach as a whole
+- [ ] **One coach for all parts:** "You slept 5.5 h. Do a lighter session and go to bed at 22:30."
+- [ ] **More insights:** training ↔ sleep, training ↔ mood, nutrition ↔ energy, patterns per weekday
+- [ ] **Achievements and streaks**, restrained and without rewarding overtraining
+- [ ] **Gemini Nano in more roles**, e.g. a weekly summary **(ok)**
 
-### 7. Plattform
-- [x] **Widget på hemskärmen** (Glance): dagens balans, sömn, kost och vatten, senaste loggen, en uppmuntran utifrån
-  det du gjort (`cheers`) och ett glas vatten med ett tryck. Mer snabbloggning (portioner, mående) återstår.
-- [ ] **Snabbinställningsruta och genvägar:** "Starta passet", "Logga vatten"
-- [ ] **Wear OS:** passläget och vilotimern på klockan
-- [ ] **Surfplatta och vikbara skärmar** (skillen `adaptive`)
-- [ ] **Tillgänglighet:** genomgång med TalkBack och stor text
+### 7. Platform
+- [x] **Home screen widget** (Glance): the day's balance, sleep, nutrition and water, the latest log, encouragement
+  based on what you have done (`cheers`) and a glass of water with one tap. More quick logging (servings, mood) remains.
+- [ ] **Quick Settings tile and shortcuts:** "Start the session", "Log water"
+- [ ] **Wear OS:** workout mode and the rest timer on the watch
+- [ ] **Tablets and foldables** (the `adaptive` skill)
+- [ ] **Accessibility:** a pass with TalkBack and large text
+- [ ] **iOS via Kotlin and Compose Multiplatform:** the pure Kotlin modules (`:core:model`, `:core:coach`,
+  `:core:exercise`, `:core:sleep`, `:core:anatomy`, `:core:movement`) already have no Android dependencies and can
+  become shared code first. Then the design system and the screens in Compose Multiplatform, with Apple Health
+  (HealthKit) as `MovementSource`, `ExerciseSource` and `SleepSource`, and an on-device alternative to Gemini Nano.
+  Storage, reminders and the widget need their own iOS implementations.
 
-## Ordning
+## Order
 
-1. Introduktion vid första start ← klar
-2. Egna mål ← klar
-3. Logga konditionspass, och RPE och smärta efter passet ← klar
-4. Redigera tidigare dagar och längre historik ← klar
-5. Påminnelser ← klar
-6. Sömn 2.0 och sömn från Health Connect ← klar
-7. Widget på hemskärmen ← klar
-8. Sömncoach (KBT-I) ← klar
+1. Introduction on first launch ← done
+2. Own goals ← done
+3. Log cardio sessions, and RPE and pain after the session ← done
+4. Edit earlier days and longer history ← done
+5. Reminders ← done
+6. Sleep 2.0 and sleep from Health Connect ← done
+7. Home screen widget ← done
+8. Sleep coach (CBT-I) ← done

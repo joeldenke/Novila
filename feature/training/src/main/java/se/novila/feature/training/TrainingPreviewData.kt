@@ -31,6 +31,9 @@ internal object TrainingPreviewData {
 
     val program = TrainingProgramGenerator.generate(history = workouts, today = date)
 
+    /** The week after, as the weekly review shows it. */
+    val nextProgram = TrainingProgramGenerator.generate(history = workouts, today = date.plusWeeks(1))
+
     private fun coach(preferences: CoachPreferences, active: Boolean, feedback: List<SessionFeedback> = emptyList()) =
         CoachUiState(preferences, CoachPlanner.plan(preferences, workouts, date, feedback), active)
 

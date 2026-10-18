@@ -171,7 +171,7 @@
     <string name="workout_pain_some">lite för mycket</string>
     <string name="workout_pain_too_much">för mycket</string>
     <string name="workout_pain_care">Det är mer än träning ska göra ont. Vila, och sök vård om smärtan sitter i eller blir värre.</string>
-    <string name="workout_feedback_hint">Båda är frivilliga. Coachen sänker eller höjer nästa veckas dos efter dina svar, och föreslår när du kan byta rehabfas.</string>
+    <string name="workout_feedback_hint">Båda är frivilliga. Coachen sänker eller höjer nästa veckas dos efter dina svar, och föreslår när du kan byta nivå.</string>
     <string name="muscle_chest">bröst</string>
     <string name="muscle_shoulders">axlar</string>
     <string name="muscle_biceps">biceps</string>
@@ -243,43 +243,43 @@
     <string name="coach_note_quiet">Inga hopp, så det fungerar i lägenhet.</string>
     <string name="coach_note_cardio_low">Programmet har %1$d minuter kondition. WHO rekommenderar minst 150 i veckan, så ta gärna raska promenader i vardagen också.</string>
     <string name="coach_note_cardio_progression">Konditionen bygger på dina senaste pass och ökar med högst en tiondel i veckan.</string>
-    <string name="coach_goal_rehab">Rehabilitering</string>
-    <string name="exercise_rehab">Rehabpass</string>
-    <string name="rehab_session_title">Rehab på %1$s</string>
+    <string name="coach_goal_rehab">Skonsam träning</string>
+    <string name="exercise_rehab">Skonsamt pass</string>
+    <string name="rehab_session_title">Skonsamt pass på %1$s</string>
     <string name="rehab_session_summary">Lugna, kontrollerade övningar, ungefär %1$d minuter. Tryck på en övning för att se hur den görs.</string>
-    <string name="coach_rehab_title">Rehabilitering</string>
+    <string name="coach_rehab_title">Skonsam träning</string>
     <string name="coach_rehab_knee">Knä</string>
     <string name="coach_rehab_lower_back">Ländrygg</string>
     <string name="coach_rehab_shoulder">Axel</string>
     <string name="coach_rehab_neck">Nacke</string>
     <string name="coach_rehab_hip">Höft</string>
-    <string name="coach_rehab_phase">Fas</string>
+    <string name="coach_rehab_phase">Nivå</string>
     <string name="coach_rehab_phase_value">%1$d av %2$d: %3$s</string>
     <string name="coach_rehab_phase_1">en lugn start</string>
     <string name="coach_rehab_phase_2">bygga styrka</string>
-    <string name="coach_rehab_phase_3">tillbaka till vardag och träning</string>
-    <string name="coach_rehab_easier">Tidigare fas</string>
-    <string name="coach_rehab_harder">Senare fas</string>
-    <string name="coach_rehab_safety">Rehabprogrammet är ett stöd, inte vård. Har du fått övningar av en fysioterapeut, följ dem. Sök vård vid kraftig eller tilltagande smärta, svullnad eller domningar.</string>
+    <string name="coach_rehab_phase_3">vardag och vanlig träning</string>
+    <string name="coach_rehab_easier">Lättare nivå</string>
+    <string name="coach_rehab_harder">Svårare nivå</string>
+    <string name="coach_rehab_safety">Programmet är allmän träning, inte vård. Har du fått övningar av en fysioterapeut, följ dem. Sök vård vid kraftig eller tilltagande smärta, svullnad eller domningar.</string>
     <string name="coach_rehab_safety_knee">Sök vård om knät låser sig, viker sig eller svullnar upp.</string>
     <string name="coach_rehab_safety_lower_back">Sök vård direkt vid domningar i underlivet, svårt att kissa eller tilltagande svaghet i benen.</string>
     <string name="coach_rehab_safety_shoulder">Sök vård om axeln viker sig, eller om smärtan gör att du inte kan sova på natten.</string>
     <string name="coach_rehab_safety_neck">Sök vård direkt vid svindel, svårt att svälja eller feber med stel nacke.</string>
     <string name="coach_rehab_safety_hip">Sök vård om du inte kan belasta höften efter ett fall, eller om höften viker sig.</string>
-    <string name="coach_note_goal_rehab">Rehabilitering: lugna, kontrollerade övningar tre dagar i veckan med en vilodag emellan, och promenader de andra dagarna.</string>
-    <string name="coach_note_rehab_phase">%1$s, fas %2$d av %3$d. Gå vidare när passen känns lätta och smärtan inte ökar dagen efter, ofta efter ett par veckor.</string>
-    <string name="coach_note_pain">Smärta upp till 3 av 10 under passet är okej om den har lagt sig till nästa morgon. Blir den värre, gå tillbaka en fas.</string>
+    <string name="coach_note_goal_rehab">Skonsam träning: lugna, kontrollerade övningar tre dagar i veckan med en vilodag emellan, och promenader de andra dagarna.</string>
+    <string name="coach_note_rehab_phase">%1$s, nivå %2$d av %3$d. Gå vidare när passen känns lätta och smärtan inte ökar dagen efter, ofta efter ett par veckor.</string>
+    <string name="coach_note_pain">Smärta upp till 3 av 10 under passet är okej om den har lagt sig till nästa morgon. Blir den värre, gå tillbaka en nivå.</string>
     <string name="coach_note_effort_pain">Senaste passet gjorde ont %1$d av 10, så coachen tar bort ett set per övning den här veckan. Sök vård om smärtan sitter i.</string>
     <string name="coach_note_effort_easier">De senaste passen kändes %1$d av 10, nästan allt du har. Coachen tar bort ett set per övning den här veckan, så att du hinner återhämta dig.</string>
     <string name="coach_note_effort_same">De senaste passen kändes %1$d av 10. Lagom, så dosen är densamma.</string>
     <string name="coach_note_effort_harder">De senaste passen kändes bara %1$d av 10. Coachen lägger till två repetitioner, eller tio sekunder, per set.</string>
-    <string name="coach_note_rehab_move_on">%1$d pass i rad med smärta högst 3 av 10. Coachen föreslår att du går vidare till fas %2$d.</string>
-    <string name="coach_note_rehab_keep_going">%1$d av %2$d lugna pass i den här fasen. Efter %2$d pass i rad med smärta högst 3 av 10 föreslår coachen nästa fas.</string>
-    <string name="coach_note_rehab_stay">Senaste passet gjorde ont %1$d av 10. Stanna i den här fasen tills smärtan är högst 3 av 10 och har lagt sig till nästa morgon.</string>
-    <string name="coach_note_rehab_step_back">Senaste passet gjorde ont %1$d av 10, mer än programmet ska göra. Coachen föreslår att du går tillbaka till fas %2$d.</string>
-    <string name="coach_note_rehab_seek_care">Senaste passet gjorde ont %1$d av 10 redan i första fasen. Vila några dagar och prata med en fysioterapeut eller vårdcentralen innan du fortsätter.</string>
-    <string name="coach_note_rehab_done">Sista fasen går lugnt: %1$d pass i rad med smärta högst 3 av 10. Fortsätt så, eller byt mål till Hälsa för vanlig träning.</string>
-    <string name="coach_rehab_change_phase">Byt till fas %1$d</string>
+    <string name="coach_note_rehab_move_on">%1$d pass i rad med smärta högst 3 av 10. Coachen föreslår att du går vidare till nivå %2$d.</string>
+    <string name="coach_note_rehab_keep_going">%1$d av %2$d lugna pass på den här nivån. Efter %2$d pass i rad med smärta högst 3 av 10 föreslår coachen nästa nivå.</string>
+    <string name="coach_note_rehab_stay">Senaste passet gjorde ont %1$d av 10. Stanna på den här nivån tills smärtan är högst 3 av 10 och har lagt sig till nästa morgon.</string>
+    <string name="coach_note_rehab_step_back">Senaste passet gjorde ont %1$d av 10, mer än programmet ska göra. Coachen föreslår att du går tillbaka till nivå %2$d.</string>
+    <string name="coach_note_rehab_seek_care">Senaste passet gjorde ont %1$d av 10 redan på första nivån. Vila några dagar och prata med en fysioterapeut eller vårdcentralen innan du fortsätter.</string>
+    <string name="coach_note_rehab_done">Sista nivån går lugnt: %1$d pass i rad med smärta högst 3 av 10. Fortsätt så, eller byt mål till Hälsa för vanlig träning.</string>
+    <string name="coach_rehab_change_phase">Byt till nivå %1$d</string>
     <string name="coach_ai_title">Coachens kommentar</string>
     <string name="coach_ai_unavailable">Gemini Nano finns inte på den här telefonen, så coachen förklarar veckan med sina egna skäl ovan.</string>
     <string name="coach_ai_downloadable">Din telefon kan köra Gemini Nano, Googles AI-modell som körs i telefonen. Hämta den så kan coachen förklara veckan med egna ord. Planen och dina svar lämnar aldrig telefonen.</string>
@@ -325,6 +325,14 @@
     <string name="overview_day_today">I dag, %1$s</string>
     <string name="overview_log_other">Logga ett pass</string>
     <string name="cardio_log_title">Logga ett pass</string>
+
+    <!-- Veckoavstämningen på Träning -->
+    <string name="review_title">Veckoavstämning</string>
+    <plurals name="review_done">
+        <item quantity="one">%1$d av %2$d pass klara</item>
+        <item quantity="other">%1$d av %2$d pass klara</item>
+    </plurals>
+    <string name="review_next">Nästa vecka: %1$d pass, %2$d minuter.</string>
 
     <!-- En dags pass, och övningsbiblioteket -->
     <string name="session_title">Pass på %1$s</string>
