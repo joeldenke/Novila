@@ -3,7 +3,6 @@ package se.novila.healthconnect
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.os.RemoteException
 import android.util.Log
 import androidx.core.net.toUri
 import androidx.health.connect.client.HealthConnectClient
@@ -15,7 +14,6 @@ import androidx.health.connect.client.time.TimeRangeFilter
 import se.novila.movement.MovementSource
 import se.novila.movement.MovementState
 import se.novila.movement.TodayMovement
-import java.io.IOException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.math.roundToInt
@@ -28,30 +26,15 @@ import kotlin.math.roundToInt
  */
 class HealthConnectSource(private val context: Context) : MovementSource {
 
-    override suspend fun read(date: LocalDate): Result<MovementState> {
-        val sdkStatus = HealthConnectClient.getSdkStatus(context)
-        if (sdkStatus != HealthConnectClient.SDK_AVAILABLE) return Result.success(accessState(sdkStatus, emptySet())!!)
-        return try {
-            val client = HealthConnectClient.getOrCreate(context)
-            val granted = client.permissionController.getGrantedPermissions()
-            val state = accessState(sdkStatus, granted) ?: MovementState.Connected(readDay(client, date, granted))
-            Result.success(state)
-        } catch (e: SecurityException) {
-            // Revoked between the check and the read.
-            Log.w(TAG, "Health Connect access revoked", e)
-            Result.success(MovementState.NeedsPermission())
-        } catch (e: RemoteException) {
-            Log.w(TAG, "Health Connect not reachable", e)
-            Result.failure(e)
-        } catch (e: IOException) {
-            Log.w(TAG, "Health Connect read failed", e)
-            Result.failure(e)
-        } catch (e: IllegalStateException) {
-            // For example the rate limit, or Health Connect being updated.
-            Log.w(TAG, "Health Connect read failed", e)
-            Result.failure(e)
-        }
-    }
+    override suspend fun read(date: LocalDate): Result<MovementState> = readHealthConnect(
+        context = context,
+        unavailable = ::unavailableState,
+        needsPermission = { MovementState.NeedsPermission() },
+        connected = { client, granted ->
+            accessState(HealthConnectClient.SDK_AVAILABLE, granted)
+                ?: MovementState.Connected(readDay(client, date, granted))
+        },
+    )
 
     private suspend fun readDay(client: HealthConnectClient, date: LocalDate, granted: Set<String>): TodayMovement {
         val steps = HealthPermission.getReadPermission(StepsRecord::class) in granted
@@ -78,7 +61,6 @@ class HealthConnectSource(private val context: Context) : MovementSource {
     }
 
     companion object {
-        private const val TAG = "HealthConnect"
         private const val PROVIDER_PACKAGE = "com.google.android.apps.healthdata"
 
         /** Health Connect's settings, where access can be given after the dialog was declined. */
@@ -99,7 +81,7 @@ class HealthConnectSource(private val context: Context) : MovementSource {
             try {
                 context.startActivity(intent)
             } catch (e: ActivityNotFoundException) {
-                Log.w(TAG, "No activity for ${intent.action}", e)
+                Log.w(HEALTH_CONNECT_TAG, "No activity for ${intent.action}", e)
             }
         }
     }

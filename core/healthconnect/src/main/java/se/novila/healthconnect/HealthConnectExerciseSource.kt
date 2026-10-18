@@ -1,8 +1,6 @@
 package se.novila.healthconnect
 
 import android.content.Context
-import android.os.RemoteException
-import android.util.Log
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.records.ExerciseSessionRecord
 import androidx.health.connect.client.request.ReadRecordsRequest
@@ -11,7 +9,6 @@ import se.novila.exercise.Exercise
 import se.novila.exercise.ExerciseSource
 import se.novila.exercise.ExerciseState
 import se.novila.exercise.ExerciseType
-import java.io.IOException
 import java.time.Duration
 import java.time.LocalDate
 import java.time.ZoneId
@@ -25,32 +22,18 @@ import kotlin.time.toKotlinDuration
  */
 class HealthConnectExerciseSource(private val context: Context) : ExerciseSource {
 
-    override suspend fun read(from: LocalDate): Result<ExerciseState> {
-        if (HealthConnectClient.getSdkStatus(context) != HealthConnectClient.SDK_AVAILABLE) {
-            return Result.success(ExerciseState.Unavailable)
-        }
-        return try {
-            val client = HealthConnectClient.getOrCreate(context)
-            if (EXERCISE_PERMISSION !in client.permissionController.getGrantedPermissions()) {
-                return Result.success(ExerciseState.NeedsPermission())
+    override suspend fun read(from: LocalDate): Result<ExerciseState> = readHealthConnect(
+        context = context,
+        unavailable = { ExerciseState.Unavailable },
+        needsPermission = { ExerciseState.NeedsPermission() },
+        connected = { client, granted ->
+            if (EXERCISE_PERMISSION !in granted) {
+                ExerciseState.NeedsPermission()
+            } else {
+                ExerciseState.Connected(readSessions(client, from))
             }
-            Result.success(ExerciseState.Connected(readSessions(client, from)))
-        } catch (e: SecurityException) {
-            // Revoked between the check and the read.
-            Log.w(TAG, "Health Connect access revoked", e)
-            Result.success(ExerciseState.NeedsPermission())
-        } catch (e: RemoteException) {
-            Log.w(TAG, "Health Connect not reachable", e)
-            Result.failure(e)
-        } catch (e: IOException) {
-            Log.w(TAG, "Health Connect read failed", e)
-            Result.failure(e)
-        } catch (e: IllegalStateException) {
-            // For example the rate limit, or Health Connect being updated.
-            Log.w(TAG, "Health Connect read failed", e)
-            Result.failure(e)
-        }
-    }
+        },
+    )
 
     private suspend fun readSessions(client: HealthConnectClient, from: LocalDate): List<Exercise> {
         val exercises = mutableListOf<Exercise>()
@@ -79,7 +62,6 @@ class HealthConnectExerciseSource(private val context: Context) : ExerciseSource
     }
 
     private companion object {
-        const val TAG = "HealthConnect"
         const val MAX_PAGES = 10
     }
 }

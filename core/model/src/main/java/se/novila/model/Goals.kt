@@ -37,7 +37,7 @@ data class Goals(
         const val DRINK_ML_PER_KG = 22
         const val GLASS_ML = 200
 
-        private fun halfHours(hours: Float) = (Math.round(hours * 2) / 2f).coerceIn(SLEEP_HOURS)
+        private fun halfHours(hours: Float) = hours.roundToHalfHour().coerceIn(SLEEP_HOURS)
 
         /**
          * Goals that fit [profile] in [year], for the fields it has; the rest stay at the general advice.
