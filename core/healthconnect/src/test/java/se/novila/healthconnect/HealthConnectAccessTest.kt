@@ -18,16 +18,19 @@ class HealthConnectAccessTest {
 
     private val exercise = "android.permission.health.READ_EXERCISE"
     private val sleep = "android.permission.health.READ_SLEEP"
+    private val restingHeartRate = "android.permission.health.READ_RESTING_HEART_RATE"
+    private val hrv = "android.permission.health.READ_HEART_RATE_VARIABILITY"
 
-    @Test fun `asks only for steps, active calories, workouts and sleep`() {
+    @Test fun `asks only for steps, active calories, workouts, sleep and recovery`() {
         assertEquals(setOf(steps, calories), MOVEMENT_PERMISSIONS)
-        assertEquals(setOf(steps, calories, exercise, sleep), HEALTH_PERMISSIONS)
+        assertEquals(setOf(restingHeartRate, hrv), RECOVERY_PERMISSIONS)
+        assertEquals(setOf(steps, calories, exercise, sleep, restingHeartRate, hrv), HEALTH_PERMISSIONS)
     }
 
-    @Test fun `access to workouts or sleep alone doesn't connect movement`() {
+    @Test fun `access to workouts, sleep or recovery alone doesn't connect movement`() {
         assertEquals(
             MovementState.NeedsPermission(),
-            accessState(HealthConnectClient.SDK_AVAILABLE, setOf(exercise, sleep)),
+            accessState(HealthConnectClient.SDK_AVAILABLE, setOf(exercise, sleep, restingHeartRate)),
         )
     }
 

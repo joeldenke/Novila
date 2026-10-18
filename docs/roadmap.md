@@ -16,10 +16,10 @@ samband som de andra inte har. Handloggning finns kvar som reserv för den som i
 | Del | Funktioner | Bedömning |
 |---|---|---|
 | Idag | Hälsning med namn, dagens balans (ringar), en ruta per del, insikter, veckans sömn och kost, mående | Snyggt, men bara veckan |
-| Träning | Veckoprogram (WHO), coach med mål, dagar, fokus och hänsyn, rehab (knä, ländrygg, fas 1–3), 13 illustrerade övningar, passläge med timer, konditionspass (loggade och från Health Connect), RPE och smärta efter passet, Gemini Nano-kommentar | Appens starkaste del |
+| Träning | Veckoprogram (WHO), coach med mål, dagar, fokus och hänsyn, rehab (knä, ländrygg, fas 1–3), 13 illustrerade övningar, passläge med timer, konditionspass (loggade och från Health Connect), RPE och smärta efter passet, återhämtning från klockan som kan lätta dagens pass, Gemini Nano-kommentar | Appens starkaste del |
 | Sömn | Läggtid och uppvakning (eller klockans natt från Health Connect), kvalitet och orsaker, vad som påverkar sömnen, graf över vecka, fyra veckor eller år, sömncoach med läggtidsmål, kvällsrutin och råd ur egna nätter | Bra |
 | Kost | Portioner per livsmedelsgrupp, vatten mot eget mål, sött, poäng 0–100, "nästa steg", poängen över vecka, fyra veckor eller år | Bra och enkelt |
-| Rörelse | Dagens steg och aktiva kalorier, fem veckors träningspass och nätterna, från Health Connect, i förgrunden | Steg bara för i dag |
+| Rörelse | Dagens steg och aktiva kalorier, fem veckors träningspass, nätterna och återhämtningen (vilopuls, HRV), från Health Connect, i förgrunden | Steg bara för i dag |
 | Inställningar | Tema, profil, egna mål, ansvarsfriskrivning, radera data | Komplett för sin nivå |
 
 ## Det som saknas
@@ -65,7 +65,9 @@ mer än kommentaren, eller data som lämnar appen.
 ### 5. Kropp och mående
 - [ ] **Vikt och mått över tid** (profilen har bara ett värde)
 - [ ] **Utökat mående:** energi, stress och en dagboksrad
-- [ ] **Återhämtning:** vilopuls och HRV från klockan **(ok)**, som kan sänka passets intensitet
+- [x] **Återhämtning:** vilopuls och HRV från klockan **(ok)**, som kan sänka passets intensitet. Kort på Träning med
+  dagens värden och en rad om läget; dagens pass blir lite lättare (färre set, kortare kondition) när vilopulsen är
+  klart högre eller HRV klart lägre än användarens egen baslinje. Bara i minnet, läses i förgrunden.
 - [ ] **Andning och avslappning:** korta guidade pass, ritade som anatomifiguren
 
 ### 6. Coachen som helhet
@@ -92,3 +94,4 @@ mer än kommentaren, eller data som lämnar appen.
 6. Sömn 2.0 och sömn från Health Connect ← klar
 7. Widget på hemskärmen ← klar
 8. Sömncoach (KBT-I) ← klar
+9. Återhämtning (vilopuls och HRV från klockan) ← klar

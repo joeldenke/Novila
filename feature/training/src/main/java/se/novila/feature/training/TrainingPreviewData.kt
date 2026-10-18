@@ -11,6 +11,8 @@ import se.novila.coach.SessionFeedback
 import se.novila.exercise.Exercise
 import se.novila.exercise.ExerciseType
 import se.novila.exercise.TrainingProgramGenerator
+import se.novila.recovery.RecoveryDay
+import se.novila.recovery.RecoveryState
 import se.novila.ui.preview.PreviewData
 import java.time.DayOfWeek
 import kotlin.time.Duration.Companion.minutes
@@ -30,6 +32,17 @@ internal object TrainingPreviewData {
     }
 
     val program = TrainingProgramGenerator.generate(history = workouts, today = date)
+
+    /** The watch's recovery: a raised resting heart rate and a lower HRV today, so today is lighter. */
+    val recovery = RecoveryState.Connected(
+        days = (0L..6L).map { daysAgo ->
+            RecoveryDay(
+                date = date.minusDays(daysAgo),
+                restingHeartRate = if (daysAgo == 0L) 56 else 50,
+                hrvMillis = if (daysAgo == 0L) 38 else 50,
+            )
+        }.sortedBy { it.date },
+    )
 
     private fun coach(preferences: CoachPreferences, active: Boolean, feedback: List<SessionFeedback> = emptyList()) =
         CoachUiState(preferences, CoachPlanner.plan(preferences, workouts, date, feedback), active)

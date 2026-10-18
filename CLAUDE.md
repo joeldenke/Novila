@@ -80,6 +80,10 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
     och `nightsOf` (dagens längsta session på minst tre timmar, på morgonen användaren vaknade). `withNight` fyller
     i en dag utan egen sömn; användarens egen logg vinner alltid. Sömn och Idag visar dagarna så via
     `SavedDays.showing`, som aldrig sparar något.
+  - `:core:recovery` – återhämtning från en klocka oberoende av källa: `RecoveryDay` (vilopuls och HRV per dag),
+    `RecoverySource`, `RecoveryRepository` (bara i minnet) och `analyzeRecovery`, som jämför dagens värden med
+    användarens egen baslinje (medianen av de senaste dagarna) och ger `RecoveryStatus`. Träning och coachen sänker
+    dagens pass när läget är lågt.
   - `:core:coach` – träningscoachen, helt på enheten: `CoachPreferences` (mål, dagar, tid per pass, fokus, hänsyn,
     rehabområde och fas), `CoachCatalog` (rörelsemönster, dosering och belastning per övning) och `CoachPlanner`, som
     bygger veckans program ur svaren, senaste passen och övningsbiblioteket och förklarar valen (`CoachNote`). Målet
@@ -223,7 +227,9 @@ där pluginet `firebase@firebase` inte alltid installeras.
   bygget med "cannot access task dependencies directly" (google/ksp#2844). Flaggan är redan satt, så att KSP fungerar
   den dag ett bibliotek kräver det; ta aldrig bort den. Metro (DI) är en Kotlin-kompilatorplugin, inte KSP, och
   behöver ingen flagga. Sätt aldrig `workers.max` till 2 eller lägre på Gradle 9.8: med Isolated Projects fryser
-  bygget när workers ≤ antalet byggen (roten och `build-logic`), gradle#39040. CI kör med standardvärdet (4).
+  bygget när workers ≤ antalet byggen (roten och `build-logic`), gradle#39040. Standardvärdet är antalet kärnor,
+  så på en 2-kärnig maskin blir det 2 och bygget står still i *Calculating task graph*: kör då
+  `--max-workers=4`. CI har 4 kärnor och klarar sig med standardvärdet.
 - Nya moduler: lägg till `include(...)` i `settings.gradle.kts`, beroende via `projects.<…>` (typsäkra accessorer).
 - Nya Gradle-plugins deklareras med `apply false` i rotens `build.gradle.kts`, så att alla moduler delar en classloader.
 
@@ -312,9 +318,12 @@ där pluginet `firebase@firebase` inte alltid installeras.
 - **Health Connect:** appen läser bara dagens steg och aktiva kalorier (`READ_STEPS`,
   `READ_ACTIVE_CALORIES_BURNED`), de senaste fem veckornas träningspass (`READ_EXERCISE`: typ, dag och längd, för
   träningsprogrammet) och nätterna upp till två år bakåt (`READ_SLEEP`: läggtid, uppvakning och tid i sömn, för
-  Sömn och Idag), i förgrunden. Inget skrivs, ingen bakgrundsläsning och ingen `READ_HEALTH_DATA_HISTORY`
+  Sömn och Idag), samt vilopuls och HRV de senaste två veckorna (`READ_RESTING_HEART_RATE`,
+  `READ_HEART_RATE_VARIABILITY`, för Träningens återhämtning), i förgrunden. Inget skrivs, ingen bakgrundsläsning och
+  ingen `READ_HEALTH_DATA_HISTORY`
   (Health Connect ger 30 dagar före första godkännandet, det räcker). Cachen ligger bara i minnet
-  (`InMemoryMovementCache`, `ExerciseRepository`, `SleepRepository`); pass och nätter från Health Connect sparas
+  (`InMemoryMovementCache`, `ExerciseRepository`, `SleepRepository`, `RecoveryRepository`); pass, nätter och
+  återhämtning från Health Connect sparas
   aldrig i `HealthStore`. En cache
   på disk ändrar vad integritetsskärmen och Play-deklarationen ska säga, så den kräver ägarens ok. Ny källa:
   implementera `MovementSource`, `ExerciseSource` eller `SleepSource` och byt den i `AppGraph`.

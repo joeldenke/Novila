@@ -3,12 +3,14 @@ package se.novila.feature.training
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTextReplacement
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -18,6 +20,8 @@ import se.novila.anatomy.ExerciseLibrary
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.model.CardioLog
 import se.novila.model.CardioType
+import se.novila.recovery.RecoveryState
+import se.novila.recovery.RecoveryStatus
 import se.novila.ui.preview.PreviewData
 import java.time.DayOfWeek
 
@@ -34,9 +38,19 @@ class TrainingScreenTest {
         strengthMinutesToday = 0,
     )
 
-    private fun show(state: TrainingUiState, actions: TrainingActions) = composeRule.setContent {
+    private fun show(
+        state: TrainingUiState,
+        actions: TrainingActions,
+        recovery: RecoveryState = RecoveryState.Unavailable,
+    ) = composeRule.setContent {
         NovilaTheme {
-            TrainingScreen(state, PreviewData.movement, actions, contentPadding = PaddingValues())
+            TrainingScreen(
+                state,
+                PreviewData.movement,
+                actions,
+                contentPadding = PaddingValues(),
+                recovery = recovery,
+            )
         }
     }
 
@@ -98,5 +112,34 @@ class TrainingScreenTest {
         composeRule.onNodeWithText("Calf raise").assertExists()
         composeRule.onNodeWithContentDescription("Clear the search").performClick()
         composeRule.onNodeWithText("13 exercises").assertExists()
+    }
+
+    @Test fun `a low recovery shows the readings and says today's session is lighter`() {
+        show(
+            state.copy(recovery = RecoveryStatus.Low),
+            TrainingActions(),
+            recovery = TrainingPreviewData.recovery,
+        )
+        composeRule.onNodeWithText("Recovery").assertExists()
+        composeRule.onNodeWithText("56 bpm").assertExists()
+        composeRule.onNodeWithText("38 ms").assertExists()
+        composeRule
+            .onNodeWithText(
+                "Your resting heart rate is up, or your HRV is down, compared with your usual. " +
+                    "Today's session is a little lighter.",
+            )
+            .assertExists()
+    }
+
+    @Test fun `the recovery card connects while access is missing`() {
+        var connected = false
+        show(
+            state,
+            TrainingActions(onConnectRecovery = { connected = true }),
+            recovery = RecoveryState.NeedsPermission(),
+        )
+        // The chip and the card's button both ask to connect.
+        composeRule.onAllNodesWithText("Connect recovery")[0].performClick()
+        assertTrue(connected)
     }
 }

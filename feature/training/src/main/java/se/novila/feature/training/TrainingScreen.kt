@@ -15,13 +15,16 @@ import se.novila.designsystem.theme.NovilaTheme
 import se.novila.exercise.ExerciseState
 import se.novila.model.CardioLog
 import se.novila.movement.MovementState
+import se.novila.recovery.RecoveryState
+import se.novila.recovery.RecoveryStatus
 import se.novila.ui.common.ScreenList
 import se.novila.ui.preview.PreviewData
 import java.time.DayOfWeek
 
 /**
  * The Training tab, most useful first: the week at a glance with today's one main action, a few actions that fit
- * right now, the next strength session, the week's program, movement from Health Connect and the exercise library.
+ * right now, the next strength session, the week's program, movement from Health Connect, recovery from the watch
+ * and the exercise library.
  */
 @Composable
 fun TrainingScreen(
@@ -31,6 +34,7 @@ fun TrainingScreen(
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
     exercise: ExerciseState = ExerciseState.Unavailable,
+    recovery: RecoveryState = RecoveryState.Unavailable,
 ) {
     val today = state.today
     val plan = remember(state) { state.todayPlan() }
@@ -53,7 +57,7 @@ fun TrainingScreen(
             }
         }
         item(key = "actions") {
-            NovilaReveal(order = 1) { QuickActions(state.coach, movement, actions) }
+            NovilaReveal(order = 1) { QuickActions(state.coach, movement, recovery, actions) }
         }
         if (next != null) {
             item(key = "next-session") {
@@ -82,6 +86,14 @@ fun TrainingScreen(
                 exercise,
             )
         }
+        item(key = "recovery") {
+            RecoveryCard(
+                recovery = recovery,
+                status = state.recovery,
+                onConnect = actions.onConnectRecovery,
+                onOpenSettings = actions.onOpenHealthSettings,
+            )
+        }
         item(key = "exercises") {
             ExerciseLibraryCard(actions.onOpenExercise, actions.onOpenLibrary)
         }
@@ -98,6 +110,7 @@ data class TrainingActions(
     val onOpenCoach: () -> Unit = {},
     val onOpenExercise: (String) -> Unit = {},
     val onConnectHealth: () -> Unit = {},
+    val onConnectRecovery: () -> Unit = {},
     val onOpenHealthSettings: () -> Unit = {},
     val onInstallHealth: () -> Unit = {},
 )
@@ -108,7 +121,12 @@ data class TrainingActions(
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun QuickActions(coach: CoachUiState, movement: MovementState, actions: TrainingActions) {
+private fun QuickActions(
+    coach: CoachUiState,
+    movement: MovementState,
+    recovery: RecoveryState,
+    actions: TrainingActions,
+) {
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s),
         verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s),
@@ -122,6 +140,9 @@ private fun QuickActions(coach: CoachUiState, movement: MovementState, actions: 
         if (movement is MovementState.NeedsPermission && !movement.denied) {
             NovilaActionChip(stringResource(R.string.movement_connect), onClick = actions.onConnectHealth)
         }
+        if (recovery is RecoveryState.NeedsPermission && !recovery.denied) {
+            NovilaActionChip(stringResource(R.string.recovery_connect), onClick = actions.onConnectRecovery)
+        }
     }
 }
 
@@ -130,6 +151,7 @@ private fun TrainingScreenContent(
     state: TrainingUiState,
     movement: MovementState = PreviewData.movement,
     exercise: ExerciseState = ExerciseState.Unavailable,
+    recovery: RecoveryState = RecoveryState.Unavailable,
 ) {
     NovilaTheme {
         TrainingScreen(
@@ -138,6 +160,7 @@ private fun TrainingScreenContent(
             actions = TrainingActions(),
             contentPadding = PaddingValues(),
             exercise = exercise,
+            recovery = recovery,
         )
     }
 }
@@ -170,3 +193,12 @@ private fun TrainingScreenCardioPreview() = TrainingScreenContent(
 @Composable
 private fun TrainingScreenConnectPreview() =
     TrainingScreenContent(strengthDay.copy(today = DayOfWeek.SATURDAY), MovementState.NeedsPermission())
+
+/** The watch says the body is still recovering: today's session is a little lighter. */
+@Preview(showBackground = true, heightDp = 1600)
+@Composable
+private fun TrainingScreenRecoveryPreview() = TrainingScreenContent(
+    strengthDay.copy(recovery = RecoveryStatus.Low),
+    exercise = ExerciseState.Connected(TrainingPreviewData.workouts),
+    recovery = TrainingPreviewData.recovery,
+)

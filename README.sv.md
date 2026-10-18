@@ -30,8 +30,10 @@ finns från dag ett. Vad som kommer härnäst står i [roadmapen](docs/roadmap.m
   inga nätverksanrop och har inga analysverktyg eller Firebase-SDK:er.
 - **Health Connect läses minimalt och bara läses:** dagens steg och aktiva kalorier (`READ_STEPS`,
   `READ_ACTIVE_CALORIES_BURNED`), de senaste fem veckornas träningspass (`READ_EXERCISE`: typ, dag och längd, för
-  träningsprogrammet) och nätterna (`READ_SLEEP`: läggtid, uppvakning och tid i sömn, som fyller i Sömn när du inte
-  har loggat), medan appen är öppen. Inget skrivs, ingen bakgrundsläsning, ingen extra historikåtkomst, och
+  träningsprogrammet), nätterna (`READ_SLEEP`: läggtid, uppvakning och tid i sömn, som fyller i Sömn när du inte
+  har loggat) och vilopuls och HRV de senaste två veckorna (`READ_RESTING_HEART_RATE`,
+  `READ_HEART_RATE_VARIABILITY`, så att Träning kan lätta dagens pass), medan appen är öppen. Inget skrivs, ingen
+  bakgrundsläsning, ingen extra historikåtkomst, och
   det som läses ligger bara i minnet. Integritetsskärmen som Health Connect länkar till säger exakt det.
 - **Påminnelserna är av tills du slår på dem.** Notiser frågas först då. Varje påminnelse är ett WorkManager-jobb
   om dagen som läser det som redan finns sparat på telefonen och visar en notis bara om något saknas.
@@ -86,11 +88,12 @@ varandra, vilket ett test kontrollerar.
 :core:reminders          Påminnelser: WorkManager-jobb och notiser
 :core:navigation         Back stack per flik, Navigator
 :core:data               Lagring i DataStore och coachens Gemini Nano-modell
-:core:healthconnect      Health Connect som källa för rörelse, träningspass och sömn, integritetsskärmen
+:core:healthconnect      Health Connect som källa för rörelse, träningspass, sömn och återhämtning, integritetsskärmen
 :core:model              Ren Kotlin: dagar, kostpoäng, dagens balans, insikter, inställningar
 :core:movement           Ren Kotlin: rörelsedata oberoende av källa
 :core:exercise           Ren Kotlin: övningar, veckoprogrammet, passläget
 :core:sleep              Ren Kotlin: registrerade nätter oberoende av källa
+:core:recovery           Ren Kotlin: vilopuls och HRV från en klocka, oberoende av källa
 :core:coach              Ren Kotlin: träningscoachen och rehabprogrammen
 :core:anatomy            Ren Kotlin: poser, skelett, muskler och kameror för övningsillustrationerna
 :core:googlehealth       Ren Kotlin: Google Health API som träningskälla (inte inkopplad än)

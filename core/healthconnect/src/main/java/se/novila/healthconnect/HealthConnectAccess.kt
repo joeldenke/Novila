@@ -4,6 +4,8 @@ import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.ActiveCaloriesBurnedRecord
 import androidx.health.connect.client.records.ExerciseSessionRecord
+import androidx.health.connect.client.records.HeartRateVariabilityRmssdRecord
+import androidx.health.connect.client.records.RestingHeartRateRecord
 import androidx.health.connect.client.records.SleepSessionRecord
 import androidx.health.connect.client.records.StepsRecord
 import se.novila.movement.MovementState
@@ -21,10 +23,20 @@ val EXERCISE_PERMISSION: String = HealthPermission.getReadPermission(ExerciseSes
 val SLEEP_PERMISSION: String = HealthPermission.getReadPermission(SleepSessionRecord::class)
 
 /**
+ * Read the watch's resting heart rate and heart rate variability, the recovery the training program can
+ * lighten a session for.
+ */
+val RECOVERY_PERMISSIONS: Set<String> = setOf(
+    HealthPermission.getReadPermission(RestingHeartRateRecord::class),
+    HealthPermission.getReadPermission(HeartRateVariabilityRmssdRecord::class),
+)
+
+/**
  * The only Health Connect permissions the app asks for, all in one dialog. Must match the `uses-permission` entries
  * in AndroidManifest.xml (HealthConnectManifestTest).
  */
-val HEALTH_PERMISSIONS: Set<String> = MOVEMENT_PERMISSIONS + EXERCISE_PERMISSION + SLEEP_PERMISSION
+val HEALTH_PERMISSIONS: Set<String> =
+    MOVEMENT_PERMISSIONS + EXERCISE_PERMISSION + SLEEP_PERMISSION + RECOVERY_PERMISSIONS
 
 /** The state when Health Connect can't be read at all: not on the device, or too old to run. */
 internal fun unavailableState(sdkStatus: Int): MovementState = when (sdkStatus) {
