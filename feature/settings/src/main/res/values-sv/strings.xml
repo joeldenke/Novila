@@ -81,6 +81,13 @@
     <!-- Mål -->
     <string name="settings_goals_summary">%1$s steg · %2$s sömn · %3$d glas vatten</string>
     <string name="goals_title">Mål</string>
+    <string name="food_preferences_title">Matpreferenser</string>
+    <string name="food_preferences_diet">Kosthållning</string>
+    <string name="food_preferences_diet_hint">Recepten föreslås efter det du äter.</string>
+    <string name="food_preferences_allergens">Allergier och överkänslighet</string>
+    <string name="food_preferences_allergens_hint">Recept med något du väljer här föreslås aldrig.</string>
+    <string name="food_preferences_time">Tid i köket</string>
+    <string name="food_preferences_time_hint">Hur lång tid ett recept högst får ta.</string>
     <string name="goals_daily">Varje dag</string>
     <string name="goals_steps">Steg</string>
     <string name="goals_steps_value">%1$s om dagen</string>

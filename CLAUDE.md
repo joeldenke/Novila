@@ -28,7 +28,7 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   `NovilaSceneImage` med parallax), namn, mål och tid för coachen, Health Connect och en sammanfattning i `NovilaHeroBanner`.
   Visas ensam (utan flikar) tills `AppSettings.onboarded` är satt; `NovilaApp` ger den en egen entry via
   `rememberStandaloneEntries`. Kan visas igen från Inställningar.
-- `:feature:settings` – Inställningar (profil, egna mål, tema, påminnelser, Health Connect, ansvarsfriskrivning, radera data, introduktionen, version).
+- `:feature:settings` – Inställningar (profil, egna mål, matpreferenser, tema, påminnelser, Health Connect, ansvarsfriskrivning, radera data, introduktionen, version).
   Ingen flik: öppnas med kugghjulet i toppraden (på Idag i hälsningen) och läggs på aktuell fliks back stack. `Navigator` flyttar
   den om den öppnas från en annan flik, så samma nyckel aldrig ligger i två stackar som visas samtidigt.
 - `:feature:widget` – widgeten på hemskärmen (Glance): `NovilaWidget` visar dagens balans, sömn, kost och vatten, det
@@ -101,6 +101,11 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
     syns), `ViewSelector` (varje övnings bästa vy), `ExerciseLibrary` och `RepetitionCounter` (räknar repetitioner,
     djup och tempo ur observerade ledvinklar; ingen kamera inkopplad än). `AnatomyFigure` i `:feature:training` ritar
     i Compose. Se `docs/anatomy.md`. `tools/anatomy/anatomy.sh` testar, renderar och löser vinklar utan Gradle.
+  - `:core:recipes` – receptförslag på Kost: `Recipe` (Novilas egna recept, en portion: portioner per livsmedelsgrupp,
+    `Diet`, de 14 märkningspliktiga `Allergen` och tid), `FoodPreferences` (kosthållning, allergener och tid, sparas
+    i `FoodPreferencesStore`) och `suggestRecipes`, som väljer recepten som höjer dagens kostpoäng mest för
+    måltiden just nu (`MealSlot`). Namn, ingredienser och steg ligger i `:feature:nutrition`s strängar. Se *Recept*
+    under Regler.
   - `:core:googlehealth` – Google Health API (REST v4) som `ExerciseSource`: läser
     `users/me/dataTypes/exercise/dataPoints`. Ännu inte inkopplad i `:app`, se *Google Health API* under Regler.
 - `build-logic` – inkluderat bygge med convention plugins (`novila.*`) och `novila { }`, se `build-logic/README.md`
@@ -296,6 +301,13 @@ där pluginet `firebase@firebase` inte alltid installeras.
   med den, och säger om de tidigare nätterna bekräftar det. Ändra trösklarna bara medvetet: `SleepAnalysisTest`.
 - **Kostpoäng:** `nutritionScore()` (0–100) viktar livsmedelsgrupper efter Livsmedelsverkets kostråd (`FoodGroup`) med
   avdrag för sött och snacks. Ändra vikterna bara medvetet: `NutritionTest` och dagens balans bygger på dem.
+- **Recept:** förslagen väljs alltid deterministiskt ur `Recipe` (testat i `RecipeSuggestionsTest`), aldrig
+  genererade av Gemini Nano eller någon annan modell: ett påhittat recept kan innehålla något användaren är allergisk
+  mot. Ett recept som innehåller en av användarens allergener föreslås aldrig, och kortet ber alltid användaren
+  kontrollera ingredienserna själv. Nytt recept: ange portioner (grönsaker cirka 100 g per portion, potatis räknas
+  inte), diet, alla allergener i ingredienserna och tid, plus namn, ingredienser och steg på båda språken. Inga
+  recept "för" en sjukdom eller ett besvär (se *Inga medicinska påståenden*). Matpreferenserna är hälsodata och
+  raderas med resten.
 - **Inga hårdkodade texter:** all text som visas eller läses upp ska komma från `strings.xml`.
   Engelska i `values/`, svenska i `values-sv/`. Symboler och enheter markeras `translatable="false"`.
 - `ArchitectureTest` (i `:app`, läser alla moduler) bevakar båda reglerna i CI, och att features inte beror på varandra.

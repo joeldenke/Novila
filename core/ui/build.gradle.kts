@@ -7,5 +7,7 @@ plugins {
 dependencies {
     api(projects.core.model)
     api(projects.core.movement)
+    // Diet and allergen names, shared by Settings and Nutrition.
+    api(projects.core.recipes)
     implementation(projects.core.designsystem)
 }

@@ -94,4 +94,32 @@
     <string name="day_yesterday">I går</string>
     <string name="day_previous">Föregående dag</string>
     <string name="day_next">Nästa dag</string>
+
+    <!-- Matpreferenser, i Inställningar och på Kost -->
+    <string name="diet_everything">Allt</string>
+    <string name="diet_pescetarian">Pescetarian</string>
+    <string name="diet_vegetarian">Vegetarisk</string>
+    <string name="diet_vegan">Vegansk</string>
+    <string name="allergen_gluten">Gluten</string>
+    <string name="allergen_crustaceans">Kräftdjur</string>
+    <string name="allergen_eggs">Ägg</string>
+    <string name="allergen_fish">Fisk</string>
+    <string name="allergen_peanuts">Jordnötter</string>
+    <string name="allergen_soy">Soja</string>
+    <string name="allergen_milk">Mjölk</string>
+    <string name="allergen_tree_nuts">Nötter</string>
+    <string name="allergen_celery">Selleri</string>
+    <string name="allergen_mustard">Senap</string>
+    <string name="allergen_sesame">Sesam</string>
+    <string name="allergen_sulphites">Sulfiter</string>
+    <string name="allergen_lupin">Lupin</string>
+    <string name="allergen_molluscs">Blötdjur</string>
+    <string name="food_time_any">Valfri tid</string>
+    <string name="food_time_max">Högst %1$d min</string>
+    <string name="food_allergens_none">Inga allergener valda</string>
+    <plurals name="food_allergens_avoided">
+        <item quantity="one">%1$d allergen undviks</item>
+        <item quantity="other">%1$d allergener undviks</item>
+    </plurals>
+    <string name="food_check_ingredients">Kontrollera alltid ingredienserna och förpackningarna själv, särskilt vid allergi.</string>
 </resources>

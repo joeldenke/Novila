@@ -86,6 +86,13 @@
     <!-- Goals -->
     <string name="settings_goals_summary">%1$s steps · %2$s sleep · %3$d glasses of water</string>
     <string name="goals_title">Goals</string>
+    <string name="food_preferences_title">Food preferences</string>
+    <string name="food_preferences_diet">Diet</string>
+    <string name="food_preferences_diet_hint">Recipes are suggested for what you eat.</string>
+    <string name="food_preferences_allergens">Allergies and intolerances</string>
+    <string name="food_preferences_allergens_hint">Recipes with what you choose here are never suggested.</string>
+    <string name="food_preferences_time">Time in the kitchen</string>
+    <string name="food_preferences_time_hint">At most how long a recipe may take.</string>
     <string name="goals_daily">Every day</string>
     <string name="goals_steps">Steps</string>
     <string name="goals_steps_value">%1$s a day</string>

@@ -2,6 +2,10 @@ package se.novila.feature.nutrition
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import se.novila.designsystem.component.NovilaReveal
@@ -11,16 +15,29 @@ import se.novila.model.FoodGroup
 import se.novila.model.Goals
 import se.novila.model.History
 import se.novila.model.HistoryRange
+import se.novila.recipes.Allergen
+import se.novila.recipes.Diet
+import se.novila.recipes.FoodPreferences
+import se.novila.recipes.Recipe
+import se.novila.recipes.RecipeSuggestions
+import se.novila.recipes.suggestRecipes
 import se.novila.ui.common.DayPicker
 import se.novila.ui.common.NutritionHistoryCard
 import se.novila.ui.common.ScreenList
 import se.novila.ui.preview.PreviewData
 import java.time.LocalDate
 
+/** Today's recipe suggestions for the user's food preferences, what logging one does and where to change them. */
+data class RecipeActions(
+    val onLog: (Recipe) -> Unit = {},
+    val onOpenPreferences: () -> Unit = {},
+)
+
 /**
  * The shown [day]'s nutrition score with its breakdown, logging per food group and the scores in the [history] up to
  * it, over a week, four weeks or a year ([onRange]), water against [goals]. [today] is the day it really is: the user
- * can go back to an earlier day ([onSelectDay]) and fill in what was forgotten.
+ * can go back to an earlier day ([onSelectDay]) and fill in what was forgotten. On today, [recipes] for what is still
+ * missing follow the score, chosen for [foodPreferences]; [expandedRecipe] is the one shown open at first.
  */
 @Composable
 fun NutritionScreen(
@@ -34,17 +51,39 @@ fun NutritionScreen(
     today: LocalDate = day.date,
     onSelectDay: (LocalDate) -> Unit = {},
     onRange: (HistoryRange) -> Unit = {},
+    recipes: RecipeSuggestions? = null,
+    foodPreferences: FoodPreferences = FoodPreferences(),
+    recipeActions: RecipeActions = RecipeActions(),
+    expandedRecipe: Recipe? = null,
 ) {
     val isToday = day.date == today
+    var expanded by rememberSaveable(expandedRecipe) { mutableStateOf(expandedRecipe) }
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
         item(key = "day") { DayPicker(day.date, today, onSelectDay, NovilaTheme.pillars.nutrition) }
         item(key = "score") { NovilaReveal(order = 0) { NutritionScoreCard(day, goals, isToday) } }
-        item(key = "log") { NovilaReveal(order = 1) { FoodLogCard(day, goals, onPortions, onTreats, isToday) } }
-        item(key = "history") { NovilaReveal(order = 2) { NutritionHistoryCard(history, goals, onRange) } }
+        if (isToday && recipes != null) {
+            item(key = "recipes") {
+                NovilaReveal(order = 1) {
+                    RecipeCard(
+                        suggestions = recipes,
+                        preferences = foodPreferences,
+                        expanded = expanded,
+                        onExpand = { expanded = it },
+                        onLog = {
+                            expanded = null
+                            recipeActions.onLog(it)
+                        },
+                        onOpenPreferences = recipeActions.onOpenPreferences,
+                    )
+                }
+            }
+        }
+        item(key = "log") { NovilaReveal(order = 2) { FoodLogCard(day, goals, onPortions, onTreats, isToday) } }
+        item(key = "history") { NovilaReveal(order = 3) { NutritionHistoryCard(history, goals, onRange) } }
     }
 }
 
-@Preview(showBackground = true, heightDp = 1800)
+@Preview(showBackground = true, heightDp = 2200)
 @Composable
 private fun NutritionScreenPreview() {
     NovilaTheme {
@@ -55,6 +94,28 @@ private fun NutritionScreenPreview() {
             onPortions = { _, _ -> },
             onTreats = {},
             contentPadding = PaddingValues(),
+            recipes = suggestRecipes(PreviewData.today, hour = 12, preferences = FoodPreferences()),
+        )
+    }
+}
+
+/** A vegetarian without nuts, with the first recipe opened. */
+@Preview(showBackground = true, heightDp = 2600)
+@Composable
+private fun NutritionScreenRecipePreview() {
+    val preferences = FoodPreferences(Diet.Vegetarian, setOf(Allergen.TreeNuts), maxMinutes = 30)
+    val recipes = suggestRecipes(PreviewData.today, hour = 12, preferences = preferences)
+    NovilaTheme {
+        NutritionScreen(
+            PreviewData.today,
+            PreviewData.history(HistoryRange.Week),
+            Goals(),
+            onPortions = { _, _ -> },
+            onTreats = {},
+            contentPadding = PaddingValues(),
+            recipes = recipes,
+            foodPreferences = preferences,
+            expandedRecipe = recipes.recipes.firstOrNull()?.recipe,
         )
     }
 }

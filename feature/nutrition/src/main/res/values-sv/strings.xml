@@ -23,4 +23,217 @@
     <string name="food_treats_value_day">%1$d den dagen</string>
     <string name="food_add">Lägg till %1$s</string>
     <string name="food_remove">Ta bort %1$s</string>
+
+    <!-- Receptförslag -->
+    <string name="recipes_title">Recept för det som saknas</string>
+    <string name="recipes_breakfast">En frukost som fyller det som fortfarande saknas i dag.</string>
+    <string name="recipes_main">En lunch eller middag som fyller det som fortfarande saknas i dag.</string>
+    <string name="recipes_snack">Dagens måltider är loggade. Ett mellanmål för det som är kvar.</string>
+    <string name="recipes_none">Inget recept passar dina matpreferenser just nu.</string>
+    <string name="recipes_preferences">Ändra matpreferenser</string>
+    <string name="recipe_summary">%1$d min · +%2$d i kostpoäng</string>
+    <string name="recipe_gives">Ger: %1$s</string>
+    <string name="recipe_contains">Innehåller: %1$s</string>
+    <string name="recipe_contains_none">Inget av de allergener som måste märkas ut.</string>
+    <string name="recipe_ingredients">Ingredienser, en portion</string>
+    <string name="recipe_steps">Gör så här</string>
+    <string name="recipe_log">Jag åt det här</string>
+
+    <!-- Recept: en portion vardera, se se.novila.recipes.Recipe -->
+    <string name="recipe_overnight_oats">Kylskåpsgröt med bär</string>
+    <string-array name="recipe_overnight_oats_ingredients">
+        <item>1 dl havregryn</item>
+        <item>1½ dl naturell yoghurt eller filmjölk</item>
+        <item>1½ dl blåbär</item>
+        <item>½ äpple</item>
+        <item>1 tsk kanel</item>
+    </string-array>
+    <string-array name="recipe_overnight_oats_steps">
+        <item>Riv äpplet och rör ihop det med havregryn, yoghurt och kanel i en burk.</item>
+        <item>Låt stå i kylen över natten, eller i minst två timmar.</item>
+        <item>Toppa med blåbären innan du äter.</item>
+    </string-array>
+    <string name="recipe_egg_sandwich">Fullkornsmacka med ägg och tomat</string>
+    <string-array name="recipe_egg_sandwich_ingredients">
+        <item>2 skivor fullkornsbröd</item>
+        <item>1 ägg</item>
+        <item>1 tomat</item>
+        <item>5 cm gurka</item>
+        <item>Några salladsblad</item>
+    </string-array>
+    <string-array name="recipe_egg_sandwich_steps">
+        <item>Koka ägget i 8 minuter och kyl det i kallt vatten.</item>
+        <item>Skiva tomat, gurka och ägg.</item>
+        <item>Lägg sallad, tomat, gurka och ägg på brödet.</item>
+    </string-array>
+    <string name="recipe_berry_smoothie">Bärsmoothie med havre</string>
+    <string-array name="recipe_berry_smoothie_ingredients">
+        <item>1 banan</item>
+        <item>1 dl frysta hallon</item>
+        <item>En näve spenat</item>
+        <item>½ dl havregryn</item>
+        <item>2 dl havredryck</item>
+    </string-array>
+    <string-array name="recipe_berry_smoothie_steps">
+        <item>Lägg allt i en mixer.</item>
+        <item>Mixa slätt. Späd med lite mer havredryck om den blir för tjock.</item>
+    </string-array>
+    <string name="recipe_lentil_bolognese">Linsbolognese med fullkornspasta</string>
+    <string-array name="recipe_lentil_bolognese_ingredients">
+        <item>75 g fullkornspasta</item>
+        <item>½ dl röda linser</item>
+        <item>200 g krossade tomater</item>
+        <item>1 morot</item>
+        <item>½ gul lök</item>
+        <item>1 vitlöksklyfta</item>
+        <item>1 tsk olivolja</item>
+        <item>Salt, peppar och torkad oregano</item>
+    </string-array>
+    <string-array name="recipe_lentil_bolognese_steps">
+        <item>Hacka lök och vitlök och riv moroten.</item>
+        <item>Fräs dem i oljan några minuter.</item>
+        <item>Tillsätt linser, tomater och 1 dl vatten och låt sjuda i 15 minuter. Smaka av.</item>
+        <item>Koka pastan enligt förpackningen och servera med såsen.</item>
+    </string-array>
+    <string name="recipe_baked_salmon">Ugnsbakad lax med broccoli och potatis</string>
+    <string-array name="recipe_baked_salmon_ingredients">
+        <item>125 g laxfilé</item>
+        <item>150 g broccoli</item>
+        <item>1 morot</item>
+        <item>3 potatisar</item>
+        <item>½ citron</item>
+        <item>1 tsk olivolja</item>
+        <item>Salt och peppar</item>
+    </string-array>
+    <string-array name="recipe_baked_salmon_steps">
+        <item>Sätt ugnen på 200 °C. Koka potatisen i cirka 20 minuter.</item>
+        <item>Lägg lax, broccoli och skivad morot på en plåt, ringla över oljan och krydda.</item>
+        <item>Baka i 15 minuter och pressa citronen över innan servering.</item>
+    </string-array>
+    <string name="recipe_chickpea_curry">Kikärtsgryta med fullkornsris</string>
+    <string-array name="recipe_chickpea_curry_ingredients">
+        <item>¾ dl fullkornsris</item>
+        <item>200 g kokta kikärtor</item>
+        <item>1 dl kokosmjölk</item>
+        <item>100 g krossade tomater</item>
+        <item>½ röd paprika</item>
+        <item>2 nävar spenat</item>
+        <item>½ gul lök</item>
+        <item>1 tsk currypulver</item>
+    </string-array>
+    <string-array name="recipe_chickpea_curry_steps">
+        <item>Koka riset enligt förpackningen.</item>
+        <item>Hacka lök och paprika och fräs dem med currypulvret några minuter.</item>
+        <item>Tillsätt kikärtor, tomater och kokosmjölk och låt sjuda i 10 minuter.</item>
+        <item>Rör ner spenaten tills den mjuknar och servera med riset.</item>
+    </string-array>
+    <string name="recipe_chicken_stir_fry">Kycklingwok med grönsaker</string>
+    <string-array name="recipe_chicken_stir_fry_ingredients">
+        <item>125 g kycklingfilé</item>
+        <item>200 g wokgrönsaker</item>
+        <item>¾ dl fullkornsris</item>
+        <item>1 msk soja</item>
+        <item>1 vitlöksklyfta</item>
+        <item>1 tsk riven ingefära</item>
+        <item>1 tsk rapsolja</item>
+    </string-array>
+    <string-array name="recipe_chicken_stir_fry_steps">
+        <item>Koka riset enligt förpackningen.</item>
+        <item>Skär kycklingen i strimlor och stek den i oljan i en het panna tills den är genomstekt.</item>
+        <item>Tillsätt grönsaker, vitlök och ingefära och woka i 3–4 minuter.</item>
+        <item>Smaka av med sojan och servera med riset.</item>
+    </string-array>
+    <string name="recipe_vegetable_omelette">Grönsaksomelett med fullkornsbröd</string>
+    <string-array name="recipe_vegetable_omelette_ingredients">
+        <item>2 ägg</item>
+        <item>2 nävar spenat</item>
+        <item>½ röd paprika</item>
+        <item>½ gul lök</item>
+        <item>1 tomat</item>
+        <item>1 skiva fullkornsbröd</item>
+        <item>1 tsk rapsolja</item>
+        <item>Salt och peppar</item>
+    </string-array>
+    <string-array name="recipe_vegetable_omelette_steps">
+        <item>Hacka lök och paprika och fräs dem i oljan några minuter.</item>
+        <item>Lägg i spenaten och låt den mjukna.</item>
+        <item>Vispa äggen med lite salt och peppar, häll över och låt stelna på svag värme.</item>
+        <item>Servera med tomaten och brödet.</item>
+    </string-array>
+    <string name="recipe_tuna_wheat_salad">Matvetesallad med tonfisk</string>
+    <string-array name="recipe_tuna_wheat_salad_ingredients">
+        <item>¾ dl matvete</item>
+        <item>1 burk tonfisk i vatten, cirka 120 g</item>
+        <item>1 tomat</item>
+        <item>10 cm gurka</item>
+        <item>¼ rödlök</item>
+        <item>En näve sallad</item>
+        <item>1 msk olivolja</item>
+        <item>½ citron</item>
+    </string-array>
+    <string-array name="recipe_tuna_wheat_salad_steps">
+        <item>Koka matvetet enligt förpackningen och låt det svalna lite.</item>
+        <item>Hacka tomat, gurka och lök.</item>
+        <item>Blanda allt med salladen och tonfisken och smaka av med olja och citron.</item>
+    </string-array>
+    <string name="recipe_bean_soup">Bönsoppa med tomat</string>
+    <string-array name="recipe_bean_soup_ingredients">
+        <item>200 g kokta vita bönor</item>
+        <item>200 g krossade tomater</item>
+        <item>1 morot</item>
+        <item>1 stjälk blekselleri</item>
+        <item>½ gul lök</item>
+        <item>1 vitlöksklyfta</item>
+        <item>2 dl grönsaksbuljong</item>
+        <item>1 tsk olivolja</item>
+        <item>1 skiva fullkornsbröd</item>
+    </string-array>
+    <string-array name="recipe_bean_soup_steps">
+        <item>Hacka lök, vitlök, morot och selleri och fräs dem mjuka i oljan i en kastrull.</item>
+        <item>Tillsätt tomater, buljong och bönor och låt sjuda i 15 minuter.</item>
+        <item>Mixa hälften av soppan om du vill ha den tjockare, smaka av och servera med brödet.</item>
+    </string-array>
+    <string name="recipe_chicken_bulgur_salad">Kycklingsallad med bulgur</string>
+    <string-array name="recipe_chicken_bulgur_salad_ingredients">
+        <item>100 g kokt eller stekt kyckling</item>
+        <item>¾ dl bulgur</item>
+        <item>1 tomat</item>
+        <item>10 cm gurka</item>
+        <item>En näve sallad</item>
+        <item>½ dl naturell yoghurt</item>
+        <item>½ vitlöksklyfta</item>
+        <item>Salt och peppar</item>
+    </string-array>
+    <string-array name="recipe_chicken_bulgur_salad_steps">
+        <item>Koka bulguren enligt förpackningen och låt den svalna lite.</item>
+        <item>Skiva kycklingen och hacka tomat och gurka.</item>
+        <item>Rör ihop yoghurten med riven vitlök, salt och peppar.</item>
+        <item>Blanda bulgur, grönsaker och kyckling och servera med dressingen.</item>
+    </string-array>
+    <string name="recipe_apple_and_nuts">Äpple och en näve nötter</string>
+    <string-array name="recipe_apple_and_nuts_ingredients">
+        <item>1 äpple</item>
+        <item>En liten näve osaltade nötter, cirka 20 g</item>
+    </string-array>
+    <string-array name="recipe_apple_and_nuts_steps">
+        <item>Skiva äpplet och ät det med nötterna.</item>
+    </string-array>
+    <string name="recipe_carrots_and_hummus">Morotsstavar med hummus</string>
+    <string-array name="recipe_carrots_and_hummus_ingredients">
+        <item>2 morötter</item>
+        <item>3 msk hummus</item>
+    </string-array>
+    <string-array name="recipe_carrots_and_hummus_steps">
+        <item>Skala morötterna och skär dem i stavar.</item>
+        <item>Doppa dem i hummusen.</item>
+    </string-array>
+    <string name="recipe_yogurt_with_berries">Yoghurt med bär och havre</string>
+    <string-array name="recipe_yogurt_with_berries_ingredients">
+        <item>1½ dl naturell yoghurt</item>
+        <item>1½ dl bär, färska eller frysta</item>
+        <item>½ dl havregryn</item>
+    </string-array>
+    <string-array name="recipe_yogurt_with_berries_steps">
+        <item>Häll yoghurten i en skål och toppa med bär och havregryn.</item>
+    </string-array>
 </resources>
