@@ -103,4 +103,10 @@ class TodayViewModel(
     }
 
     fun setMood(mood: Int) = store.update(LocalDate.now()) { it.withMood(mood) }
+
+    fun setEnergy(energy: Int) = store.update(LocalDate.now()) { it.withEnergy(energy) }
+
+    fun setStress(stress: Int) = store.update(LocalDate.now()) { it.withStress(stress) }
+
+    fun setDiary(diary: String) = store.update(LocalDate.now()) { it.withDiary(diary) }
 }
