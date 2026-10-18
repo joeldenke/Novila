@@ -69,6 +69,8 @@ fun coachNoteText(note: CoachNote): String = when (note) {
     is CoachNote.Effort -> effortNoteText(note.check)
 
     is CoachNote.Rehab -> rehabNoteText(note.check)
+
+    CoachNote.Recovery -> stringResource(R.string.coach_note_recovery)
 }
 
 @Composable

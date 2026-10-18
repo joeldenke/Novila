@@ -14,6 +14,7 @@ novila {
 dependencies {
     api(projects.core.exercise)
     api(projects.core.movement)
+    api(projects.core.recovery)
     api(projects.core.sleep)
     implementation(projects.core.designsystem)
     implementation(projects.core.ui)

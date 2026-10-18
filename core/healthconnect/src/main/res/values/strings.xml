@@ -2,9 +2,9 @@
 <resources>
     <string name="health_info_title">Health Connect in Novila</string>
     <string name="health_info_read_title">What Novila reads</string>
-    <string name="health_info_read_body">Today\'s steps and active calories burned, your workouts from the last five weeks (what kind of workout, which day and how long) and your sleep: when you went to bed, woke up and how long you slept, for up to two years back. Novila never writes to Health Connect and never reads anything else.</string>
+    <string name="health_info_read_body">Today\'s steps and active calories burned, your workouts from the last five weeks (what kind of workout, which day and how long), your sleep: when you went to bed, woke up and how long you slept, for up to two years back, and your recovery: resting heart rate and heart rate variability. Novila never writes to Health Connect and never reads anything else.</string>
     <string name="health_info_why_title">Why</string>
-    <string name="health_info_why_body">To show how much you have moved today on the Today dashboard and under Training, so the week\'s training program builds on the workouts you have done, also those your watch or another app recorded, and so the nights your watch recorded fill in Sleep when you haven\'t logged them yourself.</string>
+    <string name="health_info_why_body">To show how much you have moved today on the Today dashboard and under Training, so the week\'s training program builds on the workouts you have done, also those your watch or another app recorded, so the nights your watch recorded fill in Sleep when you haven\'t logged them yourself, and so a body that is still recovering can make today\'s training session a little lighter.</string>
     <string name="health_info_where_title">Where the data goes</string>
     <string name="health_info_where_body">Nowhere. Novila reads the data while the app is open and only uses it on the phone. It is not saved by Novila, not sent over the internet and not shared with anyone.</string>
     <string name="health_info_revoke_title">Change or turn off access</string>

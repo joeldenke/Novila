@@ -8,8 +8,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
-      Read-only: today's steps and active calories, the last five weeks' workouts for the training program, and
-      when the user slept (sleep sessions), so a recorded night fills in Sleep when the user hasn't logged it.
+      Read-only: today's steps and active calories, the last five weeks' workouts for the training program, when the
+      user slept (sleep sessions), so a recorded night fills in Sleep when the user hasn't logged it, and the watch's
+      resting heart rate and heart rate variability, so a still-recovering body makes today's session lighter.
       Nothing is written, nothing is read in the background and READ_HEALTH_DATA_HISTORY is not requested (Health
       Connect gives 30 days before the first grant, enough for the program). Each type here must be justified in
       Play Console's Health apps declaration, so keep the list short.
@@ -18,6 +19,8 @@
     <uses-permission android:name="android.permission.health.READ_ACTIVE_CALORIES_BURNED" />
     <uses-permission android:name="android.permission.health.READ_EXERCISE" />
     <uses-permission android:name="android.permission.health.READ_SLEEP" />
+    <uses-permission android:name="android.permission.health.READ_RESTING_HEART_RATE" />
+    <uses-permission android:name="android.permission.health.READ_HEART_RATE_VARIABILITY" />
 
     <!-- Lets the app see the Health Connect app on Android 13 and lower (package visibility). -->
     <queries>

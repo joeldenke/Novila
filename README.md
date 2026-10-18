@@ -30,9 +30,11 @@ from day one. What comes next is in the [roadmap](docs/roadmap.md).
   network calls and has no analytics or Firebase SDKs.
 - **Health Connect is read-only and minimal:** only today's steps and active calories (`READ_STEPS`,
   `READ_ACTIVE_CALORIES_BURNED`), the last five weeks' workouts (`READ_EXERCISE`: type, day and length, for the
-  training program) and the nights (`READ_SLEEP`: bedtime, wake time and time asleep, filling in Sleep when you
-  haven't logged it), while the app is open. Nothing is written, no background reads, no extra history access, and
-  what is read stays in memory only. The privacy screen Health Connect links to says exactly that.
+  training program), the nights (`READ_SLEEP`: bedtime, wake time and time asleep, filling in Sleep when you
+  haven't logged it) and resting heart rate and HRV from the last two weeks (`READ_RESTING_HEART_RATE`,
+  `READ_HEART_RATE_VARIABILITY`, letting Training make today's session a little lighter), while the app is open.
+  Nothing is written, no background reads, no extra history access, and what is read stays in memory only. The
+  privacy screen Health Connect links to says exactly that.
 - **Reminders are off until you turn them on.** Notifications are asked for only then. Each reminder is one
   WorkManager job a day that reads what is already saved on the phone and notifies only when something is missing.
 - **AI runs on the phone.** The training plan is deterministic, tested Kotlin. Gemini Nano (through AICore)
@@ -87,11 +89,12 @@ each other, which a test checks.
 :core:reminders          Reminders: WorkManager jobs and notifications
 :core:navigation         Back stack per tab, Navigator
 :core:data               DataStore stores and the Gemini Nano coach model
-:core:healthconnect      Health Connect as a movement, workout and sleep source, privacy screen
+:core:healthconnect      Health Connect as a movement, workout, sleep and recovery source, privacy screen
 :core:model              Pure Kotlin: day entries, nutrition score, daily balance, insights, settings
 :core:movement           Pure Kotlin: movement data independent of source
 :core:exercise           Pure Kotlin: exercises, weekly program generator, workout mode
 :core:sleep              Pure Kotlin: recorded nights independent of source
+:core:recovery           Pure Kotlin: resting heart rate and HRV from a watch, independent of source
 :core:coach              Pure Kotlin: the training coach and its rehab programs
 :core:anatomy            Pure Kotlin: poses, skeleton, muscles and cameras for exercise illustrations
 :core:googlehealth       Pure Kotlin: Google Health API as an exercise source (not wired in yet)

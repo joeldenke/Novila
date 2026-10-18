@@ -32,6 +32,7 @@ import se.novila.feature.training.WorkoutViewModel
 import se.novila.feature.training.moveName
 import se.novila.feature.training.sessionTitle
 import se.novila.healthconnect.HealthConnectSource
+import se.novila.healthconnect.RECOVERY_PERMISSIONS
 import se.novila.healthconnect.rememberHealthPermissionRequest
 import se.novila.navigation.Navigator
 import java.time.DayOfWeek
@@ -85,8 +86,14 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
         val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
         val movement by viewModel.movement.collectAsStateWithLifecycle()
         val exercise by viewModel.exercise.collectAsStateWithLifecycle()
+        val recovery by viewModel.recovery.collectAsStateWithLifecycle()
         val context = LocalContext.current
         val connectHealth = rememberHealthPermissionRequest(viewModel::onHealthPermissionsResult)
+        // Recovery's own dialog asks only for resting heart rate and HRV, so it can be connected on its own.
+        val connectRecovery = rememberHealthPermissionRequest(
+            viewModel::onRecoveryPermissionsResult,
+            permissions = RECOVERY_PERMISSIONS,
+        )
         TrainingScreen(
             state = state,
             movement = movement,
@@ -99,11 +106,13 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
                 onOpenCoach = { navigator.navigate(CoachRoute) },
                 onOpenExercise = openExercise,
                 onConnectHealth = connectHealth,
+                onConnectRecovery = connectRecovery,
                 onOpenHealthSettings = { HealthConnectSource.openSettings(context) },
                 onInstallHealth = { HealthConnectSource.openInstall(context) },
             ),
             contentPadding = contentPadding,
             exercise = exercise,
+            recovery = recovery,
         )
     }
     entry<SessionRoute> { route ->

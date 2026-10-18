@@ -6,6 +6,7 @@ import se.novila.coach.CoachPreferences
 import se.novila.exercise.TrainingProgram
 import se.novila.exercise.Workout
 import se.novila.model.CardioLog
+import se.novila.recovery.RecoveryStatus
 import java.time.DayOfWeek
 
 /** What the training screens show for one day. */
@@ -15,6 +16,8 @@ data class TrainingUiState(
     val coach: CoachUiState,
     val today: DayOfWeek,
     val strengthMinutesToday: Int,
+    /** How the body seems to have recovered, which today's session may already be lighter for. */
+    val recovery: RecoveryStatus = RecoveryStatus.Unknown,
     val cardioToday: CardioToday = CardioToday(),
     /** Minutes trained on each day of this week so far, Novila's own sessions and recorded ones counted once. */
     val weekDone: Map<DayOfWeek, Int> = emptyMap(),

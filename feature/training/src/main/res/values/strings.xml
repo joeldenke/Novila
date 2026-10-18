@@ -199,6 +199,19 @@
     <string name="movement_workouts_body">Let the program count the workouts your watch or another app recorded in Health Connect.</string>
     <string name="movement_workouts_connect">Read workouts</string>
     <string name="movement_install">Get Health Connect</string>
+    <!-- Recovery from the watch -->
+    <string name="recovery_title">Recovery</string>
+    <string name="recovery_resting_heart_rate">Resting heart rate</string>
+    <string name="recovery_hrv">Heart rate variability (HRV)</string>
+    <string name="recovery_bpm" translatable="false">%1$d bpm</string>
+    <string name="recovery_millis" translatable="false">%1$d ms</string>
+    <string name="recovery_normal">Your resting heart rate and HRV are where they usually are. Today\'s session is as planned.</string>
+    <string name="recovery_low">Your resting heart rate is up, or your HRV is down, compared with your usual. Today\'s session is a little lighter.</string>
+    <string name="recovery_unknown">Not enough readings yet to tell how you are recovering.</string>
+    <string name="recovery_no_data">No recovery readings from your watch yet.</string>
+    <string name="recovery_connect_body">Let Novila read your resting heart rate and heart rate variability from your watch via Health Connect. When the body is still recovering, today\'s training session is made a little lighter. Novila only reads it and the data stays on your phone.</string>
+    <string name="recovery_connect">Connect recovery</string>
+    <string name="recovery_denied_body">Access was declined. You can allow it for Novila in Health Connect.</string>
     <!-- Training coach -->
     <string name="coach_title">Training coach</string>
     <string name="coach_open">Open the coach</string>
@@ -262,6 +275,7 @@
     <string name="coach_rehab_safety_knee">Seek care if the knee locks, gives way or swells up.</string>
     <string name="coach_rehab_safety_lower_back">Seek care at once for numbness around the groin, trouble passing urine or growing weakness in the legs.</string>
     <string name="coach_note_goal_rehab">Gentle training: slow, controlled exercises three days a week with a rest day in between, and walks on the other days.</string>
+    <string name="coach_note_recovery">Your resting heart rate is up, or your HRV is down, compared with your usual. Today\'s session is lighter so you recover.</string>
     <string name="coach_note_rehab_phase">%1$s, level %2$d of %3$d. Move on when the sessions feel easy and the pain does not increase the day after, often after a couple of weeks.</string>
     <string name="coach_note_pain">Pain up to 3 out of 10 during a session is fine if it has settled by the next morning. If it gets worse, go back a level.</string>
     <string name="coach_note_effort_pain">The latest session hurt %1$d of 10, so the coach takes away one set per exercise this week. See a doctor or physiotherapist if the pain stays.</string>
