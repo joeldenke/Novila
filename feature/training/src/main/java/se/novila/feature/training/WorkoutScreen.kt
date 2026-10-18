@@ -37,6 +37,7 @@ import se.novila.model.MAX_PAIN
 import se.novila.ui.common.ScreenList
 import se.novila.ui.preview.PreviewData
 import kotlin.math.roundToInt
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.Instant
@@ -44,9 +45,10 @@ import kotlin.time.Instant
 private const val FIGURE_ASPECT_RATIO = 1.2f
 
 /**
- * A strength session, one step at a time: the set to do now, with the figure setting a calm pace, or the
- * rest with a countdown and what comes next. When it is done, the user says how hard it was ([onEffort]) and how
- * much it hurt ([onPain]) before saving it. Keeps the screen on while it is shown.
+ * A strength session, one step at a time: a warm-up, then the set to do now, with the figure setting a calm pace,
+ * or the rest with a countdown and what comes next, and a cool-down after the last set. When it is done, the user
+ * says how hard it was ([onEffort]) and how much it hurt ([onPain]) before saving it. Keeps the screen on while it
+ * is shown.
  */
 @Composable
 fun WorkoutScreen(
@@ -85,7 +87,44 @@ fun WorkoutScreen(
 
             step is WorkoutStep.Rest -> {
                 item(key = "progress") { Progress(workout, step.next) }
-                item(key = "rest") { Rest(step, secondsLeft, onNext) }
+                item(key = "rest") {
+                    Phase(
+                        title = stringResource(R.string.workout_rest_title),
+                        secondsLeft = secondsLeft,
+                        duration = step.duration,
+                        next = step.next,
+                        action = stringResource(R.string.workout_skip_rest),
+                        onNext = onNext,
+                    )
+                }
+            }
+
+            step is WorkoutStep.WarmUp -> {
+                item(key = "progress") { Progress(workout, step.next) }
+                item(key = "warmup") {
+                    Phase(
+                        title = stringResource(R.string.workout_warmup_title),
+                        secondsLeft = secondsLeft,
+                        duration = step.duration,
+                        next = step.next,
+                        body = stringResource(R.string.workout_warmup_body),
+                        action = stringResource(R.string.workout_warmup_done),
+                        onNext = onNext,
+                    )
+                }
+            }
+
+            step is WorkoutStep.CoolDown -> {
+                item(key = "cooldown") {
+                    Phase(
+                        title = stringResource(R.string.workout_cooldown_title),
+                        secondsLeft = secondsLeft,
+                        duration = step.duration,
+                        body = stringResource(R.string.workout_cooldown_body),
+                        action = stringResource(R.string.workout_cooldown_done),
+                        onNext = onNext,
+                    )
+                }
             }
         }
     }
@@ -185,25 +224,50 @@ private fun Work(
     }
 }
 
+/**
+ * A timed step: the countdown, what to do while it runs ([body]), the set that comes after it ([next]) and the
+ * one button that moves the session on.
+ */
 @Composable
-private fun Rest(step: WorkoutStep.Rest, secondsLeft: Int?, onNext: () -> Unit) {
-    val next = step.next
-    val motion = ExerciseLibrary.byId(next.exercise.exerciseId)
-    NovilaCard(title = stringResource(R.string.workout_rest_title)) {
-        Countdown(secondsLeft ?: step.duration.inWholeSeconds.toInt())
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.m),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            if (motion != null) ExerciseThumbnail(motion, Modifier.weight(1f))
+private fun Phase(
+    title: String,
+    secondsLeft: Int?,
+    duration: Duration,
+    action: String,
+    onNext: () -> Unit,
+    body: String? = null,
+    next: WorkoutStep.Work? = null,
+) {
+    NovilaCard(title = title) {
+        Countdown(secondsLeft ?: duration.inWholeSeconds.toInt())
+        if (next != null) {
+            val motion = ExerciseLibrary.byId(next.exercise.exerciseId)
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.m),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if (motion != null) ExerciseThumbnail(motion, Modifier.weight(1f))
+                NovilaText(
+                    stringResource(
+                        R.string.workout_next,
+                        moveName(next.exercise.exerciseId),
+                        next.set,
+                        next.exercise.sets,
+                    ),
+                    style = NovilaTheme.typography.titleSmall,
+                    modifier = Modifier.weight(2f),
+                )
+            }
+        }
+        if (body != null) {
             NovilaText(
-                stringResource(R.string.workout_next, moveName(next.exercise.exerciseId), next.set, next.exercise.sets),
-                style = NovilaTheme.typography.titleSmall,
-                modifier = Modifier.weight(2f),
+                body,
+                style = NovilaTheme.typography.bodyMedium,
+                color = NovilaTheme.colors.onSurfaceVariant,
             )
         }
         NovilaAccentButton(
-            text = stringResource(R.string.workout_skip_rest),
+            text = action,
             onClick = onNext,
             modifier = Modifier.fillMaxWidth(),
         )
@@ -346,6 +410,7 @@ private fun NoWorkout() {
 
 private val PREVIEW_START = Instant.fromEpochSeconds(1_000)
 
+/** The session, advanced [steps] times: the warm-up is step 0, the first set one [Workout.next] later. */
 private fun previewWorkout(steps: Int): WorkoutUiState {
     val session = TrainingPreviewData.program.sessions.first { it.exercises.isNotEmpty() }
     var workout = Workout.start(session, PREVIEW_START)
@@ -355,6 +420,12 @@ private fun previewWorkout(steps: Int): WorkoutUiState {
         workout = workout.next(now)
     }
     return WorkoutUiState(workout, workout.secondsLeft(now + 20.seconds))
+}
+
+/** The cool-down is the session's last step: one [Workout.next] less than the finish. */
+private fun previewCoolDown(): WorkoutUiState {
+    val session = TrainingPreviewData.program.sessions.first { it.exercises.isNotEmpty() }
+    return previewWorkout(steps = Workout.start(session, PREVIEW_START).steps.size - 1)
 }
 
 @Composable
@@ -376,11 +447,19 @@ private fun WorkoutContent(state: WorkoutUiState) {
 
 @Preview(heightDp = 1100)
 @Composable
-private fun WorkoutSetPreview() = WorkoutContent(previewWorkout(steps = 0))
+private fun WorkoutWarmUpPreview() = WorkoutContent(previewWorkout(steps = 0))
 
 @Preview(heightDp = 1100)
 @Composable
-private fun WorkoutRestPreview() = WorkoutContent(previewWorkout(steps = 1))
+private fun WorkoutSetPreview() = WorkoutContent(previewWorkout(steps = 1))
+
+@Preview(heightDp = 1100)
+@Composable
+private fun WorkoutRestPreview() = WorkoutContent(previewWorkout(steps = 2))
+
+@Preview(heightDp = 1100)
+@Composable
+private fun WorkoutCoolDownPreview() = WorkoutContent(previewCoolDown())
 
 @Preview(heightDp = 1100, uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable

@@ -11,6 +11,7 @@ import se.novila.exercise.PlannedSession
 import se.novila.exercise.StrengthLevel
 import se.novila.exercise.TrainingProgram
 import se.novila.exercise.TrainingProgramGenerator
+import se.novila.exercise.Workout
 import se.novila.recovery.RecoveryStatus
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -68,7 +69,8 @@ data class CoachPlan(val program: TrainingProgram, val notes: List<CoachNote>, v
  * - Each strength session first gets a lower-body exercise, a push and a trunk exercise, then fills the
  *   time with the exercises that best train the muscles still lacking, weighted towards the focus areas,
  *   varied between the week's sessions. Exercises that don't suit the considerations are never used.
- * - Sets, repetitions and rest follow the strength level and the goal; the time estimate includes a warm-up.
+ * - Sets, repetitions and rest follow the strength level and the goal; the time estimate includes the warm-up
+ *   and the cool-down that [Workout] runs around the sets.
  * - The user's feedback after the latest sessions adjusts the dose, and suggests the next rehab phase
  *   ([CoachFeedback]). When the watch says the body is still recovering ([RecoveryStatus.Low]), today's
  *   session alone is lighter: one set less and a lighter cardio. Rehab stays as it is — it is already
@@ -77,7 +79,8 @@ data class CoachPlan(val program: TrainingProgram, val notes: List<CoachNote>, v
  * changes, so it is unit tested.
  */
 object CoachPlanner {
-    private val WARM_UP = 5.minutes
+    /** The minutes the workout mode spends warming up and cooling down around the sets ([Workout]). */
+    private val WARM_UP = Workout.WARM_UP + Workout.COOL_DOWN
     private val TIME_PER_REPETITION = 3.seconds
     private val CHANGE_OVER = 30.seconds
     private const val MIN_EXERCISES = 3
@@ -375,7 +378,7 @@ object CoachPlanner {
 
     private fun List<PlannedExercise>.total(): Duration = fold(Duration.ZERO) { sum, it -> sum + duration(it) }
 
-    /** The session's length with a warm-up, rounded to five minutes. */
+    /** The session's length with the warm-up and cool-down, rounded to five minutes. */
     private fun sessionMinutes(exercises: List<PlannedExercise>): Int =
         TrainingProgramGenerator.roundTo5((WARM_UP + exercises.total()).toDouble(DurationUnit.MINUTES))
             .coerceAtLeast(CoachPreferences.MIN_MINUTES)
