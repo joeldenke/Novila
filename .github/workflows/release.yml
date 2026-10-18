@@ -1,0 +1,162 @@
+# Builds a signed release AAB and publishes it to a Google Play track (internal by default)
+# with Gradle Play Publisher. Two triggers, both deliberate — never pull requests, never forks:
+#   - a version tag (v*) was pushed, or
+#   - it was run by hand from main (workflow_dispatch), optionally with another track.
+#
+# Google Play App Signing holds the app-signing key; this workflow only needs the upload key,
+# which comes from the same CI secrets as the signed release APK in distribute.yml
+# (NOVILA_RELEASE_KEYSTORE_BASE64 and friends). Generate the keystore once with
+# scripts/generate-release-keystore.sh and back it up — see docs/RELEASE.md for the whole
+# one-time setup (Play service account, Workload Identity Federation, GitHub secrets).
+#
+# Authenticates to Google Cloud with Workload Identity Federation: no JSON key is stored.
+# scripts/bootstrap-play.sh creates the Play service account and the "play" WIF provider.
+# Required, under repo Settings → Secrets and variables → Actions:
+#   Variable GCP_PLAY_WORKLOAD_IDENTITY_PROVIDER  projects/<number>/locations/global/workloadIdentityPools/github/providers/novila-play
+#   Variable GCP_PLAY_SERVICE_ACCOUNT             github-play@<project>.iam.gserviceaccount.com
+#   Secret   NOVILA_RELEASE_KEYSTORE_BASE64       base64 of the upload keystore (.jks)
+#   Secret   NOVILA_RELEASE_STORE_PASSWORD        keystore password
+#   Secret   NOVILA_RELEASE_KEY_PASSWORD          key password
+#   Variable NOVILA_RELEASE_KEY_ALIAS             key alias, e.g. "novila"
+# Plus the GitHub environment "play" (Settings → Environments): it gates who may run the
+# workflow and is what the WIF provider's attribute condition checks.
+name: Release to Google Play
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      track:
+        description: Play track to publish to
+        type: choice
+        options: [internal, beta, alpha, production]
+        default: internal
+
+permissions:
+  contents: read
+
+# Never two publishes at once; queue instead of cancelling a half-finished upload.
+concurrency:
+  group: release-play
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Build AAB and publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    # Not for forks: this repository only, and only through the protected "play" environment.
+    if: github.repository == 'joeldenke/Novila'
+    environment: play
+    permissions:
+      contents: read
+      id-token: write # lets the job request a GitHub OIDC token for Workload Identity Federation
+    steps:
+      - name: Check configuration
+        id: config
+        env:
+          NOVILA_RELEASE_KEYSTORE_BASE64: ${{ secrets.NOVILA_RELEASE_KEYSTORE_BASE64 }}
+          NOVILA_RELEASE_STORE_PASSWORD: ${{ secrets.NOVILA_RELEASE_STORE_PASSWORD }}
+          NOVILA_RELEASE_KEY_PASSWORD: ${{ secrets.NOVILA_RELEASE_KEY_PASSWORD }}
+          NOVILA_RELEASE_KEY_ALIAS: ${{ vars.NOVILA_RELEASE_KEY_ALIAS }}
+          GCP_PLAY_WORKLOAD_IDENTITY_PROVIDER: ${{ vars.GCP_PLAY_WORKLOAD_IDENTITY_PROVIDER }}
+          GCP_PLAY_SERVICE_ACCOUNT: ${{ vars.GCP_PLAY_SERVICE_ACCOUNT }}
+          EVENT_NAME: ${{ github.event_name }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          # A manual run must come from main: publishing a random branch on purpose is a
+          # mistake, and tags are the other, explicit way to release.
+          if [ "$EVENT_NAME" = "workflow_dispatch" ] && [ "$REF_NAME" != "main" ]; then
+            echo "::error title=Wrong branch::Manual runs are only allowed from main, not $REF_NAME"
+            exit 1
+          fi
+          missing=0
+          for name in GCP_PLAY_WORKLOAD_IDENTITY_PROVIDER GCP_PLAY_SERVICE_ACCOUNT \
+                      NOVILA_RELEASE_KEYSTORE_BASE64 NOVILA_RELEASE_STORE_PASSWORD \
+                      NOVILA_RELEASE_KEY_PASSWORD NOVILA_RELEASE_KEY_ALIAS; do
+            # Only the name, never the value: secrets must not appear in logs.
+            [ -n "${!name}" ] || { echo "::error title=Missing configuration::$name is not set"; missing=1; }
+          done
+          [ "$missing" = 0 ] || echo "::error::One-time setup lives in docs/RELEASE.md (scripts/bootstrap-play.sh, scripts/generate-release-keystore.sh)"
+          exit $missing
+
+      # For a tag the notes cover everything since the previous release run; for a hand run,
+      # everything since the last successful one on main.
+      - name: Check out code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # full history, so the release notes can list everything since the last release
+          persist-credentials: false
+
+      - uses: ./.github/actions/setup-gradle-build
+        with:
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+
+      - name: Decode upload keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.NOVILA_RELEASE_KEYSTORE_BASE64 }}
+        run: |
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/upload.jks"
+          chmod 600 "$RUNNER_TEMP/upload.jks"
+
+      # Gradle Play Publisher reads release notes from app/src/main/play/release-notes/<lang>/<track>.txt;
+      # "default.txt" applies to every track.
+      - name: Write release notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # The last successful release run of this workflow, wherever it ran (tag or main):
+          # tag runs have head_branch = the tag, so filtering on branch=main would miss them.
+          prev=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/release.yml/runs?status=success&per_page=1" \
+            --jq '.workflow_runs[0].head_sha // empty' || true)
+          mkdir -p app/src/main/play/release-notes/en-US
+          # Play limits release notes to 500 characters; whole lines only, so a cut can never
+          # split a multi-byte character (invalid UTF-8 would make the Play API reject it).
+          scripts/release-notes.sh "$GITHUB_SHA" "$prev" | awk 'length($0) + total <= 480 { print; total += length($0) + 1 }' \
+            > app/src/main/play/release-notes/en-US/default.txt
+          cat app/src/main/play/release-notes/en-US/default.txt
+
+      # Exchanges the GitHub OIDC token for short-lived Google credentials and exports
+      # GOOGLE_APPLICATION_CREDENTIALS, which Gradle Play Publisher picks up as
+      # Application Default Credentials (play.useApplicationDefaultCredentials).
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
+        with:
+          workload_identity_provider: ${{ vars.GCP_PLAY_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_PLAY_SERVICE_ACCOUNT }}
+
+      # Builds the signed release AAB (R8, upload key from the decoded keystore) and uploads
+      # it to the chosen Play track. The build fails early if signing is misconfigured.
+      - name: Publish release bundle to Google Play
+        env:
+          VERSION_CODE: ${{ github.run_number }}
+          NOVILA_RELEASE_STORE_PASSWORD: ${{ secrets.NOVILA_RELEASE_STORE_PASSWORD }}
+          NOVILA_RELEASE_KEY_PASSWORD: ${{ secrets.NOVILA_RELEASE_KEY_PASSWORD }}
+          NOVILA_RELEASE_KEY_ALIAS: ${{ vars.NOVILA_RELEASE_KEY_ALIAS }}
+          NOVILA_RELEASE_KEYSTORE: ${{ runner.temp }}/upload.jks
+          TRACK: ${{ inputs.track || 'internal' }}
+        run: |
+          set -o pipefail
+          ./gradlew :app:publishReleaseBundle --track "$TRACK" 2>&1 | tee build.log
+
+      - name: Annotate failures
+        if: failure()
+        run: |
+          [ -f build.log ] || exit 0
+          { grep -E '^e: ' build.log; grep -A3 '^\* What went wrong' build.log | grep -vE '^\* What went wrong|^--$|^\s*$'; } \
+            | grep -v '^> Task ' | awk '!seen[$0]++' | head -10 \
+            | while IFS= read -r line; do echo "::error title=Gradle::${line}"; done || true
+
+      - name: Remove keystore
+        if: always()
+        run: rm -f "$RUNNER_TEMP/upload.jks"
+
+      # The AAB that was uploaded, for the record (Play re-signs it with the app-signing key).
+      - name: Upload AAB artifact
+        if: success()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: novila-aab-${{ github.run_number }}
+          path: app/build/outputs/bundle/release/*.aab
+          retention-days: 90

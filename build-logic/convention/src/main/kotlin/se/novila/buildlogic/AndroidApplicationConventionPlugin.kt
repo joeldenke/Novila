@@ -2,6 +2,7 @@ package se.novila.buildlogic
 
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
+import com.github.triplet.gradle.play.PlayPublisherExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.PathSensitivity
@@ -12,12 +13,14 @@ import org.gradle.kotlin.dsl.withType
 /**
  * `novila.android.application`: the app module. Everything about the APK is decided here, so `app/build.gradle.kts`
  * only lists plugins and dependencies: application id, version, signing, build types, locales, lint over all
- * modules, and the badging check of the built APK (see Badging.kt).
+ * modules, the badging check of the built APK (see Badging.kt), and Google Play publishing (Gradle Play Publisher,
+ * used only by the release workflow; see docs/RELEASE.md).
  */
 class AndroidApplicationConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             pluginManager.apply("com.android.application")
+            pluginManager.apply("com.github.triplet.play")
             novilaExtension()
 
             extensions.configure<ApplicationExtension> {
@@ -62,6 +65,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 disableUnusedTests()
                 configureBadging(this)
             }
+            configurePlayPublisher()
             // ArchitectureTest reads every module's sources and build file, so they are inputs of the app's tests:
             // a change anywhere reruns it instead of reusing a cached result.
             val root = isolated.rootProject.projectDirectory
@@ -75,6 +79,23 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                     .withPropertyName("architectureSources")
                     .withPathSensitivity(PathSensitivity.RELATIVE)
             }
+        }
+    }
+
+    /**
+     * Google Play publishing (Gradle Play Publisher), used only by the "Release to Google Play" workflow
+     * (release.yml). The app-signing key lives with Google Play (Play App Signing); CI signs the bundle with the
+     * upload key from CI secrets and uploads it to the internal track. Credentials come from Application Default
+     * Credentials, which the workflow's Workload Identity Federation auth exports — no JSON key anywhere.
+     * Publishing never runs from local builds unless someone runs a publish task on purpose; see docs/RELEASE.md.
+     */
+    private fun Project.configurePlayPublisher() {
+        extensions.configure<PlayPublisherExtension> {
+            defaultToAppBundles.set(true)
+            track.set("internal")
+            // GOOGLE_APPLICATION_CREDENTIALS, written by google-github-actions/auth from an OIDC token.
+            useApplicationDefaultCredentials.set(true)
+            // The workflow passes --track on the command line when a different track is wanted.
         }
     }
 

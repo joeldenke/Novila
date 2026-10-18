@@ -7,5 +7,11 @@ local.properties
 .DS_Store
 release-notes.txt
 
+# Release keystores never enter git (except the debug key, which is tracked on purpose).
+# The upload keystore lives in GitHub secrets and a password manager; see docs/RELEASE.md.
+*.jks
+*.keystore
+!app/debug.keystore
+
 # Python packages used by one-off tools; never commit them.
 *.whl

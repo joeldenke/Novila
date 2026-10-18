@@ -10,7 +10,7 @@ A module's `build.gradle.kts` contains only plugins, the `novila { }` block and 
 
 | Plugin id | Use it for | What it sets |
 |---|---|---|
-| `novila.android.application` | `:app` | AGP application: application id, version, signing, build types, locales, lint over all modules (`checkDependencies`), badging tasks (`Badging.kt`) |
+| `novila.android.application` | `:app` | AGP application: application id, version, signing, build types, locales, lint over all modules (`checkDependencies`), badging tasks (`Badging.kt`), Google Play publishing (Gradle Play Publisher, used by `release.yml`; see `docs/RELEASE.md`) |
 | `novila.android.library` | Android library modules | AGP library, compileSdk/minSdk, Java 17, lint policy, namespace from the module path |
 | `novila.android.feature` | `:feature:*` | library + Compose + screenshot tests + navigation, and `:core:designsystem` and `:core:ui` |
 | `novila.android.compose` | modules with Compose UI | Compose compiler, Compose BOM, preview tooling, compiler reports with `-Pnovila.composeReports=true` |

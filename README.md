@@ -109,6 +109,9 @@ writes the code in a branch and opens a pull request, and CI is the only proof t
 2. The pull request is merged when CI is green.
 3. **Distribute to testers** builds debug and release (R8) and sends the debug app to testers through Firebase App
    Distribution, with release notes from the merged pull requests.
+4. **Release to Google Play** builds a signed app bundle and publishes it to a Play track (internal by default)
+   when a `v*` tag is pushed or the workflow is run by hand from main. One-time setup, keystore handling and
+   credential backup: [docs/RELEASE.md](docs/RELEASE.md).
 
 `CLAUDE.md` holds the project's rules and known pitfalls (Swedish), and Google's
 [Android skills](https://github.com/android/skills) are enabled for Claude Code in this repository.

@@ -118,6 +118,11 @@ Strängar och ikoner ligger i modulen som använder dem; det flera moduler anvä
   och rätta tills den är grön. Säg aldrig att något fungerar utan grönt CI.
 - När PR:en mergas skickar `Distribute to testers` debug-APK:n (`se.novila.debug`) via Firebase App Distribution.
   Samma körning bygger även release (R8), signerad bara om release-nyckeln finns i GitHub-hemligheterna.
+- `Release to Google Play` (`release.yml`) bygger en signerad AAB (Gradle Play Publisher, `com.github.triplet.play`)
+  och publicerar den till Play-spåret `internal` vid ett `v*`-tagg eller manuell körning från `main`, aldrig vid PR.
+  Google nås med Workload Identity Federation (`scripts/bootstrap-play.sh`), upload-nyckeln kommer från samma
+  hemligheter som distribute-signeringen (`scripts/generate-release-keystore.sh` en gång lokalt). Google Play App
+  Signing äger app-signingsnyckeln; reset av upload-nyckeln finns i `docs/RELEASE.md` — hela setupen där.
 
 ## Kvalitet
 - **Lint-policy:** `lint.xml` i roten sätter projektets regler och orsaker. Höj inte lint-fel till varningar

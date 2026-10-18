@@ -31,6 +31,9 @@ composablePreviewScanner = "0.9.3"
 spotless = "8.10.4"
 ktlint = "1.8.0"
 kover = "0.9.11"
+# Gradle Play Publisher: uploads the release AAB to a Play track from CI (release.yml).
+# Service-account auth via Application Default Credentials, set up by scripts/bootstrap-play.sh.
+gpp = "4.1.1"
 
 # Android platform
 compileSdk = "37"
@@ -89,6 +92,8 @@ android-gradle-api = { module = "com.android.tools.build:gradle-api", version.re
 compose-gradle-plugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 # Kover's DSL, for the coverage variant every module shares (build-logic Kover.kt).
 kover-gradle-plugin = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", version.ref = "kover" }
+# Play Publisher's API, compileOnly in build-logic; the root build puts the plugin on the classpath.
+play-publisher = { module = "com.github.triplet.gradle:play-publisher", version.ref = "gpp" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -99,6 +104,7 @@ roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+triplet-play = { id = "com.github.triplet.play", version.ref = "gpp" }
 
 # Convention plugins from build-logic (no version: they come from the included build).
 novila-android-application = { id = "novila.android.application" }

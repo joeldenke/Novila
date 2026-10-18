@@ -26,6 +26,7 @@ dependencies {
     compileOnly(libs.compose.gradle.plugin)
     compileOnly(libs.kotlin.gradle.plugin)
     compileOnly(libs.kover.gradle.plugin)
+    compileOnly(libs.play.publisher)
 }
 
 tasks {
