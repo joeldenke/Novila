@@ -305,6 +305,14 @@
     <string name="overview_log_other">Logga ett pass</string>
     <string name="cardio_log_title">Logga ett pass</string>
 
+    <!-- Veckoavstämningen på Träning -->
+    <string name="review_title">Veckoavstämning</string>
+    <plurals name="review_done">
+        <item quantity="one">%1$d av %2$d pass klara</item>
+        <item quantity="other">%1$d av %2$d pass klara</item>
+    </plurals>
+    <string name="review_next">Nästa vecka: %1$d pass, %2$d minuter.</string>
+
     <!-- En dags pass, och övningsbiblioteket -->
     <string name="session_title">Pass på %1$s</string>
     <string name="session_open">Visa passet</string>

@@ -309,6 +309,14 @@
     <string name="overview_log_other">Log a workout</string>
     <string name="cardio_log_title">Log a workout</string>
 
+    <!-- The weekly review on Training -->
+    <string name="review_title">Weekly review</string>
+    <plurals name="review_done">
+        <item quantity="one">%1$d session of %2$d done</item>
+        <item quantity="other">%1$d sessions of %2$d done</item>
+    </plurals>
+    <string name="review_next">Next week: %1$d sessions, %2$d minutes.</string>
+
     <!-- One day's session, and the exercise library -->
     <string name="session_title">Session on %1$s</string>
     <string name="session_open">Show the session</string>
