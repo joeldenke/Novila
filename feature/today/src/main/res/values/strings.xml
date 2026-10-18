@@ -2,12 +2,29 @@
 <resources>
     <!-- Mood -->
     <string name="mood_title">Today\'s mood</string>
+    <string name="mood_label">Mood</string>
     <string name="mood_1">Bad</string>
     <string name="mood_2">Not great</string>
     <string name="mood_3">Okay</string>
     <string name="mood_4">Good</string>
     <string name="mood_5">Great</string>
     <string name="mood_hint">How do you feel today?</string>
+    <string name="energy_label">Energy</string>
+    <string name="energy_1">Exhausted</string>
+    <string name="energy_2">Low</string>
+    <string name="energy_3">Okay</string>
+    <string name="energy_4">Good</string>
+    <string name="energy_5">Full of energy</string>
+    <string name="energy_hint">How much energy do you have today?</string>
+    <string name="stress_label">Stress</string>
+    <string name="stress_1">Calm</string>
+    <string name="stress_2">Mostly calm</string>
+    <string name="stress_3">Tense</string>
+    <string name="stress_4">Stressed</string>
+    <string name="stress_5">Very stressed</string>
+    <string name="stress_hint">How stressed do you feel today?</string>
+    <string name="diary_label">Diary</string>
+    <string name="diary_hint">One line about your day</string>
 
     <!-- Today -->
     <string name="greeting_morning">Good morning</string>
