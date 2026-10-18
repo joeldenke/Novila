@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import se.novila.model.DayEntry
 import se.novila.model.FoodGroup
@@ -12,6 +13,7 @@ import se.novila.model.formatHours
 import se.novila.ui.R
 import java.text.NumberFormat
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
@@ -35,6 +37,18 @@ fun durationText(minutes: Int): String {
         rest == 0 -> stringResource(R.string.duration_hours, hours)
         else -> stringResource(R.string.duration_hours_minutes, hours, rest)
     }
+}
+
+/** A time of day as the phone shows it: "23:15", or "11:15 PM" with a 12-hour clock. */
+@Composable
+fun clockText(time: LocalTime): String {
+    val locale = currentLocale()
+    val is24Hour = android.text.format.DateFormat.is24HourFormat(LocalContext.current)
+    val pattern = if (is24Hour) "Hm" else "hm"
+    val formatter = remember(locale, is24Hour) {
+        DateTimeFormatter.ofPattern(android.text.format.DateFormat.getBestDateTimePattern(locale, pattern), locale)
+    }
+    return time.format(formatter)
 }
 
 /** A number with at most one decimal, in the locale's style, e.g. "3.8" / "3,8". */

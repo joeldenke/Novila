@@ -17,7 +17,7 @@ samband som de andra inte har. Handloggning finns kvar som reserv för den som i
 |---|---|---|
 | Idag | Hälsning med namn, dagens balans (ringar), en ruta per del, insikter, veckans sömn och kost, mående | Snyggt, men bara veckan |
 | Träning | Veckoprogram (WHO), coach med mål, dagar, fokus och hänsyn, rehab (knä, ländrygg, fas 1–3), 13 illustrerade övningar, passläge med timer, konditionspass (loggade och från Health Connect), RPE och smärta efter passet, Gemini Nano-kommentar | Appens starkaste del |
-| Sömn | Läggtid och uppvakning (eller klockans natt från Health Connect), kvalitet och orsaker, vad som påverkar sömnen, graf över vecka, fyra veckor eller år | Bra |
+| Sömn | Läggtid och uppvakning (eller klockans natt från Health Connect), kvalitet och orsaker, vad som påverkar sömnen, graf över vecka, fyra veckor eller år, sömncoach med läggtidsmål, kvällsrutin och råd ur egna nätter | Bra |
 | Kost | Portioner per livsmedelsgrupp, vatten mot eget mål, sött, poäng 0–100, "nästa steg", poängen över vecka, fyra veckor eller år | Bra och enkelt |
 | Rörelse | Dagens steg och aktiva kalorier, fem veckors träningspass och nätterna, från Health Connect, i förgrunden | Steg bara för i dag |
 | Inställningar | Tema, profil, egna mål, ansvarsfriskrivning, radera data | Komplett för sin nivå |
@@ -54,7 +54,7 @@ mer än kommentaren, eller data som lämnar appen.
   längd och kvalitet, med statistisk prövning och antalet nätter; veckans förändring med det som ändrades med den
 - [x] **Sömn från Health Connect** (`READ_SLEEP`) **(ok)**: klockans natt fyller i Sömn och Idag när användaren inte
   har loggat själv, bara i minnet. Sömnpåminnelsen vet inte om den (ingen bakgrundsläsning).
-- [ ] **Sömncoach:** mål för läggtid, kvällsrutin och sömnhygien (KBT-I-inspirerat)
+- [x] **Sömncoach:** mål för läggtid, kvällsrutin och sömnhygien (KBT-I-inspirerat)
 
 ### 4. Kost
 - [ ] **Måltidsloggning** ("Frukost: gröt, bär") som fyller i grupperna
@@ -91,3 +91,4 @@ mer än kommentaren, eller data som lämnar appen.
 5. Påminnelser ← klar
 6. Sömn 2.0 och sömn från Health Connect ← klar
 7. Widget på hemskärmen ← klar
+8. Sömncoach (KBT-I) ← klar

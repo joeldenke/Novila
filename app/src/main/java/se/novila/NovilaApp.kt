@@ -23,7 +23,8 @@ import se.novila.feature.settings.navigation.SettingsRoute
 import se.novila.feature.settings.navigation.settingsEntries
 import se.novila.feature.settings.navigation.settingsTitle
 import se.novila.feature.sleep.navigation.SleepRoute
-import se.novila.feature.sleep.navigation.sleepEntry
+import se.novila.feature.sleep.navigation.sleepDetailTitle
+import se.novila.feature.sleep.navigation.sleepEntries
 import se.novila.feature.today.navigation.todayEntry
 import se.novila.feature.training.navigation.TrainingRoute
 import se.novila.feature.training.navigation.trainingDetailTitle
@@ -77,7 +78,8 @@ private fun Tabs() {
     NovilaScaffold(
         // Today is a dashboard with its own greeting header instead of a title bar.
         topBar = {
-            val detailTitle = trainingDetailTitle(currentRoute) ?: settingsTitle(currentRoute)
+            val detailTitle =
+                trainingDetailTitle(currentRoute) ?: sleepDetailTitle(currentRoute) ?: settingsTitle(currentRoute)
             when {
                 detailTitle != null -> NovilaTopAppBar(
                     title = detailTitle,
@@ -121,7 +123,7 @@ private fun Tabs() {
                 contentPadding = innerPadding,
             )
             trainingEntries(navigator = navigator, contentPadding = innerPadding)
-            sleepEntry(contentPadding = innerPadding)
+            sleepEntries(navigator = navigator, contentPadding = innerPadding)
             nutritionEntry(contentPadding = innerPadding)
             settingsEntries(navigator = navigator, contentPadding = innerPadding)
         }
