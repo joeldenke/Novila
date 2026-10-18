@@ -26,18 +26,15 @@ import kotlin.math.roundToInt
  */
 class HealthConnectSource(private val context: Context) : MovementSource {
 
-    override suspend fun read(date: LocalDate): Result<MovementState> {
-        val sdkStatus = HealthConnectClient.getSdkStatus(context)
-        return healthConnectRead(
-            context = context,
-            sdkStatus = sdkStatus,
-            unavailable = checkNotNull(accessState(sdkStatus, emptySet())),
-            needsPermission = MovementState.NeedsPermission(),
-            required = { granted -> granted.any { it in MOVEMENT_PERMISSIONS } },
-        ) { client, granted ->
-            MovementState.Connected(readDay(client, date, granted))
-        }
-    }
+    override suspend fun read(date: LocalDate): Result<MovementState> = readHealthConnect(
+        context = context,
+        unavailable = ::unavailableState,
+        needsPermission = { MovementState.NeedsPermission() },
+        connected = { client, granted ->
+            accessState(HealthConnectClient.SDK_AVAILABLE, granted)
+                ?: MovementState.Connected(readDay(client, date, granted))
+        },
+    )
 
     private suspend fun readDay(client: HealthConnectClient, date: LocalDate, granted: Set<String>): TodayMovement {
         val steps = HealthPermission.getReadPermission(StepsRecord::class) in granted
@@ -64,7 +61,6 @@ class HealthConnectSource(private val context: Context) : MovementSource {
     }
 
     companion object {
-        private const val TAG = "HealthConnect"
         private const val PROVIDER_PACKAGE = "com.google.android.apps.healthdata"
 
         /** Health Connect's settings, where access can be given after the dialog was declined. */
@@ -85,7 +81,7 @@ class HealthConnectSource(private val context: Context) : MovementSource {
             try {
                 context.startActivity(intent)
             } catch (e: ActivityNotFoundException) {
-                Log.w(TAG, "No activity for ${intent.action}", e)
+                Log.w(HEALTH_CONNECT_TAG, "No activity for ${intent.action}", e)
             }
         }
     }

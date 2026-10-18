@@ -70,7 +70,7 @@ private fun sleepVsAverage(week: List<DayEntry>): Insight? {
     if (others.size < 3) return null
     val difference = lastNight - others.map { it.sleepHours }.average().toFloat()
     // Rounded to the half hour, like the hours the user logs.
-    val rounded = (difference * 2).roundToInt() / 2f
+    val rounded = difference.roundToHalfHour()
     return Insight.SleepVsAverage(rounded).takeIf { abs(difference) >= 0.75f }
 }
 

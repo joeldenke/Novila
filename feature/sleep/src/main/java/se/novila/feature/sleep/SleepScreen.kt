@@ -13,7 +13,11 @@ import se.novila.model.HistoryRange
 import se.novila.model.SleepAnalysis
 import se.novila.model.SleepFactor
 import se.novila.model.analyzeSleep
+import se.novila.sleep.SleepCoachPreferences
+import se.novila.sleep.SleepCoachWeek
 import se.novila.sleep.SleepState
+import se.novila.sleep.WindDownMoment
+import se.novila.sleep.WindDownStep
 import se.novila.ui.common.DayPicker
 import se.novila.ui.common.ScreenList
 import se.novila.ui.common.SleepHistoryCard
@@ -32,13 +36,15 @@ data class SleepActions(
     val onRange: (HistoryRange) -> Unit = {},
     val onConnectHealth: () -> Unit = {},
     val onOpenHealthSettings: () -> Unit = {},
+    val onOpenCoach: () -> Unit = {},
 )
 
 /**
  * The shown [day]'s night (times, hours, how it felt and what may have affected it), what the user's logs say about
  * their sleep ([analysis]) and the [history] up to the day, over a week, four weeks or a year. [today] is the day it
  * really is: the user can go back to an earlier day and fill in a night that was forgotten. Nights a watch recorded
- * ([watch]) fill in the ones the user didn't log, [fromWatch] when the shown one is.
+ * ([watch]) fill in the ones the user didn't log, [fromWatch] when the shown one is. [coach] is the sleep coach in
+ * short, opened from the button on it.
  */
 @Composable
 fun SleepScreen(
@@ -46,6 +52,7 @@ fun SleepScreen(
     history: History,
     goals: Goals,
     analysis: SleepAnalysis,
+    coach: SleepCoachCardState,
     actions: SleepActions,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
@@ -62,7 +69,8 @@ fun SleepScreen(
         }
         item(key = "details") { NovilaReveal(order = 1) { SleepDetailsCard(day, actions) } }
         item(key = "findings") { NovilaReveal(order = 2) { SleepFindingsCard(analysis) } }
-        item(key = "history") { NovilaReveal(order = 3) { SleepHistoryCard(history, goals, actions.onRange) } }
+        item(key = "coach") { NovilaReveal(order = 3) { SleepCoachCard(coach, actions.onOpenCoach) } }
+        item(key = "history") { NovilaReveal(order = 4) { SleepHistoryCard(history, goals, actions.onRange) } }
     }
 }
 
@@ -73,6 +81,14 @@ private fun SleepScreenContent(
     today: LocalDate = day.date,
     watch: SleepState = SleepState.Unavailable,
     fromWatch: Boolean = false,
+    coach: SleepCoachCardState = SleepCoachCardState(
+        active = false,
+        bedtime = SleepCoachPreferences().bedtime,
+        wakeTime = SleepCoachPreferences().wakeTime,
+        week = SleepCoachWeek(nearGoal = 0, logged = 0),
+        tonight = null,
+        hasSteps = false,
+    ),
 ) {
     NovilaTheme {
         SleepScreen(
@@ -80,6 +96,7 @@ private fun SleepScreenContent(
             history = history,
             goals = Goals(),
             analysis = analyzeSleep(PreviewData.days(until = today)),
+            coach = coach,
             actions = SleepActions(),
             contentPadding = PaddingValues(),
             today = today,
@@ -124,4 +141,20 @@ private fun SleepScreenConnectWatchPreview() = SleepScreenContent(
     day = PreviewData.today,
     history = PreviewData.history(HistoryRange.Week),
     watch = SleepState.NeedsPermission(),
+)
+
+/** The sleep coach is set up: goal, this week's nights and tonight's next step. */
+@Preview(showBackground = true, heightDp = 2200)
+@Composable
+private fun SleepScreenCoachPreview() = SleepScreenContent(
+    day = PreviewData.today,
+    history = PreviewData.history(HistoryRange.Week),
+    coach = SleepCoachCardState(
+        active = true,
+        bedtime = LocalTime.of(22, 30),
+        wakeTime = LocalTime.of(6, 30),
+        week = SleepCoachWeek(nearGoal = 4, logged = 6),
+        tonight = WindDownMoment(WindDownStep.ScreensOff, LocalTime.of(21, 30)),
+        hasSteps = true,
+    ),
 )

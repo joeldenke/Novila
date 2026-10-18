@@ -32,4 +32,46 @@
     <string name="sleep_findings_empty">Log your nights and days for a couple of weeks, and Novila finds what affects your sleep. %1$d of %2$d nights logged.</string>
     <string name="sleep_findings_none">Nothing stands out in your logs yet. Novila only shows a link when your nights clearly differ.</string>
     <string name="sleep_findings_footer">From your own logs, on your phone. A link isn\'t proof of cause.</string>
+
+    <!-- Sleep coach -->
+    <string name="sleep_coach_title">Sleep coach</string>
+    <string name="sleep_coach_open">Set up the sleep coach</string>
+    <string name="sleep_coach_adjust">Adjust the sleep coach</string>
+    <string name="sleep_coach_goal_title">Sleep goals</string>
+    <string name="sleep_coach_card_intro">A bedtime to aim for, an evening routine and advice from your own nights.</string>
+    <string name="sleep_coach_intro">Choose a bedtime to aim for and a wind-down routine for the evening. Novila looks at your own nights and suggests habits that tend to help sleep. Everything stays on your phone.</string>
+    <string name="sleep_coach_bedtime">Bedtime goal</string>
+    <string name="sleep_coach_wake_time">Wake-up goal</string>
+    <string name="sleep_coach_bedtime_title">When do you want to be in bed?</string>
+    <string name="sleep_coach_wake_title">When do you want to wake up?</string>
+    <string name="sleep_coach_goal_value">%1$s to %2$s</string>
+    <string name="sleep_coach_routine_title">Wind-down before bed</string>
+    <string name="sleep_coach_routine_hint">Pick the steps you want in your evening. Novila shows them at the right time before your bedtime.</string>
+    <string name="sleep_coach_step_prepare">Prepare tomorrow</string>
+    <string name="sleep_coach_step_shower">Warm shower or wash</string>
+    <string name="sleep_coach_step_screens">Screens off</string>
+    <string name="sleep_coach_step_quiet">Quiet time</string>
+    <string name="sleep_coach_step_worry">Write down worries and tomorrow\'s list</string>
+    <string name="sleep_coach_step_read">Read or stretch calmly</string>
+    <string name="sleep_coach_moment">%1$s – %2$s</string>
+    <string name="sleep_coach_week_title">This week\'s bedtime</string>
+    <string name="sleep_coach_week_value">%1$d of %2$d nights near your bedtime goal</string>
+    <string name="sleep_coach_week_none">No bedtimes logged yet.</string>
+    <string name="sleep_coach_tips_title">What Novila sees in your nights</string>
+    <string name="sleep_coach_tips_empty">Your nights are close to your goal. Keep the rhythm you have.</string>
+    <string name="sleep_coach_tips_footer">From your own logs, on your phone. A tip is advice, not a diagnosis.</string>
+    <string name="sleep_coach_tip_regular_bedtime">Your bedtimes vary. Aim to be in bed within half an hour of your goal, night after night.</string>
+    <string name="sleep_coach_tip_fixed_wake">Your wake-up times vary. A steady wake time is the best anchor for your sleep.</string>
+    <string name="sleep_coach_tip_out_of_bed">You spend a long time awake in bed. If sleep won\'t come, get up, do something calm and return when you feel sleepy. Keep the bed for sleep.</string>
+    <string name="sleep_coach_tip_short_nights">Your nights have been shorter than your goal. Keep your wake time steady and go to bed only when you feel sleepy.</string>
+    <string name="sleep_coach_tip_late_caffeine">You have often had caffeine late. Try your last cup at least six hours before bedtime.</string>
+    <string name="sleep_coach_tip_screens">You have often had screens in bed. Screens off before bed makes it easier to wind down.</string>
+    <string name="sleep_coach_tip_alcohol">You have often logged alcohol before a night. Alcohol makes sleep more broken in the second half of the night.</string>
+    <string name="sleep_coach_tip_stress">You have often logged stress before a night. Write down what is on your mind before bed, so it stays on paper.</string>
+    <string name="sleep_coach_tip_late_meal">You have often eaten late. Finish heavy meals two to three hours before bedtime.</string>
+    <string name="sleep_coach_tip_late_exercise">You have often trained late. Hard training is best at least two hours before bed.</string>
+    <string name="sleep_coach_start">Start the sleep coach</string>
+    <string name="sleep_coach_reset">Turn off the sleep coach</string>
+    <string name="sleep_coach_card_hint">Add an evening routine in the coach, and it shows the next step here.</string>
+    <string name="sleep_coach_evening_done">The evening\'s steps are done. Sleep well.</string>
 </resources>

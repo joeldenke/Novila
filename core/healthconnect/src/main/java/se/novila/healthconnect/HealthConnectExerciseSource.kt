@@ -22,18 +22,18 @@ import kotlin.time.toKotlinDuration
  */
 class HealthConnectExerciseSource(private val context: Context) : ExerciseSource {
 
-    override suspend fun read(from: LocalDate): Result<ExerciseState> {
-        val sdkStatus = HealthConnectClient.getSdkStatus(context)
-        return healthConnectRead(
-            context = context,
-            sdkStatus = sdkStatus,
-            unavailable = ExerciseState.Unavailable,
-            needsPermission = ExerciseState.NeedsPermission(),
-            required = { EXERCISE_PERMISSION in it },
-        ) { client, _ ->
-            ExerciseState.Connected(readSessions(client, from))
-        }
-    }
+    override suspend fun read(from: LocalDate): Result<ExerciseState> = readHealthConnect(
+        context = context,
+        unavailable = { ExerciseState.Unavailable },
+        needsPermission = { ExerciseState.NeedsPermission() },
+        connected = { client, granted ->
+            if (EXERCISE_PERMISSION !in granted) {
+                ExerciseState.NeedsPermission()
+            } else {
+                ExerciseState.Connected(readSessions(client, from))
+            }
+        },
+    )
 
     private suspend fun readSessions(client: HealthConnectClient, from: LocalDate): List<Exercise> {
         val exercises = mutableListOf<Exercise>()

@@ -162,7 +162,7 @@
     <string name="workout_pain_some">a bit too much</string>
     <string name="workout_pain_too_much">too much</string>
     <string name="workout_pain_care">That is more than training should hurt. Rest, and see a doctor or physiotherapist if the pain stays or gets worse.</string>
-    <string name="workout_feedback_hint">Both are optional. The coach eases or raises next week\'s dose from your answers, and suggests when to change rehab phase.</string>
+    <string name="workout_feedback_hint">Both are optional. The coach eases or raises next week\'s dose from your answers, and suggests when to change level.</string>
     <string name="muscle_chest">chest</string>
     <string name="muscle_shoulders">shoulders</string>
     <string name="muscle_biceps">biceps</string>
@@ -232,37 +232,37 @@
     <string name="coach_note_quiet">No jumping, so it works in an apartment.</string>
     <string name="coach_note_cardio_low">The program has %1$d minutes of cardio. WHO recommends at least 150 a week, so add brisk walks in everyday life too.</string>
     <string name="coach_note_cardio_progression">Cardio builds on your recent workouts and rises by at most a tenth a week.</string>
-    <string name="coach_goal_rehab">Rehab</string>
-    <string name="exercise_rehab">Rehab session</string>
-    <string name="rehab_session_title">Rehab on %1$s</string>
+    <string name="coach_goal_rehab">Gentle training</string>
+    <string name="exercise_rehab">Gentle session</string>
+    <string name="rehab_session_title">Gentle session on %1$s</string>
     <string name="rehab_session_summary">Slow, controlled exercises, about %1$d minutes. Tap an exercise to see how it is done.</string>
-    <string name="coach_rehab_title">Rehab</string>
+    <string name="coach_rehab_title">Gentle training</string>
     <string name="coach_rehab_knee">Knee</string>
     <string name="coach_rehab_lower_back">Lower back</string>
-    <string name="coach_rehab_phase">Phase</string>
+    <string name="coach_rehab_phase">Level</string>
     <string name="coach_rehab_phase_value">%1$d of %2$d: %3$s</string>
     <string name="coach_rehab_phase_1">a gentle start</string>
     <string name="coach_rehab_phase_2">building strength</string>
-    <string name="coach_rehab_phase_3">back to everyday life and training</string>
-    <string name="coach_rehab_easier">Earlier phase</string>
-    <string name="coach_rehab_harder">Later phase</string>
-    <string name="coach_rehab_safety">The rehab program is a support, not care. If a physiotherapist has given you exercises, follow them. Seek care for severe or increasing pain, swelling or numbness.</string>
+    <string name="coach_rehab_phase_3">everyday life and regular training</string>
+    <string name="coach_rehab_easier">Easier level</string>
+    <string name="coach_rehab_harder">Harder level</string>
+    <string name="coach_rehab_safety">The program is general training, not care. If a physiotherapist has given you exercises, follow them. Seek care for severe or increasing pain, swelling or numbness.</string>
     <string name="coach_rehab_safety_knee">Seek care if the knee locks, gives way or swells up.</string>
     <string name="coach_rehab_safety_lower_back">Seek care at once for numbness around the groin, trouble passing urine or growing weakness in the legs.</string>
-    <string name="coach_note_goal_rehab">Rehab: slow, controlled exercises three days a week with a rest day in between, and walks on the other days.</string>
-    <string name="coach_note_rehab_phase">%1$s, phase %2$d of %3$d. Move on when the sessions feel easy and the pain does not increase the day after, often after a couple of weeks.</string>
-    <string name="coach_note_pain">Pain up to 3 out of 10 during a session is fine if it has settled by the next morning. If it gets worse, go back a phase.</string>
+    <string name="coach_note_goal_rehab">Gentle training: slow, controlled exercises three days a week with a rest day in between, and walks on the other days.</string>
+    <string name="coach_note_rehab_phase">%1$s, level %2$d of %3$d. Move on when the sessions feel easy and the pain does not increase the day after, often after a couple of weeks.</string>
+    <string name="coach_note_pain">Pain up to 3 out of 10 during a session is fine if it has settled by the next morning. If it gets worse, go back a level.</string>
     <string name="coach_note_effort_pain">The latest session hurt %1$d of 10, so the coach takes away one set per exercise this week. See a doctor or physiotherapist if the pain stays.</string>
     <string name="coach_note_effort_easier">The latest sessions felt %1$d of 10, close to all you have. The coach takes away one set per exercise this week, so you recover.</string>
     <string name="coach_note_effort_same">The latest sessions felt %1$d of 10. Just right, so the dose stays.</string>
     <string name="coach_note_effort_harder">The latest sessions felt only %1$d of 10. The coach adds two repetitions, or ten seconds, per set.</string>
-    <string name="coach_note_rehab_move_on">%1$d sessions in a row with pain at most 3 of 10. The coach suggests moving on to phase %2$d.</string>
-    <string name="coach_note_rehab_keep_going">%1$d of %2$d calm sessions in this phase. After %2$d sessions in a row with pain at most 3 of 10, the coach suggests the next phase.</string>
-    <string name="coach_note_rehab_stay">The latest session hurt %1$d of 10. Stay in this phase until the pain is at most 3 of 10 and has settled by the next morning.</string>
-    <string name="coach_note_rehab_step_back">The latest session hurt %1$d of 10, more than the program should. The coach suggests going back to phase %2$d.</string>
-    <string name="coach_note_rehab_seek_care">The latest session hurt %1$d of 10 already in the first phase. Rest for a few days and talk to a physiotherapist or your health centre before going on.</string>
-    <string name="coach_note_rehab_done">The last phase is calm: %1$d sessions in a row with pain at most 3 of 10. Keep going, or change the goal to Health for ordinary training.</string>
-    <string name="coach_rehab_change_phase">Change to phase %1$d</string>
+    <string name="coach_note_rehab_move_on">%1$d sessions in a row with pain at most 3 of 10. The coach suggests moving on to level %2$d.</string>
+    <string name="coach_note_rehab_keep_going">%1$d of %2$d calm sessions at this level. After %2$d sessions in a row with pain at most 3 of 10, the coach suggests the next level.</string>
+    <string name="coach_note_rehab_stay">The latest session hurt %1$d of 10. Stay at this level until the pain is at most 3 of 10 and has settled by the next morning.</string>
+    <string name="coach_note_rehab_step_back">The latest session hurt %1$d of 10, more than the program should. The coach suggests going back to level %2$d.</string>
+    <string name="coach_note_rehab_seek_care">The latest session hurt %1$d of 10 already at the first level. Rest for a few days and talk to a physiotherapist or your health centre before going on.</string>
+    <string name="coach_note_rehab_done">The last level is calm: %1$d sessions in a row with pain at most 3 of 10. Keep going, or change the goal to Health for ordinary training.</string>
+    <string name="coach_rehab_change_phase">Change to level %1$d</string>
     <string name="coach_ai_title">The coach\'s comment</string>
     <string name="coach_ai_unavailable">Gemini Nano is not available on this phone, so the coach explains the week with its own reasons above.</string>
     <string name="coach_ai_downloadable">Your phone can run Gemini Nano, Google\'s AI model that runs on the phone. Get it and the coach can explain your week in its own words. Your plan and answers never leave the phone.</string>
@@ -308,6 +308,14 @@
     <string name="overview_day_today">Today, %1$s</string>
     <string name="overview_log_other">Log a workout</string>
     <string name="cardio_log_title">Log a workout</string>
+
+    <!-- The weekly review on Training -->
+    <string name="review_title">Weekly review</string>
+    <plurals name="review_done">
+        <item quantity="one">%1$d session of %2$d done</item>
+        <item quantity="other">%1$d sessions of %2$d done</item>
+    </plurals>
+    <string name="review_next">Next week: %1$d sessions, %2$d minutes.</string>
 
     <!-- One day's session, and the exercise library -->
     <string name="session_title">Session on %1$s</string>

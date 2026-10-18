@@ -23,9 +23,14 @@ import se.novila.model.HistoryRange
 import se.novila.model.SleepAnalysis
 import se.novila.model.SleepFactor
 import se.novila.model.analyzeSleep
+import se.novila.sleep.SleepCoachPreferences
+import se.novila.sleep.SleepCoachWeek
 import se.novila.sleep.SleepState
+import se.novila.sleep.WindDownMoment
+import se.novila.sleep.WindDownStep
 import se.novila.ui.preview.PreviewData
 import java.time.LocalDate
+import java.time.LocalTime
 
 @RunWith(RobolectricTestRunner::class)
 class SleepScreenTest {
@@ -35,6 +40,14 @@ class SleepScreenTest {
         day: DayEntry = PreviewData.today,
         range: HistoryRange = HistoryRange.Week,
         analysis: SleepAnalysis = analyzeSleep(PreviewData.days()),
+        coach: SleepCoachCardState = SleepCoachCardState(
+            active = false,
+            bedtime = SleepCoachPreferences().bedtime,
+            wakeTime = SleepCoachPreferences().wakeTime,
+            week = SleepCoachWeek(nearGoal = 0, logged = 0),
+            tonight = null,
+            hasSteps = false,
+        ),
         actions: SleepActions = SleepActions(),
         watch: SleepState = SleepState.Unavailable,
         fromWatch: Boolean = false,
@@ -46,6 +59,7 @@ class SleepScreenTest {
                     history = PreviewData.history(range, until = day.date),
                     goals = Goals(),
                     analysis = analysis,
+                    coach = coach,
                     actions = actions,
                     contentPadding = PaddingValues(),
                     today = PreviewData.date,
@@ -130,5 +144,41 @@ class SleepScreenTest {
         )
         scrollTo("Open Health Connect").performClick()
         assertEquals(1, settings)
+    }
+
+    @Test fun `before the sleep coach is set up it says what it is and how to open it`() {
+        var opened = 0
+        show(actions = SleepActions(onOpenCoach = { opened++ }))
+        scrollTo("A bedtime to aim for", substring = true).assertExists()
+        scrollTo("Set up the sleep coach").performClick()
+        assertEquals(1, opened)
+    }
+
+    @Test fun `the set up sleep coach shows its goal, the week and tonight's step`() {
+        val coach = SleepCoachCardState(
+            active = true,
+            bedtime = SleepCoachPreferences().bedtime,
+            wakeTime = SleepCoachPreferences().wakeTime,
+            week = SleepCoachWeek(nearGoal = 4, logged = 6),
+            tonight = WindDownMoment(WindDownStep.ScreensOff, LocalTime.of(21, 30)),
+            hasSteps = true,
+        )
+        show(coach = coach)
+        scrollTo("4 of 6 nights near your bedtime goal", substring = true).assertExists()
+        scrollTo("Screens off", substring = true).assertExists()
+        scrollTo("Adjust the sleep coach").assertExists()
+    }
+
+    @Test fun `the sleep coach card says the evening's steps are done when none are left`() {
+        val coach = SleepCoachCardState(
+            active = true,
+            bedtime = SleepCoachPreferences().bedtime,
+            wakeTime = SleepCoachPreferences().wakeTime,
+            week = SleepCoachWeek(nearGoal = 2, logged = 3),
+            tonight = null,
+            hasSteps = true,
+        )
+        show(coach = coach)
+        scrollTo("The evening's steps are done", substring = true).assertExists()
     }
 }

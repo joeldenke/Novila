@@ -27,7 +27,7 @@ import se.novila.model.Reminder
 import se.novila.model.ReminderSetting
 import se.novila.model.Reminders
 import se.novila.ui.common.ScreenList
-import se.novila.ui.common.timeText
+import se.novila.ui.common.clockText
 import java.time.LocalTime
 import se.novila.ui.R as UiR
 
@@ -92,7 +92,7 @@ private fun ReminderCard(reminder: Reminder, setting: ReminderSetting, actions: 
             NovilaListRow(
                 title = stringResource(R.string.reminders_time),
                 onClick = { choosingTime = true },
-                trailing = { NovilaText(timeText(setting.time), style = NovilaTheme.typography.titleMedium) },
+                trailing = { NovilaText(clockText(setting.time), style = NovilaTheme.typography.titleMedium) },
             )
         }
     }

@@ -26,6 +26,12 @@ val SLEEP_PERMISSION: String = HealthPermission.getReadPermission(SleepSessionRe
  */
 val HEALTH_PERMISSIONS: Set<String> = MOVEMENT_PERMISSIONS + EXERCISE_PERMISSION + SLEEP_PERMISSION
 
+/** The state when Health Connect can't be read at all: not on the device, or too old to run. */
+internal fun unavailableState(sdkStatus: Int): MovementState = when (sdkStatus) {
+    HealthConnectClient.SDK_UNAVAILABLE_PROVIDER_UPDATE_REQUIRED -> MovementState.NeedsInstall
+    else -> MovementState.Unavailable
+}
+
 /**
  * The state to show without reading any data, or null when there is something to read.
  * Partial access is fine: whatever the user shared is shown, the rest stays empty.
@@ -34,7 +40,5 @@ fun accessState(sdkStatus: Int, granted: Set<String>): MovementState? = when (sd
     HealthConnectClient.SDK_AVAILABLE ->
         if (granted.any { it in MOVEMENT_PERMISSIONS }) null else MovementState.NeedsPermission()
 
-    HealthConnectClient.SDK_UNAVAILABLE_PROVIDER_UPDATE_REQUIRED -> MovementState.NeedsInstall
-
-    else -> MovementState.Unavailable
+    else -> unavailableState(sdkStatus)
 }

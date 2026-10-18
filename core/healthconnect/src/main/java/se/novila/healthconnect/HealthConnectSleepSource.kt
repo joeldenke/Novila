@@ -23,18 +23,18 @@ import java.time.ZoneOffset
  */
 class HealthConnectSleepSource(private val context: Context) : SleepSource {
 
-    override suspend fun read(from: LocalDate): Result<SleepState> {
-        val sdkStatus = HealthConnectClient.getSdkStatus(context)
-        return healthConnectRead(
-            context = context,
-            sdkStatus = sdkStatus,
-            unavailable = SleepState.Unavailable,
-            needsPermission = SleepState.NeedsPermission(),
-            required = { SLEEP_PERMISSION in it },
-        ) { client, _ ->
-            SleepState.Connected(nightsOf(readSessions(client, from)).filter { it.date >= from })
-        }
-    }
+    override suspend fun read(from: LocalDate): Result<SleepState> = readHealthConnect(
+        context = context,
+        unavailable = { SleepState.Unavailable },
+        needsPermission = { SleepState.NeedsPermission() },
+        connected = { client, granted ->
+            if (SLEEP_PERMISSION !in granted) {
+                SleepState.NeedsPermission()
+            } else {
+                SleepState.Connected(nightsOf(readSessions(client, from)).filter { it.date >= from })
+            }
+        },
+    )
 
     private suspend fun readSessions(client: HealthConnectClient, from: LocalDate): List<SleepSession> {
         val sessions = mutableListOf<SleepSession>()

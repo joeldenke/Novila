@@ -6,41 +6,49 @@ import android.util.Log
 import androidx.health.connect.client.HealthConnectClient
 import java.io.IOException
 
+/** The tag every Health Connect log line uses. */
+internal const val HEALTH_CONNECT_TAG = "HealthConnect"
+
 /**
- * One Health Connect read for every source: the SDK check, the permission check and the errors that make a read
- * impossible, which used to be repeated in each source. [connected] runs with the client and the granted permissions
- * when there is something to read; otherwise the result is [unavailable] (Health Connect missing or outdated) or
- * [needsPermission] (nothing shared, or access revoked between the check and the read). Failures are logged here,
- * once, so a broken read is diagnosable from a single place.
+ * One Health Connect read, shared by every source: the SDK status check, the client, the granted permissions and
+ * the same error handling, so the three sources can never drift apart in what they do on a failure.
+ *
+ * - No Health Connect, or one that has to be updated, is [unavailable] with the SDK status, so the caller can tell
+ *   a missing provider from one that needs an update.
+ * - [needsPermission] both before the read (nothing granted) and when access is revoked between the check and the
+ *   read (a [SecurityException]); either way the UI asks the user to connect.
+ * - A temporary problem ([RemoteException], [IOException] or [IllegalStateException], such as the rate limit) is a
+ *   failed [Result], so the repository keeps what it showed.
+ *
+ * [sdkStatus] and [open] are seams: tests drive the flow without a real Health Connect client.
  */
-internal suspend fun <T> healthConnectRead(
+internal suspend fun <T> readHealthConnect(
     context: Context,
-    sdkStatus: Int,
-    unavailable: T,
-    needsPermission: T,
-    required: (Set<String>) -> Boolean,
-    connected: suspend (HealthConnectClient, Set<String>) -> T,
+    unavailable: (sdkStatus: Int) -> T,
+    needsPermission: () -> T,
+    connected: suspend (client: HealthConnectClient, granted: Set<String>) -> T,
+    sdkStatus: (Context) -> Int = { HealthConnectClient.getSdkStatus(it) },
+    open: (Context) -> HealthConnectClient = { HealthConnectClient.getOrCreate(it) },
 ): Result<T> {
-    if (sdkStatus != HealthConnectClient.SDK_AVAILABLE) return Result.success(unavailable)
+    val status = sdkStatus(context)
+    if (status != HealthConnectClient.SDK_AVAILABLE) return Result.success(unavailable(status))
     return try {
-        val client = HealthConnectClient.getOrCreate(context)
+        val client = open(context)
         val granted = client.permissionController.getGrantedPermissions()
-        Result.success(if (required(granted)) connected(client, granted) else needsPermission)
+        Result.success(connected(client, granted))
     } catch (e: SecurityException) {
         // Revoked between the check and the read.
-        Log.w(TAG, "Health Connect access revoked", e)
-        Result.success(needsPermission)
+        Log.w(HEALTH_CONNECT_TAG, "Health Connect access revoked", e)
+        Result.success(needsPermission())
     } catch (e: RemoteException) {
-        Log.w(TAG, "Health Connect not reachable", e)
+        Log.w(HEALTH_CONNECT_TAG, "Health Connect not reachable", e)
         Result.failure(e)
     } catch (e: IOException) {
-        Log.w(TAG, "Health Connect read failed", e)
+        Log.w(HEALTH_CONNECT_TAG, "Health Connect read failed", e)
         Result.failure(e)
     } catch (e: IllegalStateException) {
         // For example the rate limit, or Health Connect being updated.
-        Log.w(TAG, "Health Connect read failed", e)
+        Log.w(HEALTH_CONNECT_TAG, "Health Connect read failed", e)
         Result.failure(e)
     }
 }
-
-private const val TAG = "HealthConnect"

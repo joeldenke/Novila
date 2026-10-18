@@ -30,12 +30,33 @@ object PreviewData {
         water: Int,
         mood: Int,
         food: FoodLog,
-    ) = DayEntry(date.minusDays(daysAgo), waterGlasses = water, sleepHours = sleep, mood = mood, food = food)
+        energy: Int = 0,
+        stress: Int = 0,
+        diary: String = "",
+    ) = DayEntry(
+        date.minusDays(daysAgo),
+        waterGlasses = water,
+        sleepHours = sleep,
+        mood = mood,
+        energy = energy,
+        stress = stress,
+        diary = diary,
+        food = food,
+    )
 
     /** Who the previews are about. */
     val profile = Profile(name = "Alex", birthYear = 1990, heightCm = 178, weightKg = 74)
 
-    val today = day(0, sleep = 7.5f, water = 5, mood = 4, food = FoodLog(3, 2, 2, 1))
+    val today = day(
+        0,
+        sleep = 7.5f,
+        water = 5,
+        mood = 4,
+        food = FoodLog(3, 2, 2, 1),
+        energy = 4,
+        stress = 2,
+        diary = "Long walk after work. Legs heavy, head clear.",
+    )
 
     val movement = MovementState.Connected(TodayMovement(steps = 8412, activeKilocalories = 312))
 

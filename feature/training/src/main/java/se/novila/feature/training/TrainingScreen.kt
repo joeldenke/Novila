@@ -21,7 +21,8 @@ import java.time.DayOfWeek
 
 /**
  * The Training tab, most useful first: the week at a glance with today's one main action, a few actions that fit
- * right now, the next strength session, the week's program, movement from Health Connect and the exercise library.
+ * right now, the next strength session, the week's program, the weekly review of what's done and what next week
+ * holds, movement from Health Connect and the exercise library.
  */
 @Composable
 fun TrainingScreen(
@@ -71,6 +72,11 @@ fun TrainingScreen(
         item(key = "program") {
             NovilaReveal(order = 3) {
                 TrainingProgramCard(state.program, today, state.weekDone, onOpenSession = actions.onOpenSession)
+            }
+        }
+        state.weeklyReview()?.let { review ->
+            item(key = "review") {
+                NovilaReveal(order = 4) { WeeklyReviewCard(review) }
             }
         }
         item(key = "movement") {
@@ -142,13 +148,14 @@ private fun TrainingScreenContent(
     }
 }
 
-/** Thursday, a strength day, with Monday's strength and Tuesday's run done. */
+/** Thursday, a strength day, with Monday's strength and Tuesday's run done: the weekly review counts them. */
 private val strengthDay = TrainingUiState(
     program = TrainingPreviewData.program,
     coach = TrainingPreviewData.newCoach,
     today = DayOfWeek.THURSDAY,
     strengthMinutesToday = 0,
     weekDone = mapOf(DayOfWeek.MONDAY to 28, DayOfWeek.TUESDAY to 32),
+    nextProgram = TrainingPreviewData.nextProgram,
 )
 
 @Preview(showBackground = true, heightDp = 1600)

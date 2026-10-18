@@ -21,8 +21,8 @@ import se.novila.model.DayEntry
 import se.novila.model.Goals
 import se.novila.model.MAX_SLEEP_HOURS
 import se.novila.sleep.SleepState
+import se.novila.ui.common.clockText
 import se.novila.ui.common.hoursText
-import se.novila.ui.common.timeText
 import java.time.LocalTime
 import se.novila.ui.R as UiR
 
@@ -129,7 +129,7 @@ private fun TimeRow(title: Int, time: LocalTime?, onClick: () -> Unit) {
         onClick = onClick,
         trailing = {
             NovilaText(
-                time?.let { timeText(it) } ?: stringResource(UiR.string.value_missing),
+                time?.let { clockText(it) } ?: stringResource(UiR.string.value_missing),
                 style = NovilaTheme.typography.titleMedium,
             )
         },
