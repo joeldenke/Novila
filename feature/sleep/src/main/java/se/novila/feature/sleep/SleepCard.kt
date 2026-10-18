@@ -23,12 +23,9 @@ import se.novila.model.MAX_SLEEP_HOURS
 import se.novila.sleep.SleepState
 import se.novila.ui.common.clockText
 import se.novila.ui.common.hoursText
+import se.novila.ui.common.timeText
 import java.time.LocalTime
 import se.novila.ui.R as UiR
-
-/** Where a time picker opens before the user has given that time. */
-internal val DefaultBedtime: LocalTime = LocalTime.of(23, 0)
-internal val DefaultWakeTime: LocalTime = LocalTime.of(7, 0)
 
 /**
  * The night's sleep: when the user went to bed and woke up, the hours that follow, and the user's sleep goal from

@@ -1,5 +1,6 @@
 package se.novila.data
 
+import android.util.Log
 import com.google.mlkit.genai.common.DownloadStatus
 import com.google.mlkit.genai.common.FeatureStatus
 import com.google.mlkit.genai.prompt.Generation
@@ -40,7 +41,7 @@ class GeminiNanoCoachModel : CoachLanguageModel {
             .let { it is DownloadStatus.DownloadCompleted }
     }
 
-    override suspend fun write(prompt: String): Result<String> = catching(Result.failure(IllegalStateException())) {
+    override suspend fun write(prompt: String): Result<String> = try {
         val response = model.generateContent(
             generateContentRequest(TextPart(prompt)) {
                 temperature = TEMPERATURE
@@ -49,18 +50,26 @@ class GeminiNanoCoachModel : CoachLanguageModel {
             },
         )
         Result.success(response.candidates.first().text)
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        // Logged so "the AI comment never works" is diagnosable; the screen only shows that it failed.
+        Log.w(TAG, "Gemini Nano failed to explain the plan", e)
+        Result.failure(e)
     }
 
-    /** Runs [block], turning any failure but cancellation into [fallback]. */
+    /** Runs [block], turning any failure but cancellation into [fallback], logged so the model's state is visible. */
     private inline fun <T> catching(fallback: T, block: () -> T): T = try {
         block()
     } catch (e: CancellationException) {
         throw e
     } catch (e: Exception) {
+        Log.w(TAG, "Gemini Nano unavailable", e)
         fallback
     }
 
     private companion object {
+        const val TAG = "GeminiNano"
         const val TEMPERATURE = 0.3f
         const val TOP_K = 16
         const val MAX_OUTPUT_TOKENS = 256
