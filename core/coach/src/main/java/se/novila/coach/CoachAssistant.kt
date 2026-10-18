@@ -107,5 +107,8 @@ object CoachPrompt {
     private fun rehabArea(area: RehabArea) = when (area) {
         RehabArea.Knee -> "knee"
         RehabArea.LowerBack -> "lower back"
+        RehabArea.Shoulder -> "shoulder"
+        RehabArea.Neck -> "neck"
+        RehabArea.Hip -> "hip"
     }
 }

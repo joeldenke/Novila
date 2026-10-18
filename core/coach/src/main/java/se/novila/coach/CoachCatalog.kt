@@ -9,7 +9,9 @@ enum class MovementPattern { Legs, Hinge, Calves, Push, Back, Core, Conditioning
 /**
  * What the coach needs to know about an exercise in the anatomy library, besides its muscles: the
  * [pattern] it trains, how it is dosed, the lowest [level] it suits, and whether it strains the knees,
- * the back or is a jump. Every exercise in ExerciseLibrary has an entry (checked by CoachPlannerTest).
+ * the back or is a jump. [rehabOnly] exercises belong to the rehab programs and never appear in an
+ * ordinary strength session, where they would take a slot meant for a balanced push or trunk exercise.
+ * Every exercise in ExerciseLibrary has an entry (checked by CoachPlannerTest).
  */
 data class CoachExercise(
     val id: String,
@@ -20,6 +22,7 @@ data class CoachExercise(
     val knees: Boolean = false,
     val back: Boolean = false,
     val jump: Boolean = false,
+    val rehabOnly: Boolean = false,
 ) {
     /** Whether the exercise suits the user's [considerations]. */
     fun suits(considerations: Set<Consideration>): Boolean =
@@ -47,6 +50,8 @@ object CoachCatalog {
         CoachExercise("bird_dog", MovementPattern.Back, perSide = true),
         CoachExercise("plank", MovementPattern.Core, Dosage.Seconds),
         CoachExercise("crunch", MovementPattern.Core, back = true),
+        CoachExercise("arm_raise", MovementPattern.Push, rehabOnly = true),
+        CoachExercise("neck_nod", MovementPattern.Back, rehabOnly = true),
         CoachExercise(
             "mountain_climber",
             MovementPattern.Conditioning,

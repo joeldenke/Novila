@@ -120,6 +120,9 @@ val RehabArea.label: Int
     get() = when (this) {
         RehabArea.Knee -> R.string.coach_rehab_knee
         RehabArea.LowerBack -> R.string.coach_rehab_lower_back
+        RehabArea.Shoulder -> R.string.coach_rehab_shoulder
+        RehabArea.Neck -> R.string.coach_rehab_neck
+        RehabArea.Hip -> R.string.coach_rehab_hip
     }
 
 /** What a rehab [phase] is about, in a few words. */

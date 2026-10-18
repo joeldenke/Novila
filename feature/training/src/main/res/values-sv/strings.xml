@@ -27,6 +27,8 @@
     <string name="move_good_morning">Höftfällning</string>
     <string name="move_bird_dog">Fågelhund</string>
     <string name="move_crunch">Crunch</string>
+    <string name="move_arm_raise">Armsväng</string>
+    <string name="move_neck_nod">Nacknickning</string>
     <string-array name="move_squat_steps">
         <item>Stå med fötterna höftbrett isär och tårna något utåt.</item>
         <item>Skjut höften bakåt och böj knäna tills låren är ungefär parallella med golvet.</item>
@@ -105,6 +107,18 @@
         <item>Sänk långsamt tillbaka.</item>
     </string-array>
     <string name="move_crunch_tip">Ländryggen ligger kvar mot golvet. Dra inte i nacken.</string>
+    <string-array name="move_arm_raise_steps">
+        <item>Stå rak med fötterna höftbrett isär och armarna längs sidorna.</item>
+        <item>Lyft båda rak armar framför dig tills de är ungefär i höjd med axlarna.</item>
+        <item>Sänk dem långsamt tillbaka.</item>
+    </string-array>
+    <string name="move_arm_raise_tip">Lyft från axeln, utan att gunga eller luta dig bakåt.</string>
+    <string-array name="move_neck_nod_steps">
+        <item>Stå eller sitt rak och titta rakt fram.</item>
+        <item>Nick långsamt med hakan mot bröstet.</item>
+        <item>Återgå lika långsamt till att titta rakt fram.</item>
+    </string-array>
+    <string name="move_neck_nod_tip">Håll rörelsen liten och långsamt. Stoppa om smärtan blir värre.</string>
     <string name="move_figure_description">%1$s. Tränar %2$s.</string>
     <string name="dose_reps_per_side">%1$d × %2$d per sida</string>
     <string name="dose_rest">Vila %1$d s</string>
@@ -163,6 +177,7 @@
     <string name="muscle_biceps">biceps</string>
     <string name="muscle_triceps">triceps</string>
     <string name="muscle_abs">mage</string>
+    <string name="muscle_neck">nacke</string>
     <string name="muscle_upper_back">övre rygg</string>
     <string name="muscle_lats">breda ryggmuskler</string>
     <string name="muscle_lower_back">ländrygg</string>
@@ -235,6 +250,9 @@
     <string name="coach_rehab_title">Rehabilitering</string>
     <string name="coach_rehab_knee">Knä</string>
     <string name="coach_rehab_lower_back">Ländrygg</string>
+    <string name="coach_rehab_shoulder">Axel</string>
+    <string name="coach_rehab_neck">Nacke</string>
+    <string name="coach_rehab_hip">Höft</string>
     <string name="coach_rehab_phase">Fas</string>
     <string name="coach_rehab_phase_value">%1$d av %2$d: %3$s</string>
     <string name="coach_rehab_phase_1">en lugn start</string>
@@ -245,6 +263,9 @@
     <string name="coach_rehab_safety">Rehabprogrammet är ett stöd, inte vård. Har du fått övningar av en fysioterapeut, följ dem. Sök vård vid kraftig eller tilltagande smärta, svullnad eller domningar.</string>
     <string name="coach_rehab_safety_knee">Sök vård om knät låser sig, viker sig eller svullnar upp.</string>
     <string name="coach_rehab_safety_lower_back">Sök vård direkt vid domningar i underlivet, svårt att kissa eller tilltagande svaghet i benen.</string>
+    <string name="coach_rehab_safety_shoulder">Sök vård om axeln viker sig, eller om smärtan gör att du inte kan sova på natten.</string>
+    <string name="coach_rehab_safety_neck">Sök vård direkt vid svindel, svårt att svälja eller feber med stel nacke.</string>
+    <string name="coach_rehab_safety_hip">Sök vård om du inte kan belasta höften efter ett fall, eller om höften viker sig.</string>
     <string name="coach_note_goal_rehab">Rehabilitering: lugna, kontrollerade övningar tre dagar i veckan med en vilodag emellan, och promenader de andra dagarna.</string>
     <string name="coach_note_rehab_phase">%1$s, fas %2$d av %3$d. Gå vidare när passen känns lätta och smärtan inte ökar dagen efter, ofta efter ett par veckor.</string>
     <string name="coach_note_pain">Smärta upp till 3 av 10 under passet är okej om den har lagt sig till nästa morgon. Blir den värre, gå tillbaka en fas.</string>

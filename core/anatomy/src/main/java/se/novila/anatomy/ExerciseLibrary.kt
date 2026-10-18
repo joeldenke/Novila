@@ -243,6 +243,40 @@ object ExerciseLibrary {
         camera = Camera(90f),
     )
 
+    val armRaise = ExerciseMotion(
+        id = "arm_raise",
+        movement = Movement(
+            listOf(
+                Keyframe(0f, Pose.STANDING),
+                Keyframe(0.45f, Pose.symmetric(arm = LimbPose(raise = 88f))),
+                Keyframe(0.58f, Pose.symmetric(arm = LimbPose(raise = 88f))),
+                Keyframe(1f, Pose.STANDING),
+            ),
+        ),
+        primary = setOf(MuscleGroup.Shoulders),
+        secondary = setOf(MuscleGroup.UpperBack),
+        contacts = feet,
+        anchor = Landmark.LeftHeel,
+        camera = Camera(60f, pitch = 10f),
+    )
+
+    val neckNod = ExerciseMotion(
+        id = "neck_nod",
+        movement = Movement(
+            listOf(
+                Keyframe(0f, Pose.STANDING),
+                Keyframe(0.45f, Pose.symmetric(neck = 28f)),
+                Keyframe(0.58f, Pose.symmetric(neck = 28f)),
+                Keyframe(1f, Pose.STANDING),
+            ),
+        ),
+        primary = setOf(MuscleGroup.Neck),
+        secondary = setOf(MuscleGroup.UpperBack),
+        contacts = feet,
+        anchor = Landmark.LeftHeel,
+        camera = Camera(60f, pitch = 0f),
+    )
+
     val all: List<ExerciseMotion> = listOf(
         squat,
         pushUp,
@@ -257,6 +291,8 @@ object ExerciseLibrary {
         goodMorning,
         birdDog,
         crunch,
+        armRaise,
+        neckNod,
     )
 
     fun byId(id: String): ExerciseMotion? = all.firstOrNull { it.id == id }
