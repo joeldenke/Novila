@@ -5,6 +5,7 @@ import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.Locale
+import kotlin.math.roundToInt
 
 const val WATER_GOAL = 8
 const val MAX_SLEEP_HOURS = 12f
@@ -57,7 +58,7 @@ data class DayEntry(
 
     /** Rounds to the nearest half hour within 0–12 h. The times no longer match the hours, so they are cleared. */
     fun withSleep(hours: Float) = copy(
-        sleepHours = (Math.round(hours * 2) / 2f).coerceIn(0f, MAX_SLEEP_HOURS),
+        sleepHours = hours.roundToHalfHour().coerceIn(0f, MAX_SLEEP_HOURS),
         bedtime = null,
         wakeTime = null,
     )
@@ -183,6 +184,11 @@ object DayEntryCodec {
         if (type != null && minutes != null) CardioLog(type, minutes) else null
     }
 }
+
+/**
+ * Sleep hours rounded to the nearest half hour, the step sleep is logged and shown in.
+ */
+fun Float.roundToHalfHour(): Float = (this * 2).roundToInt() / 2f
 
 /**
  * Hours as a localized number ("7", "7,5" in Swedish, "7.5" in English),

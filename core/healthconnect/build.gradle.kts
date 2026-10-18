@@ -7,6 +7,8 @@ plugins {
 novila {
     activity()
     healthConnect()
+    // The reads are suspend functions; coroutines is also on the test classpath for runBlocking.
+    coroutines()
 }
 
 dependencies {

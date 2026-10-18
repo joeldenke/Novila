@@ -155,4 +155,12 @@ class DayEntryTest {
         assertEquals("7,5", formatHours(7.5f, sv))
         assertEquals("7.5", formatHours(7.5f, Locale.US))
     }
+
+    @Test fun `hours round to the nearest half hour`() {
+        assertEquals(0f, 0f.roundToHalfHour(), 0f)
+        assertEquals(7f, 7.2f.roundToHalfHour(), 0f)
+        assertEquals(7.5f, 7.4f.roundToHalfHour(), 0f)
+        assertEquals(7.5f, 7.25f.roundToHalfHour(), 0f)
+        assertEquals(8f, 7.75f.roundToHalfHour(), 0f)
+    }
 }

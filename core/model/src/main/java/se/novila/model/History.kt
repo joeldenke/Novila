@@ -30,7 +30,7 @@ data class History(val range: HistoryRange, val periods: List<HistoryPeriod>, va
     fun sleepTrend(): Float? {
         val now = days.averageSleep() ?: return null
         val before = previous.averageSleep() ?: return null
-        return Math.round((now - before) * 2) / 2f
+        return (now - before).roundToHalfHour()
     }
 
     /** Average nutrition score against the range before, in points; null without both. */
