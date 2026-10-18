@@ -24,6 +24,8 @@ import se.novila.recipes.suggestRecipes
 import se.novila.ui.common.DayPicker
 import se.novila.ui.common.NutritionHistoryCard
 import se.novila.ui.common.ScreenList
+import se.novila.ui.common.ScreenSection
+import se.novila.ui.common.section
 import se.novila.ui.preview.PreviewData
 import java.time.LocalDate
 
@@ -34,10 +36,11 @@ data class RecipeActions(
 )
 
 /**
- * The shown [day]'s nutrition score with its breakdown, logging per food group and the scores in the [history] up to
- * it, over a week, four weeks or a year ([onRange]), water against [goals]. [today] is the day it really is: the user
- * can go back to an earlier day ([onSelectDay]) and fill in what was forgotten. On today, [recipes] for what is still
- * missing follow the score, chosen for [foodPreferences]; [expandedRecipe] is the one shown open at first.
+ * The Nutrition tab in the parts every tab has ([ScreenSection]): the shown [day]'s nutrition score with its
+ * breakdown, logging per food group, and the scores in the [history] up to it, over a week, four weeks or a year
+ * ([onRange]), water against [goals]. [today] is the day it really is: the user can go back to an earlier day
+ * ([onSelectDay]) and fill in what was forgotten. On today, the plan is [recipes] for what is still missing, chosen
+ * for [foodPreferences]; [expandedRecipe] is the one shown open at first.
  */
 @Composable
 fun NutritionScreen(
@@ -60,10 +63,14 @@ fun NutritionScreen(
     var expanded by rememberSaveable(expandedRecipe) { mutableStateOf(expandedRecipe) }
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
         item(key = "day") { DayPicker(day.date, today, onSelectDay, NovilaTheme.pillars.nutrition) }
+        section(ScreenSection.Overview)
         item(key = "score") { NovilaReveal(order = 0) { NutritionScoreCard(day, goals, isToday) } }
+        section(ScreenSection.Log)
+        item(key = "log") { NovilaReveal(order = 1) { FoodLogCard(day, goals, onPortions, onTreats, isToday) } }
         if (isToday && recipes != null) {
+            section(ScreenSection.Plan)
             item(key = "recipes") {
-                NovilaReveal(order = 1) {
+                NovilaReveal(order = 2) {
                     RecipeCard(
                         suggestions = recipes,
                         preferences = foodPreferences,
@@ -78,7 +85,7 @@ fun NutritionScreen(
                 }
             }
         }
-        item(key = "log") { NovilaReveal(order = 2) { FoodLogCard(day, goals, onPortions, onTreats, isToday) } }
+        section(ScreenSection.Trends)
         item(key = "history") { NovilaReveal(order = 3) { NutritionHistoryCard(history, goals, onRange) } }
     }
 }

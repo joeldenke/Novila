@@ -367,7 +367,6 @@
     <string name="session_muscles_title">Det här tränar passet</string>
     <string name="session_muscles_body">Tryck på en övning för att se hur den görs, med figuren du kan pausa och dra i.</string>
     <string name="library_show_all">Visa alla %1$d övningar</string>
-    <string name="library_search_chip">Hitta en övning</string>
     <string name="library_search">Sök övning eller muskel</string>
     <string name="library_clear">Rensa sökningen</string>
     <string name="library_all">Alla</string>

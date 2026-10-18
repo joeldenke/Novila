@@ -14,11 +14,9 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.model.AppSettings
-import se.novila.model.Goals
 import se.novila.model.Profile
 import se.novila.model.ThemeMode
 import se.novila.movement.MovementState
-import se.novila.recipes.FoodPreferences
 
 @RunWith(RobolectricTestRunner::class)
 class SettingsScreenTest {
@@ -30,8 +28,6 @@ class SettingsScreenTest {
                 SettingsScreen(
                     settings = AppSettings(),
                     profile = Profile(),
-                    goals = Goals(),
-                    foodPreferences = FoodPreferences(),
                     movement = movement,
                     version = AppVersion(name = "0.1.7-debug", code = 7),
                     canUseDynamicColor = true,
@@ -58,20 +54,11 @@ class SettingsScreenTest {
         assertEquals(listOf(ThemeMode.Dark), chosen)
     }
 
-    @Test fun `the goals row shows the goals and opens them`() {
+    @Test fun `my goals open from the profile card`() {
         var opens = 0
-        show(SettingsActions(onOpenGoals = { opens++ }))
+        show(SettingsActions(onOpenMyGoals = { opens++ }))
 
-        composeRule.onNodeWithText("8,000 steps · 8 h sleep · 8 glasses of water").performClick()
-
-        assertEquals(1, opens)
-    }
-
-    @Test fun `the food preferences row sums them up and opens them`() {
-        var opens = 0
-        show(SettingsActions(onOpenFoodPreferences = { opens++ }))
-
-        composeRule.onNodeWithText("Everything · No allergens chosen · Any time").performClick()
+        composeRule.onNodeWithText("My goals").performClick()
 
         assertEquals(1, opens)
     }

@@ -28,7 +28,7 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   `NovilaSceneImage` med parallax), namn, mål och tid för coachen, Health Connect och en sammanfattning i `NovilaHeroBanner`.
   Visas ensam (utan flikar) tills `AppSettings.onboarded` är satt; `NovilaApp` ger den en egen entry via
   `rememberStandaloneEntries`. Kan visas igen från Inställningar.
-- `:feature:settings` – Inställningar (profil, egna mål, matpreferenser, tema, påminnelser, Health Connect, ansvarsfriskrivning, radera data, introduktionen, version).
+- `:feature:settings` – Inställningar (profil, *Mina mål*, tema, påminnelser, Health Connect, ansvarsfriskrivning, radera data, introduktionen, version).
   Ingen flik: öppnas med kugghjulet i toppraden (på Idag i hälsningen) och läggs på aktuell fliks back stack. `Navigator` flyttar
   den om den öppnas från en annan flik, så samma nyckel aldrig ligger i två stackar som visas samtidigt.
 - `:feature:widget` – widgeten på hemskärmen (Glance): `NovilaWidget` visar dagens balans, sömn, kost och vatten, det
@@ -272,6 +272,15 @@ där pluginet `firebase@firebase` inte alltid installeras.
   Kort är vita med hårfin kant (`NovilaTheme.surfaces`). Träning börjar med veckan i överblick på samma granpanel
   (`NovilaHeroPanel`: minuter mot veckans plan, `NovilaWeekStrip` och dagens enda huvudåtgärd ur `TodayPlan`), följt
   av snabbval (`NovilaActionChip`) som passar just nu.
+- **Flikarnas delar:** Sömn, Kost och Träning byggs av samma delar i samma ordning, med en rubrik per del
+  (`ScreenSection` och `section(...)` i `:core:ui`, `NovilaSectionHeader`): *Översikt* (läget och delens
+  huvudåtgärd), *Logga* (det användaren loggar själv eller Health Connect läser), *Din plan* (coachen, programmet,
+  receptförslagen) och *Trender* (historik och samband). Nya kort läggs i den del de hör till; en del utan kort får
+  ingen rubrik. Kan användaren gå bakåt i dagar står dagväljaren överst, före Översikt.
+- **Mina mål:** allt appen planerar efter samlas på en skärm i Inställningar (`MyGoalsScreen`): dagliga mål,
+  träningscoachen, sömncoachen och matpreferenserna, var och en med vad den står på och en rad dit den ändras. Samma
+  skärmar öppnas från *Din plan* på varje flik. Ny inställning som styr en plan läggs till här, inte som en egen rad i
+  Inställningar, som bara har det som gäller appen.
 - **Målade scener:** introduktionens scener är målade bilder i samma nordiska stil (falröd stuga, björk, gran, sjö,
   midsommarljus), WebP i featurens `drawable-nodpi`, beskurna till 1,4:1, högst cirka 1120 px breda och helst under 200 kB. De visas bara via
   `NovilaSceneImage`, som sköter hörn, entré och parallax. I mörkt läge blir dagscener skymning (`ColorMatrix`:

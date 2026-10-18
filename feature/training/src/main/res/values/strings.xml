@@ -371,7 +371,6 @@
     <string name="session_muscles_title">What the session trains</string>
     <string name="session_muscles_body">Tap an exercise to see how it\'s done, with the figure you can pause and drag.</string>
     <string name="library_show_all">Show all %1$d exercises</string>
-    <string name="library_search_chip">Find an exercise</string>
     <string name="library_search">Search exercise or muscle</string>
     <string name="library_clear">Clear the search</string>
     <string name="library_all">All</string>

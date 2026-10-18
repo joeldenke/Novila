@@ -122,4 +122,10 @@
         <item quantity="other">%1$d allergener undviks</item>
     </plurals>
     <string name="food_check_ingredients">Kontrollera alltid ingredienserna och förpackningarna själv, särskilt vid allergi.</string>
+
+    <!-- Delarna i varje flik, se ScreenSection -->
+    <string name="section_overview">Översikt</string>
+    <string name="section_log">Logga</string>
+    <string name="section_plan">Din plan</string>
+    <string name="section_trends">Trender</string>
 </resources>

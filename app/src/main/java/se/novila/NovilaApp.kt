@@ -23,10 +23,12 @@ import se.novila.feature.settings.navigation.FoodPreferencesRoute
 import se.novila.feature.settings.navigation.SettingsRoute
 import se.novila.feature.settings.navigation.settingsEntries
 import se.novila.feature.settings.navigation.settingsTitle
+import se.novila.feature.sleep.navigation.SleepCoachRoute
 import se.novila.feature.sleep.navigation.SleepRoute
 import se.novila.feature.sleep.navigation.sleepDetailTitle
 import se.novila.feature.sleep.navigation.sleepEntries
 import se.novila.feature.today.navigation.todayEntry
+import se.novila.feature.training.navigation.CoachRoute
 import se.novila.feature.training.navigation.TrainingRoute
 import se.novila.feature.training.navigation.trainingDetailTitle
 import se.novila.feature.training.navigation.trainingEntries
@@ -129,7 +131,13 @@ private fun Tabs() {
                 onOpenFoodPreferences = { navigator.navigate(FoodPreferencesRoute) },
                 contentPadding = innerPadding,
             )
-            settingsEntries(navigator = navigator, contentPadding = innerPadding)
+            settingsEntries(
+                navigator = navigator,
+                contentPadding = innerPadding,
+                // My goals opens the coaches in place, on the tab Settings is on.
+                onOpenTrainingCoach = { navigator.navigate(CoachRoute) },
+                onOpenSleepCoach = { navigator.navigate(SleepCoachRoute) },
+            )
         }
         NavDisplay(
             entries = navigationState.toEntries(entryProvider),

@@ -17,16 +17,14 @@ import se.novila.data.ProfileStore
 import se.novila.data.SettingsStore
 import se.novila.data.SleepCoachStore
 import se.novila.model.AppSettings
-import se.novila.model.Goals
 import se.novila.model.Profile
 import se.novila.model.ThemeMode
 import se.novila.movement.MovementRepository
 import se.novila.movement.MovementState
-import se.novila.recipes.FoodPreferences
 import java.time.LocalDate
 
 /**
- * Settings: the profile, the daily goals, the food preferences, how the app looks, Health Connect access, the user's
+ * Settings: the profile, the way to My goals, how the app looks, Health Connect access, the user's
  * data and the app version. Scoped to its entry.
  */
 @ViewModelKey
@@ -48,12 +46,6 @@ class SettingsViewModel(
 
     /** The user's profile, or null before the store's first read. */
     val profile: StateFlow<Profile?> = profileStore.profile
-
-    /** The user's daily goals, or null before the store's first read. */
-    val goals: StateFlow<Goals?> = goalsStore.goals
-
-    /** The user's diet, allergens and time for recipes, or null before the store's first read. */
-    val foodPreferences: StateFlow<FoodPreferences?> = foodPreferencesStore.preferences
 
     /** Whether Health Connect is connected, and what the user can do if not. */
     val movement: StateFlow<MovementState> = movementRepository.state

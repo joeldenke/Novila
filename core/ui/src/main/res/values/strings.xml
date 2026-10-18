@@ -133,4 +133,10 @@
     </plurals>
     <string name="food_preferences_summary" translatable="false">%1$s · %2$s · %3$s</string>
     <string name="food_check_ingredients">Always check the ingredients and the packaging yourself, especially with an allergy.</string>
+
+    <!-- The parts of each tab, see ScreenSection -->
+    <string name="section_overview">Overview</string>
+    <string name="section_log">Log</string>
+    <string name="section_plan">Your plan</string>
+    <string name="section_trends">Trends</string>
 </resources>

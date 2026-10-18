@@ -18,13 +18,16 @@ import se.novila.movement.MovementState
 import se.novila.recovery.RecoveryState
 import se.novila.recovery.RecoveryStatus
 import se.novila.ui.common.ScreenList
+import se.novila.ui.common.ScreenSection
+import se.novila.ui.common.section
 import se.novila.ui.preview.PreviewData
 import java.time.DayOfWeek
 
 /**
- * The Training tab, most useful first: the week at a glance with today's one main action, a few actions that fit
- * right now, the next strength session, the week's program, the weekly review of what's done and what next week
- * holds, movement from Health Connect, recovery from the watch and the exercise library.
+ * The Training tab in the parts every tab has ([ScreenSection]). Overview: the week at a glance with today's one main
+ * action, and recovery from the watch, which today's session may be lighter for. Log: another workout, and what
+ * Health Connect recorded. Your plan: the coach, the next strength session, the week's program and the exercise
+ * library. Trends: the weekly review of what's done and what next week holds.
  */
 @Composable
 fun TrainingScreen(
@@ -43,6 +46,7 @@ fun TrainingScreen(
         session.exercises.isNotEmpty() && (session.day > today || (session.day == today && plan is TodayPlan.Workout))
     }
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
+        section(ScreenSection.Overview)
         item(key = "overview") {
             NovilaReveal(order = 0) {
                 TrainingOverview(
@@ -56,8 +60,33 @@ fun TrainingScreen(
                 )
             }
         }
-        item(key = "actions") {
-            NovilaReveal(order = 1) { QuickActions(state.coach, movement, recovery, actions) }
+        item(key = "recovery") {
+            RecoveryCard(
+                recovery = recovery,
+                status = state.recovery,
+                onConnect = actions.onConnectRecovery,
+                onOpenSettings = actions.onOpenHealthSettings,
+            )
+        }
+        section(ScreenSection.Log)
+        item(key = "log-actions") {
+            NovilaReveal(order = 1) { LogActions(movement, recovery, actions) }
+        }
+        item(key = "movement") {
+            MovementCard(
+                movement,
+                actions.onConnectHealth,
+                actions.onOpenHealthSettings,
+                actions.onInstallHealth,
+                exercise,
+            )
+        }
+        section(ScreenSection.Plan)
+        item(key = "coach") {
+            NovilaActionChip(
+                stringResource(if (state.coach.active) R.string.coach_adjust else R.string.coach_open),
+                onClick = actions.onOpenCoach,
+            )
         }
         if (next != null) {
             item(key = "next-session") {
@@ -77,30 +106,32 @@ fun TrainingScreen(
                 TrainingProgramCard(state.program, today, state.weekDone, onOpenSession = actions.onOpenSession)
             }
         }
+        item(key = "exercises") {
+            ExerciseLibraryCard(actions.onOpenExercise, actions.onOpenLibrary)
+        }
         state.weeklyReview()?.let { review ->
+            section(ScreenSection.Trends)
             item(key = "review") {
                 NovilaReveal(order = 4) { WeeklyReviewCard(review) }
             }
         }
-        item(key = "movement") {
-            MovementCard(
-                movement,
-                actions.onConnectHealth,
-                actions.onOpenHealthSettings,
-                actions.onInstallHealth,
-                exercise,
-            )
+    }
+}
+
+/** What can be logged by hand, and Health Connect to connect while it isn't, so workouts are logged by themselves. */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun LogActions(movement: MovementState, recovery: RecoveryState, actions: TrainingActions) {
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s),
+        verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s),
+    ) {
+        NovilaActionChip(stringResource(R.string.overview_log_other), onClick = actions.onOpenCardioLog)
+        if (movement is MovementState.NeedsPermission && !movement.denied) {
+            NovilaActionChip(stringResource(R.string.movement_connect), onClick = actions.onConnectHealth)
         }
-        item(key = "recovery") {
-            RecoveryCard(
-                recovery = recovery,
-                status = state.recovery,
-                onConnect = actions.onConnectRecovery,
-                onOpenSettings = actions.onOpenHealthSettings,
-            )
-        }
-        item(key = "exercises") {
-            ExerciseLibraryCard(actions.onOpenExercise, actions.onOpenLibrary)
+        if (recovery is RecoveryState.NeedsPermission && !recovery.denied) {
+            NovilaActionChip(stringResource(R.string.recovery_connect), onClick = actions.onConnectRecovery)
         }
     }
 }
@@ -119,37 +150,6 @@ data class TrainingActions(
     val onOpenHealthSettings: () -> Unit = {},
     val onInstallHealth: () -> Unit = {},
 )
-
-/**
- * Small actions that fit right now: log a workout that wasn't planned, set up or adjust the coach, and connect
- * Health Connect while it isn't.
- */
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun QuickActions(
-    coach: CoachUiState,
-    movement: MovementState,
-    recovery: RecoveryState,
-    actions: TrainingActions,
-) {
-    FlowRow(
-        horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s),
-        verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s),
-    ) {
-        NovilaActionChip(stringResource(R.string.overview_log_other), onClick = actions.onOpenCardioLog)
-        NovilaActionChip(stringResource(R.string.library_search_chip), onClick = actions.onOpenLibrary)
-        NovilaActionChip(
-            stringResource(if (coach.active) R.string.coach_adjust else R.string.coach_open),
-            onClick = actions.onOpenCoach,
-        )
-        if (movement is MovementState.NeedsPermission && !movement.denied) {
-            NovilaActionChip(stringResource(R.string.movement_connect), onClick = actions.onConnectHealth)
-        }
-        if (recovery is RecoveryState.NeedsPermission && !recovery.denied) {
-            NovilaActionChip(stringResource(R.string.recovery_connect), onClick = actions.onConnectRecovery)
-        }
-    }
-}
 
 @Composable
 private fun TrainingScreenContent(

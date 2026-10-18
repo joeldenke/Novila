@@ -20,7 +20,9 @@ import se.novila.sleep.WindDownMoment
 import se.novila.sleep.WindDownStep
 import se.novila.ui.common.DayPicker
 import se.novila.ui.common.ScreenList
+import se.novila.ui.common.ScreenSection
 import se.novila.ui.common.SleepHistoryCard
+import se.novila.ui.common.section
 import se.novila.ui.preview.PreviewData
 import java.time.LocalDate
 import java.time.LocalTime
@@ -40,8 +42,9 @@ data class SleepActions(
 )
 
 /**
- * The shown [day]'s night (times, hours, how it felt and what may have affected it), what the user's logs say about
- * their sleep ([analysis]) and the [history] up to the day, over a week, four weeks or a year. [today] is the day it
+ * The Sleep tab in the parts every tab has ([ScreenSection]): the shown [day]'s night (times and hours), logging how it
+ * felt and what may have affected it, the sleep [coach] in short, and the trends: the [history] up to the day, over a
+ * week, four weeks or a year, and what the user's logs say about their sleep ([analysis]). [today] is the day it
  * really is: the user can go back to an earlier day and fill in a night that was forgotten. Nights a watch recorded
  * ([watch]) fill in the ones the user didn't log, [fromWatch] when the shown one is. [coach] is the sleep coach in
  * short, opened from the button on it.
@@ -60,17 +63,22 @@ fun SleepScreen(
     watch: SleepState = SleepState.Unavailable,
     fromWatch: Boolean = false,
 ) {
+    val isToday = day.date == today
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
         item(key = "day") { DayPicker(day.date, today, actions.onSelectDay, NovilaTheme.pillars.sleep) }
+        section(ScreenSection.Overview)
         item(key = "sleep") {
             NovilaReveal(order = 0) {
-                SleepCard(day, goals, actions, isToday = day.date == today, watch = watch, fromWatch = fromWatch)
+                SleepCard(day, goals, actions, isToday = isToday, watch = watch, fromWatch = fromWatch)
             }
         }
+        section(ScreenSection.Log)
         item(key = "details") { NovilaReveal(order = 1) { SleepDetailsCard(day, actions) } }
-        item(key = "findings") { NovilaReveal(order = 2) { SleepFindingsCard(analysis) } }
-        item(key = "coach") { NovilaReveal(order = 3) { SleepCoachCard(coach, actions.onOpenCoach) } }
-        item(key = "history") { NovilaReveal(order = 4) { SleepHistoryCard(history, goals, actions.onRange) } }
+        section(ScreenSection.Plan)
+        item(key = "coach") { NovilaReveal(order = 2) { SleepCoachCard(coach, actions.onOpenCoach) } }
+        section(ScreenSection.Trends)
+        item(key = "history") { NovilaReveal(order = 3) { SleepHistoryCard(history, goals, actions.onRange) } }
+        item(key = "findings") { NovilaReveal(order = 4) { SleepFindingsCard(analysis) } }
     }
 }
 
