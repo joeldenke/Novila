@@ -58,8 +58,8 @@
     <string name="disclaimer_ask_body">Talk to a doctor or physiotherapist before you start training if you have an illness, an injury or pain, are pregnant, or are unsure whether training suits you.</string>
     <string name="disclaimer_stop_title">Stop if it hurts</string>
     <string name="disclaimer_stop_body">Stop and rest if you feel chest pain, dizziness, shortness of breath or sharp pain. Seek care if it does not pass. In an emergency, call 112.</string>
-    <string name="disclaimer_rehab_title">Rehab programs</string>
-    <string name="disclaimer_rehab_body">The coach\'s rehab programs are general and do not replace a plan from your physiotherapist. Follow the pain limit, and your caregiver\'s advice before Novila\'s.</string>
+    <string name="disclaimer_rehab_title">Gentle training</string>
+    <string name="disclaimer_rehab_body">The coach\'s gentle training programs are general and do not replace a plan from your physiotherapist. Follow the pain limit, and your caregiver\'s advice before Novila\'s.</string>
     <string name="disclaimer_ai_title">AI comments</string>
     <string name="disclaimer_ai_body">The coach\'s comment is written by Gemini Nano on your phone. AI can be wrong. The program itself is made without AI, and it is what counts.</string>
     <string name="disclaimer_sources_title">Where the advice comes from</string>

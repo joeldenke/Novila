@@ -47,7 +47,7 @@
     <string name="onboarding_goal_endurance_body">More cardio and more repetitions, for more stamina.</string>
     <string name="onboarding_goal_mobility">Mobility</string>
     <string name="onboarding_goal_mobility_body">Calm sessions for your back, hips and shoulders.</string>
-    <string name="onboarding_goal_rehab">Your rehab program stays as it is. Choose a goal to change it.</string>
+    <string name="onboarding_goal_rehab">Your gentle training stays as it is. Choose a goal to change it.</string>
     <string name="onboarding_time_title">Your time</string>
     <string name="onboarding_days">Days a week</string>
     <string name="onboarding_days_value">%1$d days</string>
@@ -71,7 +71,7 @@
     <string name="onboarding_ready_title">Your week is ready</string>
     <string name="onboarding_ready_title_named">Your week is ready, %1$s</string>
     <string name="onboarding_ready_body">%1$s, %2$d days a week, about %3$d minutes at a time.</string>
-    <string name="onboarding_ready_body_rehab">Your rehab program, %1$d days a week, about %2$d minutes at a time.</string>
+    <string name="onboarding_ready_body_rehab">Gentle training, %1$d days a week, about %2$d minutes at a time.</string>
     <string name="onboarding_ready_training">Your program is under Training</string>
     <string name="onboarding_ready_sleep">Log last night\'s sleep tomorrow morning</string>
     <string name="onboarding_ready_nutrition">Start with breakfast under Nutrition</string>

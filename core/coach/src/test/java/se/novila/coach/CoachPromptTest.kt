@@ -28,9 +28,9 @@ class CoachPromptTest {
         assertTrue("in English" in prompt(CoachPreferences(), Locale.UK))
     }
 
-    @Test fun `a rehab prompt names the area and the phase and asks for caution`() {
+    @Test fun `a rehab prompt names the area and the level and asks for caution`() {
         val rehab = prompt(CoachPreferences(goal = CoachGoal.Rehab, rehabArea = RehabArea.LowerBack, rehabPhase = 2))
-        assertTrue(rehab, "rehab for the lower back, phase 2 of 3" in rehab)
+        assertTrue(rehab, "gentle training for the lower back, level 2 of 3" in rehab)
         assertTrue(rehab, "physiotherapist" in rehab && "Never diagnose" in rehab)
     }
 

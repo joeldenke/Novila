@@ -53,8 +53,8 @@
     <string name="disclaimer_ask_body">Prata med en läkare eller fysioterapeut innan du börjar träna om du har en sjukdom, en skada eller ont, är gravid eller är osäker på om träningen passar dig.</string>
     <string name="disclaimer_stop_title">Sluta om det gör ont</string>
     <string name="disclaimer_stop_body">Avbryt och vila om du får ont i bröstet, blir yr, andfådd eller får skarp smärta. Sök vård om det inte går över. Ring 112 vid akut fara.</string>
-    <string name="disclaimer_rehab_title">Rehabprogram</string>
-    <string name="disclaimer_rehab_body">Coachens rehabprogram är allmänna och ersätter inte en plan från din fysioterapeut. Följ smärtgränsen, och din vårdgivares råd före Novilas.</string>
+    <string name="disclaimer_rehab_title">Skonsam träning</string>
+    <string name="disclaimer_rehab_body">Coachens program för skonsam träning är allmänna och ersätter inte en plan från din fysioterapeut. Följ smärtgränsen, och din vårdgivares råd före Novilas.</string>
     <string name="disclaimer_ai_title">AI-kommentarer</string>
     <string name="disclaimer_ai_body">Coachens kommentar skrivs av Gemini Nano i din telefon. AI kan ha fel. Själva programmet görs utan AI, och det är programmet som gäller.</string>
     <string name="disclaimer_sources_title">Var råden kommer ifrån</string>
