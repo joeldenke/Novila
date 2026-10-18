@@ -226,7 +226,7 @@ fun NovilaChoiceCard(
 
 /** A round check: an empty ring, or filled in the role color with a tick when chosen. */
 @Composable
-private fun Check(selected: Boolean, role: NovilaColorRole) {
+internal fun Check(selected: Boolean, role: NovilaColorRole) {
     val outline = NovilaTheme.colors.outline
     Canvas(Modifier.size(22.dp)) {
         val stroke = 2.dp.toPx()

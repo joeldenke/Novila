@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 import se.novila.feature.today.TodayScreen
 import se.novila.feature.today.TodayViewModel
 
-/** The Today tab: the dashboard. */
+/** The Today tab: what to do today, and how the day and week look. */
 @Serializable data object TodayRoute : NavKey
 
 /**
@@ -47,11 +47,13 @@ fun EntryProviderScope<NavKey>.todayEntry(
             onEnergy = viewModel::setEnergy,
             onStress = viewModel::setStress,
             onDiary = viewModel::setDiary,
+            onAddWater = viewModel::addWater,
             onOpenTraining = onOpenTraining,
             onOpenSleep = onOpenSleep,
             onOpenNutrition = onOpenNutrition,
             onOpenSettings = onOpenSettings,
             contentPadding = contentPadding,
+            training = state.training,
         )
     }
 }

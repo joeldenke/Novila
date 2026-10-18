@@ -15,31 +15,17 @@ import se.novila.designsystem.component.NovilaLineChart
 import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaColorRole
 import se.novila.designsystem.theme.NovilaTheme
-import se.novila.model.DayEntry
 import se.novila.model.GOOD_NUTRITION_SCORE
 import se.novila.model.Goals
 import se.novila.model.History
 import se.novila.model.HistoryRange
 import se.novila.model.averageNutrition
 import se.novila.model.averageSleep
-import se.novila.model.historyOfWeek
 import se.novila.ui.R
 import kotlin.math.abs
 
 /** Sleep chart axis: short nights and long ones both stay readable. */
 private val SleepChartRange = 4f..10f
-
-/** The week's nights as a curve against the user's sleep goal, with the average per night. */
-@Composable
-fun SleepWeekCard(week: List<DayEntry>, goals: Goals) {
-    SleepHistoryCard(remember(week) { historyOfWeek(week) }, goals)
-}
-
-/** The week's nutrition scores as bars, with water against the user's goal; days with a good score are solid. */
-@Composable
-fun NutritionWeekCard(week: List<DayEntry>, goals: Goals) {
-    NutritionHistoryCard(remember(week) { historyOfWeek(week) }, goals)
-}
 
 /**
  * Sleep over the [history]'s range as a curve against the user's sleep goal: a point per night, week or month, each

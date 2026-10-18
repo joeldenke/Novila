@@ -262,9 +262,12 @@ där pluginet `firebase@firebase` inte alltid installeras.
   Varje del har sin färg via `NovilaTheme.pillars`: träning = gran (primary), sömn = sjö (secondary),
   kost = falurött (tertiary). Solen (`NovilaTheme.accent`) används för högst en huvudknapp per skärm.
   Hörnradie från basen 14 dp via `NovilaTheme.shapes`. Nya färgpar läggs till i `ColorContrastTest` (WCAG 2.2).
-  Förlagan är riktning D i designkanvasen *Novila designriktningar*. Idag är en dashboard: hälsning, `NovilaHeroCard`
-  (balansen som ringar per del, skogssiluett och solens sken, `NovilaTheme.hero`), en `NovilaStatTile` per del med
-  veckans trend, insikter, veckans sömn (`NovilaLineChart`) och kost (`NovilaBarChart`) och mående.
+  Förlagan är riktning D i designkanvasen *Novila designriktningar*. Idag svarar på "vad gör jag nu": hälsning,
+  `NovilaHeroCard` (balansen som ringar per del, skogssiluett och solens sken, `NovilaTheme.hero`), *Din dag*
+  (`dayChecklist` i `:core:model`: sömn, dagens pass ur `TrainingWeek.trainingOn`, kost, vatten och mående som
+  `NovilaTaskRow`, där varje öppen rad har en knapp som gör det och den första är skärmens `NovilaAccentButton`), en
+  `NovilaStatTile` per del med veckans trend, insikter och mående. Veckodiagrammen hör till delarnas egna flikar;
+  lägg inte tillbaka dem på Idag.
   Kort är vita med hårfin kant (`NovilaTheme.surfaces`). Träning börjar med veckan i överblick på samma granpanel
   (`NovilaHeroPanel`: minuter mot veckans plan, `NovilaWeekStrip` och dagens enda huvudåtgärd ur `TodayPlan`), följt
   av snabbval (`NovilaActionChip`) som passar just nu.

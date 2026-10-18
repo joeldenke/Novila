@@ -49,4 +49,31 @@
     <string name="insight_nutrition_down">Your nutrition score is down %1$d points over the last few days.</string>
     <string name="insight_steps_goal">You have passed %1$s steps today.</string>
     <string name="nutrition_score_short">Nutrition</string>
+
+    <!-- Your day: today's checklist -->
+    <string name="checklist_title">Your day</string>
+    <string name="checklist_progress">%1$d of %2$d done</string>
+    <string name="checklist_all_done">All done for today.</string>
+    <string name="checklist_sleep">Log last night</string>
+    <string name="checklist_sleep_done">Last night</string>
+    <string name="checklist_sleep_summary">How long and how well you slept.</string>
+    <string name="checklist_sleep_action">Log</string>
+    <string name="checklist_rest">Rest day</string>
+    <string name="checklist_rest_summary">No training planned today.</string>
+    <string name="checklist_training">Today\'s training</string>
+    <string name="checklist_training_summary">%1$d min planned</string>
+    <string name="checklist_training_partly">%1$d of %2$d min done</string>
+    <string name="checklist_training_done">%1$d min trained</string>
+    <string name="checklist_training_action">Start</string>
+    <string name="checklist_nutrition">Food</string>
+    <string name="checklist_nutrition_summary">Log what you eat.</string>
+    <string name="checklist_nutrition_done">Nutrition score %1$d, a good day</string>
+    <string name="checklist_nutrition_action">Recipes</string>
+    <string name="checklist_water">Water</string>
+    <string name="checklist_water_summary">%1$d of %2$d glasses</string>
+    <string name="checklist_water_action">+1 glass</string>
+    <string name="checklist_mood">How are you?</string>
+    <string name="checklist_mood_done">How you feel</string>
+    <string name="checklist_mood_summary">Mood, energy and stress, further down.</string>
+    <string name="checklist_mood_action">Answer</string>
 </resources>

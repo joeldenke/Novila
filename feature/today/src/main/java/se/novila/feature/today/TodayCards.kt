@@ -92,7 +92,7 @@ private fun LevelRow(label: String, levels: List<String>, selected: Int, onSelec
 }
 
 /** Mood levels 1–5, in order from bad to great. */
-private enum class Mood(val label: Int) {
+internal enum class Mood(val label: Int) {
     Bad(R.string.mood_1),
     NotGreat(R.string.mood_2),
     Okay(R.string.mood_3),
