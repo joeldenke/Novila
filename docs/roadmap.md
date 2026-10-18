@@ -45,7 +45,7 @@ mer än kommentaren, eller data som lämnar appen.
 - [ ] **Fler övningar och redskap:** varianter, hantlar, gummiband, gym
 - [ ] **Fler rehabområden:** axel, nacke, höft
 - [ ] **Uppvärmning och nedvarvning** i passläget, och vilotimern som notis
-- [ ] **Veckoavstämning:** "3 av 4 pass, nästa vecka …"
+- [x] **Veckoavstämning:** "3 av 4 pass, nästa vecka …"
 
 ### 3. Sömn
 - [x] **Läggtid och uppvakning** i stället för bara timmar, så att regelbundenheten syns
