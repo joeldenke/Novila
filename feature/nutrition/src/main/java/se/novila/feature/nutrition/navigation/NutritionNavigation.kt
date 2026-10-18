@@ -9,12 +9,16 @@ import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.serialization.Serializable
 import se.novila.feature.nutrition.NutritionScreen
 import se.novila.feature.nutrition.NutritionViewModel
+import se.novila.feature.nutrition.RecipeActions
 
 /** The Nutrition tab. */
 @Serializable data object NutritionRoute : NavKey
 
-/** The Nutrition tab's entry, with its own [NutritionViewModel] scoped to the entry. */
-fun EntryProviderScope<NavKey>.nutritionEntry(contentPadding: PaddingValues) {
+/**
+ * The Nutrition tab's entry, with its own [NutritionViewModel] scoped to the entry. [onOpenFoodPreferences] opens the
+ * food preferences in Settings, which `:app` connects.
+ */
+fun EntryProviderScope<NavKey>.nutritionEntry(onOpenFoodPreferences: () -> Unit, contentPadding: PaddingValues) {
     entry<NutritionRoute> {
         val viewModel = metroViewModel<NutritionViewModel>()
         LifecycleResumeEffect(viewModel) {
@@ -33,6 +37,9 @@ fun EntryProviderScope<NavKey>.nutritionEntry(contentPadding: PaddingValues) {
             today = state.today,
             onSelectDay = viewModel::selectDay,
             onRange = viewModel::selectRange,
+            recipes = state.recipes,
+            foodPreferences = state.foodPreferences,
+            recipeActions = RecipeActions(onLog = viewModel::logRecipe, onOpenPreferences = onOpenFoodPreferences),
         )
     }
 }

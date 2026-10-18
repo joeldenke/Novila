@@ -29,6 +29,8 @@ import androidx.navigation3.runtime.NavKey
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.serialization.Serializable
 import se.novila.feature.settings.DisclaimerScreen
+import se.novila.feature.settings.FoodPreferencesScreen
+import se.novila.feature.settings.FoodPreferencesViewModel
 import se.novila.feature.settings.GoalsActions
 import se.novila.feature.settings.GoalsScreen
 import se.novila.feature.settings.GoalsViewModel
@@ -64,13 +66,16 @@ import se.novila.ui.R as UiR
 /** The user's daily goals for steps, sleep and water. */
 @Serializable data object GoalsRoute : NavKey
 
+/** The diet, allergens and time that recipe suggestions on the Nutrition tab take into account. */
+@Serializable data object FoodPreferencesRoute : NavKey
+
 /** Reminders to log sleep, train and log food, each at its own time. */
 @Serializable data object RemindersRoute : NavKey
 
 /**
- * Settings and the screens opened from it. Settings, the profile, the goals and the reminders have their own
- * ViewModels, scoped to their entries; the other two are static text. Navigation inside goes through [navigator], on
- * whichever tab Settings was opened from.
+ * Settings and the screens opened from it. Settings, the profile, the goals, the food preferences and the reminders
+ * have their own ViewModels, scoped to their entries; the other two are static text. Navigation inside goes through
+ * [navigator], on whichever tab Settings was opened from.
  */
 fun EntryProviderScope<NavKey>.settingsEntries(navigator: Navigator, contentPadding: PaddingValues) {
     entry<SettingsRoute> {
@@ -84,6 +89,7 @@ fun EntryProviderScope<NavKey>.settingsEntries(navigator: Navigator, contentPadd
         val settings = viewModel.settings.collectAsStateWithLifecycle().value ?: return@entry
         val profile = viewModel.profile.collectAsStateWithLifecycle().value ?: return@entry
         val goals = viewModel.goals.collectAsStateWithLifecycle().value ?: return@entry
+        val food = viewModel.foodPreferences.collectAsStateWithLifecycle().value ?: return@entry
         val movement by viewModel.movement.collectAsStateWithLifecycle()
         val context = LocalContext.current
         val connectHealth = rememberHealthPermissionRequest(viewModel::onMovementPermissionsResult)
@@ -91,6 +97,7 @@ fun EntryProviderScope<NavKey>.settingsEntries(navigator: Navigator, contentPadd
             settings = settings,
             profile = profile,
             goals = goals,
+            foodPreferences = food,
             movement = movement,
             version = viewModel.version,
             canUseDynamicColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
@@ -98,6 +105,7 @@ fun EntryProviderScope<NavKey>.settingsEntries(navigator: Navigator, contentPadd
             actions = SettingsActions(
                 onOpenProfile = { navigator.navigate(ProfileRoute) },
                 onOpenGoals = { navigator.navigate(GoalsRoute) },
+                onOpenFoodPreferences = { navigator.navigate(FoodPreferencesRoute) },
                 onOpenReminders = { navigator.navigate(RemindersRoute) },
                 onTheme = viewModel::setTheme,
                 onDynamicColor = viewModel::setDynamicColor,
@@ -135,6 +143,12 @@ fun EntryProviderScope<NavKey>.settingsEntries(navigator: Navigator, contentPadd
             contentPadding = contentPadding,
         )
     }
+    entry<FoodPreferencesRoute> {
+        val viewModel = metroViewModel<FoodPreferencesViewModel>()
+        // Nothing to show until the preferences are read, a moment at app start.
+        val preferences = viewModel.preferences.collectAsStateWithLifecycle().value ?: return@entry
+        FoodPreferencesScreen(preferences = preferences, onChange = viewModel::change, contentPadding = contentPadding)
+    }
     entry<RemindersRoute> { RemindersEntry(contentPadding) }
     entry<HealthDataRoute> {
         val context = LocalContext.current
@@ -154,6 +168,7 @@ fun settingsTitle(route: NavKey?): String? = when (route) {
     DisclaimerRoute -> stringResource(R.string.disclaimer_title)
     ProfileRoute -> stringResource(R.string.profile_title)
     GoalsRoute -> stringResource(R.string.goals_title)
+    FoodPreferencesRoute -> stringResource(R.string.food_preferences_title)
     RemindersRoute -> stringResource(R.string.settings_reminders)
     else -> null
 }

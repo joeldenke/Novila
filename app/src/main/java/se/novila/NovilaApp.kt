@@ -19,6 +19,7 @@ import se.novila.feature.nutrition.navigation.NutritionRoute
 import se.novila.feature.nutrition.navigation.nutritionEntry
 import se.novila.feature.onboarding.navigation.OnboardingRoute
 import se.novila.feature.onboarding.navigation.onboardingEntry
+import se.novila.feature.settings.navigation.FoodPreferencesRoute
 import se.novila.feature.settings.navigation.SettingsRoute
 import se.novila.feature.settings.navigation.settingsEntries
 import se.novila.feature.settings.navigation.settingsTitle
@@ -124,7 +125,10 @@ private fun Tabs() {
             )
             trainingEntries(navigator = navigator, contentPadding = innerPadding)
             sleepEntries(navigator = navigator, contentPadding = innerPadding)
-            nutritionEntry(contentPadding = innerPadding)
+            nutritionEntry(
+                onOpenFoodPreferences = { navigator.navigate(FoodPreferencesRoute) },
+                contentPadding = innerPadding,
+            )
             settingsEntries(navigator = navigator, contentPadding = innerPadding)
         }
         NavDisplay(

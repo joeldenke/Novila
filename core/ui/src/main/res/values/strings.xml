@@ -104,4 +104,33 @@
     <string name="day_yesterday">Yesterday</string>
     <string name="day_previous">Previous day</string>
     <string name="day_next">Next day</string>
+
+    <!-- Food preferences, in Settings and on Nutrition -->
+    <string name="diet_everything">Everything</string>
+    <string name="diet_pescetarian">Pescetarian</string>
+    <string name="diet_vegetarian">Vegetarian</string>
+    <string name="diet_vegan">Vegan</string>
+    <string name="allergen_gluten">Gluten</string>
+    <string name="allergen_crustaceans">Crustaceans</string>
+    <string name="allergen_eggs">Eggs</string>
+    <string name="allergen_fish">Fish</string>
+    <string name="allergen_peanuts">Peanuts</string>
+    <string name="allergen_soy">Soy</string>
+    <string name="allergen_milk">Milk</string>
+    <string name="allergen_tree_nuts">Tree nuts</string>
+    <string name="allergen_celery">Celery</string>
+    <string name="allergen_mustard">Mustard</string>
+    <string name="allergen_sesame">Sesame</string>
+    <string name="allergen_sulphites">Sulphites</string>
+    <string name="allergen_lupin">Lupin</string>
+    <string name="allergen_molluscs">Molluscs</string>
+    <string name="food_time_any">Any time</string>
+    <string name="food_time_max">At most %1$d min</string>
+    <string name="food_allergens_none">No allergens chosen</string>
+    <plurals name="food_allergens_avoided">
+        <item quantity="one">%1$d allergen avoided</item>
+        <item quantity="other">%1$d allergens avoided</item>
+    </plurals>
+    <string name="food_preferences_summary" translatable="false">%1$s · %2$s · %3$s</string>
+    <string name="food_check_ingredients">Always check the ingredients and the packaging yourself, especially with an allergy.</string>
 </resources>

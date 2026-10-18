@@ -14,6 +14,8 @@ dependencies {
     api(projects.core.sleep)
     // The status that can lower today's intensity (RecoveryStatus) in trainingWeek.
     api(projects.core.recovery)
+    // The user's diet and allergens for recipe suggestions (FoodPreferencesStore).
+    api(projects.core.recipes)
     implementation(libs.androidx.datastore.preferences)
     // Gemini Nano on the device, for the coach's message. See GeminiNanoCoachModel.
     implementation(libs.mlkit.genai.prompt)

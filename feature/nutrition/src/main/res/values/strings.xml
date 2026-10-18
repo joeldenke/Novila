@@ -25,4 +25,221 @@
     <string name="food_treats_value_day">%1$d that day</string>
     <string name="food_add">Add %1$s</string>
     <string name="food_remove">Remove %1$s</string>
+
+    <!-- Recipe suggestions -->
+    <string name="recipes_title">Recipes for what is missing</string>
+    <string name="recipes_breakfast">A breakfast that fills what today is still missing.</string>
+    <string name="recipes_main">A lunch or dinner that fills what today is still missing.</string>
+    <string name="recipes_snack">Today\'s meals are logged. A snack for what is left.</string>
+    <string name="recipes_none">No recipe fits your food preferences right now.</string>
+    <string name="recipes_preferences">Change food preferences</string>
+    <string name="recipe_summary">%1$d min · +%2$d to the nutrition score</string>
+    <string name="recipe_minutes" translatable="false">%1$d min</string>
+    <string name="recipe_gives">Gives: %1$s</string>
+    <string name="recipe_portion" translatable="false">%1$s %2$d</string>
+    <string name="recipe_contains">Contains: %1$s</string>
+    <string name="recipe_contains_none">None of the allergens food must be labelled with.</string>
+    <string name="recipe_ingredients">Ingredients, one serving</string>
+    <string name="recipe_steps">How to</string>
+    <string name="recipe_ingredient" translatable="false">• %1$s</string>
+    <string name="recipe_step" translatable="false">%1$d. %2$s</string>
+    <string name="recipe_log">I ate this</string>
+
+    <!-- Recipes: one serving each, see se.novila.recipes.Recipe -->
+    <string name="recipe_overnight_oats">Overnight oats with berries</string>
+    <string-array name="recipe_overnight_oats_ingredients">
+        <item>1 dl rolled oats</item>
+        <item>1½ dl plain yoghurt</item>
+        <item>1½ dl blueberries</item>
+        <item>½ apple</item>
+        <item>1 tsp cinnamon</item>
+    </string-array>
+    <string-array name="recipe_overnight_oats_steps">
+        <item>Grate the apple and stir it into the oats, yoghurt and cinnamon in a jar.</item>
+        <item>Leave it in the fridge overnight, or for at least two hours.</item>
+        <item>Top with the blueberries before eating.</item>
+    </string-array>
+    <string name="recipe_egg_sandwich">Whole grain sandwich with egg and tomato</string>
+    <string-array name="recipe_egg_sandwich_ingredients">
+        <item>2 slices of whole grain bread</item>
+        <item>1 egg</item>
+        <item>1 tomato</item>
+        <item>5 cm cucumber</item>
+        <item>A few lettuce leaves</item>
+    </string-array>
+    <string-array name="recipe_egg_sandwich_steps">
+        <item>Boil the egg for 8 minutes, then cool it in cold water.</item>
+        <item>Slice the tomato, cucumber and egg.</item>
+        <item>Put the lettuce, tomato, cucumber and egg on the bread.</item>
+    </string-array>
+    <string name="recipe_berry_smoothie">Berry smoothie with oats</string>
+    <string-array name="recipe_berry_smoothie_ingredients">
+        <item>1 banana</item>
+        <item>1 dl frozen raspberries</item>
+        <item>A handful of spinach</item>
+        <item>½ dl rolled oats</item>
+        <item>2 dl oat drink</item>
+    </string-array>
+    <string-array name="recipe_berry_smoothie_steps">
+        <item>Put everything in a blender.</item>
+        <item>Blend until smooth. Add a little more oat drink if it is too thick.</item>
+    </string-array>
+    <string name="recipe_lentil_bolognese">Lentil bolognese with whole grain pasta</string>
+    <string-array name="recipe_lentil_bolognese_ingredients">
+        <item>75 g whole grain pasta</item>
+        <item>½ dl red lentils</item>
+        <item>200 g crushed tomatoes</item>
+        <item>1 carrot</item>
+        <item>½ onion</item>
+        <item>1 clove of garlic</item>
+        <item>1 tsp olive oil</item>
+        <item>Salt, pepper and dried oregano</item>
+    </string-array>
+    <string-array name="recipe_lentil_bolognese_steps">
+        <item>Chop the onion and garlic and grate the carrot.</item>
+        <item>Fry them in the oil for a few minutes.</item>
+        <item>Add the lentils, tomatoes and 1 dl water and simmer for 15 minutes. Season to taste.</item>
+        <item>Cook the pasta as the packet says and serve it with the sauce.</item>
+    </string-array>
+    <string name="recipe_baked_salmon">Baked salmon with broccoli and potatoes</string>
+    <string-array name="recipe_baked_salmon_ingredients">
+        <item>125 g salmon fillet</item>
+        <item>150 g broccoli</item>
+        <item>1 carrot</item>
+        <item>3 potatoes</item>
+        <item>½ lemon</item>
+        <item>1 tsp olive oil</item>
+        <item>Salt and pepper</item>
+    </string-array>
+    <string-array name="recipe_baked_salmon_steps">
+        <item>Heat the oven to 200 °C. Boil the potatoes for about 20 minutes.</item>
+        <item>Put the salmon, broccoli and sliced carrot on a baking tray, drizzle with the oil and season.</item>
+        <item>Bake for 15 minutes and squeeze the lemon over before serving.</item>
+    </string-array>
+    <string name="recipe_chickpea_curry">Chickpea curry with brown rice</string>
+    <string-array name="recipe_chickpea_curry_ingredients">
+        <item>¾ dl brown rice</item>
+        <item>200 g cooked chickpeas</item>
+        <item>1 dl coconut milk</item>
+        <item>100 g crushed tomatoes</item>
+        <item>½ red pepper</item>
+        <item>2 handfuls of spinach</item>
+        <item>½ onion</item>
+        <item>1 tsp curry powder</item>
+    </string-array>
+    <string-array name="recipe_chickpea_curry_steps">
+        <item>Cook the rice as the packet says.</item>
+        <item>Chop the onion and pepper and fry them with the curry powder for a few minutes.</item>
+        <item>Add the chickpeas, tomatoes and coconut milk and simmer for 10 minutes.</item>
+        <item>Stir in the spinach until it wilts and serve with the rice.</item>
+    </string-array>
+    <string name="recipe_chicken_stir_fry">Chicken stir-fry with vegetables</string>
+    <string-array name="recipe_chicken_stir_fry_ingredients">
+        <item>125 g chicken fillet</item>
+        <item>200 g stir-fry vegetables</item>
+        <item>¾ dl brown rice</item>
+        <item>1 tbsp soy sauce</item>
+        <item>1 clove of garlic</item>
+        <item>1 tsp grated ginger</item>
+        <item>1 tsp rapeseed oil</item>
+    </string-array>
+    <string-array name="recipe_chicken_stir_fry_steps">
+        <item>Cook the rice as the packet says.</item>
+        <item>Cut the chicken into strips and fry it in the oil in a hot pan until cooked through.</item>
+        <item>Add the vegetables, garlic and ginger and stir-fry for 3–4 minutes.</item>
+        <item>Season with the soy sauce and serve with the rice.</item>
+    </string-array>
+    <string name="recipe_vegetable_omelette">Vegetable omelette with whole grain bread</string>
+    <string-array name="recipe_vegetable_omelette_ingredients">
+        <item>2 eggs</item>
+        <item>2 handfuls of spinach</item>
+        <item>½ red pepper</item>
+        <item>½ onion</item>
+        <item>1 tomato</item>
+        <item>1 slice of whole grain bread</item>
+        <item>1 tsp rapeseed oil</item>
+        <item>Salt and pepper</item>
+    </string-array>
+    <string-array name="recipe_vegetable_omelette_steps">
+        <item>Chop the onion and pepper and fry them in the oil for a few minutes.</item>
+        <item>Add the spinach and let it wilt.</item>
+        <item>Whisk the eggs with a little salt and pepper, pour them over and cook on low heat until set.</item>
+        <item>Serve with the tomato and the bread.</item>
+    </string-array>
+    <string name="recipe_tuna_wheat_salad">Wheat salad with tuna</string>
+    <string-array name="recipe_tuna_wheat_salad_ingredients">
+        <item>¾ dl whole wheat grains</item>
+        <item>1 can of tuna in water, about 120 g</item>
+        <item>1 tomato</item>
+        <item>10 cm cucumber</item>
+        <item>¼ red onion</item>
+        <item>A handful of lettuce</item>
+        <item>1 tbsp olive oil</item>
+        <item>½ lemon</item>
+    </string-array>
+    <string-array name="recipe_tuna_wheat_salad_steps">
+        <item>Cook the wheat as the packet says and let it cool a little.</item>
+        <item>Chop the tomato, cucumber and onion.</item>
+        <item>Mix everything with the lettuce and tuna and dress with the oil and lemon.</item>
+    </string-array>
+    <string name="recipe_bean_soup">White bean and tomato soup</string>
+    <string-array name="recipe_bean_soup_ingredients">
+        <item>200 g cooked white beans</item>
+        <item>200 g crushed tomatoes</item>
+        <item>1 carrot</item>
+        <item>1 stalk of celery</item>
+        <item>½ onion</item>
+        <item>1 clove of garlic</item>
+        <item>2 dl vegetable stock</item>
+        <item>1 tsp olive oil</item>
+        <item>1 slice of whole grain bread</item>
+    </string-array>
+    <string-array name="recipe_bean_soup_steps">
+        <item>Chop the onion, garlic, carrot and celery and soften them in the oil in a pot.</item>
+        <item>Add the tomatoes, stock and beans and simmer for 15 minutes.</item>
+        <item>Blend half of the soup if you like it thicker, season and serve with the bread.</item>
+    </string-array>
+    <string name="recipe_chicken_bulgur_salad">Chicken salad with bulgur</string>
+    <string-array name="recipe_chicken_bulgur_salad_ingredients">
+        <item>100 g cooked chicken</item>
+        <item>¾ dl bulgur</item>
+        <item>1 tomato</item>
+        <item>10 cm cucumber</item>
+        <item>A handful of lettuce</item>
+        <item>½ dl plain yoghurt</item>
+        <item>½ clove of garlic</item>
+        <item>Salt and pepper</item>
+    </string-array>
+    <string-array name="recipe_chicken_bulgur_salad_steps">
+        <item>Cook the bulgur as the packet says and let it cool a little.</item>
+        <item>Slice the chicken and chop the tomato and cucumber.</item>
+        <item>Stir the yoghurt with the grated garlic, salt and pepper.</item>
+        <item>Mix the bulgur, vegetables and chicken and serve with the dressing.</item>
+    </string-array>
+    <string name="recipe_apple_and_nuts">Apple and a handful of nuts</string>
+    <string-array name="recipe_apple_and_nuts_ingredients">
+        <item>1 apple</item>
+        <item>A small handful of unsalted nuts, about 20 g</item>
+    </string-array>
+    <string-array name="recipe_apple_and_nuts_steps">
+        <item>Slice the apple and eat it with the nuts.</item>
+    </string-array>
+    <string name="recipe_carrots_and_hummus">Carrot sticks with hummus</string>
+    <string-array name="recipe_carrots_and_hummus_ingredients">
+        <item>2 carrots</item>
+        <item>3 tbsp hummus</item>
+    </string-array>
+    <string-array name="recipe_carrots_and_hummus_steps">
+        <item>Peel the carrots and cut them into sticks.</item>
+        <item>Dip them in the hummus.</item>
+    </string-array>
+    <string name="recipe_yogurt_with_berries">Yoghurt with berries and oats</string>
+    <string-array name="recipe_yogurt_with_berries_ingredients">
+        <item>1½ dl plain yoghurt</item>
+        <item>1½ dl berries, fresh or frozen</item>
+        <item>½ dl rolled oats</item>
+    </string-array>
+    <string-array name="recipe_yogurt_with_berries_steps">
+        <item>Put the yoghurt in a bowl and top it with the berries and oats.</item>
+    </string-array>
 </resources>
