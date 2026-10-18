@@ -2,10 +2,12 @@ package se.novila.designsystem.component
 
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertIsSelected
+import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -95,5 +97,30 @@ class NovilaInputTest {
         composeRule.onNodeWithContentDescription("Day after").assertIsNotEnabled().performClick()
 
         assertEquals(-1, steps)
+    }
+
+    @Test fun `text field shows the hint before anything is written and reports what is typed`() {
+        var typed = ""
+        composeRule.setContent {
+            NovilaTheme {
+                NovilaTextField(value = "", onValueChange = { typed = it }, hint = "One line about your day")
+            }
+        }
+
+        composeRule.onNodeWithText("One line about your day").assertExists()
+        composeRule.onNode(hasSetTextAction()).performTextInput("Long walk")
+
+        assertEquals("Long walk", typed)
+    }
+
+    @Test fun `text field shows what is already written`() {
+        composeRule.setContent {
+            NovilaTheme {
+                NovilaTextField(value = "Long walk", onValueChange = { }, hint = "One line about your day")
+            }
+        }
+
+        composeRule.onNodeWithText("Long walk").assertExists()
+        composeRule.onNodeWithText("One line about your day").assertDoesNotExist()
     }
 }
