@@ -19,9 +19,6 @@ fun List<DayEntry>.averageNutrition(goals: Goals = Goals()): Int? =
  * Each one needs enough days behind it to be more than chance.
  */
 sealed interface Insight {
-    /** Mood is clearly better on days after at least [hours] of sleep. */
-    data class MoodFollowsSleep(val hours: Float) : Insight
-
     /** Last night against the week's average, in hours: positive is more. */
     data class SleepVsAverage(val hours: Float) : Insight
 
@@ -38,30 +35,18 @@ sealed interface Insight {
     data object SteadySleep : Insight
 }
 
-const val MOOD_SLEEP_HOURS = 7f
-
 /**
  * [week] runs from oldest to today (see [weekOf]). At most [limit] insights, the most telling first. Steps and
  * nutrition are measured against the user's [goals].
  */
 fun weekInsights(week: List<DayEntry>, steps: Long?, limit: Int = 3, goals: Goals = Goals()): List<Insight> =
     listOfNotNull(
-        moodFollowsSleep(week),
         sleepVsAverage(week),
         nutritionStreak(week, goals),
         nutritionTrend(week, goals),
         Insight.StepsGoalReached(goals.steps).takeIf { steps != null && steps >= goals.steps },
         steadySleep(week),
     ).take(limit)
-
-/** At least two days on each side of [MOOD_SLEEP_HOURS], and almost a whole mood step between them. */
-private fun moodFollowsSleep(week: List<DayEntry>): Insight? {
-    val (rested, short) = week.filter { it.mood > 0 && it.sleepHours > 0f }
-        .partition { it.sleepHours >= MOOD_SLEEP_HOURS }
-    if (rested.size < 2 || short.size < 2) return null
-    val difference = rested.map { it.mood }.average() - short.map { it.mood }.average()
-    return Insight.MoodFollowsSleep(MOOD_SLEEP_HOURS).takeIf { difference >= 0.75 }
-}
 
 /** Last night against at least three other nights, when it differs by 45 minutes or more. */
 private fun sleepVsAverage(week: List<DayEntry>): Insight? {

@@ -5,6 +5,7 @@ import se.novila.coach.CoachPlanner
 import se.novila.coach.CoachPreferences
 import se.novila.coach.SessionFeedback
 import se.novila.exercise.Exercise
+import se.novila.exercise.ExerciseKind
 import se.novila.exercise.ExerciseRepository
 import se.novila.exercise.ExerciseType
 import se.novila.exercise.TrainingHistory
@@ -12,6 +13,7 @@ import se.novila.exercise.TrainingProgram
 import se.novila.exercise.TrainingProgramGenerator
 import se.novila.model.CardioType
 import se.novila.model.DayEntry
+import se.novila.model.TrainingToday
 import se.novila.recovery.RecoveryStatus
 import java.time.LocalDate
 import kotlin.time.Duration.Companion.minutes
@@ -33,6 +35,17 @@ class TrainingWeek(
 ) {
     /** Whether the program has a session on [date]'s weekday. */
     fun hasSession(date: LocalDate): Boolean = program.sessions.any { it.day == date.dayOfWeek }
+
+    /**
+     * [date]'s training for Today's checklist: the minutes planned that the user can log (mobility is done in their
+     * own time, so it never stays open) and the minutes trained, Novila's own and recorded ones counted once.
+     */
+    fun trainingOn(date: LocalDate): TrainingToday = TrainingToday(
+        plannedMinutes = program.sessions
+            .filter { it.day == date.dayOfWeek && it.type.kind != ExerciseKind.Mobility }
+            .sumOf { it.minutes },
+        doneMinutes = history.filter { it.date == date }.sumOf { it.duration.inWholeMinutes }.toInt(),
+    )
 }
 
 /**

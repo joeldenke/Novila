@@ -90,6 +90,49 @@ fun NovilaSwitchRow(
     }
 }
 
+/**
+ * One thing to do today: a round check, filled in the [role] color with a tick when [done], a [title], an optional
+ * [summary] and an [action] at the end, usually a button. A done task steps back: its title turns quiet.
+ */
+@Composable
+fun NovilaTaskRow(
+    title: String,
+    done: Boolean,
+    modifier: Modifier = Modifier,
+    summary: String? = null,
+    role: NovilaColorRole = NovilaTheme.pillars.training,
+    action: @Composable (() -> Unit)? = null,
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .heightIn(min = MinRowHeight)
+            .padding(vertical = NovilaTheme.spacing.xs),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.m),
+    ) {
+        Check(done, role)
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.xxs),
+        ) {
+            NovilaText(
+                title,
+                style = NovilaTheme.typography.bodyLarge,
+                color = if (done) NovilaTheme.colors.onSurfaceVariant else NovilaTheme.colors.onSurface,
+            )
+            if (summary != null) {
+                NovilaText(
+                    summary,
+                    style = NovilaTheme.typography.bodyMedium,
+                    color = NovilaTheme.colors.onSurfaceVariant,
+                )
+            }
+        }
+        action?.invoke()
+    }
+}
+
 @Composable
 private fun RowLayout(
     title: String,
