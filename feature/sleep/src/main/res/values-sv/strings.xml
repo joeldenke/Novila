@@ -39,7 +39,7 @@
     <string name="sleep_coach_adjust">Anpassa sömncoachen</string>
     <string name="sleep_coach_goal_title">Mål för sömnen</string>
     <string name="sleep_coach_card_intro">En läggtid att sikta mot, en kvällsrutin och råd ur dina egna nätter.</string>
-    <string name="sleep_coach_intro">Välj en läggtid att sträva mot och en vila innan läggning på kvällen. Novila tittar på dina egna nätter och föreslår vad som hjälper, inspirerat av kognitiv beteendeterapi mot sömnbesvär. Allt stannar på telefonen.</string>
+    <string name="sleep_coach_intro">Välj en läggtid att sträva mot och en vila innan läggning på kvällen. Novila tittar på dina egna nätter och föreslår vanor som brukar hjälpa sömnen. Allt stannar på telefonen.</string>
     <string name="sleep_coach_bedtime">Läggtidsmål</string>
     <string name="sleep_coach_wake_time">Vaknadmål</string>
     <string name="sleep_coach_bedtime_title">När vill du ligga i sängen?</string>

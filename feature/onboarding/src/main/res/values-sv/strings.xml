@@ -47,7 +47,7 @@
     <string name="onboarding_goal_endurance_body">Mer kondition och fler repetitioner, för mer ork.</string>
     <string name="onboarding_goal_mobility">Rörlighet</string>
     <string name="onboarding_goal_mobility_body">Lugna pass för rygg, höfter och axlar.</string>
-    <string name="onboarding_goal_rehab">Ditt rehabprogram är kvar som det är. Välj ett mål för att byta.</string>
+    <string name="onboarding_goal_rehab">Din skonsamma träning är kvar som den är. Välj ett mål för att byta.</string>
     <string name="onboarding_time_title">Din tid</string>
     <string name="onboarding_days">Dagar i veckan</string>
     <string name="onboarding_days_value">%1$d dagar</string>
@@ -71,7 +71,7 @@
     <string name="onboarding_ready_title">Din vecka är klar</string>
     <string name="onboarding_ready_title_named">Din vecka är klar, %1$s</string>
     <string name="onboarding_ready_body">%1$s, %2$d dagar i veckan, cirka %3$d minuter per pass.</string>
-    <string name="onboarding_ready_body_rehab">Ditt rehabprogram, %1$d dagar i veckan, cirka %2$d minuter per pass.</string>
+    <string name="onboarding_ready_body_rehab">Skonsam träning, %1$d dagar i veckan, cirka %2$d minuter per pass.</string>
     <string name="onboarding_ready_training">Ditt program finns under Träning</string>
     <string name="onboarding_ready_sleep">Logga nattens sömn i morgon bitti</string>
     <string name="onboarding_ready_nutrition">Börja med frukosten under Kost</string>

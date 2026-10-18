@@ -13,7 +13,7 @@ telefonen: inget konto, inget moln, inga analysverktyg. Appen finns på svenska 
 | Del | Funktioner |
 |---|---|
 | **Idag** | Hälsning med namn, dagens balans som en ring per del, en ruta per del med veckans trend, insikter, veckans sömn och kost i diagram, och mående |
-| **Träning** | Veckoprogram efter WHO:s råd (150–300 min kondition, styrka två dagar i veckan, högst +10 % kondition per vecka). En coach på enheten som bygger veckan ur ditt mål, dina dagar, tid per pass, fokus och hänsyn, med fasindelade rehabprogram för knä och ländrygg. 13 illustrerade övningar och ett passläge med set, vila och nedräkning. Konditionspass loggas med "Jag gjorde det" eller läses från Health Connect, och efter passet ändrar ansträngning (RPE) och smärta dosen och ger förslag på nästa rehabfas |
+| **Träning** | Veckoprogram efter WHO:s råd (150–300 min kondition, styrka två dagar i veckan, högst +10 % kondition per vecka). En coach på enheten som bygger veckan ur ditt mål, dina dagar, tid per pass, fokus och hänsyn, med skonsam träning för knä och ländrygg i tre nivåer. 13 illustrerade övningar och ett passläge med set, vila och nedräkning. Konditionspass loggas med "Jag gjorde det" eller läses från Health Connect, och efter passet ändrar ansträngning (RPE) och smärta dosen och ger förslag på nästa nivå |
 | **Sömn** | Läggtid och uppvakning (eller bara timmar, eller natten klockan registrerade, från Health Connect), hur natten kändes och vad som kan ha påverkat den, och vad som påverkar din sömn: samband mellan dagen före (kost, vatten, träning, sött), kvällen och natten, prövade på dina egna loggar och visade med nätterna bakom. En graf över veckan, fyra veckor eller ett år jämförd med perioden innan |
 | **Kost** | Portioner per livsmedelsgrupp, vatten och sött, poäng 0–100 efter Livsmedelsverkets kostråd, ett förslag på nästa steg, och poängen över veckan, fyra veckor eller ett år jämförd med perioden innan |
 | **Rörelse** | Dagens steg och aktiva kalorier, de senaste fem veckornas träningspass och dina nätter, från Health Connect, bara medan appen är öppen |
@@ -22,7 +22,7 @@ telefonen: inget konto, inget moln, inga analysverktyg. Appen finns på svenska 
 | **Inställningar** | Tema (automatiskt, ljust, mörkt, bakgrundsfärger), profil, Health Connect, ansvarsfriskrivning, radera all data och introduktionen igen |
 
 En kort illustrerad introduktion vid första start ställer in mål, profil, coach och Health Connect, så att planen
-finns från dag ett. Vad som kommer härnäst står i [roadmapen](docs/roadmap.md).
+finns från dag ett. Vad som kommer härnäst står i [roadmapen](docs/roadmap.md) (engelska).
 
 ## Integritet från grunden
 

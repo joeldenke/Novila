@@ -2,12 +2,29 @@
 <resources>
     <!-- Mood -->
     <string name="mood_title">Dagens mående</string>
+    <string name="mood_label">Mående</string>
     <string name="mood_1">Dåligt</string>
     <string name="mood_2">Sådär</string>
     <string name="mood_3">Okej</string>
     <string name="mood_4">Bra</string>
     <string name="mood_5">Toppen</string>
     <string name="mood_hint">Hur mår du i dag?</string>
+    <string name="energy_label">Energi</string>
+    <string name="energy_1">Utmattad</string>
+    <string name="energy_2">Låg</string>
+    <string name="energy_3">Okej</string>
+    <string name="energy_4">Bra</string>
+    <string name="energy_5">Full av energi</string>
+    <string name="energy_hint">Hur mycket energi har du i dag?</string>
+    <string name="stress_label">Stress</string>
+    <string name="stress_1">Lugn</string>
+    <string name="stress_2">Ganska lugn</string>
+    <string name="stress_3">Anspänd</string>
+    <string name="stress_4">Stressad</string>
+    <string name="stress_5">Mycket stressad</string>
+    <string name="stress_hint">Hur stressad känner du dig i dag?</string>
+    <string name="diary_label">Dagbok</string>
+    <string name="diary_hint">En rad om din dag</string>
 
     <!-- Today -->
     <string name="greeting_morning">God morgon</string>

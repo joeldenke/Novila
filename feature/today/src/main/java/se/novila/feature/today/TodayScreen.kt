@@ -52,7 +52,8 @@ import se.novila.ui.R as UiR
 /**
  * The dashboard: greeting (by [name] when the profile has one), today's balance as rings, one tile per part with its
  * trend, what the logs say (the strongest finding about the user's [sleep] first, then the week), the week's sleep
- * and nutrition, and today's mood. Everything is measured against the user's [goals]. Blocks arrive one by one.
+ * and nutrition, and today's mood, energy, stress and diary line. Everything is measured against the user's [goals].
+ * Blocks arrive one by one.
  */
 @Composable
 fun TodayScreen(
@@ -64,6 +65,9 @@ fun TodayScreen(
     sleep: SleepAnalysis,
     movement: MovementState,
     onMood: (Int) -> Unit,
+    onEnergy: (Int) -> Unit,
+    onStress: (Int) -> Unit,
+    onDiary: (String) -> Unit,
     onOpenTraining: () -> Unit,
     onOpenSleep: () -> Unit,
     onOpenNutrition: () -> Unit,
@@ -90,7 +94,11 @@ fun TodayScreen(
         item(key = "insights") { NovilaReveal(order = 3) { InsightsCard(insights, sleep) } }
         item(key = "sleep-week") { NovilaReveal(order = 4) { SleepWeekCard(week, goals) } }
         item(key = "nutrition-week") { NovilaReveal(order = 5) { NutritionWeekCard(week, goals) } }
-        item(key = "mood") { NovilaReveal(order = 6) { MoodCard(today.mood, onMood) } }
+        item(key = "mood") {
+            NovilaReveal(order = 6) {
+                MoodCard(today.mood, today.energy, today.stress, today.diary, onMood, onEnergy, onStress, onDiary)
+            }
+        }
     }
 }
 
@@ -231,6 +239,9 @@ private fun TodayScreenContent() {
                 sleep = analyzeSleep(PreviewData.days()),
                 movement = PreviewData.movement,
                 onMood = {},
+                onEnergy = {},
+                onStress = {},
+                onDiary = {},
                 onOpenTraining = {},
                 onOpenSleep = {},
                 onOpenNutrition = {},
