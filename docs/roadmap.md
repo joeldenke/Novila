@@ -15,7 +15,7 @@ samband som de andra inte har. Handloggning finns kvar som reserv för den som i
 
 | Del | Funktioner | Bedömning |
 |---|---|---|
-| Idag | Hälsning med namn, dagens balans (ringar), en ruta per del, insikter, veckans sömn och kost, mående | Snyggt, men bara veckan |
+| Idag | Hälsning med namn, dagens balans (ringar), en ruta per del, insikter, veckans sömn och kost, mående, energi, stress och en dagboksrad | Snyggt, men bara veckan |
 | Träning | Veckoprogram (WHO), coach med mål, dagar, fokus och hänsyn, rehab (knä, ländrygg, axel, nacke, höft, fas 1–3), 15 illustrerade övningar, passläge med timer, konditionspass (loggade och från Health Connect), RPE och smärta efter passet, Gemini Nano-kommentar | Appens starkaste del |
 | Sömn | Läggtid och uppvakning (eller klockans natt från Health Connect), kvalitet och orsaker, vad som påverkar sömnen, graf över vecka, fyra veckor eller år, sömncoach med läggtidsmål, kvällsrutin och råd ur egna nätter | Bra |
 | Kost | Portioner per livsmedelsgrupp, vatten mot eget mål, sött, poäng 0–100, "nästa steg", poängen över vecka, fyra veckor eller år | Bra och enkelt |
@@ -64,7 +64,7 @@ mer än kommentaren, eller data som lämnar appen.
 
 ### 5. Kropp och mående
 - [ ] **Vikt och mått över tid** (profilen har bara ett värde)
-- [ ] **Utökat mående:** energi, stress och en dagboksrad
+- [x] **Utökat mående:** energi, stress och en dagboksrad
 - [ ] **Återhämtning:** vilopuls och HRV från klockan **(ok)**, som kan sänka passets intensitet
 - [ ] **Andning och avslappning:** korta guidade pass, ritade som anatomifiguren
 

@@ -23,9 +23,16 @@ class DayEntryTest {
             .withCardio(CardioLog(CardioType.Running, 20))
             .withFeedback(effort = 7, pain = 0, phase = 2)
         assertEquals(entry, DayEntryCodec.decode(date, DayEntryCodec.encode(entry)))
-        assertEquals("v5;0;0.0;0;0;0;0;0;0;25;Walking:30,Running:20;7;0;2;;;0;", DayEntryCodec.encode(entry))
+        assertEquals("v6;0;0.0;0;0;0;0;0;0;25;Walking:30,Running:20;7;0;2;;;0;;0;0;", DayEntryCodec.encode(entry))
         val empty = DayEntry(date)
         assertEquals(empty, DayEntryCodec.decode(date, DayEntryCodec.encode(empty)))
+    }
+
+    @Test fun `codec round-trips energy, stress and the diary line`() {
+        val entry = DayEntry(date).withEnergy(4).withStress(2).withDiary("Long walk; legs heavy")
+        assertEquals("Long walk, legs heavy", entry.diary)
+        assertEquals(entry, DayEntryCodec.decode(date, DayEntryCodec.encode(entry)))
+        assertEquals("v6;0;0.0;0;0;0;0;0;0;0;;0;;0;;;0;;4;2;Long walk, legs heavy", DayEntryCodec.encode(entry))
     }
 
     @Test fun `codec round-trips the night with its times, quality and factors`() {
@@ -35,7 +42,10 @@ class DayEntryTest {
             .withSleepFactor(SleepFactor.Screens, on = true)
             .withSleepFactor(SleepFactor.LateCaffeine, on = true)
         assertEquals(entry, DayEntryCodec.decode(date, DayEntryCodec.encode(entry)))
-        assertEquals("v5;0;7.5;0;0;0;0;0;0;0;;0;;0;1395;405;4;LateCaffeine,Screens", DayEntryCodec.encode(entry))
+        assertEquals(
+            "v6;0;7.5;0;0;0;0;0;0;0;;0;;0;1395;405;4;LateCaffeine,Screens;0;0;",
+            DayEntryCodec.encode(entry),
+        )
     }
 
     @Test fun `v4 data from before bedtimes is migrated with its hours`() {
@@ -57,11 +67,26 @@ class DayEntryTest {
     }
 
     @Test fun `unknown factors and out of range values are skipped`() {
-        val day = DayEntryCodec.decode(date, "v5;0;0;0;0;0;0;0;0;0;;0;;0;9999;x;9;Alcohol,Snoring")
+        val day = DayEntryCodec.decode(date, "v6;0;0;0;0;0;0;0;0;0;;0;;0;9999;x;9;Alcohol,Snoring;9;0;")
         assertNull(day.bedtime)
         assertNull(day.wakeTime)
         assertEquals(MAX_SLEEP_QUALITY, day.sleepQuality)
+        assertEquals(5, day.energy)
+        assertEquals(0, day.stress)
         assertEquals(setOf(SleepFactor.Alcohol), day.sleepFactors)
+    }
+
+    @Test fun `v5 data from before energy, stress and the diary line is migrated`() {
+        val day = DayEntryCodec.decode(date, "v5;5;7.5;4;4;3;2;1;2;25;Walking:30;7;0;2;1395;405;4;LateCaffeine")
+        assertEquals(4, day.mood)
+        assertEquals(0, day.energy)
+        assertEquals(0, day.stress)
+        assertEquals("", day.diary)
+        assertEquals(7.5f, day.sleepHours)
+        assertEquals(listOf(CardioLog(CardioType.Walking, 30)), day.cardio)
+        assertEquals(LocalTime.of(23, 15), day.bedtime)
+        assertEquals(4, day.sleepQuality)
+        assertEquals(setOf(SleepFactor.LateCaffeine), day.sleepFactors)
     }
 
     @Test fun `v3 data from before cardio logging is migrated`() {
@@ -128,6 +153,7 @@ class DayEntryTest {
         assertEquals(DayEntry(date), DayEntryCodec.decode(date, "v2;1;2;3"))
         assertEquals(DayEntry(date), DayEntryCodec.decode(date, "v3;1;2;3;4;5;6;7;8"))
         assertEquals(DayEntry(date), DayEntryCodec.decode(date, "v4;1;2;3;4;5;6;7;8;9"))
+        assertEquals(DayEntry(date), DayEntryCodec.decode(date, "v6;1;2;3"))
     }
 
     @Test fun `portions never go below zero`() {
@@ -144,9 +170,18 @@ class DayEntryTest {
         assertEquals(MAX_SLEEP_HOURS, DayEntry(date).withSleep(20f).sleepHours, 0f)
     }
 
-    @Test fun `mood is clamped to 0 to 5`() {
-        assertEquals(5, DayEntry(date).withMood(9).mood)
+    @Test fun `mood, energy and stress are clamped to 0 to 5`() {
+        val day = DayEntry(date).withMood(9).withEnergy(9).withStress(-1)
+        assertEquals(5, day.mood)
+        assertEquals(5, day.energy)
+        assertEquals(0, day.stress)
         assertEquals(0, DayEntry(date).withMood(-1).mood)
+    }
+
+    @Test fun `the diary line is one short line`() {
+        assertEquals("Long walk, legs heavy", DayEntry(date).withDiary("  Long walk; legs\nheavy  ").diary)
+        assertEquals("", DayEntry(date).withDiary("\n").diary)
+        assertEquals(MAX_DIARY_LENGTH, DayEntry(date).withDiary("x".repeat(500)).diary.length)
     }
 
     @Test fun `hours are formatted per locale`() {
