@@ -19,7 +19,8 @@ import kotlin.time.Duration.Companion.minutes
 /**
  * The week's training as the app plans it, the same for the Training tab and the training reminder: the coach's
  * [plan] for [preferences], and the [program] that counts (the coach's when it is set up, [active], otherwise generated
- * from recent workouts). [days] are the saved days the [history] was read from, today first.
+ * from recent workouts). [days] are the saved days the [history] was read from, today first. [nextProgram] is the
+ * week after, planned the same way on a history that already includes this week, for the weekly review.
  */
 class TrainingWeek(
     val days: List<DayEntry>,
@@ -28,6 +29,7 @@ class TrainingWeek(
     val active: Boolean,
     val plan: CoachPlan,
     val program: TrainingProgram,
+    val nextProgram: TrainingProgram,
 ) {
     /** Whether the program has a session on [date]'s weekday. */
     fun hasSession(date: LocalDate): Boolean = program.sessions.any { it.day == date.dayOfWeek }
@@ -65,7 +67,15 @@ fun trainingWeek(
     } else {
         TrainingProgramGenerator.generate(history, today, recovery)
     }
-    return TrainingWeek(days, history, preferences, active != null, plan, program)
+    // Next week from the same coach or generator, on a history where this week's sessions already count,
+    // so the weekly review can say what the training leads to. Recovery only lightens today, so not next week.
+    val nextMonday = program.weekStart.plusWeeks(1)
+    val nextProgram = if (active != null) {
+        CoachPlanner.plan(preferences, history = history, today = nextMonday, feedback = feedback).program
+    } else {
+        TrainingProgramGenerator.generate(history, nextMonday)
+    }
+    return TrainingWeek(days, history, preferences, active != null, plan, program, nextProgram)
 }
 
 private fun ownExercises(day: DayEntry): List<Exercise> = buildList {

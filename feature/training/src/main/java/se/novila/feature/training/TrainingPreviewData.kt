@@ -33,6 +33,9 @@ internal object TrainingPreviewData {
 
     val program = TrainingProgramGenerator.generate(history = workouts, today = date)
 
+    /** The week after, as the weekly review shows it. */
+    val nextProgram = TrainingProgramGenerator.generate(history = workouts, today = date.plusWeeks(1))
+
     /** The watch's recovery: a raised resting heart rate and a lower HRV today, so today is lighter. */
     val recovery = RecoveryState.Connected(
         days = (0L..6L).map { daysAgo ->

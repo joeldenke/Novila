@@ -265,6 +265,10 @@ där pluginet `firebase@firebase` inte alltid installeras.
   `NovilaSceneImage`, som sköter hörn, entré och parallax. I mörkt läge blir dagscener skymning (`ColorMatrix`:
   mindre mättnad och ljus, aldrig en grå slöja) och nederkanten flyter ut i ytan; nattskogen och solnedgången behåller sitt ljus. Rita inte landskap i kod: det har
   provats och når inte upp till målade bilder. Nya scener tas fram i samma stil som de befintliga.
+- **Inga medicinska påståenden:** appen ger allmänna råd och ska inte låta som vård (medicintekniska regler, MDR).
+  I texter, butikssidan och Gemini Nano-prompten heter målet `Rehab` *skonsam träning* och dess faser *nivåer*;
+  skriv aldrig rehab, rehabilitering, behandling, terapi eller att appen läker, lindrar eller hjälper mot en
+  sjukdom eller besvär (sömnlöshet, skada). Råden om när man ska söka vård behålls. Koden får heta `Rehab`.
 - **Inga emojis i UI:t.** Novila ska kännas som en professionell hälsoapp: använd vektorikoner och ritade komponenter
   (t.ex. `NovilaLevelPicker` för mående), aldrig emoji-tecken.
 - **Övningsillustrationer:** en övning är data (keyframes med ledvinklar i `ExerciseLibrary`), aldrig video eller
