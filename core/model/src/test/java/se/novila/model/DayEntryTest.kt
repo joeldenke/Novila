@@ -23,7 +23,7 @@ class DayEntryTest {
             .withCardio(CardioLog(CardioType.Running, 20))
             .withFeedback(effort = 7, pain = 0, phase = 2)
         assertEquals(entry, DayEntryCodec.decode(date, DayEntryCodec.encode(entry)))
-        assertEquals("v6;0;0.0;0;0;0;;0;0;0;0;0;25;Walking:30,Running:20;7;0;2;;;0;", DayEntryCodec.encode(entry))
+        assertEquals("v6;0;0.0;0;0;0;0;0;0;25;Walking:30,Running:20;7;0;2;;;0;;0;0;", DayEntryCodec.encode(entry))
         val empty = DayEntry(date)
         assertEquals(empty, DayEntryCodec.decode(date, DayEntryCodec.encode(empty)))
     }
@@ -32,7 +32,7 @@ class DayEntryTest {
         val entry = DayEntry(date).withEnergy(4).withStress(2).withDiary("Long walk; legs heavy")
         assertEquals("Long walk, legs heavy", entry.diary)
         assertEquals(entry, DayEntryCodec.decode(date, DayEntryCodec.encode(entry)))
-        assertEquals("v6;0;0.0;0;4;2;Long walk, legs heavy;0;0;0;0;0;0;;0;;0;;;0;", DayEntryCodec.encode(entry))
+        assertEquals("v6;0;0.0;0;0;0;0;0;0;0;;0;;0;;;0;;4;2;Long walk, legs heavy", DayEntryCodec.encode(entry))
     }
 
     @Test fun `codec round-trips the night with its times, quality and factors`() {
@@ -43,7 +43,7 @@ class DayEntryTest {
             .withSleepFactor(SleepFactor.LateCaffeine, on = true)
         assertEquals(entry, DayEntryCodec.decode(date, DayEntryCodec.encode(entry)))
         assertEquals(
-            "v6;0;7.5;0;0;0;;0;0;0;0;0;0;;0;;0;1395;405;4;LateCaffeine,Screens",
+            "v6;0;7.5;0;0;0;0;0;0;0;;0;;0;1395;405;4;LateCaffeine,Screens;0;0;",
             DayEntryCodec.encode(entry),
         )
     }
@@ -67,7 +67,7 @@ class DayEntryTest {
     }
 
     @Test fun `unknown factors and out of range values are skipped`() {
-        val day = DayEntryCodec.decode(date, "v6;0;0;0;9;0;;0;0;0;0;0;0;;0;;0;9999;x;9;Alcohol,Snoring")
+        val day = DayEntryCodec.decode(date, "v6;0;0;0;0;0;0;0;0;0;;0;;0;9999;x;9;Alcohol,Snoring;9;0;")
         assertNull(day.bedtime)
         assertNull(day.wakeTime)
         assertEquals(MAX_SLEEP_QUALITY, day.sleepQuality)

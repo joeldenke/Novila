@@ -141,11 +141,12 @@ private fun diaryLine(text: String): String =
 
 /**
  * Simple versioned text format without Android dependencies, so it can be unit tested and migrated.
- * v6: "v6;water;sleep;mood;energy;stress;diary;vegetables;meals;protein;wholeGrain;treats;strengthMinutes;cardio;
- * effort;pain;rehabPhase;bedtime;wakeTime;sleepQuality;sleepFactors", where cardio is comma-separated
+ * v6: "v6;water;sleep;mood;vegetables;meals;protein;wholeGrain;treats;strengthMinutes;cardio;effort;pain;rehabPhase;
+ * bedtime;wakeTime;sleepQuality;sleepFactors;energy;stress;diary", where cardio is comma-separated
  * "type:minutes" (empty when none), pain is empty when not given, the times are minutes after midnight (empty when
- * not given) and the factors are comma-separated names. In v6 energy, stress and diary follow mood; encode keeps the
- * diary line free of semicolons, so it never breaks the format.
+ * not given) and the factors are comma-separated names. Every version only appends fields, so older versions decode
+ * with the same indices and the newer fields default; v6 appends energy (0 = not set, 1–5), stress (0 = not set,
+ * 1–5) and the diary line, which encode keeps free of semicolons so it never breaks the format.
  * Older versions are still read: v5 (before energy, stress and the diary line), v4 (before bedtimes, sleep quality
  * and factors), v3 (before cardio logging and feedback after a session), v2 (before session mode) with no strength
  * sessions either, and v1 (before food logging) with nothing eaten logged either.
@@ -155,8 +156,7 @@ object DayEntryCodec {
     private val FIELDS = mapOf("v1" to 4, "v2" to 9, "v3" to 10, "v4" to 14, "v5" to 18, VERSION to 21)
 
     fun encode(entry: DayEntry): String {
-        val day = listOf(VERSION, entry.waterGlasses, entry.sleepHours, entry.mood, entry.energy, entry.stress)
-        val diary = diaryLine(entry.diary)
+        val day = listOf(VERSION, entry.waterGlasses, entry.sleepHours, entry.mood)
         val food = with(entry.food) { listOf(vegetables, meals, protein, wholeGrain, treats) }
         val cardio = entry.cardio.joinToString(",") { "${it.type.name}:${it.minutes}" }
         val training = listOf(entry.strengthMinutes, cardio, entry.effort, entry.pain ?: "", entry.rehabPhase)
@@ -166,7 +166,8 @@ object DayEntryCodec {
             entry.sleepQuality,
             entry.sleepFactors.sorted().joinToString(",") { it.name },
         )
-        return (day + listOf(diary) + food + training + night).joinToString(";")
+        val moment = listOf(entry.energy, entry.stress, diaryLine(entry.diary))
+        return (day + food + training + night + moment).joinToString(";")
     }
 
     private fun minutes(time: LocalTime) = time.hour * 60 + time.minute
@@ -183,25 +184,19 @@ object DayEntryCodec {
             waterGlasses = int(1),
             sleepHours = parts[2].toFloatOrNull() ?: 0f,
             mood = int(3),
-            energy = int(4).coerceIn(0, 5),
-            stress = int(5).coerceIn(0, 5),
-            diary = diaryLine(parts[6]),
-            food = FoodLog(
-                vegetables = int(7),
-                meals = int(8),
-                protein = int(9),
-                wholeGrain = int(10),
-                treats = int(11),
-            ),
-            strengthMinutes = int(12),
-            cardio = cardio(parts.getOrNull(13)),
-            effort = int(14).coerceIn(0, MAX_EFFORT),
-            pain = parts.getOrNull(15)?.toIntOrNull()?.coerceIn(0, MAX_PAIN),
-            rehabPhase = int(16).coerceAtLeast(0),
-            bedtime = time(parts.getOrNull(17)),
-            wakeTime = time(parts.getOrNull(18)),
-            sleepQuality = int(19).coerceIn(0, MAX_SLEEP_QUALITY),
-            sleepFactors = factors(parts.getOrNull(20)),
+            food = FoodLog(vegetables = int(4), meals = int(5), protein = int(6), wholeGrain = int(7), treats = int(8)),
+            strengthMinutes = int(9),
+            cardio = cardio(parts.getOrNull(10)),
+            effort = int(11).coerceIn(0, MAX_EFFORT),
+            pain = parts.getOrNull(12)?.toIntOrNull()?.coerceIn(0, MAX_PAIN),
+            rehabPhase = int(13).coerceAtLeast(0),
+            bedtime = time(parts.getOrNull(14)),
+            wakeTime = time(parts.getOrNull(15)),
+            sleepQuality = int(16).coerceIn(0, MAX_SLEEP_QUALITY),
+            sleepFactors = factors(parts.getOrNull(17)),
+            energy = int(18).coerceIn(0, 5),
+            stress = int(19).coerceIn(0, 5),
+            diary = diaryLine(parts.getOrNull(20).orEmpty()),
         )
     }
 
