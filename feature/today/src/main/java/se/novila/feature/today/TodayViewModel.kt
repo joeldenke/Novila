@@ -142,12 +142,4 @@ class TodayViewModel(
 
     /** One more glass of water today, from the checklist. */
     fun addWater() = store.update(LocalDate.now()) { it.withPortions(FoodGroup.Water, +1) }
-
-    fun setMood(mood: Int) = store.update(LocalDate.now()) { it.withMood(mood) }
-
-    fun setEnergy(energy: Int) = store.update(LocalDate.now()) { it.withEnergy(energy) }
-
-    fun setStress(stress: Int) = store.update(LocalDate.now()) { it.withStress(stress) }
-
-    fun setDiary(diary: String) = store.update(LocalDate.now()) { it.withDiary(diary) }
 }

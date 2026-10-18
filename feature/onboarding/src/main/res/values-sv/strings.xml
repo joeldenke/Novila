@@ -23,7 +23,7 @@
     <string name="onboarding_sleep_title">Se vad en god natt ger dig</string>
     <string name="onboarding_sleep_body">Logga natten på en sekund varje morgon. Novila hittar mönstren i din vecka.</string>
     <string name="onboarding_sleep_point_1">Veckans sömn som en lugn kurva</string>
-    <string name="onboarding_sleep_point_2">Hur sömnen påverkar ditt mående</string>
+    <string name="onboarding_sleep_point_2">Vad dagen gör med natten: kost, träning och vatten</string>
     <string name="onboarding_sleep_point_3">Insikter ur dina egna loggar, uträknade i telefonen</string>
 
     <string name="onboarding_nutrition_eyebrow">Kost</string>

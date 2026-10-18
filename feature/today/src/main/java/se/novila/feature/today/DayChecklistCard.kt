@@ -24,12 +24,10 @@ data class ChecklistActions(
     val onOpenSleep: () -> Unit = {},
     val onOpenNutrition: () -> Unit = {},
     val onAddWater: () -> Unit = {},
-    val onMood: () -> Unit = {},
 )
 
 /**
- * The day as a short list of things to do, in the order of the day: sleep, training, food, water and how the user
- * feels. Each open task has one button that does it or leads where it is done; the first open one is the screen's
+ * The day as a short list of things to do, in the order of the day: sleep, training, food and water. Each open task has one button that does it or leads where it is done; the first open one is the screen's
  * main action, in the sun's color. Done tasks keep their place with a check, so the day reads as progress.
  */
 @Composable
@@ -110,19 +108,6 @@ private fun TaskRow(task: DayTask, isNext: Boolean, actions: ChecklistActions) {
             task = task,
             role = pillars.nutrition,
             action = stringResource(R.string.checklist_water_action) to actions.onAddWater,
-            isNext = isNext,
-        )
-
-        is DayTask.Mood -> Task(
-            title = stringResource(if (task.done) R.string.checklist_mood_done else R.string.checklist_mood),
-            summary = if (task.done) {
-                stringResource(Mood.entries[task.mood.coerceIn(1, Mood.entries.size) - 1].label)
-            } else {
-                stringResource(R.string.checklist_mood_summary)
-            },
-            task = task,
-            role = pillars.training,
-            action = stringResource(R.string.checklist_mood_action) to actions.onMood,
             isNext = isNext,
         )
     }

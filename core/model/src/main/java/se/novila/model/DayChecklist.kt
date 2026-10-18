@@ -30,14 +30,9 @@ sealed interface DayTask {
     data class Water(val glasses: Int, val goal: Int) : DayTask {
         override val done: Boolean get() = glasses >= goal
     }
-
-    /** How the user feels today, 0 until they say. */
-    data class Mood(val mood: Int) : DayTask {
-        override val done: Boolean get() = mood > 0
-    }
 }
 
-/** Today's [tasks] in the order of the day: sleep, training, food, water and how the user feels. */
+/** Today's [tasks] in the order of the day: sleep, training, food and water. */
 data class DayChecklist(val tasks: List<DayTask>) {
     val doneCount: Int get() = tasks.count { it.done }
 
@@ -49,7 +44,7 @@ data class DayChecklist(val tasks: List<DayTask>) {
 
 /**
  * What [day] still needs, measured against [goals]: sleep, the [training] the week's program has today, food until
- * the nutrition score is a good day's, water up to the goal, and how the user feels. Training counts as done once
+ * the nutrition score is a good day's and water up to the goal. Training counts as done once
  * as many minutes as planned are trained, sleep once a night is logged or a watch recorded one.
  */
 fun dayChecklist(day: DayEntry, goals: Goals, training: TrainingToday): DayChecklist = DayChecklist(
@@ -58,6 +53,5 @@ fun dayChecklist(day: DayEntry, goals: Goals, training: TrainingToday): DayCheck
         DayTask.Training(training),
         DayTask.Nutrition(day.nutritionScore(goals)?.total, day.nextPortion(goals)),
         DayTask.Water(day.waterGlasses, goals.waterGlasses),
-        DayTask.Mood(day.mood),
     ),
 )

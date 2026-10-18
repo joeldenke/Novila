@@ -22,7 +22,6 @@ class DayChecklistTest {
             date,
             sleepHours = 7.5f,
             waterGlasses = 8,
-            mood = 4,
             food = FoodLog(vegetables = 5, meals = 3, protein = 3, wholeGrain = 3),
         )
         val checklist = dayChecklist(day, Goals(), TrainingToday(plannedMinutes = 30, doneMinutes = 30))

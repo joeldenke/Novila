@@ -24,21 +24,6 @@ class InsightsTest {
         assertEquals(listOf(2L, 1L, 0L), daysAgo)
     }
 
-    @Test fun `mood that follows sleep is found`() {
-        val days = week(
-            { copy(sleepHours = 6f, mood = 2) },
-            { copy(sleepHours = 8f, mood = 5) },
-            { copy(sleepHours = 6.5f, mood = 2) },
-            { copy(sleepHours = 7.5f, mood = 4) },
-        )
-        assertTrue(Insight.MoodFollowsSleep(MOOD_SLEEP_HOURS) in weekInsights(days, steps = null))
-    }
-
-    @Test fun `mood needs two days on each side`() {
-        val days = week({ copy(sleepHours = 6f, mood = 1) }, { copy(sleepHours = 8f, mood = 5) })
-        assertTrue(weekInsights(days, steps = null).none { it is Insight.MoodFollowsSleep })
-    }
-
     @Test fun `last night is compared with the week`() {
         val days = week(
             { copy(sleepHours = 7f) },
@@ -81,10 +66,10 @@ class InsightsTest {
 
     @Test fun `at most three insights by default`() {
         val days = week(
-            { copy(sleepHours = 6f, mood = 2, food = goodFood) },
-            { copy(sleepHours = 6f, mood = 2, food = goodFood) },
-            { copy(sleepHours = 7f, mood = 5, food = goodFood) },
-            { copy(sleepHours = 8.5f, mood = 5, food = goodFood) },
+            { copy(sleepHours = 6f, food = goodFood) },
+            { copy(sleepHours = 6f, food = goodFood) },
+            { copy(sleepHours = 7f, food = goodFood) },
+            { copy(sleepHours = 8.5f, food = goodFood) },
         )
         assertEquals(3, weekInsights(days, steps = STEPS_GOAL).size)
     }

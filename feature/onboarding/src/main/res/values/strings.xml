@@ -23,7 +23,7 @@
     <string name="onboarding_sleep_title">See what a good night gives you</string>
     <string name="onboarding_sleep_body">Log the night in a second each morning. Novila finds the patterns in your week.</string>
     <string name="onboarding_sleep_point_1">Your week\'s sleep as a calm curve</string>
-    <string name="onboarding_sleep_point_2">How your sleep affects your mood</string>
+    <string name="onboarding_sleep_point_2">What your day does to your night: food, training and water</string>
     <string name="onboarding_sleep_point_3">Insights from your own logs, worked out on the phone</string>
 
     <string name="onboarding_nutrition_eyebrow">Nutrition</string>

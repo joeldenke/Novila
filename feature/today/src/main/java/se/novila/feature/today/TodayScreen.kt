@@ -8,16 +8,13 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import kotlinx.coroutines.launch
 import se.novila.designsystem.component.NovilaHeroCard
 import se.novila.designsystem.component.NovilaHeroSegment
 import se.novila.designsystem.component.NovilaIconButton
@@ -53,11 +50,10 @@ import se.novila.ui.preview.PreviewData
 import se.novila.ui.R as UiR
 
 /**
- * What to do today: greeting (by [name] when the profile has one), today's balance as rings, the day's [checklist]
- * (sleep, [the program's training][checklist], food, water and mood, each with the one button that does it), one
- * tile per part with its trend, what the logs say (the strongest finding about the user's [sleep] first, then the
- * week), and today's mood, energy, stress and diary line, which the checklist's mood task scrolls to. Everything is
- * measured against the user's [goals]; the weeks in charts are on each part's own tab. Blocks arrive one by one.
+ * What to do today: greeting (by [name] when the profile has one), today's balance as rings, the day's checklist
+ * (sleep, the program's [training], food and water, each with the one button that does it), one tile per part with
+ * its trend and what the logs say (the strongest finding about the user's [sleep] first, then the week). Everything
+ * is measured against the user's [goals]; the weeks in charts are on each part's own tab. Blocks arrive one by one.
  */
 @Composable
 fun TodayScreen(
@@ -68,10 +64,6 @@ fun TodayScreen(
     goals: Goals,
     sleep: SleepAnalysis,
     movement: MovementState,
-    onMood: (Int) -> Unit,
-    onEnergy: (Int) -> Unit,
-    onStress: (Int) -> Unit,
-    onDiary: (String) -> Unit,
     onAddWater: () -> Unit,
     onOpenTraining: () -> Unit,
     onOpenSleep: () -> Unit,
@@ -90,16 +82,13 @@ fun TodayScreen(
         weekInsights(week, steps, limit = if (sleepFinding) 2 else 3, goals = goals)
     }
     val checklist = remember(today, goals, training) { dayChecklist(today, goals, training) }
-    val list = rememberLazyListState()
-    val scope = rememberCoroutineScope()
     val actions = ChecklistActions(
         onOpenTraining = onOpenTraining,
         onOpenSleep = onOpenSleep,
         onOpenNutrition = onOpenNutrition,
         onAddWater = onAddWater,
-        onMood = { scope.launch { list.animateScrollToItem(MOOD_ITEM) } },
     )
-    ScreenList(contentPadding = contentPadding, modifier = modifier, state = list) {
+    ScreenList(contentPadding = contentPadding, modifier = modifier) {
         item(key = "header") { NovilaReveal(order = 0) { Header(today, greetingFor(hour), name, onOpenSettings) } }
         item(key = "balance") { NovilaReveal(order = 1) { BalanceCard(today, steps, goals) } }
         item(key = "checklist") { NovilaReveal(order = 2) { DayChecklistCard(checklist, actions) } }
@@ -109,12 +98,6 @@ fun TodayScreen(
             }
         }
         item(key = "insights") { NovilaReveal(order = 4) { InsightsCard(insights, sleep) } }
-        // MOOD_ITEM: the checklist's mood task scrolls here.
-        item(key = "mood") {
-            NovilaReveal(order = 5) {
-                MoodCard(today.mood, today.energy, today.stress, today.diary, onMood, onEnergy, onStress, onDiary)
-            }
-        }
     }
 }
 
@@ -239,9 +222,6 @@ private fun PillarTiles(
     }
 }
 
-/** The mood card's place in the list: header, balance, checklist, tiles, insights, mood. */
-private const val MOOD_ITEM = 5
-
 private val TileSleepRange = 4f..10f
 private val TileScoreRange = 0f..100f
 
@@ -257,10 +237,6 @@ private fun TodayScreenContent() {
                 goals = Goals(),
                 sleep = analyzeSleep(PreviewData.days()),
                 movement = PreviewData.movement,
-                onMood = {},
-                onEnergy = {},
-                onStress = {},
-                onDiary = {},
                 onAddWater = {},
                 onOpenTraining = {},
                 onOpenSleep = {},

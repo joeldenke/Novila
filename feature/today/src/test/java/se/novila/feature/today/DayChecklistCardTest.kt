@@ -47,26 +47,25 @@ class DayChecklistCardTest {
                 onOpenTraining = { opened += "training" },
                 onOpenNutrition = { opened += "nutrition" },
                 onAddWater = { opened += "water" },
-                onMood = { opened += "mood" },
             ),
         )
 
-        composeRule.onNodeWithText("0 of 5 done").assertExists()
+        composeRule.onNodeWithText("0 of 4 done").assertExists()
         composeRule.onNodeWithText("30 min planned").assertExists()
         composeRule.onNodeWithText("3 of 8 glasses").assertExists()
-        listOf("Log", "Start", "Recipes", "+1 glass", "Answer").forEach {
+        listOf("Log", "Start", "Recipes", "+1 glass").forEach {
             composeRule.onNodeWithText(it).performScrollTo().performClick()
         }
 
-        assertEquals(listOf("sleep", "training", "nutrition", "water", "mood"), opened)
+        assertEquals(listOf("sleep", "training", "nutrition", "water"), opened)
     }
 
     @Test fun `done tasks keep their place without a button`() {
-        show(DayEntry(date, sleepHours = 7.5f, mood = 4), TrainingToday(), ChecklistActions())
+        show(DayEntry(date, sleepHours = 7.5f), TrainingToday(), ChecklistActions())
 
         composeRule.onNodeWithText("Last night").assertExists()
         composeRule.onNodeWithText("Rest day").assertExists()
-        composeRule.onNodeWithText("3 of 5 done").assertExists()
+        composeRule.onNodeWithText("2 of 4 done").assertExists()
         composeRule.onNodeWithText("Log").assertDoesNotExist()
         composeRule.onNodeWithText("Start").assertDoesNotExist()
     }

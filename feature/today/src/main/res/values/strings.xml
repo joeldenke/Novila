@@ -1,31 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Mood -->
-    <string name="mood_title">Today\'s mood</string>
-    <string name="mood_label">Mood</string>
-    <string name="mood_1">Bad</string>
-    <string name="mood_2">Not great</string>
-    <string name="mood_3">Okay</string>
-    <string name="mood_4">Good</string>
-    <string name="mood_5">Great</string>
-    <string name="mood_hint">How do you feel today?</string>
-    <string name="energy_label">Energy</string>
-    <string name="energy_1">Exhausted</string>
-    <string name="energy_2">Low</string>
-    <string name="energy_3">Okay</string>
-    <string name="energy_4">Good</string>
-    <string name="energy_5">Full of energy</string>
-    <string name="energy_hint">How much energy do you have today?</string>
-    <string name="stress_label">Stress</string>
-    <string name="stress_1">Calm</string>
-    <string name="stress_2">Mostly calm</string>
-    <string name="stress_3">Tense</string>
-    <string name="stress_4">Stressed</string>
-    <string name="stress_5">Very stressed</string>
-    <string name="stress_hint">How stressed do you feel today?</string>
-    <string name="diary_label">Diary</string>
-    <string name="diary_hint">One line about your day</string>
-
     <!-- Today -->
     <string name="greeting_morning">Good morning</string>
     <string name="greeting_afternoon">Good afternoon</string>
@@ -40,7 +14,6 @@
     <string name="pillar_movement">Movement</string>
     <string name="insights_title">Insights</string>
     <string name="insights_empty">Log sleep, food and mood for a few days and Novila will show you what affects how you feel.</string>
-    <string name="insight_mood_sleep">You feel better on days after at least %1$s of sleep.</string>
     <string name="insight_sleep_more">Last night you slept %1$s more than your average this week.</string>
     <string name="insight_sleep_less">Last night you slept %1$s less than your average this week.</string>
     <string name="insight_steady_sleep">Steady sleep this week: every night within an hour of the others.</string>
@@ -72,8 +45,4 @@
     <string name="checklist_water">Water</string>
     <string name="checklist_water_summary">%1$d of %2$d glasses</string>
     <string name="checklist_water_action">+1 glass</string>
-    <string name="checklist_mood">How are you?</string>
-    <string name="checklist_mood_done">How you feel</string>
-    <string name="checklist_mood_summary">Mood, energy and stress, further down.</string>
-    <string name="checklist_mood_action">Answer</string>
 </resources>

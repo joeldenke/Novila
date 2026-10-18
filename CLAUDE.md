@@ -264,10 +264,11 @@ där pluginet `firebase@firebase` inte alltid installeras.
   Hörnradie från basen 14 dp via `NovilaTheme.shapes`. Nya färgpar läggs till i `ColorContrastTest` (WCAG 2.2).
   Förlagan är riktning D i designkanvasen *Novila designriktningar*. Idag svarar på "vad gör jag nu": hälsning,
   `NovilaHeroCard` (balansen som ringar per del, skogssiluett och solens sken, `NovilaTheme.hero`), *Din dag*
-  (`dayChecklist` i `:core:model`: sömn, dagens pass ur `TrainingWeek.trainingOn`, kost, vatten och mående som
+  (`dayChecklist` i `:core:model`: sömn, dagens pass ur `TrainingWeek.trainingOn`, kost och vatten som
   `NovilaTaskRow`, där varje öppen rad har en knapp som gör det och den första är skärmens `NovilaAccentButton`), en
-  `NovilaStatTile` per del med veckans trend, insikter och mående. Veckodiagrammen hör till delarnas egna flikar;
-  lägg inte tillbaka dem på Idag.
+  `NovilaStatTile` per del med veckans trend och insikter. Veckodiagrammen hör till delarnas egna flikar, och
+  mående (humör, energi, stress, dagbok) togs bort för att syftet var oklart;
+  lägg inte tillbaka dem på Idag utan att ägaren ber om det.
   Kort är vita med hårfin kant (`NovilaTheme.surfaces`). Träning börjar med veckan i överblick på samma granpanel
   (`NovilaHeroPanel`: minuter mot veckans plan, `NovilaWeekStrip` och dagens enda huvudåtgärd ur `TodayPlan`), följt
   av snabbval (`NovilaActionChip`) som passar just nu.
@@ -281,7 +282,7 @@ där pluginet `firebase@firebase` inte alltid installeras.
   skriv aldrig rehab, rehabilitering, behandling, terapi eller att appen läker, lindrar eller hjälper mot en
   sjukdom eller besvär (sömnlöshet, skada). Råden om när man ska söka vård behålls. Koden får heta `Rehab`.
 - **Inga emojis i UI:t.** Novila ska kännas som en professionell hälsoapp: använd vektorikoner och ritade komponenter
-  (t.ex. `NovilaLevelPicker` för mående), aldrig emoji-tecken.
+  (t.ex. `NovilaLevelPicker` för nivåer), aldrig emoji-tecken.
 - **Övningsillustrationer:** en övning är data (keyframes med ledvinklar i `ExerciseLibrary`), aldrig video eller
   handritad animation, så samma rörelse fungerar för varje kropp och kamera. Ny eller ändrad övning: följ skillen
   `add-exercise` (lösta vinklar, kamera från `ViewSelector`, texter på båda språken). `AnatomyTest` kontrollerar att

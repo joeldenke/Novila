@@ -1,31 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Mood -->
-    <string name="mood_title">Dagens mående</string>
-    <string name="mood_label">Mående</string>
-    <string name="mood_1">Dåligt</string>
-    <string name="mood_2">Sådär</string>
-    <string name="mood_3">Okej</string>
-    <string name="mood_4">Bra</string>
-    <string name="mood_5">Toppen</string>
-    <string name="mood_hint">Hur mår du i dag?</string>
-    <string name="energy_label">Energi</string>
-    <string name="energy_1">Utmattad</string>
-    <string name="energy_2">Låg</string>
-    <string name="energy_3">Okej</string>
-    <string name="energy_4">Bra</string>
-    <string name="energy_5">Full av energi</string>
-    <string name="energy_hint">Hur mycket energi har du i dag?</string>
-    <string name="stress_label">Stress</string>
-    <string name="stress_1">Lugn</string>
-    <string name="stress_2">Ganska lugn</string>
-    <string name="stress_3">Anspänd</string>
-    <string name="stress_4">Stressad</string>
-    <string name="stress_5">Mycket stressad</string>
-    <string name="stress_hint">Hur stressad känner du dig i dag?</string>
-    <string name="diary_label">Dagbok</string>
-    <string name="diary_hint">En rad om din dag</string>
-
     <!-- Today -->
     <string name="greeting_morning">God morgon</string>
     <string name="greeting_afternoon">God eftermiddag</string>
@@ -40,7 +14,6 @@
     <string name="pillar_movement">Rörelse</string>
     <string name="insights_title">Insikter</string>
     <string name="insights_empty">Logga sömn, kost och mående några dagar så visar Novila vad som påverkar hur du mår.</string>
-    <string name="insight_mood_sleep">Du mår bättre dagar efter minst %1$s sömn.</string>
     <string name="insight_sleep_more">I natt sov du %1$s mer än ditt snitt i veckan.</string>
     <string name="insight_sleep_less">I natt sov du %1$s mindre än ditt snitt i veckan.</string>
     <string name="insight_steady_sleep">Jämn sömn i veckan: alla nätter inom en timme från varandra.</string>
@@ -72,8 +45,4 @@
     <string name="checklist_water">Vatten</string>
     <string name="checklist_water_summary">%1$d av %2$d glas</string>
     <string name="checklist_water_action">+1 glas</string>
-    <string name="checklist_mood">Hur mår du?</string>
-    <string name="checklist_mood_done">Mående</string>
-    <string name="checklist_mood_summary">Humör, energi och stress, längre ner.</string>
-    <string name="checklist_mood_action">Svara</string>
 </resources>
