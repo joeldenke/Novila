@@ -76,6 +76,25 @@ class NovilaInputTest {
         assertEquals(1, count)
     }
 
+    @Test fun `stepper shows the hint that explains the count`() {
+        composeRule.setContent {
+            NovilaTheme {
+                NovilaStepper(
+                    title = "Vegetables",
+                    value = "3 of 5",
+                    onDecrement = {},
+                    onIncrement = {},
+                    decrementDescription = "Remove vegetables",
+                    incrementDescription = "Add vegetables",
+                    role = NovilaTheme.pillars.nutrition,
+                    hint = "One serving is about a handful.",
+                )
+            }
+        }
+
+        composeRule.onNodeWithText("One serving is about a handful.").assertExists()
+    }
+
     @Test fun `day switcher steps both ways and stops at the end of its range`() {
         var steps = 0
         composeRule.setContent {

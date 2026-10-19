@@ -39,7 +39,8 @@ import se.novila.designsystem.theme.NovilaTheme
 
 /**
  * A row for logging a count: [title] and [value] (e.g. "3 of 5 portions") with round minus and
- * plus buttons. The plus is filled in the [role] color, since adding is what the row is for. Either button can be
+ * plus buttons. [hint] is an optional short explanation under the value (e.g. what one portion is). The plus is
+ * filled in the [role] color, since adding is what the row is for. Either button can be
  * turned off at the end of a range.
  */
 @Composable
@@ -52,6 +53,7 @@ fun NovilaStepper(
     incrementDescription: String,
     role: NovilaColorRole,
     modifier: Modifier = Modifier,
+    hint: String? = null,
     decrementEnabled: Boolean = true,
     incrementEnabled: Boolean = true,
 ) {
@@ -63,6 +65,9 @@ fun NovilaStepper(
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.xxs)) {
             Text(title, style = NovilaTheme.typography.titleSmall)
             Text(value, style = NovilaTheme.typography.bodySmall, color = NovilaTheme.colors.onSurfaceVariant)
+            if (hint != null) {
+                Text(hint, style = NovilaTheme.typography.labelSmall, color = NovilaTheme.colors.onSurfaceVariant)
+            }
         }
         RoundButton(
             plus = false,
