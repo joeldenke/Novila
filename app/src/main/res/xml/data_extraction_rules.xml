@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  What Android Auto Backup and device-to-device transfer copy on Android 12 (API 31) and newer.
+  Older versions use backup_rules.xml; both files must stay in sync.
+
+  Novila's user data is stored by :core:data in Preferences DataStore under files/datastore/:
+  health, coach, sleep_coach, settings, profile, goals, reminders, measurements and food.
+  The legacy SharedPreferences files of the same names are included too, so a backup taken before
+  the move to DataStore can still be migrated on the new device.
+
+  Everything else is left out on purpose: WorkManager's database (reminders are scheduled again
+  when the app starts), caches, no_backup/, and any other database or file, including data that
+  Health Connect owns (it is never written to disk by Novila).
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <include domain="file" path="datastore/" />
+        <include domain="sharedpref" path="." />
+    </cloud-backup>
+    <device-transfer>
+        <include domain="file" path="datastore/" />
+        <include domain="sharedpref" path="." />
+    </device-transfer>
+</data-extraction-rules>

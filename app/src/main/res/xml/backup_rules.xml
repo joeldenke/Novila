@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  What Android Auto Backup copies on Android 11 (API 30) and older. Android 12 and newer use
+  data_extraction_rules.xml (see that file for what is included and why); both must stay in sync.
+
+  Only :core:data's DataStore files (files/datastore/) and the legacy SharedPreferences files of
+  the same names are included. Everything else, such as WorkManager's database, caches and
+  no_backup/, is left out.
+-->
+<full-backup-content>
+    <include domain="file" path="datastore/" />
+    <include domain="sharedpref" path="." />
+</full-backup-content>

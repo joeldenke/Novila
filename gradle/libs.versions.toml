@@ -24,6 +24,10 @@ kotlinxSerialization = "1.11.0"
 kotlinxCoroutines = "1.11.0"
 # Gemini Nano on the device through AICore, for the coach's message. See GeminiNanoCoachModel.
 mlkitGenaiPrompt = "1.0.0-beta2"
+# Automated backup and restore tests: device-side actions that seed and verify the data a backup
+# carries. The app itself uses the platform Auto Backup rules (app/src/main/res/xml), because
+# AndroidX has no backup implementation artifact. See docs/backup.md.
+androidxTestBackup = "1.0.0-alpha02"
 junit = "4.13.2"
 robolectric = "4.17"
 roborazzi = "1.76.0"
@@ -63,6 +67,8 @@ kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 # On-device Gemini Nano (ML Kit GenAI Prompt API), see GeminiNanoCoachModel.
 mlkit-genai-prompt = { module = "com.google.mlkit:genai-prompt", version.ref = "mlkitGenaiPrompt" }
+# Device-side actions for backup and restore tests, see docs/backup.md.
+androidx-test-backup = { module = "androidx.test.backup:backup", version.ref = "androidxTestBackup" }
 
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 compose-ui = { module = "androidx.compose.ui:ui" }
