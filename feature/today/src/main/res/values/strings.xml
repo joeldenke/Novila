@@ -9,6 +9,16 @@
     <string name="greeting_evening_named">Good evening, %1$s</string>
     <string name="balance_title">Today\'s balance</string>
 
+    <!-- The one coach: a single, connected suggestion for the whole day -->
+    <string name="coach_title">Your coach</string>
+    <string name="coach_short_night">You slept %1$s last night.</string>
+    <string name="coach_low_recovery">Your watch shows your body is still recovering.</string>
+    <string name="coach_lighter_session">Keep today\'s %1$s session light, or make it a walk.</string>
+    <string name="coach_planned_session">Today\'s session is %1$s — that is the day\'s main thing.</string>
+    <string name="coach_rest_day">No session is planned today; rest is part of the training.</string>
+    <string name="coach_earlier_bedtime">Aim to be in bed by %1$s tonight.</string>
+    <string name="coach_well_done">Everything is on track today. Well done.</string>
+
     <string name="pillar_movement">Movement</string>
     <string name="insights_title">Insights</string>
     <string name="insights_empty">Log sleep, food and mood for a few days and Novila will show you what affects how you feel.</string>

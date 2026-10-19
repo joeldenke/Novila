@@ -42,6 +42,7 @@ fun EntryProviderScope<NavKey>.todayEntry(
             name = state.name,
             goals = state.goals,
             sleep = state.sleep,
+            coach = state.coach,
             movement = movement,
             onAddWater = viewModel::addWater,
             onOpenTraining = onOpenTraining,

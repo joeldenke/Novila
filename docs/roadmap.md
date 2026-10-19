@@ -80,7 +80,8 @@ Nano for more than the comment, or data that leaves the app.
 - [ ] **Breathing and relaxation:** short guided sessions, drawn like the anatomy figure
 
 ### 6. The coach as a whole
-- [ ] **One coach for all parts:** "You slept 5.5 h. Do a lighter session and go to bed at 22:30."
+- [x] **One coach for all parts:** "You slept 5.5 h. Do a lighter session and go to bed at 22:30." `dailyCoach`
+  weighs sleep, training and nutrition into one connected suggestion, shown on Today.
 - [ ] **More insights:** training ↔ sleep, training ↔ mood, nutrition ↔ energy, patterns per weekday
 - [ ] **Achievements and streaks**, restrained and without rewarding overtraining
 - [ ] **Gemini Nano in more roles**, e.g. a weekly summary **(ok)**
