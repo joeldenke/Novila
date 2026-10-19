@@ -13,10 +13,12 @@ import se.novila.data.CoachStore
 import se.novila.data.FoodPreferencesStore
 import se.novila.data.GoalsStore
 import se.novila.data.HealthStore
+import se.novila.data.MeasurementsStore
 import se.novila.data.ProfileStore
 import se.novila.data.SettingsStore
 import se.novila.data.SleepCoachStore
 import se.novila.model.AppSettings
+import se.novila.model.MeasurementEntry
 import se.novila.model.Profile
 import se.novila.model.ThemeMode
 import se.novila.movement.MovementRepository
@@ -24,7 +26,7 @@ import se.novila.movement.MovementState
 import java.time.LocalDate
 
 /**
- * Settings: the profile, the way to My goals, how the app looks, Health Connect access, the user's
+ * Settings: the profile, the way to My goals, the measurements, how the app looks, Health Connect access, the user's
  * data and the app version. Scoped to its entry.
  */
 @ViewModelKey
@@ -38,6 +40,7 @@ class SettingsViewModel(
     private val profileStore: ProfileStore,
     private val goalsStore: GoalsStore,
     private val foodPreferencesStore: FoodPreferencesStore,
+    private val measurementsStore: MeasurementsStore,
     private val movementRepository: MovementRepository,
     context: Context,
 ) : ViewModel() {
@@ -46,6 +49,9 @@ class SettingsViewModel(
 
     /** The user's profile, or null before the store's first read. */
     val profile: StateFlow<Profile?> = profileStore.profile
+
+    /** What has been measured, newest first, or null before the store's first read. */
+    val measurements: StateFlow<List<MeasurementEntry>?> = measurementsStore.entries
 
     /** Whether Health Connect is connected, and what the user can do if not. */
     val movement: StateFlow<MovementState> = movementRepository.state
@@ -70,9 +76,9 @@ class SettingsViewModel(
     fun showIntro() = settingsStore.setOnboarded(false)
 
     /**
-     * Forgets the profile, its goals and food preferences (allergies are health data), everything the user has logged
-     * and both coaches' answers. Settings stay, since they are not health data. Health Connect's own data is not
-     * Novila's to delete.
+     * Forgets the profile, its goals and food preferences (allergies are health data), everything the user has logged,
+     * including the measurements, and both coaches' answers. Settings stay, since they are not health data. Health
+     * Connect's own data is not Novila's to delete.
      */
     fun deleteAllData() {
         healthStore.clear()
@@ -81,5 +87,6 @@ class SettingsViewModel(
         profileStore.clear()
         goalsStore.clear()
         foodPreferencesStore.clear()
+        measurementsStore.clear()
     }
 }

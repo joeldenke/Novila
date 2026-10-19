@@ -14,20 +14,28 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.model.AppSettings
+import se.novila.model.BodyMeasurements
+import se.novila.model.MeasurementEntry
 import se.novila.model.Profile
 import se.novila.model.ThemeMode
 import se.novila.movement.MovementState
+import java.time.LocalDate
 
 @RunWith(RobolectricTestRunner::class)
 class SettingsScreenTest {
     @get:Rule val composeRule = createComposeRule()
 
-    private fun show(actions: SettingsActions, movement: MovementState = MovementState.NeedsPermission()) {
+    private fun show(
+        actions: SettingsActions,
+        movement: MovementState = MovementState.NeedsPermission(),
+        measurements: List<MeasurementEntry>? = emptyList(),
+    ) {
         composeRule.setContent {
             NovilaTheme {
                 SettingsScreen(
                     settings = AppSettings(),
                     profile = Profile(),
+                    measurements = measurements,
                     movement = movement,
                     version = AppVersion(name = "0.1.7-debug", code = 7),
                     canUseDynamicColor = true,
@@ -68,6 +76,30 @@ class SettingsScreenTest {
         show(SettingsActions(onOpenProfile = { opens++ }))
 
         composeRule.onNodeWithText("Add your name and body measurements").performClick()
+
+        assertEquals(1, opens)
+    }
+
+    @Test fun `the measurements row shows the newest weight and opens the measurements`() {
+        var opens = 0
+        show(
+            SettingsActions(onOpenMeasurements = { opens++ }),
+            measurements = listOf(
+                MeasurementEntry(LocalDate.of(2026, 10, 16), BodyMeasurements(weightKg = 74)),
+                MeasurementEntry(LocalDate.of(2026, 10, 9), BodyMeasurements(weightKg = 75)),
+            ),
+        )
+
+        composeRule.onNodeWithText("Weight 74 kg").performClick()
+
+        assertEquals(1, opens)
+    }
+
+    @Test fun `without measurements, the row says nothing is logged`() {
+        var opens = 0
+        show(SettingsActions(onOpenMeasurements = { opens++ }), measurements = emptyList())
+
+        composeRule.onNodeWithText("Nothing logged yet").performClick()
 
         assertEquals(1, opens)
     }
