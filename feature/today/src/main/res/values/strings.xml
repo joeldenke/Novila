@@ -8,8 +8,6 @@
     <string name="greeting_afternoon_named">Good afternoon, %1$s</string>
     <string name="greeting_evening_named">Good evening, %1$s</string>
     <string name="balance_title">Today\'s balance</string>
-    <string name="tip_log_sleep">Log last night\'s sleep to complete your balance.</string>
-    <string name="tip_goals_met">Sleep and nutrition are on target. Nice work!</string>
 
     <string name="pillar_movement">Movement</string>
     <string name="insights_title">Insights</string>
@@ -21,7 +19,6 @@
     <string name="insight_nutrition_up">Your nutrition score is up %1$d points over the last few days.</string>
     <string name="insight_nutrition_down">Your nutrition score is down %1$d points over the last few days.</string>
     <string name="insight_steps_goal">You have passed %1$s steps today.</string>
-    <string name="nutrition_score_short">Nutrition</string>
 
     <!-- Your day: today's checklist -->
     <string name="checklist_title">Your day</string>

@@ -8,8 +8,6 @@
     <string name="greeting_afternoon_named">God eftermiddag, %1$s</string>
     <string name="greeting_evening_named">God kväll, %1$s</string>
     <string name="balance_title">Dagens balans</string>
-    <string name="tip_log_sleep">Logga nattens sömn så blir balansen komplett.</string>
-    <string name="tip_goals_met">Sömn och kost är i mål. Bra jobbat!</string>
 
     <string name="pillar_movement">Rörelse</string>
     <string name="insights_title">Insikter</string>
@@ -21,7 +19,6 @@
     <string name="insight_nutrition_up">Din kostpoäng har ökat med %1$d poäng de senaste dagarna.</string>
     <string name="insight_nutrition_down">Din kostpoäng har minskat med %1$d poäng de senaste dagarna.</string>
     <string name="insight_steps_goal">Du har passerat %1$s steg i dag.</string>
-    <string name="nutrition_score_short">Kostpoäng</string>
 
     <!-- Din dag: dagens checklista -->
     <string name="checklist_title">Din dag</string>
