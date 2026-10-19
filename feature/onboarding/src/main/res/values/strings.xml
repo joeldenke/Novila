@@ -10,7 +10,7 @@
     <string name="onboarding_welcome_eyebrow">Welcome to Novila</string>
     <string name="onboarding_welcome_title">Training, sleep and food in balance</string>
     <string name="onboarding_welcome_body">A calm health coach in your pocket. Novila plans your training, follows your sleep and guides your meals, and shows how they work together.</string>
-    <string name="onboarding_welcome_privacy">Everything stays on your phone. No account, no ads.</string>
+    <string name="onboarding_welcome_privacy">Everything stays on your phone. No account, no ads. Android\'s backup can copy it to your Google account.</string>
 
     <string name="onboarding_training_eyebrow">Training</string>
     <string name="onboarding_training_title">A program that grows with you</string>
@@ -76,6 +76,6 @@
     <string name="onboarding_ready_sleep">Log last night\'s sleep tomorrow morning</string>
     <string name="onboarding_ready_nutrition">Start with breakfast under Nutrition</string>
     <string name="onboarding_ready_know_title">Good to know</string>
-    <string name="onboarding_ready_privacy">Everything you log stays on this phone. There is no account and no cloud.</string>
+    <string name="onboarding_ready_privacy">Everything you log stays on this phone. There is no account and no cloud of our own; Android\'s backup can copy it to your Google account.</string>
     <string name="onboarding_ready_disclaimer">Novila gives general advice, not medical advice. Ask a doctor or physiotherapist if you are unsure.</string>
 </resources>

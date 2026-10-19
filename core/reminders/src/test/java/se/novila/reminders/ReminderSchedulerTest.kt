@@ -50,4 +50,17 @@ class ReminderSchedulerTest {
 
         assertTrue(work(Reminder.Nutrition).all { it.state == WorkInfo.State.CANCELLED })
     }
+
+    @Test fun `cancelling all stops every planned reminder`() {
+        val scheduler = ReminderScheduler(context)
+        scheduler.apply(Reminder.Sleep, ReminderSetting(on = true, time = LocalTime.of(7, 30)), now)
+        scheduler.apply(Reminder.Training, ReminderSetting(on = true, time = LocalTime.of(17, 0)), now)
+        scheduler.apply(Reminder.Nutrition, ReminderSetting(on = true, time = LocalTime.of(19, 30)), now)
+
+        scheduler.cancelAll()
+
+        val planned = WorkManager.getInstance(context).getWorkInfosByTag(ReminderScheduler.TAG).get()
+        assertEquals(3, planned.size)
+        assertTrue(planned.all { it.state == WorkInfo.State.CANCELLED })
+    }
 }

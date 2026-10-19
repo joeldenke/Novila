@@ -42,6 +42,9 @@ class RemindersStore internal constructor(context: Context, scope: CoroutineScop
         it[minuteKey(reminder)] = setting.time.hour * 60 + setting.time.minute
     }
 
+    /** Back to every reminder off at its default time, as when the user deletes all data. */
+    fun clear() = store.edit { it.clear() }
+
     private companion object {
         const val NAME = "reminders"
         const val MINUTES_PER_DAY = 24 * 60

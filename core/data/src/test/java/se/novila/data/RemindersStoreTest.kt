@@ -34,4 +34,15 @@ class RemindersStoreTest {
         assertEquals(sleep, reopened[Reminder.Sleep])
         assertEquals(Reminders()[Reminder.Training], reopened[Reminder.Training])
     }
+
+    @Test fun `clearing turns every reminder off again`() {
+        val store = RemindersStore(context, stores.scope)
+        store.save(Reminder.Sleep, ReminderSetting(on = true, time = LocalTime.of(7, 15)))
+        store.save(Reminder.Nutrition, ReminderSetting(on = true, time = LocalTime.of(18, 30)))
+        store.reminders.await { it[Reminder.Sleep].on && it[Reminder.Nutrition].on }
+
+        store.clear()
+
+        assertEquals(Reminders(), store.reminders.await { it == Reminders() })
+    }
 }

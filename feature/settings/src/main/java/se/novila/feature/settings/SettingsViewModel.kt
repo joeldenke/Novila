@@ -15,6 +15,7 @@ import se.novila.data.GoalsStore
 import se.novila.data.HealthStore
 import se.novila.data.MeasurementsStore
 import se.novila.data.ProfileStore
+import se.novila.data.RemindersStore
 import se.novila.data.SettingsStore
 import se.novila.data.SleepCoachStore
 import se.novila.model.AppSettings
@@ -23,6 +24,7 @@ import se.novila.model.Profile
 import se.novila.model.ThemeMode
 import se.novila.movement.MovementRepository
 import se.novila.movement.MovementState
+import se.novila.reminders.ReminderScheduler
 import java.time.LocalDate
 
 /**
@@ -41,6 +43,8 @@ class SettingsViewModel(
     private val goalsStore: GoalsStore,
     private val foodPreferencesStore: FoodPreferencesStore,
     private val measurementsStore: MeasurementsStore,
+    private val remindersStore: RemindersStore,
+    private val reminderScheduler: ReminderScheduler,
     private val movementRepository: MovementRepository,
     context: Context,
 ) : ViewModel() {
@@ -77,8 +81,8 @@ class SettingsViewModel(
 
     /**
      * Forgets the profile, its goals and food preferences (allergies are health data), everything the user has logged,
-     * including the measurements, and both coaches' answers. Settings stay, since they are not health data. Health
-     * Connect's own data is not Novila's to delete.
+     * including the measurements, both coaches' answers and the reminders, and cancels their planned work. Settings
+     * stay, since they are not health data. Health Connect's own data is not Novila's to delete.
      */
     fun deleteAllData() {
         healthStore.clear()
@@ -88,5 +92,8 @@ class SettingsViewModel(
         goalsStore.clear()
         foodPreferencesStore.clear()
         measurementsStore.clear()
+        // Clear first, so a worker that is already running reads "off"; then cancel what is still planned.
+        remindersStore.clear()
+        reminderScheduler.cancelAll()
     }
 }

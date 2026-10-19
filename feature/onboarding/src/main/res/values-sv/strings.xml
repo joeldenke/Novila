@@ -10,7 +10,7 @@
     <string name="onboarding_welcome_eyebrow">Välkommen till Novila</string>
     <string name="onboarding_welcome_title">Träning, sömn och kost i balans</string>
     <string name="onboarding_welcome_body">En lugn hälsocoach i fickan. Novila planerar din träning, följer din sömn och guidar dina måltider, och visar hur de hänger ihop.</string>
-    <string name="onboarding_welcome_privacy">Allt stannar i din telefon. Inget konto, ingen reklam.</string>
+    <string name="onboarding_welcome_privacy">Allt stannar i din telefon. Inget konto, ingen reklam. Androids säkerhetskopiering kan kopiera det till ditt Google-konto.</string>
 
     <string name="onboarding_training_eyebrow">Träning</string>
     <string name="onboarding_training_title">Ett program som växer med dig</string>
@@ -76,6 +76,6 @@
     <string name="onboarding_ready_sleep">Logga nattens sömn i morgon bitti</string>
     <string name="onboarding_ready_nutrition">Börja med frukosten under Kost</string>
     <string name="onboarding_ready_know_title">Bra att veta</string>
-    <string name="onboarding_ready_privacy">Allt du loggar stannar i den här telefonen. Det finns inget konto och inget moln.</string>
+    <string name="onboarding_ready_privacy">Allt du loggar stannar i den här telefonen. Det finns inget konto och inget eget moln; Androids säkerhetskopiering kan kopiera det till ditt Google-konto.</string>
     <string name="onboarding_ready_disclaimer">Novila ger allmänna råd, inte medicinska. Fråga en läkare eller fysioterapeut om du är osäker.</string>
 </resources>
