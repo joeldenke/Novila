@@ -27,26 +27,30 @@ class WidgetContentTest {
         check()
     }
 
-    @Test fun `shows the parts of the day and a glass of water`() = show(
+    @Test fun `shows the balance and the parts of the day`() = show(
         DayEntry(june, sleepHours = 7.5f, waterGlasses = 3),
         Goals(waterGlasses = 8),
     ) {
         onNode(hasText("Today's balance")).assertExists()
         onNode(hasText("7.5 h")).assertExists()
         onNode(hasText("3/8")).assertExists()
-        onNode(hasText("+ Glass of water")).assertExists()
     }
 
-    @Test fun `a summer walk is the latest log, with a word about vitamin D`() = show(
+    @Test fun `has no way to log water`() = show(
+        DayEntry(june, sleepHours = 7.5f, waterGlasses = 3),
+        Goals(waterGlasses = 8),
+    ) {
+        onNode(hasText("+ Glass of water")).assertDoesNotExist()
+    }
+
+    @Test fun `a summer walk cheers with a word about vitamin D`() = show(
         DayEntry(june, sleepHours = 7f).withCardio(CardioLog(CardioType.Walking, 30)),
     ) {
-        onNode(hasText("Latest: walk, 30 min")).assertExists()
         onNode(hasText("vitamin D")).assertExists()
     }
 
     @Test fun `nothing logged asks for the night and the food`() = show(DayEntry(june)) {
         onNode(hasText("Log last night")).assertExists()
-        onNode(hasText("Latest:")).assertDoesNotExist()
     }
 
     @Test fun `nothing but the background before the stores are read`() = show(day = null) {

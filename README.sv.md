@@ -18,7 +18,7 @@ telefonen: inget konto, inget moln, inga analysverktyg. Appen finns på svenska 
 | **Kost** | Portioner per livsmedelsgrupp, vatten och sött, poäng 0–100 efter Livsmedelsverkets kostråd, ett förslag på nästa steg, recept för det som saknas i dag (efter din kosthållning, allergier och tid), och poängen över veckan, fyra veckor eller ett år jämförd med perioden innan |
 | **Rörelse** | Dagens steg och aktiva kalorier, de senaste fem veckornas träningspass och dina nätter, från Health Connect, bara medan appen är öppen |
 | **Påminnelser** | Logga sömnen, träna och logga kosten, var och en på egen tid och bara om det inte redan är loggat. Ett WorkManager-jobb per påminnelse och dag, inget annat i bakgrunden |
-| **Widget** | I dag på hemskärmen: dagens balans, sömn, kostpoäng och vatten, det senaste du loggat, något uppmuntrande om det du gjort (en sommarpromenad nämner D-vitamin, ett styrkepass nattens sömn) och ett glas vatten med ett tryck |
+| **Widget** | I dag på hemskärmen, på ett frostat kort som släpper igenom bakgrunden: dagens balans, sömn, kostpoäng och vatten, och något uppmuntrande om det du gjort (en sommarpromenad nämner D-vitamin, ett styrkepass nattens sömn). Ett tryck öppnar appen |
 | **Inställningar** | Profil, *Mina mål* (dagliga mål, båda coacherna och matpreferenser på ett ställe), tema (automatiskt, ljust, mörkt, bakgrundsfärger), Health Connect, ansvarsfriskrivning, radera all data och introduktionen igen |
 
 En kort illustrerad introduktion vid första start ställer in mål, profil, coach och Health Connect, så att planen

@@ -86,8 +86,8 @@ Nano for more than the comment, or data that leaves the app.
 - [ ] **Gemini Nano in more roles**, e.g. a weekly summary **(ok)**
 
 ### 7. Platform
-- [x] **Home screen widget** (Glance): the day's balance, sleep, nutrition and water, the latest log, encouragement
-  based on what you have done (`cheers`) and a glass of water with one tap. More quick logging (servings) remains.
+- [x] **Home screen widget** (Glance): the day's balance, sleep, nutrition and water, and encouragement
+  based on what you have done (`cheers`), on a frosted card. More quick logging (servings) remains.
 - [ ] **Quick Settings tile and shortcuts:** "Start the session", "Log water"
 - [ ] **Wear OS:** workout mode and the rest timer on the watch
 - [ ] **Tablets and foldables** (the `adaptive` skill)
