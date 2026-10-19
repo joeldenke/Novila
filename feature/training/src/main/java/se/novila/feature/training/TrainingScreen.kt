@@ -26,7 +26,7 @@ import java.time.DayOfWeek
 /**
  * The Training tab in the parts every tab has ([ScreenSection]). Overview: the week at a glance with today's one main
  * action, and recovery from the watch, which today's session may be lighter for. Log: another workout, and what
- * Health Connect recorded. Your plan: the coach, the next strength session, the week's program and the exercise
+ * Health Connect recorded. Your plan: the coach, the week's program (tap a day to open its session) and the exercise
  * library. Trends: the weekly review of what's done and what next week holds.
  */
 @Composable
@@ -41,10 +41,6 @@ fun TrainingScreen(
 ) {
     val today = state.today
     val plan = remember(state) { state.todayPlan() }
-    // Today's session is started from the overview, so the card shows the next one still to do after it.
-    val next = state.program.sessions.firstOrNull { session ->
-        session.exercises.isNotEmpty() && (session.day > today || (session.day == today && plan is TodayPlan.Workout))
-    }
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
         section(ScreenSection.Overview)
         item(key = "overview") {
@@ -88,21 +84,8 @@ fun TrainingScreen(
                 onClick = actions.onOpenCoach,
             )
         }
-        if (next != null) {
-            item(key = "next-session") {
-                NovilaReveal(order = 2) {
-                    StrengthSessionCard(
-                        session = next,
-                        onOpenExercise = actions.onOpenExercise,
-                        // Today's session already has the overview's button.
-                        onStart = { actions.onStartWorkout(next.day) }.takeIf { next.day != today },
-                        next = false,
-                    )
-                }
-            }
-        }
         item(key = "program") {
-            NovilaReveal(order = 3) {
+            NovilaReveal(order = 2) {
                 TrainingProgramCard(state.program, today, state.weekDone, onOpenSession = actions.onOpenSession)
             }
         }
@@ -112,7 +95,7 @@ fun TrainingScreen(
         state.weeklyReview()?.let { review ->
             section(ScreenSection.Trends)
             item(key = "review") {
-                NovilaReveal(order = 4) { WeeklyReviewCard(review) }
+                NovilaReveal(order = 3) { WeeklyReviewCard(review) }
             }
         }
     }

@@ -110,7 +110,7 @@ now, and every tab has the same parts in the same order.
   the tiles below show the same three values. Keep the rings as the summary and let them (or the tiles) open the tabs.
 - [ ] **Explain a serving on Nutrition:** "Vegetables 3 of 5" is abstract. A short line per food group, e.g. a
   serving is about a handful or 100 g, and potatoes don't count.
-- [ ] **A shorter Training tab:** the next session and the week's program show the same sessions; fold the next
+- [x] **A shorter Training tab:** the next session and the week's program show the same sessions; fold the next
   session into the program, opened by tapping a day.
 - [ ] **A steady CI:** the stores' "survives a restart" tests sometimes time out after 5 s, on `main` as well, and turn
   CI red. Find what the reopened store waits on and fix it.
