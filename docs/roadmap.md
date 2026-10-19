@@ -70,7 +70,7 @@ Nano for more than the comment, or data that leaves the app.
 - [ ] **Fluids beyond water**, and a caffeine cut-off time linked to sleep
 
 ### 5. Body and mood
-- [ ] **Weight and measurements over time** (the profile only has one value)
+- [x] **Weight and measurements over time** (the profile only has one value)
 - [x] ~~**Extended mood:** energy, stress and a journal line~~ Removed from Today in October 2026, together with mood:
   their purpose was unclear to the owner. The saved fields remain in `DayEntry`.
 - [x] **Recovery:** resting heart rate and HRV from the watch **(ok)**, which can lower the session's intensity. A card on

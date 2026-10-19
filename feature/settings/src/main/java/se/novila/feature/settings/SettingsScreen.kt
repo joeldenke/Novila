@@ -25,8 +25,10 @@ import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.settings.R
 import se.novila.model.AppSettings
+import se.novila.model.MeasurementEntry
 import se.novila.model.Profile
 import se.novila.model.ThemeMode
+import se.novila.model.latestWeightKg
 import se.novila.movement.MovementState
 import se.novila.movement.TodayMovement
 import se.novila.ui.common.ScreenList
@@ -37,6 +39,7 @@ import se.novila.ui.R as UiR
 data class SettingsActions(
     val onOpenProfile: () -> Unit = {},
     val onOpenMyGoals: () -> Unit = {},
+    val onOpenMeasurements: () -> Unit = {},
     val onOpenReminders: () -> Unit = {},
     val onTheme: (ThemeMode) -> Unit = {},
     val onDynamicColor: (Boolean) -> Unit = {},
@@ -61,6 +64,7 @@ data class SettingsActions(
 fun SettingsScreen(
     settings: AppSettings,
     profile: Profile,
+    measurements: List<MeasurementEntry>?,
     movement: MovementState,
     version: AppVersion,
     canUseDynamicColor: Boolean,
@@ -70,7 +74,7 @@ fun SettingsScreen(
     modifier: Modifier = Modifier,
 ) {
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
-        item(key = "profile") { ProfileCard(profile, actions) }
+        item(key = "profile") { ProfileCard(profile, measurements, actions) }
         item(key = "appearance") {
             AppearanceCard(settings, canUseDynamicColor, canChooseLanguage, actions)
         }
@@ -82,9 +86,9 @@ fun SettingsScreen(
     }
 }
 
-/** Who uses the app: the name, or what the profile is for when it is empty, and all they plan by in My goals. */
+/** Who uses the app: the name (or what it is for when empty), the way to My goals, and the measurements. */
 @Composable
-private fun ProfileCard(profile: Profile, actions: SettingsActions) {
+private fun ProfileCard(profile: Profile, measurements: List<MeasurementEntry>?, actions: SettingsActions) {
     NovilaCard(title = stringResource(R.string.settings_profile)) {
         NovilaListRow(
             title = profile.name.ifEmpty { stringResource(R.string.profile_title) },
@@ -96,6 +100,14 @@ private fun ProfileCard(profile: Profile, actions: SettingsActions) {
             title = stringResource(R.string.my_goals_title),
             summary = stringResource(R.string.settings_my_goals_summary),
             onClick = actions.onOpenMyGoals,
+            trailing = { Chevron() },
+        )
+        NovilaListRow(
+            title = stringResource(R.string.settings_measurements),
+            summary = measurements?.latestWeightKg()
+                ?.let { stringResource(R.string.settings_measurements_summary, it) }
+                ?: stringResource(R.string.settings_measurements_empty),
+            onClick = actions.onOpenMeasurements,
             trailing = { Chevron() },
         )
     }
@@ -301,12 +313,14 @@ private fun SettingsContent(
     movement: MovementState,
     settings: AppSettings = AppSettings(),
     profile: Profile = Profile(),
+    measurements: List<MeasurementEntry>? = emptyList(),
 ) {
     NovilaTheme {
         NovilaScaffold { padding ->
             SettingsScreen(
                 settings = settings,
                 profile = profile,
+                measurements = measurements,
                 movement = movement,
                 version = AppVersion(name = "0.1.42-debug", code = 42),
                 canUseDynamicColor = true,

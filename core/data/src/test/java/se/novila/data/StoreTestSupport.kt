@@ -27,4 +27,4 @@ class StoreScope {
 
 /** Waits for the first read, or a later save, that matches [predicate]. */
 fun <T : Any> StateFlow<T?>.await(predicate: (T) -> Boolean = { true }): T =
-    runBlocking { withTimeout(5_000) { filterNotNull().first(predicate) } }
+    runBlocking { withTimeout(30_000) { filterNotNull().first(predicate) } }

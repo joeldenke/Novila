@@ -32,7 +32,7 @@
     <string name="settings_data_body">Allt du loggar sparas bara i den här telefonen. Novila har inget konto och inget moln, så inget kan återställas när det har raderats.</string>
     <string name="settings_delete_data">Radera all data</string>
     <string name="settings_delete_data_title">Radera all data?</string>
-    <string name="settings_delete_data_body">Din profil och dina mål, din loggade sömn, kost, mående och dina pass samt coachens svar raderas från telefonen. Det går inte att ångra. Data i Health Connect påverkas inte.</string>
+    <string name="settings_delete_data_body">Din profil och dina mål, dina mått, din loggade sömn, kost, mående och dina pass samt coachens svar raderas från telefonen. Det går inte att ångra. Data i Health Connect påverkas inte.</string>
     <string name="settings_delete_data_confirm">Radera</string>
     <string name="settings_cancel">Avbryt</string>
     <string name="settings_data_deleted">All data är raderad.</string>
@@ -114,6 +114,24 @@
     <string name="goals_suggestion_in_use">Du använder de här målen.</string>
     <string name="goals_suggestion_needs_profile">Fyll i födelseår eller vikt i profilen, så föreslår Novila mål som passar dig.</string>
     <string name="goals_about">Idag, Sömn och Kost mäter dina dagar mot de här målen. Vattnet räknas in i kostpoängen; portionerna mat följer Livsmedelsverkets kostråd. Ett glas är 2 dl.</string>
+
+    <!-- Mått -->
+    <string name="settings_measurements">Mått</string>
+    <string name="settings_measurements_summary">Vikt %1$d kg</string>
+    <string name="settings_measurements_empty">Inget loggat ännu</string>
+    <string name="measure_log">Logga mått</string>
+    <string name="measure_history">Över tid</string>
+    <string name="measure_history_empty">Inget loggat ännu. Det du mäter visas här över tiden.</string>
+    <string name="measure_weight">Vikt</string>
+    <string name="measure_waist">Midja</string>
+    <string name="measure_neck">Nacke</string>
+    <string name="measure_hips">Höfter</string>
+    <string name="measure_waist_error">Ange en midja mellan %1$d och %2$d cm.</string>
+    <string name="measure_neck_error">Ange en nacke mellan %1$d och %2$d cm.</string>
+    <string name="measure_hips_error">Ange höfter mellan %1$d och %2$d cm.</string>
+    <string name="measure_save">Spara</string>
+    <string name="measure_chart_description">Vikt över tid, från %1$d till %2$d kilo.</string>
+    <string name="measure_privacy">Allt du mäter sparas bara i den här telefonen och kräver inget konto. Den senaste vikten blir profilens vikt, så målen följer vågen. Raderar du all data under Inställningar raderas det också.</string>
 
     <!-- Påminnelser -->
     <string name="settings_reminders">Påminnelser</string>

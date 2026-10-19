@@ -37,7 +37,7 @@
     <string name="settings_data_body">Everything you log is saved on this phone only. Novila has no account and no cloud, so nothing can be restored once deleted.</string>
     <string name="settings_delete_data">Delete all data</string>
     <string name="settings_delete_data_title">Delete all data?</string>
-    <string name="settings_delete_data_body">Your profile and goals, your logged sleep, food, mood and workouts and the coach\'s answers are deleted from this phone. This cannot be undone. Data in Health Connect is not affected.</string>
+    <string name="settings_delete_data_body">Your profile and goals, your measurements, your logged sleep, food, mood and workouts and the coach\'s answers are deleted from this phone. This cannot be undone. Data in Health Connect is not affected.</string>
     <string name="settings_delete_data_confirm">Delete</string>
     <string name="settings_cancel">Cancel</string>
     <string name="settings_data_deleted">All data is deleted.</string>
@@ -119,6 +119,25 @@
     <string name="goals_suggestion_in_use">You are using these goals.</string>
     <string name="goals_suggestion_needs_profile">Add your birth year or weight to your profile, and Novila suggests goals that fit you.</string>
     <string name="goals_about">Today, Sleep and Nutrition measure your days against these goals. Water counts towards the nutrition score; the food portions follow the Swedish Food Agency\'s dietary advice. A glass is 2 dl.</string>
+
+    <!-- Measurements -->
+    <string name="settings_measurements">Measurements</string>
+    <string name="settings_measurements_summary">Weight %1$d kg</string>
+    <string name="settings_measurements_empty">Nothing logged yet</string>
+    <string name="measure_log">Log measurements</string>
+    <string name="measure_history">Over time</string>
+    <string name="measure_history_empty">Nothing logged yet. What you measure shows up here over time.</string>
+    <string name="measure_weight">Weight</string>
+    <string name="measure_waist">Waist</string>
+    <string name="measure_neck">Neck</string>
+    <string name="measure_hips">Hips</string>
+    <string name="measure_waist_error">Enter a waist between %1$d and %2$d cm.</string>
+    <string name="measure_neck_error">Enter a neck between %1$d and %2$d cm.</string>
+    <string name="measure_hips_error">Enter hips between %1$d and %2$d cm.</string>
+    <string name="measure_save">Save</string>
+    <string name="measure_value" translatable="false">%1$d %2$s</string>
+    <string name="measure_chart_description">Weight over time, from %1$d to %2$d kilos.</string>
+    <string name="measure_privacy">Everything you measure is saved on this phone only and needs no account. The newest weight becomes the profile\'s weight, so the goals stay in step with the scale. Deleting all data under Settings deletes it too.</string>
 
     <!-- Reminders -->
     <string name="settings_reminders">Reminders</string>
