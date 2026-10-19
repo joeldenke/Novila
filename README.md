@@ -18,7 +18,7 @@ Everything stays on the phone: no account, no cloud, no analytics. The app is in
 | **Nutrition** | Servings per food group, water and sweets, scored 0–100 after the Swedish Food Agency's dietary guidelines, with a suggested next step, recipes for what today is missing (for your diet, allergens and time), and the scores over the week, four weeks or a year compared with the period before |
 | **Movement** | Today's steps and active calories, the last five weeks' workouts and your nights, from Health Connect, read in the foreground only |
 | **Reminders** | Log sleep, train and log food, each at your own time and only when it isn't logged yet. One WorkManager job per reminder and day, nothing else in the background |
-| **Widget** | Today on the home screen: the day's balance, sleep, food score and water, the latest log, something encouraging about what you did (a summer walk mentions vitamin D, a strength session tonight's sleep) and a glass of water in one tap |
+| **Widget** | Today on the home screen, on a frosted card that lets the wallpaper through: the day's balance, sleep, food score and water, and something encouraging about what you did (a summer walk mentions vitamin D, a strength session tonight's sleep). Tapping it opens the app |
 | **Settings** | Profile, *My goals* (daily goals, both coaches and food preferences in one place), theme (system, light, dark, wallpaper colors), Health Connect access, health disclaimer, deleting all data, and the intro again |
 
 A short illustrated intro at first start sets up the goal, profile, coach and Health Connect, so the plan is there

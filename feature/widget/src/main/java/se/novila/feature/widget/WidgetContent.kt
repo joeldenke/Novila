@@ -2,13 +2,14 @@ package se.novila.feature.widget
 
 import android.content.Context
 import androidx.compose.runtime.Composable
-import androidx.glance.Button
-import androidx.glance.ButtonDefaults
+import androidx.compose.ui.unit.dp
+import androidx.glance.ColorFilter
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
+import androidx.glance.Image
+import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
 import androidx.glance.action.clickable
-import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.appWidgetBackground
 import androidx.glance.appwidget.cornerRadius
@@ -22,29 +23,37 @@ import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
+import androidx.glance.layout.size
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import se.novila.designsystem.glance.NovilaGlance
 import se.novila.feature.widget.R
-import se.novila.model.CardioType
 import se.novila.model.DayCheer
 import se.novila.model.DayEntry
 import se.novila.model.FoodGroup
 import se.novila.model.Goals
-import se.novila.model.LatestLog
 import se.novila.model.balance
 import se.novila.model.cheers
 import se.novila.model.formatHours
-import se.novila.model.latestLog
 import se.novila.model.nutritionScore
 import se.novila.ui.R as UiR
 
+/** The sun emblem's size. */
+private val SunSize = 20.dp
+
+/** A pillar's coloured dot. */
+private val DotSize = 8.dp
+
+/** The hairline's thickness. */
+private val HairlineSize = 1.dp
+
 /**
- * The widget for [day] measured against [goals]: the balance, a value per part, the latest log and the day's first
- * cheer, and a button for a glass of water. A tap anywhere else opens the app. Only the background before the stores
- * are read (either is null).
+ * The widget for [day] measured against [goals]: the day's balance, a value per part (sleep, food and water), and
+ * the day's first encouragement. Restrained on purpose: the cheer already says what the user did, so a separate
+ * "latest log" line would only crowd it. A tap anywhere opens the app. Only the frosted background is drawn before
+ * the stores are read (either is null).
  */
 @Composable
 fun WidgetContent(day: DayEntry?, goals: Goals?) {
@@ -55,61 +64,103 @@ fun WidgetContent(day: DayEntry?, goals: Goals?) {
             .fillMaxSize()
             .appWidgetBackground()
             .cornerRadius(NovilaGlance.widgetCornerRadius)
-            .background(GlanceTheme.colors.surface)
+            .background(NovilaGlance.cardBackground)
             .padding(NovilaGlance.spacing.l)
             .let { if (launch != null) it.clickable(actionStartActivity(launch)) else it },
     ) {
         if (day == null || goals == null) return@Column
-        Label(context.getString(R.string.widget_balance), GlanceTheme.colors.onSurfaceVariant)
-        Text(
-            text = context.getString(R.string.widget_balance_value, day.balance(steps = null, goals = goals)),
-            style = TextStyle(
-                color = GlanceTheme.colors.primary,
-                fontSize = NovilaGlance.headlineSize,
-                fontWeight = FontWeight.Bold,
-            ),
-        )
-        Row(modifier = GlanceModifier.fillMaxWidth().padding(vertical = NovilaGlance.spacing.s)) {
-            Part(R.string.widget_sleep, sleepValue(context, day), GlanceTheme.colors.secondary)
-            Part(R.string.widget_food, foodValue(context, day, goals), GlanceTheme.colors.tertiary)
-            Part(
-                R.string.widget_water,
-                context.getString(R.string.widget_water_value, day.waterGlasses, goals.waterGlasses),
-                GlanceTheme.colors.tertiary,
-            )
-        }
-        day.latestLog()?.let { Label(latestText(context, it), GlanceTheme.colors.onSurfaceVariant) }
+        Header(context)
+        Spacer(modifier = GlanceModifier.height(NovilaGlance.spacing.s))
+        Balance(context, day.balance(steps = null, goals = goals))
+        Spacer(modifier = GlanceModifier.height(NovilaGlance.spacing.m))
+        Parts(context, day, goals)
+        Spacer(modifier = GlanceModifier.defaultWeight())
+        Hairline()
+        Spacer(modifier = GlanceModifier.height(NovilaGlance.spacing.m))
         Text(
             text = cheerText(context, day.cheers(goals).first()),
             style = TextStyle(color = GlanceTheme.colors.onSurface, fontSize = NovilaGlance.bodySize),
-            maxLines = 3,
-        )
-        Spacer(modifier = GlanceModifier.defaultWeight())
-        Button(
-            text = context.getString(R.string.widget_log_water),
-            onClick = actionRunCallback<LogWaterAction>(),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = GlanceTheme.colors.tertiary,
-                contentColor = GlanceTheme.colors.onTertiary,
-            ),
+            maxLines = 2,
         )
     }
 }
 
+/** The card's title and the midsummer sun, like the hero card in the app. */
 @Composable
-private fun Label(text: String, color: ColorProvider) {
+private fun Header(context: Context) {
+    Row(modifier = GlanceModifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = context.getString(R.string.widget_balance),
+            style = TextStyle(
+                color = GlanceTheme.colors.onSurfaceVariant,
+                fontSize = NovilaGlance.labelSize,
+                fontWeight = FontWeight.Medium,
+            ),
+            modifier = GlanceModifier.defaultWeight(),
+            maxLines = 1,
+        )
+        Image(
+            provider = ImageProvider(NovilaGlance.sunDrawable),
+            contentDescription = null,
+            modifier = GlanceModifier.size(SunSize),
+            colorFilter = ColorFilter.tint(NovilaGlance.accentSun),
+        )
+    }
+}
+
+/** The day's balance as a large [value], the one number that sums the day up. */
+@Composable
+private fun Balance(context: Context, value: Int) {
     Text(
-        text = text,
-        style = TextStyle(color = color, fontSize = NovilaGlance.labelSize, fontWeight = FontWeight.Medium),
+        text = context.getString(R.string.widget_balance_value, value),
+        style = TextStyle(
+            color = GlanceTheme.colors.primary,
+            fontSize = NovilaGlance.headlineSize,
+            fontWeight = FontWeight.Bold,
+        ),
         maxLines = 1,
     )
 }
 
-/** One part of the day in its pillar's [color]: a small title over the value. */
+/** A hairline between the balance block and the encouragement. */
 @Composable
-private fun RowScope.Part(title: Int, value: String, color: ColorProvider) {
+private fun Hairline() {
+    Spacer(
+        modifier = GlanceModifier
+            .fillMaxWidth()
+            .height(HairlineSize)
+            .background(NovilaGlance.cardOutline),
+    )
+}
+
+/** The day's parts, each with its pillar's colour: sleep (lake), food and water (falu red, both nutrition). */
+@Composable
+private fun Parts(context: Context, day: DayEntry, goals: Goals) {
+    Row(modifier = GlanceModifier.fillMaxWidth()) {
+        Part(context, R.string.widget_sleep, sleepValue(context, day), GlanceTheme.colors.secondary)
+        Part(context, R.string.widget_food, foodValue(context, day, goals), GlanceTheme.colors.tertiary)
+        Part(context, R.string.widget_water, waterValue(context, day, goals), GlanceTheme.colors.tertiary)
+    }
+}
+
+/** One part in its [color]: a small coloured dot, its title and the value. */
+@Composable
+private fun RowScope.Part(context: Context, title: Int, value: String, color: ColorProvider) {
     Column(modifier = GlanceModifier.defaultWeight(), horizontalAlignment = Alignment.Start) {
-        Label(LocalContext.current.getString(title), color)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Spacer(
+                modifier = GlanceModifier
+                    .size(DotSize)
+                    .background(color)
+                    .cornerRadius(DotSize / 2),
+            )
+            Spacer(modifier = GlanceModifier.size(NovilaGlance.spacing.xs))
+            Text(
+                text = context.getString(title),
+                style = TextStyle(color = GlanceTheme.colors.onSurfaceVariant, fontSize = NovilaGlance.labelSize),
+                maxLines = 1,
+            )
+        }
         Spacer(modifier = GlanceModifier.height(NovilaGlance.spacing.xxs))
         Text(
             text = value,
@@ -135,29 +186,8 @@ private fun foodValue(context: Context, day: DayEntry, goals: Goals): String =
     day.nutritionScore(goals)?.let { context.getString(R.string.widget_food_value, it.total) }
         ?: context.getString(UiR.string.value_missing)
 
-private fun latestText(context: Context, log: LatestLog): String {
-    val what = when (log) {
-        is LatestLog.Cardio -> context.getString(cardioName(log.log.type), log.log.minutes)
-
-        is LatestLog.Strength -> context.getString(R.string.widget_latest_strength, log.minutes)
-
-        is LatestLog.Food ->
-            context.resources.getQuantityString(R.plurals.widget_latest_food, log.portions, log.portions)
-
-        is LatestLog.Water ->
-            context.resources.getQuantityString(R.plurals.widget_latest_water, log.glasses, log.glasses)
-
-        is LatestLog.Sleep -> context.getString(R.string.widget_latest_sleep, hours(context, log.hours))
-    }
-    return context.getString(R.string.widget_latest, what)
-}
-
-private fun cardioName(type: CardioType): Int = when (type) {
-    CardioType.Walking -> R.string.widget_latest_walk
-    CardioType.Running -> R.string.widget_latest_run
-    CardioType.Cycling -> R.string.widget_latest_ride
-    CardioType.Swimming -> R.string.widget_latest_swim
-}
+private fun waterValue(context: Context, day: DayEntry, goals: Goals): String =
+    context.getString(R.string.widget_water_value, day.waterGlasses, goals.waterGlasses)
 
 private fun cheerText(context: Context, cheer: DayCheer): String = when (cheer) {
     is DayCheer.OutdoorsSummer -> context.getString(R.string.widget_cheer_outdoors_summer, cheer.log.minutes)
