@@ -22,22 +22,6 @@ fun DayEntry.balance(steps: Long?, goals: Goals = Goals()): Int {
     )
     return (parts.average() * 100).roundToInt()
 }
-
-/** The one thing to do next, shown under the balance. */
-sealed interface DayTip {
-    data object LogSleep : DayTip
-
-    /** One more portion of [NextPortion.group] lifts the nutrition score the most. */
-    data class Eat(val next: NextPortion) : DayTip
-
-    data object GoalsMet : DayTip
-}
-
-fun DayEntry.tip(goals: Goals = Goals()): DayTip {
-    if (sleepHours <= 0f) return DayTip.LogSleep
-    return nextPortion(goals)?.let(DayTip::Eat) ?: DayTip.GoalsMet
-}
-
 enum class Greeting { Morning, Afternoon, Evening }
 
 /** Morning 05–11, afternoon 12–17, evening otherwise. */

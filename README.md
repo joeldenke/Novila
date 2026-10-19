@@ -12,7 +12,7 @@ Everything stays on the phone: no account, no cloud, no analytics. The app is in
 
 | Part | Features |
 |---|---|
-| **Today** | What to do now: a greeting by name, the day's balance as one ring per part, *Your day* (sleep, today's training, food and water, each with the one button that does it), a tile per part with the week's trend, and insights |
+| **Today** | What to do now: a greeting by name, the day's balance as one ring per part (tap a part to open it), *Your day* (sleep, today's training, food and water, each with the one button that does it), and insights |
 | **Training** | A weekly program following WHO's guidelines (150–300 min cardio, strength two days a week, at most +10 % cardio per week). An on-device coach that builds the week from your goal, days, time per session, focus and limitations, including gentle training for the knee, lower back, shoulder, neck and hip in three levels. 15 illustrated exercises and a workout mode with sets, rests and countdowns. Cardio is logged with "I did it" or read from Health Connect, and after a session the effort (RPE) and pain you report adjust the dose and suggest the next level |
 | **Sleep** | Bedtime and wake time (or just hours, or the night your watch recorded, from Health Connect), how the night felt and what may have affected it, and what affects your sleep: links between the day before (food, water, training, sweets), the evening and the night, tested on your own logs and shown with the nights behind them. A chart over the week, four weeks or a year compared with the period before |
 | **Nutrition** | Servings per food group, water and sweets, scored 0–100 after the Swedish Food Agency's dietary guidelines, with a suggested next step, recipes for what today is missing (for your diet, allergens and time), and the scores over the week, four weeks or a year compared with the period before |
@@ -77,7 +77,7 @@ each other, which a test checks.
 
 ```
 :app                     Shell only: Metro graph, activity, tabs and navigation display
-:feature:today           What to do now: balance, Your day, tiles, insights
+:feature:today           What to do now: balance, Your day, insights
 :feature:training        Weekly program, coach, exercises, workout mode
 :feature:sleep           Sleep log and history
 :feature:nutrition       Food groups, water, score

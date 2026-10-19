@@ -2,6 +2,7 @@ package se.novila.designsystem.component
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,7 +34,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -43,23 +44,33 @@ import se.novila.designsystem.theme.NovilaTheme
 import java.text.NumberFormat
 import kotlin.math.roundToInt
 
-/** One part's share of the hero score: a ring with its [label], [progress] in 0f..1f and its [color]. */
+/**
+ * One part's share of the hero score: a ring with its [label], [progress] in 0f..1f and its [color]. With
+ * [onClick], the part's legend row opens what it is about, and [clickLabel] says what a tap does.
+ */
 @Immutable
-data class NovilaHeroSegment(val label: String, val progress: Float, val color: Color)
+data class NovilaHeroSegment(
+    val label: String,
+    val progress: Float,
+    val color: Color,
+    val onClick: (() -> Unit)? = null,
+    val clickLabel: String? = null,
+)
 
 /**
  * The pine hero card at the top of the dashboard: concentric rings, one per part, around a score
- * that counts up, a legend with each part's percentage and a short [body]. Behind it, a pine
- * forest at dusk and the midsummer sun's glow. Read by screen readers as one block.
+ * that counts up, a legend with each part's percentage and an optional short [body]. Each part with a
+ * [NovilaHeroSegment.onClick] opens its own screen, so the rings are the summary and the way in. Behind it,
+ * a pine forest at dusk and the midsummer sun's glow.
  */
 @Composable
 fun NovilaHeroCard(
     title: String,
     value: Int,
     unit: String,
-    body: String,
     segments: List<NovilaHeroSegment>,
     modifier: Modifier = Modifier,
+    body: String? = null,
 ) {
     val hero = NovilaTheme.hero
     val reveal by rememberReveal(durationMillis = 1600)
@@ -72,8 +83,7 @@ fun NovilaHeroCard(
                 drawSunGlow(hero.sun)
                 drawForest(hero.content.copy(alpha = 0.07f))
             }
-            .padding(NovilaTheme.spacing.xl)
-            .semantics(mergeDescendants = true) {},
+            .padding(NovilaTheme.spacing.xl),
         verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.l),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -110,7 +120,7 @@ fun NovilaHeroCard(
                 }
             }
         }
-        Text(body, style = NovilaTheme.typography.bodyMedium, color = hero.content)
+        body?.let { Text(it, style = NovilaTheme.typography.bodyMedium, color = hero.content) }
     }
 }
 
@@ -118,7 +128,19 @@ private val SunSize = 26.dp
 
 @Composable
 private fun LegendRow(segment: NovilaHeroSegment, percent: String, content: Color) {
-    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+    val tap = if (segment.onClick != null) {
+        Modifier
+            .fillMaxWidth()
+            .clip(NovilaTheme.shapes.small)
+            .clickable(onClickLabel = segment.clickLabel, role = Role.Button, onClick = segment.onClick)
+    } else {
+        Modifier
+    }
+    Row(
+        modifier = tap,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
         Box(Modifier.size(10.dp).clip(CircleShape).background(segment.color))
         Column {
             Text(segment.label, style = NovilaTheme.typography.labelMedium, color = content.copy(alpha = 0.8f))

@@ -21,14 +21,6 @@ class DailyBalanceTest {
         assertEquals(67, day.balance(steps = 0))
     }
 
-    @Test fun `tip asks for sleep first, then the most valuable portion`() {
-        assertEquals(DayTip.LogSleep, DayEntry(date, waterGlasses = 3).tip())
-        val noMeals = DayEntry(date, sleepHours = 7f, food = allFood.copy(meals = 0))
-        assertEquals(DayTip.Eat(NextPortion(FoodGroup.Meals, 7)), noMeals.tip())
-        val done = DayEntry(date, waterGlasses = WATER_GOAL, sleepHours = 7f, food = allFood)
-        assertEquals(DayTip.GoalsMet, done.tip())
-    }
-
     @Test fun `greeting follows the time of day`() {
         assertEquals(Greeting.Evening, greetingFor(4))
         assertEquals(Greeting.Morning, greetingFor(5))

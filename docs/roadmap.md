@@ -106,8 +106,8 @@ now, and every tab has the same parts in the same order.
 - [x] **The same parts on every tab:** Overview, Log, Your plan and Trends on Sleep, Nutrition and Training (#60)
 - [x] **My goals in one place:** daily goals, both coaches and food preferences on one screen; Settings keeps what is
   about the app (#60)
-- [ ] **No duplicates on Today:** the text under the balance rings says the same as the food task, and the rings and
-  the tiles below show the same three values. Keep the rings as the summary and let them (or the tiles) open the tabs.
+- [x] **No duplicates on Today:** the text under the balance rings said the same as the food task, and the rings and
+  the tiles below showed the same three values. The rings are the summary and each part opens its own tab.
 - [ ] **Explain a serving on Nutrition:** "Vegetables 3 of 5" is abstract. A short line per food group, e.g. a
   serving is about a handful or 100 g, and potatoes don't count.
 - [x] **A shorter Training tab:** the next session and the week's program show the same sessions; fold the next
