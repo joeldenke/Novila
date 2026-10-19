@@ -20,9 +20,9 @@ class CombinedInsightsTest {
 
     @Test fun `a full night shows in more training that day, with the days behind it`() {
         val days = days(40) { i, date ->
-            val good = i % 2 == 0
-            DayEntry(date, strengthMinutes = if (good) 40 else 10)
-                .copy(sleepHours = (if (good) 8.5f else 6.5f) + wobble(i))
+            val rested = i % 2 == 0
+            DayEntry(date, strengthMinutes = if (rested) 40 else 10)
+                .copy(sleepHours = (if (rested) 8.5f else 6.5f) + wobble(i))
         }
         val connection = connections(days).filterIsInstance<TrainingAfterSleep>().single()
         assertEquals(30.0, connection.difference, 3.0)
@@ -60,8 +60,8 @@ class CombinedInsightsTest {
 
     @Test fun `food shows in the energy the user logged`() {
         val days = days(40) { i, date ->
-            val good = i % 2 == 0
-            DayEntry(date, food = if (good) good else poor, energy = if (good) 4 else 2)
+            val eaten = i % 2 == 0
+            DayEntry(date, food = if (eaten) good else poor, energy = if (eaten) 4 else 2)
         }
         val connection = connections(days, limit = 4).filterIsInstance<WellbeingConnection>()
             .single { it.wellbeing == Wellbeing.Energy }
@@ -94,9 +94,9 @@ class CombinedInsightsTest {
 
     @Test fun `the strongest comes first and the list stays within its limit`() {
         val days = days(40) { i, date ->
-            val good = i % 2 == 0
-            DayEntry(date, food = if (good) good else poor, energy = if (good) 5 else 1)
-                .copy(sleepHours = (if (good) 9f else 6f) + wobble(i), strengthMinutes = if (good) 60 else 0)
+            val eaten = i % 2 == 0
+            DayEntry(date, food = if (eaten) good else poor, energy = if (eaten) 5 else 1)
+                .copy(sleepHours = (if (eaten) 9f else 6f) + wobble(i), strengthMinutes = if (eaten) 60 else 0)
         }
         val found = connections(days, limit = 2)
         assertEquals(2, found.size)

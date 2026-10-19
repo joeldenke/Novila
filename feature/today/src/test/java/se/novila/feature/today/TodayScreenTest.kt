@@ -1,9 +1,13 @@
 package se.novila.feature.today
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.ui.test.hasScrollAction
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNode
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.unit.dp
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -101,6 +105,8 @@ class TodayScreenTest {
             ),
         )
 
+        // The card is the last one on the screen, so scroll it into view before reading it.
+        composeRule.onNode(hasScrollAction()).performScrollToNode(hasText("Connections"))
         composeRule.onNodeWithText("Connections").assertExists()
         composeRule
             .onNodeWithText("On days after a full night you trained 25 min more (14 days against 9).")
