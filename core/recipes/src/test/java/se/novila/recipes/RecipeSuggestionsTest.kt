@@ -44,11 +44,42 @@ class RecipeSuggestionsTest {
 
     @Test fun `no suggestion contains an allergen the user avoids`() {
         Allergen.entries.forEach { allergen ->
-            val preferences = FoodPreferences(allergens = setOf(allergen))
-            listOf(7, 12, 20).forEach { hour ->
-                val suggested = suggestRecipes(empty, hour, preferences).recipes
-                assertTrue("$allergen", suggested.none { allergen in it.recipe.allergens })
+            Diet.entries.forEach { diet ->
+                val preferences = FoodPreferences(diet, allergens = setOf(allergen))
+                listOf(7, 12, 20).forEach { hour ->
+                    val suggested = suggestRecipes(empty, hour, preferences).recipes
+                    assertTrue("$allergen $diet", suggested.none { allergen in it.recipe.allergens })
+                }
             }
+        }
+    }
+
+    @Test fun `no suggestion violates the diet`() {
+        Diet.entries.forEach { diet ->
+            listOf(7, 12, 20).forEach { hour ->
+                val suggested = suggestRecipes(empty, hour, FoodPreferences(diet)).recipes
+                assertTrue("$diet", suggested.all { it.recipe.diet >= diet })
+            }
+        }
+    }
+
+    @Test fun `suggestions rotate over consecutive days when several recipes are worth the same`() {
+        val preferences = FoodPreferences(Diet.Vegan)
+        val first = (0 until 14).map { offset ->
+            val day = DayEntry(date.plusDays(offset.toLong()))
+            suggestRecipes(day, hour = 12, preferences = preferences).recipes.first().recipe
+        }
+        assertTrue("only ${first.distinct().size} different recipes over two weeks", first.distinct().size >= 5)
+        first.zipWithNext().forEach { (a, b) -> assertNotEquals(a, b) }
+    }
+
+    @Test fun `the suggestions fill the groups the day is missing`() {
+        val day = DayEntry(date, food = FoodLog(meals = 1))
+        val suggested = suggestRecipes(day, hour = 12, preferences = FoodPreferences()).recipes
+        assertEquals(SUGGESTED_RECIPES, suggested.size)
+        assertTrue(suggested.all { it.points > 0 })
+        listOf(FoodGroup.Vegetables, FoodGroup.Protein, FoodGroup.WholeGrain).forEach { group ->
+            assertTrue("nothing fills ${group.name}", suggested.any { it.recipe.fills(group) })
         }
     }
 
