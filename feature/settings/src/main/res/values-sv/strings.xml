@@ -42,8 +42,17 @@
     <string name="settings_version">Version</string>
     <string name="settings_privacy">Integritet</string>
     <string name="settings_privacy_summary">Ingen reklam, inga analysverktyg och inga nätverksanrop. Din hälsodata stannar i telefonen.</string>
-    <string name="settings_licenses">Licenser</string>
-    <string name="settings_licenses_summary">Typsnittet Hanken Grotesk, SIL Open Font License 1.1. Ikoner från Material Symbols, Apache License 2.0.</string>
+    <string name="settings_licenses">Öppna licenser</string>
+    <string name="settings_licenses_summary">Biblioteken Novila bygger på, med sina licenser.</string>
+
+    <!-- Licenser -->
+    <string name="licenses_title">Öppna licenser</string>
+    <string name="licenses_typefaces">Typsnittet Hanken Grotesk, SIL Open Font License 1.1. Ikoner från Material Symbols, Apache License 2.0.</string>
+    <string name="licenses_source">Källkod</string>
+    <string name="licenses_website">Webbplats</string>
+    <string name="licenses_sponsor">Stöd</string>
+    <string name="licenses_view_license">Visa licens</string>
+    <string name="licenses_close">Stäng</string>
 
     <!-- Ansvarsfriskrivning -->
     <string name="disclaimer_title">Ansvarsfriskrivning</string>
