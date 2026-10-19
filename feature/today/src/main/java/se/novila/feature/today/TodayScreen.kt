@@ -44,8 +44,8 @@ import se.novila.movement.MovementState
 import se.novila.ui.common.ScreenList
 import se.novila.ui.common.longDateText
 import se.novila.ui.preview.PreviewData
-import se.novila.ui.R as UiR
 import java.time.DayOfWeek
+import se.novila.ui.R as UiR
 
 /**
  * What to do today: greeting (by [name] when the profile has one), today's balance as rings, the one [coach]'s

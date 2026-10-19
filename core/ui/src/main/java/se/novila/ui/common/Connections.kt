@@ -32,6 +32,7 @@ fun connectionText(connection: Connection): String = when (connection) {
     )
 
     is WellbeingConnection -> wellbeingText(connection)
+
     is WeekdayPattern -> weekdayPatternText(connection)
 }
 
