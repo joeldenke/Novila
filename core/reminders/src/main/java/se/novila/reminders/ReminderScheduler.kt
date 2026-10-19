@@ -39,7 +39,9 @@ class ReminderScheduler(private val context: Context) {
         enqueue(reminder, time, now, ExistingWorkPolicy.APPEND_OR_REPLACE)
 
     /** Cancels every planned reminder, as when the user deletes all data. */
-    fun cancelAll() = workManager.cancelAllWorkByTag(TAG)
+    fun cancelAll() {
+        workManager.cancelAllWorkByTag(TAG)
+    }
 
     private fun enqueue(reminder: Reminder, time: LocalTime, now: LocalDateTime, policy: ExistingWorkPolicy) {
         val at = nextReminderAt(now, time)
