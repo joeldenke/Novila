@@ -109,6 +109,16 @@ class TrainingScreenTest {
         assertEquals(listOf(DayOfWeek.THURSDAY, DayOfWeek.THURSDAY), opened)
     }
 
+    @Test fun `the next session is folded into the program, not shown twice`() {
+        val opened = mutableListOf<DayOfWeek>()
+        show(state, TrainingActions(onOpenSession = { opened += it }))
+        // The week's program is the only place the sessions are listed; a day opens its session.
+        composeRule.onNodeWithText("This week's program").assertExists()
+        composeRule.onNodeWithText("Strength on Monday").assertDoesNotExist()
+        composeRule.onNodeWithText("Mon").performClick()
+        assertEquals(listOf(DayOfWeek.MONDAY), opened)
+    }
+
     @Test fun `the weekly review counts the sessions done and says what next week holds`() {
         val reviewed = state.copy(
             today = DayOfWeek.THURSDAY,
