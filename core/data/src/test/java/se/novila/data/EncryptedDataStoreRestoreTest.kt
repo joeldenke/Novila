@@ -67,7 +67,11 @@ class EncryptedDataStoreRestoreTest {
         assertEquals(ThemeMode.Dark, store.settings.await().theme)
         // The next write seals the file: a backup taken now carries no plaintext.
         store.setTheme(ThemeMode.Light)
-        assertFalse(file().awaitWritten().contains(ThemeMode.Light.name.toByteArray()))
+        store.settings.await { it.theme == ThemeMode.Light }
+        val sealed = file().awaitWritten()
+        assertEquals(0x4E.toByte(), sealed.first())
+        assertFalse(sealed.contains(ThemeMode.Dark.name.toByteArray()))
+        assertFalse(sealed.contains(ThemeMode.Light.name.toByteArray()))
     }
 
     /** A preferences file as Preferences DataStore wrote it before the move to encryption. */

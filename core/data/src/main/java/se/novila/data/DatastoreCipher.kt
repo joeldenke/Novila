@@ -55,8 +55,10 @@ class KeystoreDatastoreCipher(private val context: Context) : DatastoreCipher {
     private companion object {
         /** The keyset's name inside [PREF_FILE_NAME]; changing it starts a new keyset. */
         const val KEYSET_NAME = "novila_datastore_keyset"
+
         /** A private SharedPreferences file that holds only the encrypted keyset. */
         const val PREF_FILE_NAME = "novila_datastore_keys"
+
         /** The master key in the Android Keystore, named after the app. */
         const val MASTER_KEY_URI = "android-keystore://novila_datastore_master_key"
     }

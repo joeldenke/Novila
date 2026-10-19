@@ -33,7 +33,9 @@ class EncryptedDataStoreTest {
     @After fun close() = stores.close()
 
     @Test fun `a saved file does not carry the values in the clear`() = runBlocking {
-        SettingsStore(context, stores.scope, stores.cipher).setTheme(ThemeMode.Dark)
+        val store = SettingsStore(context, stores.scope, stores.cipher)
+        store.setTheme(ThemeMode.Dark)
+        store.settings.await { it.theme == ThemeMode.Dark }
 
         val bytes = file.awaitWritten()
         assertEquals("the file must start with the encrypted format's header", HEADER, bytes.first())
@@ -48,6 +50,7 @@ class EncryptedDataStoreTest {
 
         // The next write stores the file sealed, and a reopened store still reads it back.
         store.setTheme(ThemeMode.Light)
+        store.settings.await { it.theme == ThemeMode.Light }
         stores.restart()
         val reopened = SettingsStore(context, stores.scope, stores.cipher)
         assertEquals(ThemeMode.Light, reopened.settings.await().theme)
@@ -55,8 +58,9 @@ class EncryptedDataStoreTest {
     }
 
     @Test fun `a file sealed with another key reads as empty instead of failing`() = runBlocking {
-        SettingsStore(context, stores.scope, stores.cipher).setTheme(ThemeMode.Dark)
-        file.awaitWritten()
+        val store = SettingsStore(context, stores.scope, stores.cipher)
+        store.setTheme(ThemeMode.Dark)
+        store.settings.await { it.theme == ThemeMode.Dark }
         stores.restart()
 
         // A cipher whose key does not match the one the file was sealed with (as after a restore onto a new phone).
@@ -65,7 +69,9 @@ class EncryptedDataStoreTest {
     }
 
     @Test fun `a truncated file reads as empty instead of failing`() = runBlocking {
-        SettingsStore(context, stores.scope, stores.cipher).setTheme(ThemeMode.Dark)
+        val store = SettingsStore(context, stores.scope, stores.cipher)
+        store.setTheme(ThemeMode.Dark)
+        store.settings.await { it.theme == ThemeMode.Dark }
         val bytes = file.awaitWritten()
         file.writeBytes(bytes.copyOfRange(0, bytes.size / 2))
         stores.restart()
