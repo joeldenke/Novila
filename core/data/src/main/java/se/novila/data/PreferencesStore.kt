@@ -2,9 +2,10 @@ package se.novila.data
 
 import android.content.Context
 import androidx.datastore.core.DataStore
+import androidx.datastore.core.DataStoreFactory
+import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.preferences.SharedPreferencesMigration
 import androidx.datastore.preferences.core.MutablePreferences
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
@@ -38,9 +39,23 @@ internal fun storeScope() = CoroutineScope(SupervisorJob() + Dispatchers.IO)
  * write is in flight (it starts its [kotlinx.coroutines.flow.dropWhile] from a version read before the write's new
  * value is published), which left a screen waiting for a save that had already happened. The first read is also
  * awaited before any write runs, so a write always reads what the last write left.
+ *
+ * The file is sealed with [cipher]; `name` is its associated data, so a sealed file cannot be swapped for another
+ * store's. A file that cannot be decrypted (a different key, a truncated write, an old backup) is replaced with
+ * empty data, as an unreadable SharedPreferences file used to read empty, instead of leaving the screens waiting.
  */
-internal class PreferencesStore(context: Context, name: String, private val scope: CoroutineScope) {
-    private val dataStore: DataStore<Preferences> = PreferenceDataStoreFactory.create(
+internal class PreferencesStore(
+    context: Context,
+    name: String,
+    private val scope: CoroutineScope,
+    cipher: DatastoreCipher,
+) {
+    private val dataStore: DataStore<Preferences> = DataStoreFactory.create(
+        serializer = EncryptingPreferencesSerializer(
+            aead = { cipher.aead() },
+            associatedData = name.encodeToByteArray(),
+        ),
+        corruptionHandler = ReplaceFileCorruptionHandler { emptyPreferences() },
         migrations = listOf(SharedPreferencesMigration(context, name)),
         scope = scope,
         produceFile = { context.preferencesDataStoreFile(name) },

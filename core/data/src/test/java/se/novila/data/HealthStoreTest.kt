@@ -30,7 +30,7 @@ class HealthStoreTest {
         val saved = DayEntry(today.minusDays(1), sleepHours = 7.5f, mood = 4, strengthMinutes = 25)
         legacy.edit().putString(saved.date.toString(), DayEntryCodec.encode(saved)).commit()
 
-        val days = HealthStore(context, stores.scope).days.await()
+        val days = HealthStore(context, stores.scope, stores.cipher).days.await()
 
         assertEquals(saved, days.day(saved.date))
         assertEquals(saved, days.week(today).history.first())
@@ -38,14 +38,14 @@ class HealthStoreTest {
     }
 
     @Test fun `an empty day reads as nothing logged`() {
-        val days = HealthStore(context, stores.scope).days.await()
+        val days = HealthStore(context, stores.scope, stores.cipher).days.await()
 
         assertEquals(DayEntry(today), days.day(today))
         assertEquals(6, days.week(today).history.size)
     }
 
     @Test fun `days older than a week show up in the history`() {
-        val store = HealthStore(context, stores.scope)
+        val store = HealthStore(context, stores.scope, stores.cipher)
         val spring = LocalDate.of(2026, 4, 2)
         store.update(spring) { it.withSleep(8f) }
 
@@ -56,7 +56,7 @@ class HealthStoreTest {
     }
 
     @Test fun `saves apply in order, each to the day as the last one left it`() {
-        val store = HealthStore(context, stores.scope)
+        val store = HealthStore(context, stores.scope, stores.cipher)
         repeat(3) { store.update(today) { it.withPortions(FoodGroup.Vegetables, 1) } }
         store.update(today) { it.withSleep(6f) }
         store.update(today) { it.withSleep(8f) }
@@ -69,17 +69,17 @@ class HealthStoreTest {
     }
 
     @Test fun `saved days are still there after a restart`() {
-        val store = HealthStore(context, stores.scope)
+        val store = HealthStore(context, stores.scope, stores.cipher)
         store.update(today) { it.withStrengthSession(30) }
         store.days.await { it.day(today).strengthMinutes == 30 }
 
         stores.restart()
 
-        assertEquals(30, HealthStore(context, stores.scope).days.await().day(today).strengthMinutes)
+        assertEquals(30, HealthStore(context, stores.scope, stores.cipher).days.await().day(today).strengthMinutes)
     }
 
     @Test fun `days can be shown changed without saving the change`() {
-        val store = HealthStore(context, stores.scope)
+        val store = HealthStore(context, stores.scope, stores.cipher)
         store.update(today) { it.withMood(3) }
         val saved = store.days.await { it.day(today).mood == 3 }
 
@@ -92,7 +92,7 @@ class HealthStoreTest {
     }
 
     @Test fun `clearing forgets every day`() {
-        val store = HealthStore(context, stores.scope)
+        val store = HealthStore(context, stores.scope, stores.cipher)
         store.update(today) { it.withSleep(7f) }
         store.update(today.minusDays(3)) { it.withMood(2) }
         store.days.await { it.day(today.minusDays(3)).mood == 2 }

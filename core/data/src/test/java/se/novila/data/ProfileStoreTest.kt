@@ -17,21 +17,21 @@ class ProfileStoreTest {
     @After fun close() = stores.close()
 
     @Test fun `empty until something is filled in`() {
-        assertEquals(Profile(), ProfileStore(context, stores.scope).profile.await())
+        assertEquals(Profile(), ProfileStore(context, stores.scope, stores.cipher).profile.await())
     }
 
     @Test fun `the profile survives a restart`() {
-        val store = ProfileStore(context, stores.scope)
+        val store = ProfileStore(context, stores.scope, stores.cipher)
         val saved = Profile(name = "Anna", birthYear = 1990, heightCm = 168, weightKg = 64)
         store.save(saved)
         store.profile.await { it == saved }
 
         stores.restart()
-        assertEquals(saved, ProfileStore(context, stores.scope).profile.await())
+        assertEquals(saved, ProfileStore(context, stores.scope, stores.cipher).profile.await())
     }
 
     @Test fun `cleared fields and a cleared profile are forgotten`() {
-        val store = ProfileStore(context, stores.scope)
+        val store = ProfileStore(context, stores.scope, stores.cipher)
         store.save(Profile(name = "Anna", weightKg = 64))
         store.save(Profile(name = "Anna"))
         store.profile.await { it == Profile(name = "Anna") }

@@ -3,22 +3,28 @@
   What Android Auto Backup and device-to-device transfer copy on Android 12 (API 31) and newer.
   Older versions use backup_rules.xml; both files must stay in sync.
 
-  Novila's user data is stored by :core:data in Preferences DataStore under files/datastore/:
-  health, coach, sleep_coach, settings, profile, goals, reminders, measurements and food.
-  The legacy SharedPreferences files of the same names are included too, so a backup taken before
-  the move to DataStore can still be migrated on the new device.
+  Novila stores health data on the device only, so nothing is copied to Google Drive or handed to a
+  new phone. Every domain is excluded, which covers :core:data's encrypted Preferences DataStore
+  files (files/datastore/), the legacy SharedPreferences of the same names, their Tink keyset, and
+  WorkManager's database. The keyset is sealed with the Android Keystore's master key, which cannot
+  be backed up, so a restored copy could not be read here anyway.
 
-  Everything else is left out on purpose: WorkManager's database (reminders are scheduled again
-  when the app starts), caches, no_backup/, and any other database or file, including data that
-  Health Connect owns (it is never written to disk by Novila).
+  allowBackup stays "true": the exclusion is explicit, and turning it off also disables the
+  device-transfer channel some users rely on. See docs/backup.md.
 -->
 <data-extraction-rules>
     <cloud-backup>
-        <include domain="file" path="datastore/" />
-        <include domain="sharedpref" path="." />
+        <exclude domain="root" path="." />
+        <exclude domain="file" path="." />
+        <exclude domain="database" path="." />
+        <exclude domain="sharedpref" path="." />
+        <exclude domain="external" path="." />
     </cloud-backup>
     <device-transfer>
-        <include domain="file" path="datastore/" />
-        <include domain="sharedpref" path="." />
+        <exclude domain="root" path="." />
+        <exclude domain="file" path="." />
+        <exclude domain="database" path="." />
+        <exclude domain="sharedpref" path="." />
+        <exclude domain="external" path="." />
     </device-transfer>
 </data-extraction-rules>

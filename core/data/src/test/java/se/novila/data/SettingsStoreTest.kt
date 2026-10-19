@@ -18,26 +18,26 @@ class SettingsStoreTest {
     @After fun close() = stores.close()
 
     @Test fun `defaults until something is chosen`() {
-        assertEquals(AppSettings(), SettingsStore(context, stores.scope).settings.await())
+        assertEquals(AppSettings(), SettingsStore(context, stores.scope, stores.cipher).settings.await())
     }
 
     @Test fun `chosen settings survive a restart`() {
-        val store = SettingsStore(context, stores.scope)
+        val store = SettingsStore(context, stores.scope, stores.cipher)
         store.setTheme(ThemeMode.Dark)
         store.setDynamicColor(true)
         val chosen = AppSettings(theme = ThemeMode.Dark, dynamicColor = true)
         store.settings.await { it == chosen }
 
         stores.restart()
-        assertEquals(chosen, SettingsStore(context, stores.scope).settings.await())
+        assertEquals(chosen, SettingsStore(context, stores.scope, stores.cipher).settings.await())
     }
 
     @Test fun `the intro stays done after a restart`() {
-        val store = SettingsStore(context, stores.scope)
+        val store = SettingsStore(context, stores.scope, stores.cipher)
         store.setOnboarded(true)
         store.settings.await { it.onboarded }
 
         stores.restart()
-        assertEquals(true, SettingsStore(context, stores.scope).settings.await().onboarded)
+        assertEquals(true, SettingsStore(context, stores.scope, stores.cipher).settings.await().onboarded)
     }
 }

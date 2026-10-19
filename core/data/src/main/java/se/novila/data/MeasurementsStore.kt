@@ -20,10 +20,10 @@ import java.time.LocalDate
  * history only holds days the user has logged.
  */
 @SingleIn(AppScope::class)
-class MeasurementsStore internal constructor(context: Context, scope: CoroutineScope) {
-    @Inject constructor(context: Context) : this(context, storeScope())
+class MeasurementsStore internal constructor(context: Context, scope: CoroutineScope, cipher: DatastoreCipher) {
+    @Inject constructor(context: Context, cipher: DatastoreCipher) : this(context, storeScope(), cipher)
 
-    private val store = PreferencesStore(context, NAME, scope)
+    private val store = PreferencesStore(context, NAME, scope, cipher)
 
     /** Every logged day, newest first. Null until the first read is done. */
     val entries: StateFlow<List<MeasurementEntry>?> = store.snapshots { prefs -> read(prefs) }

@@ -17,10 +17,10 @@ import se.novila.model.ThemeMode
  * is done.
  */
 @SingleIn(AppScope::class)
-class SettingsStore internal constructor(context: Context, scope: CoroutineScope) {
-    @Inject constructor(context: Context) : this(context, storeScope())
+class SettingsStore internal constructor(context: Context, scope: CoroutineScope, cipher: DatastoreCipher) {
+    @Inject constructor(context: Context, cipher: DatastoreCipher) : this(context, storeScope(), cipher)
 
-    private val store = PreferencesStore(context, NAME, scope)
+    private val store = PreferencesStore(context, NAME, scope, cipher)
 
     /** The saved settings, kept in memory. Null until the first read is done. */
     val settings: StateFlow<AppSettings?> = store.snapshots {

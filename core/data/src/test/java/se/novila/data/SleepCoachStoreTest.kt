@@ -21,17 +21,17 @@ class SleepCoachStoreTest {
     @After fun close() = stores.close()
 
     @Test fun `no answers until the coach is set up`() {
-        assertNull(SleepCoachStore(context, stores.scope).answers.await().preferences)
+        assertNull(SleepCoachStore(context, stores.scope, stores.cipher).answers.await().preferences)
     }
 
     @Test fun `saved answers survive a restart, and a reset forgets them`() {
-        val store = SleepCoachStore(context, stores.scope)
+        val store = SleepCoachStore(context, stores.scope, stores.cipher)
         store.save(SleepCoachPreferences(bedtime = LocalTime.of(23, 0)))
         store.save(evening)
         store.answers.await { it.preferences == evening }
 
         stores.restart()
-        val restarted = SleepCoachStore(context, stores.scope)
+        val restarted = SleepCoachStore(context, stores.scope, stores.cipher)
         assertEquals(evening, restarted.answers.await().preferences)
 
         restarted.clear()

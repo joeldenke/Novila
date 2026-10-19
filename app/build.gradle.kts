@@ -36,8 +36,4 @@ dependencies {
     implementation(projects.core.ui)
 
     implementation(libs.androidx.navigation3.ui)
-
-    // Backup and restore tests: the device-side actions seed and verify the files a backup carries.
-    // The app's own backup is the platform Auto Backup, configured in app/src/main/res/xml.
-    testImplementation(libs.androidx.test.backup)
 }

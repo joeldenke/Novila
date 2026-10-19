@@ -10,7 +10,11 @@ androidxActivity = "1.13.0"
 androidxLifecycle = "2.11.0"
 navigation3 = "1.2.0"
 # Local storage for the days and the coach's answers, see PreferencesStore.
-datastore = "1.2.1"
+# 1.3.0-rc01 brings transparent encryption of the files (datastore-tink).
+datastore = "1.3.0-rc01"
+# Tink, the encryption library DataStore's serializer builds on. Pinned to the version datastore-tink
+# 1.3.0-rc01 depends on, so the API used here and the transitive one cannot drift apart.
+tink = "1.20.0"
 # Metro: compile-time dependency injection (Kotlin compiler plugin). Must support the Kotlin version above,
 # see https://zacsweers.github.io/metro/latest/compatibility/.
 metro = "1.4.5"
@@ -26,7 +30,8 @@ kotlinxCoroutines = "1.11.0"
 mlkitGenaiPrompt = "1.0.0-beta2"
 # Automated backup and restore tests: device-side actions that seed and verify the data a backup
 # carries. The app itself uses the platform Auto Backup rules (app/src/main/res/xml), because
-# AndroidX has no backup implementation artifact. See docs/backup.md.
+# AndroidX has no backup implementation artifact; the actions are used by :core:data's tests. See
+# docs/backup.md.
 androidxTestBackup = "1.0.0-alpha02"
 junit = "4.13.2"
 robolectric = "4.17"
@@ -54,6 +59,12 @@ metrox-viewmodel-compose = { module = "dev.zacsweers.metro:metrox-viewmodel-comp
 androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }
 androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "navigation3" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+# Tink-backed serializers for DataStore: every preference file is sealed with a key from the Android
+# Keystore. See EncryptingPreferencesSerializer in :core:data.
+androidx-datastore-tink = { module = "androidx.datastore:datastore-tink", version.ref = "datastore" }
+# Tink itself (Aead, AndroidKeysetManager, tests' AesGcmJce). datastore-tink depends on it; declared
+# here so the types used in :core:data are on its compile classpath on purpose.
+tink-android = { module = "com.google.crypto.tink:tink-android", version.ref = "tink" }
 androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "work" }
 androidx-work-testing = { module = "androidx.work:work-testing", version.ref = "work" }
 androidx-health-connect-client = { module = "androidx.health.connect:connect-client", version.ref = "healthConnect" }

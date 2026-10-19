@@ -18,10 +18,10 @@ import java.time.LocalTime
  * after midnight. One instance for the whole app, so the Reminders screen and the reminders' own work read the same.
  */
 @SingleIn(AppScope::class)
-class RemindersStore internal constructor(context: Context, scope: CoroutineScope) {
-    @Inject constructor(context: Context) : this(context, storeScope())
+class RemindersStore internal constructor(context: Context, scope: CoroutineScope, cipher: DatastoreCipher) {
+    @Inject constructor(context: Context, cipher: DatastoreCipher) : this(context, storeScope(), cipher)
 
-    private val store = PreferencesStore(context, NAME, scope)
+    private val store = PreferencesStore(context, NAME, scope, cipher)
 
     /** The saved reminders, all off at their default times where nothing is saved. Null until the first read. */
     val reminders: StateFlow<Reminders?> = store.snapshots { prefs ->
