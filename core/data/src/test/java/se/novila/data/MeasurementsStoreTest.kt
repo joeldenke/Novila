@@ -22,11 +22,12 @@ class MeasurementsStoreTest {
     @After fun close() = stores.close()
 
     @Test fun `nothing is logged until something is measured`() {
-        assertEquals(emptyList<MeasurementEntry>(), MeasurementsStore(context, stores.scope).entries.await())
+        val entries = MeasurementsStore(context, stores.scope, stores.cipher).entries.await()
+        assertEquals(emptyList<MeasurementEntry>(), entries)
     }
 
     @Test fun `logged days are kept, newest first, and survive a restart`() {
-        val store = MeasurementsStore(context, stores.scope)
+        val store = MeasurementsStore(context, stores.scope, stores.cipher)
         store.save(today.minusDays(2), all)
         store.save(today, all.copy(weightKg = 73))
         store.entries.await { it.size == 2 }
@@ -37,12 +38,12 @@ class MeasurementsStoreTest {
                 MeasurementEntry(today, all.copy(weightKg = 73)),
                 MeasurementEntry(today.minusDays(2), all),
             ),
-            MeasurementsStore(context, stores.scope).entries.await(),
+            MeasurementsStore(context, stores.scope, stores.cipher).entries.await(),
         )
     }
 
     @Test fun `saving a day again replaces it, and an empty day is forgotten`() {
-        val store = MeasurementsStore(context, stores.scope)
+        val store = MeasurementsStore(context, stores.scope, stores.cipher)
         store.save(today, all)
         store.entries.await { it.singleOrNull()?.measurements == all }
 
@@ -54,13 +55,13 @@ class MeasurementsStoreTest {
     }
 
     @Test fun `cleared measurements are forgotten`() {
-        val store = MeasurementsStore(context, stores.scope)
+        val store = MeasurementsStore(context, stores.scope, stores.cipher)
         store.save(today, all)
         store.entries.await { it.isNotEmpty() }
 
         store.clear()
         store.entries.await { it.isEmpty() }
         stores.restart()
-        assertTrue(MeasurementsStore(context, stores.scope).entries.await().isEmpty())
+        assertTrue(MeasurementsStore(context, stores.scope, stores.cipher).entries.await().isEmpty())
     }
 }

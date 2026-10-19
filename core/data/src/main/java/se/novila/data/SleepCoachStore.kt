@@ -15,10 +15,10 @@ import se.novila.sleep.SleepCoachPreferencesCodec
  * whole app, so the Sleep tab sees what the coach screen saves through [answers].
  */
 @SingleIn(AppScope::class)
-class SleepCoachStore internal constructor(context: Context, scope: CoroutineScope) {
-    @Inject constructor(context: Context) : this(context, storeScope())
+class SleepCoachStore internal constructor(context: Context, scope: CoroutineScope, cipher: DatastoreCipher) {
+    @Inject constructor(context: Context, cipher: DatastoreCipher) : this(context, storeScope(), cipher)
 
-    private val store = PreferencesStore(context, NAME, scope)
+    private val store = PreferencesStore(context, NAME, scope, cipher)
 
     /** The saved answers, kept in memory. Null until the first read is done. */
     val answers: StateFlow<SavedSleepCoach?> =

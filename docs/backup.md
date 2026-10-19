@@ -9,61 +9,48 @@ testramverk, inte en backup-implementation. Det används därför bara av tester
 | Regler för Android 12+ (`cloud-backup` och `device-transfer`) | `app/src/main/res/xml/data_extraction_rules.xml` |
 | Regler för Android 11 och äldre | `app/src/main/res/xml/backup_rules.xml` |
 | Manifestet | `app/src/main/AndroidManifest.xml` (`allowBackup`, `dataExtractionRules`, `fullBackupContent`) |
-| Tester | `app/src/test/java/se/novila/backup/` |
+| Regler-testet | `app/src/test/java/se/novila/backup/BackupRulesTest.kt` |
+| Återställningstestet | `core/data/src/test/java/se/novila/data/EncryptedDataStoreRestoreTest.kt` |
 
 `androidx.test.backup:backup:1.0.0-alpha02` (Google Maven,
-<https://developer.android.com/jetpack/androidx/releases/test-backup>) används i enhetstesterna för
+<https://developer.android.com/jetpack/androidx/releases/test-backup>) används i enhetstestet för
 att återställa och verifiera DataStore-filen på samma sätt som testsviten gör på en enhet.
 
-## Vad som säkerhetskopieras
+## Inget lämnar enheten
 
-`:core:data` sparar all användardata i Preferences DataStore under `files/datastore/`:
+Hälsodata är personuppgifter och ska stanna på telefonen. Reglerna är därför **uteslutande**: varje
+domän (`root`, `file`, `database`, `sharedpref`, `external`) lämnas utanför, i både `cloud-backup`
+och `device-transfer`. Varken en molnbackup eller en överföring till en ny telefon bär med sig
+något av Novilas data.
 
-| Fil | Innehåll |
-|---|---|
-| `health` | Loggade dagar: sömn, kost, vatten, träning, mående |
-| `coach` | Träningscoachens svar |
-| `sleep_coach` | Sömncoachens svar |
-| `settings` | Tema, dynamisk färg, introduktionen klar |
-| `profile` | Namn, mål och tid för coachen |
-| `goals` | Egna mål för steg, sömn och vatten |
-| `reminders` | Påminnelser och tider |
-| `measurements` | Kroppsmätningar per dag |
-| `food` | Kosthållning, allergener och tid för receptförslag |
+Det som annars skulle ha ingått och nu medvetet lämnas utanför:
 
-De gamla SharedPreferences-filerna med samma namn ingår också, så en backup tagen före flytten till
-DataStore kan migreras på den nya enheten (`SharedPreferencesMigration`).
+- **`:core:data`s Preferences DataStore** (`files/datastore/`): loggade dagar, coachernas svar,
+  profil, mål, påminnelser, mätningar, matpreferenser, inställningar.
+- **De gamla SharedPreferences-filerna** med samma namn.
+- **Tink-nyckelringen** (`sharedpref/novila_datastore_keys`). Den är förseglad med Androids
+  Keystore-nyckel, som inte går att säkerhetskopiera, så en återställd kopia skulle ändå inte kunna
+  läsas här.
+- **WorkManager-databasen**, cachar och allt annat ett bibliotek lägger i appens katalog.
 
-## Vad som inte säkerhetskopieras
-
-Reglerna är *inkluderande*: bara det som listas ovan kopieras. Därför lämnas allt annat utanför,
-bland annat:
-
-- **WorkManager-databasen** (`databases/androidx.work.workdb`). Påminnelserna läggs om när appen
-  startar, så jobben behövs inte i backupen.
-- **Cache och `no_backup/`**, som plattformen aldrig säkerhetskopierar.
-- **Health Connect-data** (steg, pass, sömn, vilopuls, HRV). Det ägs av Health Connect, ligger bara i
-  minnet i Novila och skrivs aldrig till disk.
-- **Övriga databaser och filer** som ett bibliotek kan lägga i appens katalog.
-
-Hälsodata är personuppgifter. En molnbackup lagras i användarens eget Google-konto (eller
-enhetsöverföringen mellan två enheter) och Novila har ingen åtkomst till den.
+`allowBackup` är kvar på `"true"`. Uteslutningen är explicit, och att stänga av backup helt stänger
+också av enhetsöverföringen. Se *Dataskydd på enheten* (`docs/data-protection.md`) för krypteringen.
 
 ## Tester
 
 - `BackupRulesTest` läser båda XML-filerna och manifestet. Den kontrollerar att backup är på, att
-  rätt filer används, och att varje avsnitt bara innehåller `file:datastore/` och
-  `sharedpref:.` – varken mer eller mindre.
-- `BackupRestoreTest` skriver med `SettingsStore`, tar filens byte, raderar den (som en
-  fabriksåterställning) och återställer den med `PopulateStorageAction` från
-  `androidx.test.backup`. Därefter verifierar `AssertStorageAction` från samma bibliotek att filen
-  är identisk. Testet går i CI (Robolectric).
+  rätt filer används, och att varje avsnitt **utesluter varje domän och inte inkluderar något**.
+- `EncryptedDataStoreRestoreTest` lägger en gammal, okrypterad `settings`-fil med
+  `PopulateStorageAction` (som en återställning från en äldre appversion), verifierar den med
+  `AssertStorageAction`, och öppnar sedan `SettingsStore`: den läser det gamla värdet och skriver om
+  filen krypterad, så nästa backup inte bär någon klartext.
+
+Båda går i CI (Robolectric).
 
 ## Kvar att verifiera manuellt
 
 Auto Backups transport (moln eller enhet-till-enhet) kräver en riktig enhet eller emulator med
-API 31+ och går inte i CI. Den fullständiga sviten (`BackupRestoreController` /
-`BackupRestoreTestRunner`) kräver AGP 9.5 och en ansluten enhet. Verifiera därför manuellt:
+API 31+ och går inte i CI. Verifiera därför manuellt att en backup nu är tom:
 
 ```sh
 adb shell bmgr backupnow se.novila.debug
@@ -71,4 +58,5 @@ adb shell pm clear se.novila.debug
 adb shell bmgr restore <token> se.novila.debug
 ```
 
-Efter återställningen ska loggade dagar, profil, mål, påminnelser och inställningar finnas kvar.
+Efter återställningen ska appen vara **som ny**: ingen profil, inga loggade dagar och
+introduktionen visas igen. Det gamla beteendet – att allt kom tillbaka – är det som togs bort.

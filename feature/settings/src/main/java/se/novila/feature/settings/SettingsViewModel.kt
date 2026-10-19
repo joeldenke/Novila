@@ -18,6 +18,7 @@ import se.novila.data.ProfileStore
 import se.novila.data.RemindersStore
 import se.novila.data.SettingsStore
 import se.novila.data.SleepCoachStore
+import se.novila.data.deleteLegacyPreferences
 import se.novila.model.AppSettings
 import se.novila.model.MeasurementEntry
 import se.novila.model.Profile
@@ -46,7 +47,7 @@ class SettingsViewModel(
     private val remindersStore: RemindersStore,
     private val reminderScheduler: ReminderScheduler,
     private val movementRepository: MovementRepository,
-    context: Context,
+    private val context: Context,
 ) : ViewModel() {
     /** The saved settings, or null before the store's first read. */
     val settings: StateFlow<AppSettings?> = settingsStore.settings
@@ -83,6 +84,10 @@ class SettingsViewModel(
      * Forgets the profile, its goals and food preferences (allergies are health data), everything the user has logged,
      * including the measurements, both coaches' answers and the reminders, and cancels their planned work. Settings
      * stay, since they are not health data. Health Connect's own data is not Novila's to delete.
+     *
+     * The files themselves are sealed with a Tink key from the Android Keystore, and the backup rules exclude all
+     * app data (app/src/main/res/xml), so no copy exists off the device to restore. The legacy SharedPreferences
+     * are removed too, for stores that had not read them yet.
      */
     fun deleteAllData() {
         healthStore.clear()
@@ -92,6 +97,7 @@ class SettingsViewModel(
         goalsStore.clear()
         foodPreferencesStore.clear()
         measurementsStore.clear()
+        deleteLegacyPreferences(context)
         // Clear first, so a worker that is already running reads "off"; then cancel what is still planned.
         remindersStore.clear()
         reminderScheduler.cancelAll()
