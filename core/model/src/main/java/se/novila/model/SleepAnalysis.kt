@@ -103,7 +103,7 @@ const val SLEEP_WINDOW_NIGHTS = 90
 const val IRREGULAR_BEDTIME_MINUTES = 60
 
 /** |t| of at least 2 is roughly the 5 % level for the sample sizes here: unlikely to be chance alone. */
-private const val MIN_STRENGTH = 2.0
+internal const val MIN_STRENGTH = 2.0
 private const val DAYS_PER_WEEK = 7
 
 /** A week's change in a driver counts from two days more (or fewer) out of seven. */

@@ -21,7 +21,7 @@
 
     <string name="pillar_movement">Rörelse</string>
     <string name="insights_title">Insikter</string>
-    <string name="insights_empty">Logga sömn, kost och mående några dagar så visar Novila vad som påverkar hur du mår.</string>
+    <string name="insights_empty">Logga sömn, kost och träning några dagar så visar Novila vad dina dagar säger.</string>
     <string name="insight_sleep_more">I natt sov du %1$s mer än ditt snitt i veckan.</string>
     <string name="insight_sleep_less">I natt sov du %1$s mindre än ditt snitt i veckan.</string>
     <string name="insight_steady_sleep">Jämn sömn i veckan: alla nätter inom en timme från varandra.</string>
@@ -29,6 +29,10 @@
     <string name="insight_nutrition_up">Din kostpoäng har ökat med %1$d poäng de senaste dagarna.</string>
     <string name="insight_nutrition_down">Din kostpoäng har minskat med %1$d poäng de senaste dagarna.</string>
     <string name="insight_steps_goal">Du har passerat %1$s steg i dag.</string>
+
+    <!-- Samband mellan delarna, ur användarens egna loggar -->
+    <string name="connection_title">Samband</string>
+    <string name="connection_footer">Från dina egna loggar, i din telefon. Ett samband är inte bevis.</string>
 
     <!-- Din dag: dagens checklista -->
     <string name="checklist_title">Din dag</string>

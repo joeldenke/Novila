@@ -21,7 +21,7 @@
 
     <string name="pillar_movement">Movement</string>
     <string name="insights_title">Insights</string>
-    <string name="insights_empty">Log sleep, food and mood for a few days and Novila will show you what affects how you feel.</string>
+    <string name="insights_empty">Log sleep, food and training for a few days and Novila will show you what your days say.</string>
     <string name="insight_sleep_more">Last night you slept %1$s more than your average this week.</string>
     <string name="insight_sleep_less">Last night you slept %1$s less than your average this week.</string>
     <string name="insight_steady_sleep">Steady sleep this week: every night within an hour of the others.</string>
@@ -29,6 +29,10 @@
     <string name="insight_nutrition_up">Your nutrition score is up %1$d points over the last few days.</string>
     <string name="insight_nutrition_down">Your nutrition score is down %1$d points over the last few days.</string>
     <string name="insight_steps_goal">You have passed %1$s steps today.</string>
+
+    <!-- Connections across the parts, from the user's own logs -->
+    <string name="connection_title">Connections</string>
+    <string name="connection_footer">From your own logs, on your phone. A connection isn\'t proof of cause.</string>
 
     <!-- Your day: today's checklist -->
     <string name="checklist_title">Your day</string>

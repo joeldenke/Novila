@@ -1,9 +1,12 @@
 package se.novila.feature.today
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.ui.test.hasScrollAction
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.unit.dp
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -13,10 +16,15 @@ import org.robolectric.RobolectricTestRunner
 import se.novila.coach.DailyCoach
 import se.novila.coach.dailyCoach
 import se.novila.designsystem.theme.NovilaTheme
+import se.novila.model.Connection
 import se.novila.model.Goals
+import se.novila.model.TrainingAfterSleep
 import se.novila.model.TrainingToday
+import se.novila.model.WeekdayMetric
+import se.novila.model.WeekdayPattern
 import se.novila.model.analyzeSleep
 import se.novila.ui.preview.PreviewData
+import java.time.DayOfWeek
 
 @RunWith(RobolectricTestRunner::class)
 class TodayScreenTest {
@@ -25,6 +33,7 @@ class TodayScreenTest {
     private fun show(
         opened: MutableList<String>,
         coach: DailyCoach = dailyCoach(PreviewData.today, Goals(), TrainingToday(plannedMinutes = 30)),
+        connections: List<Connection> = emptyList(),
     ) {
         composeRule.setContent {
             NovilaTheme {
@@ -44,6 +53,7 @@ class TodayScreenTest {
                     onOpenSettings = { opened += "settings" },
                     contentPadding = PaddingValues(0.dp),
                     training = TrainingToday(plannedMinutes = 30),
+                    connections = connections,
                 )
             }
         }
@@ -83,5 +93,31 @@ class TodayScreenTest {
             )
             .assertExists()
         composeRule.onNodeWithText("Aim to be in bed by", substring = true).assertExists()
+    }
+
+    @Test fun `the connections card shows what the parts say about each other`() {
+        show(
+            opened = mutableListOf(),
+            connections = listOf(
+                TrainingAfterSleep(35.0, 10.0, 14, 9, 2.8),
+                WeekdayPattern(WeekdayMetric.TrainingMinutes, DayOfWeek.TUESDAY, 35.0, DayOfWeek.SUNDAY, 5.0, 84),
+            ),
+        )
+
+        // The card is the last one on the screen, so scroll it into view before reading it.
+        composeRule.onNode(hasScrollAction()).performScrollToNode(hasText("Connections"))
+        composeRule.onNodeWithText("Connections").assertExists()
+        composeRule
+            .onNodeWithText("On days after a full night you trained 25 min more (14 days against 9).")
+            .assertExists()
+        composeRule
+            .onNodeWithText("You train most on Tuesday", substring = true)
+            .assertExists()
+    }
+
+    @Test fun `no connections means no connections card`() {
+        show(mutableListOf())
+
+        composeRule.onNodeWithText("Connections").assertDoesNotExist()
     }
 }

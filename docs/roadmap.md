@@ -82,7 +82,10 @@ Nano for more than the comment, or data that leaves the app.
 ### 6. The coach as a whole
 - [x] **One coach for all parts:** "You slept 5.5 h. Do a lighter session and go to bed at 22:30." `dailyCoach`
   weighs sleep, training and nutrition into one connected suggestion, shown on Today.
-- [ ] **More insights:** training ↔ sleep, training ↔ mood, nutrition ↔ energy, patterns per weekday
+- [x] **More insights:** training ↔ sleep, training ↔ mood, nutrition ↔ energy, patterns per weekday. `connections`
+  in `:core:model` joins the parts with the same honest test as the sleep links, shown in a *Connections* card on
+  Today. Mood and energy are read from the stored fields, so those two only appear when they were logged (they left
+  Today in October 2026).
 - [ ] **Achievements and streaks**, restrained and without rewarding overtraining
 - [ ] **Gemini Nano in more roles**, e.g. a weekly summary **(ok)**
 
