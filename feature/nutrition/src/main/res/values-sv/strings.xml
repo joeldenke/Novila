@@ -19,6 +19,11 @@
     <string name="food_whole_grain">Fullkorn</string>
     <string name="food_treats">Sött &amp; snacks</string>
     <string name="food_progress">%1$d av %2$d</string>
+    <string name="serving_vegetables">En portion är ungefär en näve, eller 100 g. Potatis räknas inte.</string>
+    <string name="serving_meals">En portion är en måltid: frukost, lunch eller middag.</string>
+    <string name="serving_protein">En portion är ungefär 100 g fisk, fågel eller kött, ett ägg, eller en näve bönor eller linser.</string>
+    <string name="serving_whole_grain">En portion är en skiva fullkornsbröd eller en portion pasta, ris eller gryn.</string>
+    <string name="serving_water">En portion är ett glas, ungefär 2 dl.</string>
     <string name="food_treats_value">%1$d i dag</string>
     <string name="food_treats_value_day">%1$d den dagen</string>
     <string name="food_add">Lägg till %1$s</string>

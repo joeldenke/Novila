@@ -21,6 +21,11 @@
     <string name="food_whole_grain">Whole grain</string>
     <string name="food_treats">Sweets &amp; snacks</string>
     <string name="food_progress">%1$d of %2$d</string>
+    <string name="serving_vegetables">One serving is about a handful, or 100 g. Potatoes don\'t count.</string>
+    <string name="serving_meals">One serving is a meal: breakfast, lunch or dinner.</string>
+    <string name="serving_protein">One serving is about 100 g fish, poultry or meat, an egg, or a handful of beans or lentils.</string>
+    <string name="serving_whole_grain">One serving is a slice of whole grain bread or a portion of pasta, rice or oats.</string>
+    <string name="serving_water">One serving is a glass, about 2 dl.</string>
     <string name="food_treats_value">%1$d today</string>
     <string name="food_treats_value_day">%1$d that day</string>
     <string name="food_add">Add %1$s</string>

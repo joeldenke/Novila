@@ -116,6 +116,7 @@ fun FoodLogCard(
                     decrementDescription = stringResource(R.string.food_remove, name),
                     incrementDescription = stringResource(R.string.food_add, name),
                     role = nutrition,
+                    hint = servingHint(group),
                     decrementEnabled = count > 0,
                 )
             }
@@ -146,5 +147,18 @@ fun foodName(group: FoodGroup): String = stringResource(
         FoodGroup.Protein -> R.string.food_protein
         FoodGroup.WholeGrain -> R.string.food_whole_grain
         FoodGroup.Water -> R.string.water_title
+    },
+)
+
+/** A short, plain explanation of what one serving is for [group], after the Swedish Food Agency's dietary advice. */
+@Composable
+@ReadOnlyComposable
+fun servingHint(group: FoodGroup): String = stringResource(
+    when (group) {
+        FoodGroup.Vegetables -> R.string.serving_vegetables
+        FoodGroup.Meals -> R.string.serving_meals
+        FoodGroup.Protein -> R.string.serving_protein
+        FoodGroup.WholeGrain -> R.string.serving_whole_grain
+        FoodGroup.Water -> R.string.serving_water
     },
 )
