@@ -7,9 +7,7 @@ import androidx.test.backup.BackupActionValues
 import androidx.test.backup.BackupDeviceActionArgs
 import androidx.test.backup.actions.AssertStorageAction
 import androidx.test.backup.actions.PopulateStorageAction
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import org.junit.Assert.assertArrayEquals
@@ -36,14 +34,11 @@ class BackupRestoreTest {
     private val context: Context = RuntimeEnvironment.getApplication()
 
     @Test fun `settings DataStore survives a restore`() = runBlocking {
-        SettingsStore(context).apply {
-            setTheme(ThemeMode.Dark)
-            settings.await { it.theme == ThemeMode.Dark }
-        }
-
+        SettingsStore(context).setTheme(ThemeMode.Dark)
         val file = File(context.filesDir, DATA_STORE_FILE)
-        assertTrue("SettingsStore must write $DATA_STORE_FILE", file.isFile)
-        val backedUp = file.readBytes()
+        // Wait for DataStore's atomic write rather than for its StateFlow: dataStore.data can drop
+        // the emission of a write that starts while the flow is first collected.
+        val backedUp = withTimeout(TimeUnit.SECONDS.toMillis(30)) { file.awaitContent("Dark") }
 
         // A wipe, as after a factory reset: the backup is all that is left.
         assertTrue(file.delete())
@@ -69,8 +64,22 @@ class BackupRestoreTest {
         assertArrayEquals(backedUp, file.readBytes())
     }
 
-    private suspend fun <T : Any> StateFlow<T?>.await(predicate: (T) -> Boolean): T =
-        withTimeout(TimeUnit.SECONDS.toMillis(30)) { filterNotNull().first(predicate) }
+    private suspend fun File.awaitContent(marker: String): ByteArray {
+        val bytes = marker.toByteArray()
+        while (true) {
+            val content = takeIf { it.isFile }?.readBytes()
+            if (content != null && content.contains(bytes)) return content
+            delay(25)
+        }
+    }
+
+    private fun ByteArray.contains(expected: ByteArray): Boolean {
+        if (expected.isEmpty()) return true
+        for (start in 0..size - expected.size) {
+            if (expected.indices.all { this[start + it] == expected[it] }) return true
+        }
+        return false
+    }
 
     private companion object {
         /** Where Preferences DataStore keeps `SettingsStore` (`files/datastore/<name>.preferences_pb`). */
