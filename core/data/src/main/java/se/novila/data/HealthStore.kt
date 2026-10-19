@@ -24,10 +24,10 @@ import java.time.LocalDate
  * sees a save through [days].
  */
 @SingleIn(AppScope::class)
-class HealthStore internal constructor(context: Context, scope: CoroutineScope) {
-    @Inject constructor(context: Context) : this(context, storeScope())
+class HealthStore internal constructor(context: Context, scope: CoroutineScope, cipher: DatastoreCipher) {
+    @Inject constructor(context: Context, cipher: DatastoreCipher) : this(context, storeScope(), cipher)
 
-    private val store = PreferencesStore(context, NAME, scope)
+    private val store = PreferencesStore(context, NAME, scope, cipher)
 
     /** Every saved day, read from disk once and then kept in memory. Null until the first read is done. */
     val days: StateFlow<SavedDays?> = store.snapshots { SavedDays(it) }

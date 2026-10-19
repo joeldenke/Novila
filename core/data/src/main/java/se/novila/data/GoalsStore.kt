@@ -15,10 +15,10 @@ import se.novila.model.Goals
  * app, so Today, Sleep and Nutrition measure against a new goal as soon as the goals screen saves it.
  */
 @SingleIn(AppScope::class)
-class GoalsStore internal constructor(context: Context, scope: CoroutineScope) {
-    @Inject constructor(context: Context) : this(context, storeScope())
+class GoalsStore internal constructor(context: Context, scope: CoroutineScope, cipher: DatastoreCipher) {
+    @Inject constructor(context: Context, cipher: DatastoreCipher) : this(context, storeScope(), cipher)
 
-    private val store = PreferencesStore(context, NAME, scope)
+    private val store = PreferencesStore(context, NAME, scope, cipher)
 
     /** The saved goals, the defaults where nothing is saved. Null until the first read is done. */
     val goals: StateFlow<Goals?> = store.snapshots {

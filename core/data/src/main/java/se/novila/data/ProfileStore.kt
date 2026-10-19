@@ -18,10 +18,10 @@ import se.novila.model.Profile
  * profile screen saves.
  */
 @SingleIn(AppScope::class)
-class ProfileStore internal constructor(context: Context, scope: CoroutineScope) {
-    @Inject constructor(context: Context) : this(context, storeScope())
+class ProfileStore internal constructor(context: Context, scope: CoroutineScope, cipher: DatastoreCipher) {
+    @Inject constructor(context: Context, cipher: DatastoreCipher) : this(context, storeScope(), cipher)
 
-    private val store = PreferencesStore(context, NAME, scope)
+    private val store = PreferencesStore(context, NAME, scope, cipher)
 
     /** The saved profile, kept in memory. Null until the first read is done. */
     val profile: StateFlow<Profile?> = store.snapshots {

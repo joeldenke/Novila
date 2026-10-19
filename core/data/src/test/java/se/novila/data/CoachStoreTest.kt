@@ -27,22 +27,22 @@ class CoachStoreTest {
             .putString("preferences", CoachPreferencesCodec.encode(rehab))
             .commit()
 
-        assertEquals(rehab, CoachStore(context, stores.scope).answers.await().preferences)
+        assertEquals(rehab, CoachStore(context, stores.scope, stores.cipher).answers.await().preferences)
         assertTrue(context.getSharedPreferences("coach", Context.MODE_PRIVATE).all.isEmpty())
     }
 
     @Test fun `no answers until the coach is set up`() {
-        assertNull(CoachStore(context, stores.scope).answers.await().preferences)
+        assertNull(CoachStore(context, stores.scope, stores.cipher).answers.await().preferences)
     }
 
     @Test fun `saved answers survive a restart, and a reset forgets them`() {
-        val store = CoachStore(context, stores.scope)
+        val store = CoachStore(context, stores.scope, stores.cipher)
         store.save(CoachPreferences(daysPerWeek = 2))
         store.save(rehab)
         store.answers.await { it.preferences == rehab }
 
         stores.restart()
-        val restarted = CoachStore(context, stores.scope)
+        val restarted = CoachStore(context, stores.scope, stores.cipher)
         assertEquals(rehab, restarted.answers.await().preferences)
 
         restarted.clear()
