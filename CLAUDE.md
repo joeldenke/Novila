@@ -163,6 +163,10 @@ Misstag som redan har gjorts i det här repot. Gör dem inte igen.
 - **Robolectric-SDK:** Robolectric-tester körs mot API 36 via `src/test/resources/robolectric.properties`.
   På API 37 faller Compose UI-tester med `NoSuchMethodException: InputManager.getInstance()` (AndroidX Test).
   Nya moduler med Robolectric-tester behöver samma fil.
+- **`dataStore.data` efter en skrivning:** lita inte på att `dataStore.data` sänder ut en sparad ändring om flödet
+  börjar samlas in medan skrivningen pågår. Flödet hoppar då över versionen skrivningen gav, och den som väntar på
+  värdet hänger tills tidsgränsen. Sätt snapshotten från värdet `edit`/`updateData` returnerar i samma enda köare som
+  kör skrivningarna (se `PreferencesStore`), inte från en ny utsändning från `dataStore.data`.
 - **Designspråket måste användas:** tokens som `NovilaTheme.pillars` och `accent` fanns men användes inte, så appen såg
   generisk ut. Komponenterna tar en `role`: ge den delens pillar (`NovilaTheme.pillars.sleep` osv.), och använd
   `NovilaAccentButton` för skärmens huvudåtgärd.
