@@ -9,6 +9,16 @@
     <string name="greeting_evening_named">God kväll, %1$s</string>
     <string name="balance_title">Dagens balans</string>
 
+    <!-- Den enda coachen: ett sammanhängande förslag för hela dagen -->
+    <string name="coach_title">Din coach</string>
+    <string name="coach_short_night">Du sov %1$s i natt.</string>
+    <string name="coach_low_recovery">Klockan visar att kroppen fortfarande återhämtar sig.</string>
+    <string name="coach_lighter_session">Håll dagens %1$s-pass lätt, eller ta en promenad i stället.</string>
+    <string name="coach_planned_session">Dagens pass är %1$s – det är dagens viktigaste.</string>
+    <string name="coach_rest_day">Inget pass är planerat i dag; vila är en del av träningen.</string>
+    <string name="coach_earlier_bedtime">Sikta på att vara i säng senast %1$s i kväll.</string>
+    <string name="coach_well_done">Allt är på rätt spår i dag. Bra jobbat.</string>
+
     <string name="pillar_movement">Rörelse</string>
     <string name="insights_title">Insikter</string>
     <string name="insights_empty">Logga sömn, kost och mående några dagar så visar Novila vad som påverkar hur du mår.</string>

@@ -86,7 +86,7 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
     `RecoverySource`, `RecoveryRepository` (bara i minnet) och `analyzeRecovery`, som jämför dagens värden med
     användarens egen baslinje (medianen av de senaste dagarna) och ger `RecoveryStatus`. Träning och coachen sänker
     dagens pass när läget är lågt.
-  - `:core:coach` – träningscoachen, helt på enheten: `CoachPreferences` (mål, dagar, tid per pass, fokus, hänsyn,
+  - `:core:coach` – coachen, helt på enheten: `CoachPreferences` (mål, dagar, tid per pass, fokus, hänsyn,
     rehabområde och fas), `CoachCatalog` (rörelsemönster, dosering och belastning per övning) och `CoachPlanner`, som
     bygger veckans program ur svaren, senaste passen och övningsbiblioteket och förklarar valen (`CoachNote`). Målet
     `Rehab` ger ett handvalt, fasindelat program (knä, ländrygg, axel, nacke eller höft, fas 1–3) med smärtgräns och vårdråd.
@@ -95,7 +95,9 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
     okej, över 5 är för mycket). Coachen föreslår bara en ny fas; användaren byter. Svaren
     sparas i `CoachStore`; är coachen inte inställd gäller `TrainingProgramGenerator`. Planen är alltid deterministisk
     och testad. Gemini Nano (`GeminiNanoCoachModel`, ML Kit Prompt API via AICore) skriver bara en kommentar om den
-    färdiga planen (`CoachPrompt` bygger prompten och tvättar svaret), aldrig själva planen. Se *Gemini Nano* under Regler.
+    färdiga planen (`CoachPrompt` bygger prompten och tvättar svaret), aldrig själva planen. Dagens gemensamma förslag
+    för sömn, träning och kost är `dailyCoach` (`DailyCoach`, `CoachAdvice`), som väger delarna mot varandra och är
+    deterministisk och enhetstestad. Se *Gemini Nano* under Regler.
   - `:core:anatomy` – kroppsagnostiska övningsillustrationer: `Pose`/`Movement` (ledvinklar per keyframe), `Skeleton`
     (framåtkinematik, `BodyShape`), `MuscleMap`, `SceneBuilder` (ortografisk `Camera`, siluetter och de muskelband som
     syns), `ViewSelector` (varje övnings bästa vy), `ExerciseLibrary` och `RepetitionCounter` (räknar repetitioner,

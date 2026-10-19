@@ -13,12 +13,16 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import se.novila.coach.DailyCoach
+import se.novila.coach.dailyCoach
 import se.novila.data.CoachStore
 import se.novila.data.GoalsStore
 import se.novila.data.HealthStore
 import se.novila.data.HealthStore.SavedDays
 import se.novila.data.ProfileStore
 import se.novila.data.SavedCoach
+import se.novila.data.SavedSleepCoach
+import se.novila.data.SleepCoachStore
 import se.novila.data.Week
 import se.novila.data.trainingWeek
 import se.novila.exercise.ExerciseRepository
@@ -36,6 +40,7 @@ import se.novila.recovery.RecoveryRepository
 import se.novila.recovery.RecoveryState
 import se.novila.recovery.RecoveryStatus
 import se.novila.recovery.analyzeRecovery
+import se.novila.sleep.SleepCoachPreferences
 import se.novila.sleep.SleepRepository
 import se.novila.sleep.SleepState
 import se.novila.sleep.nightsByDate
@@ -55,6 +60,7 @@ data class TodayUiState(
     val goals: Goals = Goals(),
     val sleep: SleepAnalysis = SleepAnalysis(change = null, links = emptyList(), bedtimes = null, nightsLogged = 0),
     val training: TrainingToday = TrainingToday(),
+    val coach: DailyCoach,
 )
 
 /** What Today reads from the stores and the watch, together. */
@@ -77,6 +83,7 @@ class TodayViewModel(
     private val goalsStore: GoalsStore,
     private val sleepRepository: SleepRepository,
     private val coachStore: CoachStore,
+    private val sleepCoachStore: SleepCoachStore,
     private val exerciseRepository: ExerciseRepository,
     private val recoveryRepository: RecoveryRepository,
 ) : ViewModel() {
@@ -95,6 +102,7 @@ class TodayViewModel(
             coachStore.answers.filterNotNull(),
             exerciseRepository.state,
             recoveryRepository.state,
+            sleepCoachStore.answers.filterNotNull(),
             ::read,
         ).stateIn(viewModelScope, SharingStarted.Eagerly, initial())
 
@@ -103,8 +111,9 @@ class TodayViewModel(
         val profile = profileStore.profile.value ?: return null
         val goals = goalsStore.goals.value ?: return null
         val answers = coachStore.answers.value ?: return null
+        val sleepCoach = sleepCoachStore.answers.value ?: return null
         val inputs = TodayInputs(now.value, days, profile.name, goals, sleepRepository.state.value)
-        return read(inputs, answers, exerciseRepository.state.value, recoveryRepository.state.value)
+        return read(inputs, answers, exerciseRepository.state.value, recoveryRepository.state.value, sleepCoach)
     }
 
     val movement: StateFlow<MovementState> = movementRepository.state
@@ -114,6 +123,7 @@ class TodayViewModel(
         answers: SavedCoach,
         recorded: ExerciseState,
         recovery: RecoveryState,
+        sleepCoach: SavedSleepCoach,
     ): TodayUiState {
         val nights = inputs.watch.nightsByDate
         val days = inputs.days.showing { it.withNight(nights[it.date]) }
@@ -124,7 +134,15 @@ class TodayViewModel(
             ?: RecoveryStatus.Unknown
         val fromSource = (recorded as? ExerciseState.Connected)?.exercises.orEmpty()
         val training = trainingWeek(inputs.days, answers, fromSource, today, recovery = status).trainingOn(today)
-        return TodayUiState(days.week(today), inputs.now.hour, inputs.name, inputs.goals, sleep, training)
+        // One coach for all parts: the day's sleep, training and food weighed together.
+        val coach = dailyCoach(
+            day = days.day(today),
+            goals = inputs.goals,
+            training = training,
+            recovery = status,
+            bedtimeGoal = sleepCoach.preferences?.bedtime ?: SleepCoachPreferences.DEFAULT_BEDTIME,
+        )
+        return TodayUiState(days.week(today), inputs.now.hour, inputs.name, inputs.goals, sleep, training, coach)
     }
 
     /**

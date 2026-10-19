@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import se.novila.coach.DailyCoach
+import se.novila.coach.dailyCoach
 import se.novila.designsystem.component.NovilaHeroCard
 import se.novila.designsystem.component.NovilaHeroSegment
 import se.novila.designsystem.component.NovilaIconButton
@@ -41,11 +43,11 @@ import se.novila.ui.preview.PreviewData
 import se.novila.ui.R as UiR
 
 /**
- * What to do today: greeting (by [name] when the profile has one), today's balance as rings, the day's checklist
- * (sleep, the program's [training], food and water, each with the one button that does it) and an insights card.
- * The rings are the summary of the day; tapping a part on them opens that part's tab, so the balance is not
- * repeated as a row of tiles. Everything is measured against the user's [goals]; the weeks in charts are on each
- * part's own tab. Blocks arrive one by one.
+ * What to do today: greeting (by [name] when the profile has one), today's balance as rings, the one [coach]'s
+ * connected suggestion for the whole day, the day's checklist (sleep, the program's [training], food and water, each
+ * with the one button that does it) and an insights card. The rings are the summary of the day; tapping a part on
+ * them opens that part's tab, so the balance is not repeated as a row of tiles. Everything is measured against the
+ * user's [goals]; the weeks in charts are on each part's own tab. Blocks arrive one by one.
  */
 @Composable
 fun TodayScreen(
@@ -55,6 +57,7 @@ fun TodayScreen(
     name: String,
     goals: Goals,
     sleep: SleepAnalysis,
+    coach: DailyCoach,
     movement: MovementState,
     onAddWater: () -> Unit,
     onOpenTraining: () -> Unit,
@@ -87,8 +90,9 @@ fun TodayScreen(
                 BalanceCard(today, steps, goals, onOpenTraining, onOpenSleep, onOpenNutrition)
             }
         }
-        item(key = "checklist") { NovilaReveal(order = 2) { DayChecklistCard(checklist, actions) } }
-        item(key = "insights") { NovilaReveal(order = 3) { InsightsCard(insights, sleep) } }
+        item(key = "coach") { NovilaReveal(order = 2) { DailyCoachCard(coach) } }
+        item(key = "checklist") { NovilaReveal(order = 3) { DayChecklistCard(checklist, actions) } }
+        item(key = "insights") { NovilaReveal(order = 4) { InsightsCard(insights, sleep) } }
     }
 }
 
@@ -190,6 +194,7 @@ private fun TodayScreenContent() {
                 name = PreviewData.profile.name,
                 goals = Goals(),
                 sleep = analyzeSleep(PreviewData.days()),
+                coach = dailyCoach(PreviewData.today, Goals(), TrainingToday(plannedMinutes = 30)),
                 movement = PreviewData.movement,
                 onAddWater = {},
                 onOpenTraining = {},
