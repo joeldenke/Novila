@@ -91,6 +91,19 @@
     <string name="sleep_change_unconfirmed">One week can be chance. Keep logging to see if it holds.</string>
     <string name="sleep_bedtime_spread">Your bedtime varies by about %1$s from night to night. A steady bedtime, weekends too, helps your sleep.</string>
 
+    <!-- Connections across the parts, from the user's own logs -->
+    <string name="connection_driver_ate_well">you ate well</string>
+    <string name="connection_driver_trained">you trained</string>
+    <string name="connection_energy_better">On days %1$s, your energy was higher: %2$s against %3$s of 5.</string>
+    <string name="connection_energy_worse">On days %1$s, your energy was lower: %2$s against %3$s of 5.</string>
+    <string name="connection_mood_better">On days %1$s, your mood was better: %2$s against %3$s of 5.</string>
+    <string name="connection_mood_worse">On days %1$s, your mood was worse: %2$s against %3$s of 5.</string>
+    <string name="connection_training_after_sleep_more">On days after a full night you trained %1$s more (%2$d days against %3$d).</string>
+    <string name="connection_training_after_sleep_less">On days after a full night you trained %1$s less (%2$d days against %3$d).</string>
+    <string name="connection_weekday_training">You train most on %1$s (%2$s on average) and least on %3$s (%4$s).</string>
+    <string name="connection_weekday_sleep">You sleep longest on %1$s (%2$s) and shortest on %3$s (%4$s).</string>
+    <string name="connection_weekday_nutrition">Your nutrition score is highest on %1$s (%2$d) and lowest on %3$s (%4$d).</string>
+
     <!-- Health Connect -->
     <string name="kcal_value" translatable="false">%1$s kcal</string>
     <string name="movement_steps">Steps</string>

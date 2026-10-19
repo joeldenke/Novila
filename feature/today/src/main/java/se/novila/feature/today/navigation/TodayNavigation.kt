@@ -51,6 +51,7 @@ fun EntryProviderScope<NavKey>.todayEntry(
             onOpenSettings = onOpenSettings,
             contentPadding = contentPadding,
             training = state.training,
+            connections = state.connections,
         )
     }
 }

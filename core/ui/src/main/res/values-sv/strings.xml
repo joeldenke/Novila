@@ -83,6 +83,19 @@
         <item quantity="other">%1$d poäng lägre än %2$s</item>
     </plurals>
 
+    <!-- Samband mellan delarna, ur användarens egna loggar -->
+    <string name="connection_driver_ate_well">du åt bra</string>
+    <string name="connection_driver_trained">du tränade</string>
+    <string name="connection_energy_better">Dagar %1$s var energin högre: %2$s mot %3$s av 5.</string>
+    <string name="connection_energy_worse">Dagar %1$s var energin lägre: %2$s mot %3$s av 5.</string>
+    <string name="connection_mood_better">Dagar %1$s var humöret bättre: %2$s mot %3$s av 5.</string>
+    <string name="connection_mood_worse">Dagar %1$s var humöret sämre: %2$s mot %3$s av 5.</string>
+    <string name="connection_training_after_sleep_more">Dagar efter en full natt tränade du %1$s mer (%2$d dagar mot %3$d).</string>
+    <string name="connection_training_after_sleep_less">Dagar efter en full natt tränade du %1$s mindre (%2$d dagar mot %3$d).</string>
+    <string name="connection_weekday_training">Du tränar mest på %1$s (%2$s i snitt) och minst på %3$s (%4$s).</string>
+    <string name="connection_weekday_sleep">Du sover längst på %1$s (%2$s) och kortast på %3$s (%4$s).</string>
+    <string name="connection_weekday_nutrition">Kostpoängen är högst på %1$s (%2$d) och lägst på %3$s (%4$d).</string>
+
     <string name="movement_steps">Steg</string>
     <string name="movement_open_settings">Öppna Health Connect</string>
 
