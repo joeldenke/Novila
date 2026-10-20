@@ -139,6 +139,8 @@ Strängar och ikoner ligger i modulen som använder dem; det flera moduler anvä
   säg det i PR-beskrivningen. Fel syns då först vid merge.
 - Kan din miljö inte nå Google Maven: pusha och följ körningen (`gh pr checks`, `gh run view --log-failed`)
   och rätta tills den är grön. Säg aldrig att något fungerar utan grönt CI.
+- `Dependency submission` skickar bibliotekens beroendegraf till GitHub vid varje push till `main`, så Dependabot larmar
+  om sårbara bibliotek (fliken Security). Testklassvägar räknas inte. Kör bara upplösning, ingen kompilering.
 - När PR:en mergas skickar `Distribute to testers` debug-APK:n (`se.novila.debug`) via Firebase App Distribution.
   Samma körning bygger även release (R8), signerad bara om release-nyckeln finns i GitHub-hemligheterna.
 
