@@ -37,6 +37,8 @@
     <!-- Din dag: dagens checklista -->
     <string name="checklist_title">Din dag</string>
     <string name="checklist_progress">%1$d av %2$d klart</string>
+    <string name="checklist_task_done">Klart</string>
+    <string name="checklist_task_todo">Inte klart</string>
     <string name="checklist_all_done">Allt klart för i dag.</string>
     <string name="checklist_sleep">Logga natten</string>
     <string name="checklist_sleep_done">Natten</string>

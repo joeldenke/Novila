@@ -35,6 +35,8 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -87,7 +89,12 @@ fun NovilaHeroCard(
         verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.l),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(title, style = NovilaTheme.typography.labelLarge, color = hero.content, modifier = Modifier.weight(1f))
+            Text(
+                title,
+                style = NovilaTheme.typography.labelLarge,
+                color = hero.content,
+                modifier = Modifier.weight(1f).semantics { heading() },
+            )
             NovilaIcon(
                 painter = painterResource(R.drawable.ic_novila_sun),
                 contentDescription = null,
@@ -99,7 +106,10 @@ fun NovilaHeroCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.xl),
         ) {
-            Box(Modifier.size(148.dp), contentAlignment = Alignment.Center) {
+            Box(
+                Modifier.size(148.dp).novilaProgressSemantics(value / 100f),
+                contentAlignment = Alignment.Center,
+            ) {
                 Rings(segments, hero.track, reveal, Modifier.size(148.dp))
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
@@ -137,7 +147,7 @@ private fun LegendRow(segment: NovilaHeroSegment, percent: String, content: Colo
         Modifier
     }
     Row(
-        modifier = tap,
+        modifier = tap.semantics(mergeDescendants = true) {},
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
@@ -242,8 +252,8 @@ fun NovilaStatTile(
             verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.xs),
         ) {
             NovilaIcon(painter = icon, contentDescription = null, modifier = Modifier.size(22.dp), tint = role.color)
-            Text(value, style = NovilaTheme.typography.titleLarge, maxLines = 1)
-            Text(label, style = NovilaTheme.typography.labelMedium, maxLines = 1)
+            Text(value, style = NovilaTheme.typography.titleLarge)
+            Text(label, style = NovilaTheme.typography.labelMedium)
             val chart = Modifier.fillMaxWidth().height(28.dp)
             when {
                 trend.count { it != null } >= 2 -> NovilaSparkline(trend, trendRange, role.color, chart)
@@ -283,7 +293,7 @@ fun NovilaScoreRing(
     size: Dp = 128.dp,
 ) {
     val reveal by rememberReveal(durationMillis = 1400)
-    Box(modifier.size(size), contentAlignment = Alignment.Center) {
+    Box(modifier.size(size).novilaProgressSemantics(progress), contentAlignment = Alignment.Center) {
         Canvas(Modifier.size(size)) {
             val stroke = 11.dp.toPx()
             val inset = stroke / 2f
@@ -329,7 +339,10 @@ fun NovilaMeter(
     role: NovilaColorRole,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+    Column(
+        modifier.fillMaxWidth().novilaProgressSemantics(progress),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(label, style = NovilaTheme.typography.labelLarge, modifier = Modifier.weight(1f))
             Text(value, style = NovilaTheme.typography.labelMedium, color = NovilaTheme.colors.onSurfaceVariant)
