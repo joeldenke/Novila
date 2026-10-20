@@ -9,3 +9,6 @@ release-notes.txt
 
 # Python packages used by one-off tools; never commit them.
 *.whl
+
+# Tool state (gh, etc.) from cloud sessions; never commit it.
+.local/

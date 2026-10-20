@@ -50,6 +50,7 @@ data class SettingsActions(
     val onInstallHealth: () -> Unit = {},
     val onOpenHealthInfo: () -> Unit = {},
     val onOpenDisclaimer: () -> Unit = {},
+    val onOpenPrivacy: () -> Unit = {},
     val onOpenLicenses: () -> Unit = {},
     val onDeleteData: () -> Unit = {},
     val onShowIntro: () -> Unit = {},
@@ -85,7 +86,7 @@ fun SettingsScreen(
         item(key = "disclaimer") { DisclaimerCard(actions.onOpenDisclaimer) }
         item(key = "data") { DataCard(actions.onDeleteData) }
         item(key = "about") {
-            AboutCard(version = version, onShowIntro = actions.onShowIntro, onOpenLicenses = actions.onOpenLicenses)
+            AboutCard(version = version, actions = actions)
         }
     }
 }
@@ -277,12 +278,12 @@ private fun DataCard(onDeleteData: () -> Unit) {
 }
 
 @Composable
-private fun AboutCard(version: AppVersion, onShowIntro: () -> Unit, onOpenLicenses: () -> Unit) {
+private fun AboutCard(version: AppVersion, actions: SettingsActions) {
     NovilaCard(title = stringResource(R.string.settings_about)) {
         NovilaListRow(
             title = stringResource(R.string.settings_intro),
             summary = stringResource(R.string.settings_intro_summary),
-            onClick = onShowIntro,
+            onClick = actions.onShowIntro,
             trailing = { Chevron() },
         )
         NovilaListRow(
@@ -292,11 +293,13 @@ private fun AboutCard(version: AppVersion, onShowIntro: () -> Unit, onOpenLicens
         NovilaListRow(
             title = stringResource(R.string.settings_privacy),
             summary = stringResource(R.string.settings_privacy_summary),
+            onClick = actions.onOpenPrivacy,
+            trailing = { Chevron() },
         )
         NovilaListRow(
             title = stringResource(R.string.settings_licenses),
             summary = stringResource(R.string.settings_licenses_summary),
-            onClick = onOpenLicenses,
+            onClick = actions.onOpenLicenses,
             trailing = { Chevron() },
         )
     }

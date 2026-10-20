@@ -15,7 +15,7 @@
     <string name="onboarding_training_eyebrow">Training</string>
     <string name="onboarding_training_title">A program that grows with you</string>
     <string name="onboarding_training_body">The coach builds your week around your goal and your time, and the next week builds on what you did.</string>
-    <string name="onboarding_training_point_1">Cardio and strength along WHO\'s activity guidelines</string>
+    <string name="onboarding_training_point_1">Cardio and strength along the WHO\'s activity guidelines</string>
     <string name="onboarding_training_point_2">Every exercise shown on a moving figure, with the muscles it works</string>
     <string name="onboarding_training_point_3">A guided session with sets, rests and a timer</string>
 
@@ -60,7 +60,7 @@
 
     <string name="onboarding_movement_eyebrow">Movement</string>
     <string name="onboarding_movement_title">Count every step</string>
-    <string name="onboarding_movement_body">Connect Health Connect, and Novila shows today\'s steps and active calories from your watch or phone, the program counts your watch\'s workouts and the nights it recorded fill in Sleep. Novila only reads them, while the app is open.</string>
+    <string name="onboarding_movement_body">Connect Health Connect, and Novila shows today\'s steps and active calories from your watch or phone, the program counts your watch\'s workouts, the nights it recorded fill in Sleep, and your resting heart rate and HRV can make a session lighter while you recover. Novila only reads them, while the app is open.</string>
     <string name="onboarding_movement_connect">Connect Health Connect</string>
     <string name="onboarding_movement_connected">Connected. %1$s steps so far today.</string>
     <string name="onboarding_movement_denied">Access was declined. You can allow it in Health Connect whenever you like.</string>

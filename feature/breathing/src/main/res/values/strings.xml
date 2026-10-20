@@ -27,6 +27,6 @@
     <string name="breathing_restart">Start again</string>
     <string name="breathing_done_title">Session complete</string>
     <string name="breathing_done_body">Take a moment to notice how you feel.</string>
-    <string name="breathing_note">Breathe comfortably at your own pace. The count is a guide, not a target.</string>
+    <string name="breathing_note">Breathe comfortably at your own pace. The count is a guide, not a target. If you feel dizzy or short of breath, stop and breathe normally.</string>
     <string name="breathing_footer">Novila doesn\'t save your sessions. They are moments for you, not a score.</string>
 </resources>

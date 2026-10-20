@@ -459,7 +459,8 @@ enum class Recipe(
         vegetables = 2,
         protein = 1,
         wholeGrain = 1,
-        allergens = setOf(Allergen.Crustaceans, Allergen.Soy),
+        // Soy sauce is brewed with wheat.
+        allergens = setOf(Allergen.Crustaceans, Allergen.Soy, Allergen.Gluten),
         kinds = setOf(FoodKind.FishSeafood, FoodKind.Grains, FoodKind.Vegetables, FoodKind.Fats),
     ),
     ChanaMasala(
@@ -559,8 +560,8 @@ enum class Recipe(
         vegetables = 1,
         protein = 1,
         wholeGrain = 1,
-        allergens = setOf(Allergen.Gluten, Allergen.Fish),
-        kinds = setOf(FoodKind.FishSeafood, FoodKind.Grains, FoodKind.Vegetables),
+        allergens = setOf(Allergen.Gluten, Allergen.Fish, Allergen.Milk),
+        kinds = setOf(FoodKind.FishSeafood, FoodKind.Grains, FoodKind.Dairy, FoodKind.Vegetables),
     ),
     ;
 

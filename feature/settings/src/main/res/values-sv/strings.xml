@@ -13,8 +13,8 @@
 
     <!-- Health Connect -->
     <string name="settings_health_connect">Health Connect</string>
-    <string name="settings_health_connected">Ansluten. Novila läser dagens steg och aktiva kalorier, de senaste fem veckornas träningspass och dina nätter medan appen är öppen.</string>
-    <string name="settings_health_not_connected">Inte ansluten. Anslut för att se dagens steg och aktiva kalorier, få med klockans träningspass i programmet och fylla i sömnen från den.</string>
+    <string name="settings_health_connected">Ansluten. Medan appen är öppen läser Novila dagens steg och aktiva kalorier, de senaste fem veckornas träningspass, dina nätter samt din vilopuls och HRV.</string>
+    <string name="settings_health_not_connected">Inte ansluten. Anslut för att se dagens steg och aktiva kalorier, få med klockans träningspass i programmet, fylla i sömnen från den och låta vilopuls och HRV göra ett pass lättare medan du återhämtar dig.</string>
     <string name="settings_health_denied">Åtkomst nekades. Du kan tillåta den för Novila i Health Connect.</string>
     <string name="settings_health_needs_install">Health Connect behöver installeras eller uppdateras innan Novila kan läsa dina steg.</string>
     <string name="settings_health_unavailable">Health Connect finns inte på den här telefonen.</string>
@@ -32,7 +32,7 @@
     <string name="settings_data_body">Allt du loggar sparas bara i den här telefonen. Novila har inget konto och inget moln, så inget kan återställas när det har raderats.</string>
     <string name="settings_delete_data">Radera all data</string>
     <string name="settings_delete_data_title">Radera all data?</string>
-    <string name="settings_delete_data_body">Din profil och dina mål, dina mått, din loggade sömn, kost, dryck, mående och dina pass samt coachens svar raderas från telefonen. Dina påminnelser stängs av. Det går inte att ångra. Data i Health Connect påverkas inte.</string>
+    <string name="settings_delete_data_body">Din profil och dina mål, dina mått, din loggade sömn, kost, dryck och dina pass, dina matpreferenser och båda coachernas svar raderas från telefonen. Dina påminnelser stängs av. Det går inte att ångra. Data i Health Connect påverkas inte.</string>
     <string name="settings_delete_data_confirm">Radera</string>
     <string name="settings_cancel">Avbryt</string>
     <string name="settings_data_deleted">All data är raderad.</string>
@@ -40,10 +40,35 @@
     <!-- Om -->
     <string name="settings_about">Om Novila</string>
     <string name="settings_version">Version</string>
-    <string name="settings_privacy">Integritet</string>
+    <string name="settings_privacy">Integritetspolicy</string>
     <string name="settings_privacy_summary">Ingen reklam, inga analysverktyg och inga nätverksanrop. Din hälsodata stannar i telefonen.</string>
     <string name="settings_licenses">Öppna licenser</string>
     <string name="settings_licenses_summary">Biblioteken Novila bygger på, med sina licenser.</string>
+
+    <!-- Integritetspolicy, även docs/privacy-policy.md: ändra båda, och datumet -->
+    <string name="privacy_title">Integritetspolicy</string>
+    <string name="privacy_intro">Novila är byggd så att din hälsodata stannar hos dig. Den här policyn säger vad appen hanterar, var det sparas, vem som kan se det och vad du kan göra åt det.</string>
+    <string name="privacy_what_title">Vad Novila hanterar</string>
+    <string name="privacy_what_body">Det du själv fyller i: ditt namn, födelseår, längd, vikt och kroppsmått, din sömn, kost, dryck och dina pass, med ansträngning och smärta efter ett pass, dina svar till tränings- och sömncoachen, dina matpreferenser, även allergier, och dina mål, påminnelser och inställningar. Om du tillåter det även det Novila läser från Health Connect, se nedan. Allt är frivilligt, och Novila fungerar utan namn och utan konto.</string>
+    <string name="privacy_where_title">Var det sparas</string>
+    <string name="privacy_where_body">Bara i den här telefonen, krypterat med en nyckel från telefonens Android Keystore. Novila har inget konto och ingen server, och appen har ingen åtkomst till internet, så inget du loggar kan skickas någonstans. Novilas data lämnas utanför Androids säkerhetskopiering och överföringar till en ny telefon.</string>
+    <string name="privacy_health_connect_title">Health Connect</string>
+    <string name="privacy_health_connect_body">Om du tillåter det läser Novila dagens steg och aktiva kalorier, dina träningspass de senaste fem veckorna, din sömn upp till två år bakåt samt din vilopuls och hjärtfrekvensvariabilitet de senaste två veckorna. Datan läses bara när appen är öppen, används bara för att visa din dag och planera din träning och finns bara i minnet: Novila sparar den aldrig, skriver aldrig till Health Connect och delar den aldrig. Novilas användning av data från Health Connect följer Health Connects behörighetspolicy, inklusive kraven på begränsad användning (Limited Use). Du kan när som helst stänga av åtkomsten i Health Connect.</string>
+    <string name="privacy_ai_title">Coachens AI-kommentar</string>
+    <string name="privacy_ai_body">Har din telefon Gemini Nano kan coachen skriva en kommentar om din vecka när du ber om det. Modellen körs i telefonen, i Androids AICore, och planen den läser lämnar aldrig telefonen.</string>
+    <string name="privacy_shared_title">Delas inte med någon</string>
+    <string name="privacy_shared_body">Novila har ingen reklam, inga analysverktyg och ingen spårning. Din data säljs inte, delas inte med någon och används inte för reklam. Utvecklaren får aldrig del av den.</string>
+    <string name="privacy_screen_title">Notiser och widgeten</string>
+    <string name="privacy_screen_body">Påminnelser du slår på visar en kort notis, och widgeten visar, om du lägger till den, dagens balans, sömn, kost och vatten på hemskärmen. Den som ser din telefon kan se dem. Du kan när som helst stänga av påminnelserna och ta bort widgeten.</string>
+    <string name="privacy_control_title">Du bestämmer</string>
+    <string name="privacy_control_body">Du kan se och ändra det du har loggat i appen. Radera all data under Inställningar tar bort din hälsodata från telefonen på en gång, och avinstallerar du Novila försvinner allt. Ingen kopia finns någon annanstans, så det finns inget mer för utvecklaren att radera eller lämna ut. Data i Health Connect hanteras i Health Connect.</string>
+    <string name="privacy_google_title">Google Play och Android</string>
+    <string name="privacy_google_body">Novila installeras via Google Play, och Health Connect, AICore och Gemini Nano är delar av Android som Google gör. De följer Googles integritetspolicy. Delar du användning och diagnostik med Google kan Google Play ge utvecklaren kraschrapporter, som inte innehåller det du loggar i Novila.</string>
+    <string name="privacy_adults_title">För vuxna</string>
+    <string name="privacy_adults_body">Novila är gjord för vuxna och riktar sig inte till barn.</string>
+    <string name="privacy_contact_title">Frågor och ändringar</string>
+    <string name="privacy_contact_body">Frågor om integritet skickas till utvecklarens kontaktadress på Novilas sida i Google Play. Du kan också klaga hos Integritetsskyddsmyndigheten (IMY). Ändras policyn kommer den nya versionen med en uppdatering av appen, med datum nedan.</string>
+    <string name="privacy_updated">Uppdaterad 20 oktober 2026</string>
 
     <!-- Licenser -->
     <string name="licenses_title">Öppna licenser</string>

@@ -118,7 +118,7 @@
         <item>Nick långsamt med hakan mot bröstet.</item>
         <item>Återgå lika långsamt till att titta rakt fram.</item>
     </string-array>
-    <string name="move_neck_nod_tip">Håll rörelsen liten och långsamt. Stoppa om smärtan blir värre.</string>
+    <string name="move_neck_nod_tip">Håll rörelsen liten och långsam. Avbryt om det gör ont.</string>
     <string name="move_figure_description">%1$s. Tränar %2$s.</string>
     <string name="dose_reps_per_side">%1$d × %2$d per sida</string>
     <string name="dose_rest">Vila %1$d s</string>
@@ -202,7 +202,7 @@
     <string name="movement_title">Dagens rörelse</string>
     <string name="movement_active_calories">Aktiva kalorier</string>
     <string name="movement_source">Från Health Connect. Novila läser bara och sparar ingenting.</string>
-    <string name="movement_connect_body">Se dagens steg och aktiva kalorier från din klocka eller telefon via Health Connect, låt veckans program räkna med passen klockan har registrerat och fyll i sömnen från den. Novila läser dem bara och datan stannar i telefonen.</string>
+    <string name="movement_connect_body">Anslut Health Connect för att se dagens steg och aktiva kalorier från din klocka eller telefon, låta veckans program räkna med passen klockan har registrerat, fylla i sömnen från den och låta vilopuls och HRV göra ett pass lättare medan du återhämtar dig. Novila läser bara datan och den stannar i telefonen.</string>
     <string name="movement_connect">Anslut Health Connect</string>
     <string name="movement_denied_body">Åtkomst nekades. Du kan tillåta den för Novila i Health Connect.</string>
     <string name="movement_install_body">Health Connect behöver installeras eller uppdateras för att visa dina steg och aktiva kalorier.</string>
@@ -214,8 +214,6 @@
     <string name="recovery_title">Återhämtning</string>
     <string name="recovery_resting_heart_rate">Vilopuls</string>
     <string name="recovery_hrv">Hjärtfrekvensvariabilitet (HRV)</string>
-    <string name="recovery_bpm" translatable="false">%1$d bpm</string>
-    <string name="recovery_millis" translatable="false">%1$d ms</string>
     <string name="recovery_normal">Din vilopuls och HRV är som vanligt. Dagens pass är som planerat.</string>
     <string name="recovery_low">Din vilopuls är högre, eller din HRV lägre, än den brukar. Dagens pass blir lite lättare.</string>
     <string name="recovery_unknown">Inte tillräckligt många mätningar än för att säga hur du återhämtar dig.</string>
@@ -304,7 +302,7 @@
     <string name="coach_note_rehab_stay">Senaste passet gjorde ont %1$d av 10. Stanna på den här nivån tills smärtan är högst 3 av 10 och har lagt sig till nästa morgon.</string>
     <string name="coach_note_rehab_step_back">Senaste passet gjorde ont %1$d av 10, mer än programmet ska göra. Coachen föreslår att du går tillbaka till nivå %2$d.</string>
     <string name="coach_note_rehab_seek_care">Senaste passet gjorde ont %1$d av 10 redan på första nivån. Vila några dagar och prata med en fysioterapeut eller vårdcentralen innan du fortsätter.</string>
-    <string name="coach_note_rehab_done">Sista nivån går lugnt: %1$d pass i rad med smärta högst 3 av 10. Fortsätt så, eller byt mål till Hälsa för vanlig träning.</string>
+    <string name="coach_note_rehab_done">Sista nivån går lugnt: %1$d pass i rad med smärta högst 3 av 10. Fortsätt så, eller byt mål till Allsidig hälsa för vanlig träning.</string>
     <string name="coach_rehab_change_phase">Byt till nivå %1$d</string>
     <string name="coach_ai_title">Coachens kommentar</string>
     <string name="coach_ai_unavailable">Gemini Nano finns inte på den här telefonen, så coachen förklarar veckan med sina egna skäl ovan.</string>
