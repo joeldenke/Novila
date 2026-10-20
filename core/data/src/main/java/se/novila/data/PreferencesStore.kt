@@ -1,6 +1,7 @@
 package se.novila.data
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
@@ -10,6 +11,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -74,7 +76,18 @@ internal class PreferencesStore(
                 emptyPreferences()
             }
             for (write in writes) {
-                latest.value = dataStore.edit { write(it) }
+                // A write can fail for a reason the app cannot fix: the Keystore entry is gone, the disk is
+                // full. Crashing there would take the app down on every later save as well, and letting the
+                // exception end this consumer would drop every write after it in silence, so this one write is
+                // left out and the values as last read or written stay.
+                latest.value = try {
+                    dataStore.edit { write(it) }
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    Log.w(TAG, "Could not save $name, keeping the values already saved", e)
+                    latest.value ?: emptyPreferences()
+                }
             }
         }
     }
@@ -87,5 +100,9 @@ internal class PreferencesStore(
 
     fun edit(write: (MutablePreferences) -> Unit) {
         writes.trySend(write)
+    }
+
+    private companion object {
+        const val TAG = "PreferencesStore"
     }
 }

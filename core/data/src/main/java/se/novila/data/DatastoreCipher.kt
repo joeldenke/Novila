@@ -4,6 +4,7 @@ import android.content.Context
 import com.google.crypto.tink.Aead
 import com.google.crypto.tink.KeyTemplate
 import com.google.crypto.tink.RegistryConfiguration
+import com.google.crypto.tink.aead.AeadConfig
 import com.google.crypto.tink.aead.PredefinedAeadParameters
 import com.google.crypto.tink.integration.android.AndroidKeysetManager
 import dev.zacsweers.metro.AppScope
@@ -36,6 +37,16 @@ class KeystoreDatastoreCipher(private val context: Context) : DatastoreCipher {
 
     @Volatile
     private var created: Aead? = null
+
+    init {
+        // Tink's key creators and primitive wrappers start out unregistered, and nothing else in the app puts
+        // them there. Without this the keyset below cannot be built ("no key creator for this class was
+        // registered"), so the first DataStore write throws and the stores' scope has nothing to handle it: the
+        // app crashes on the first save, such as tapping "Show the intro again" in Settings. Registering is
+        // idempotent and touches nothing Android-specific, and this cipher is always built before any store can
+        // write, so the configuration is in place by the time a keyset is opened.
+        AeadConfig.register()
+    }
 
     override fun aead(): Aead = created ?: synchronized(lock) {
         created ?: openKeyset().also { created = it }
