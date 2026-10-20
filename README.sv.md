@@ -6,8 +6,8 @@
 
 Novila är en hälsoapp för Android som samlar träning, sömn och kost på ett lugnt, nordiskt ställe. Den planerar din
 träningsvecka, följer hur du sover och äter och visar hur delarna balanserar varandra varje dag. Allt stannar på
-telefonen: inget konto, inget eget moln, inga analysverktyg. Androids egen säkerhetskopiering kan kopiera det till
-ditt Google-konto. Appen finns på svenska och engelska.
+telefonen: inget konto, inget moln, inga analysverktyg, och Androids säkerhetskopiering lämnar appens data utanför.
+Appen finns på svenska och engelska.
 
 ## Vad appen gör
 
@@ -27,10 +27,10 @@ finns från dag ett. Vad som kommer härnäst står i [roadmapen](docs/roadmap.m
 
 ## Integritet från grunden
 
-- **Datan stannar på enheten.** Dagar, coachens svar och inställningar ligger i Preferences DataStore. Appen gör
-  inga nätverksanrop och har inga analysverktyg eller Firebase-SDK:er. Androids säkerhetskopiering är tillåten och
-  kopierar DataStore-filerna till användarens Google-konto (eller till en ny enhet vid byte); raderar du i appen
-  försvinner inte en tidigare säkerhetskopia. Se `docs/backup.md`.
+- **Datan stannar på enheten.** Dagar, coachens svar och inställningar ligger i Preferences DataStore, förseglade med
+  en nyckel från Android Keystore. Appen gör inga nätverksanrop och har inga analysverktyg eller Firebase-SDK:er.
+  Androids säkerhetskopiering är tillåten men utesluter varje domän för appens data, så inget kopieras till ett
+  Google-konto eller till en ny enhet vid byte. Se `docs/backup.md`.
 - **Health Connect läses minimalt och bara läses:** dagens steg och aktiva kalorier (`READ_STEPS`,
   `READ_ACTIVE_CALORIES_BURNED`), de senaste fem veckornas träningspass (`READ_EXERCISE`: typ, dag och längd, för
   träningsprogrammet), nätterna (`READ_SLEEP`: läggtid, uppvakning och tid i sömn, som fyller i Sömn när du inte
