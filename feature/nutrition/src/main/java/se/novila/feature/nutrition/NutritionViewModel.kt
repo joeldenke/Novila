@@ -21,6 +21,8 @@ import se.novila.model.FoodGroup
 import se.novila.model.Goals
 import se.novila.model.History
 import se.novila.model.HistoryRange
+import se.novila.model.parseMeal
+import se.novila.model.withMeal
 import se.novila.model.withPortions
 import se.novila.model.withTreats
 import se.novila.recipes.FoodPreferences
@@ -100,4 +102,11 @@ class NutritionViewModel(
 
     /** Logs one serving of [recipe]: its portions in each food group, and a meal unless it is a snack. */
     fun logRecipe(recipe: Recipe) = store.update(day.value) { it.withRecipe(recipe) }
+
+    /** Adds what the meal written in the user's own words translates into: one portion per recognized word. */
+    fun logMeal(text: String) {
+        val meal = parseMeal(text)
+        if (meal.isEmpty) return
+        store.update(day.value) { it.withMeal(meal) }
+    }
 }

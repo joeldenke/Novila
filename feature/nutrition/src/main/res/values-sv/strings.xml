@@ -29,6 +29,13 @@
     <string name="food_add">Lägg till %1$s</string>
     <string name="food_remove">Ta bort %1$s</string>
 
+    <string name="meal_log_title">Logga en måltid</string>
+    <string name="meal_log_label">Vad åt du?</string>
+    <string name="meal_log_hint">Till exempel Frukost: gröt, bär</string>
+    <string name="meal_log_preview">Lägger till %1$s</string>
+    <string name="meal_log_unknown">Kände inte igen: %1$s</string>
+    <string name="meal_log_add">Lägg till måltiden</string>
+
     <!-- Receptförslag -->
     <string name="recipes_title">Recept för det som saknas</string>
     <string name="recipes_breakfast">En frukost som fyller det som fortfarande saknas i dag.</string>

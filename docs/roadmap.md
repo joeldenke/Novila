@@ -61,7 +61,7 @@ Nano for more than the comment, or data that leaves the app.
 - [x] **Sleep coach:** bedtime goal, evening routine and sleep hygiene (CBT-I-inspired)
 
 ### 4. Nutrition
-- [ ] **Meal logging** ("Breakfast: porridge, berries") that fills in the groups
+- [x] **Meal logging** ("Breakfast: porridge, berries") that fills in the groups
 - [ ] **Quick picks and favorites**
 - [x] **Diet profile:** diet (everything, pescetarian, vegetarian, vegan), the 14 labelled allergens and time in the
   kitchen, in *My goals*
