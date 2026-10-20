@@ -74,4 +74,8 @@
     <string name="sleep_coach_reset">Turn off the sleep coach</string>
     <string name="sleep_coach_card_hint">Add an evening routine in the coach, and it shows the next step here.</string>
     <string name="sleep_coach_evening_done">The evening\'s steps are done. Sleep well.</string>
+    <string name="sleep_breathing_title">Breathing and relaxation</string>
+    <string name="sleep_breathing_body">A few calm minutes before bed: calm breathing, box breathing or 4-7-8.</string>
+    <string name="sleep_breathing_open">Open breathing sessions</string>
+    <string name="sleep_coach_breathing">Calm breathing before bed</string>
 </resources>

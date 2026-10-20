@@ -24,6 +24,10 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   strängar, ViewModels och `@Preview`/skärmdumpar. Varje feature äger sin navigation (`navigation/`): `@Serializable`-rutter
   (`NavKey`) och `EntryProviderScope<NavKey>.<feature>Entries(...)`, som `:app` lägger i sin `entryProvider`.
   Features beror aldrig på varandra (`ArchitectureTest`); flikbyten går via callbacks från `:app`.
+- `:feature:breathing` – Andning och avslappning: korta guidade andningsövningar (lugn andning, boxandning, 4-7-8)
+  med en visuell pacer i Skog & sol-stil, fas för fas (andas in, håll, andas ut). Öppnas från Sömnens *Din plan*,
+  bredvid sömncoachen, och från sömncoachens kvällsrutin. Sessionerna är data i `:core:breathing`; spelarens
+  ViewModel räknar tiden. Inget loggas.
 - `:feature:onboarding` – introduktionen vid första start: en karusell genom appens delar (målade scener i
   `NovilaSceneImage` med parallax), namn, mål och tid för coachen, Health Connect och en sammanfattning i `NovilaHeroBanner`.
   Visas ensam (utan flikar) tills `AppSettings.onboarded` är satt; `NovilaApp` ger den en egen entry via
@@ -98,6 +102,10 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
     färdiga planen (`CoachPrompt` bygger prompten och tvättar svaret), aldrig själva planen. Dagens gemensamma förslag
     för sömn, träning och kost är `dailyCoach` (`DailyCoach`, `CoachAdvice`), som väger delarna mot varandra och är
     deterministisk och enhetstestad. Se *Gemini Nano* under Regler.
+  - `:core:breathing` – de guidade andningsövningarna som data: `BreathingSession` (faser med längd i sekunder och
+    antal rundor), `BreathingCatalog` (lugn andning, boxandning, 4-7-8) och `momentAt`, som deterministiskt räknar ut
+    runda, fas, sekunder kvar och hur långt in i fasen man är vid en förfluten tid. `breathScale` ger cirkelns storlek.
+    Ren Kotlin och enhetstestad; spelarens timer i `:feature:breathing` ritar bara det modellen säger.
   - `:core:anatomy` – kroppsagnostiska övningsillustrationer: `Pose`/`Movement` (ledvinklar per keyframe), `Skeleton`
     (framåtkinematik, `BodyShape`), `MuscleMap`, `SceneBuilder` (ortografisk `Camera`, siluetter och de muskelband som
     syns), `ViewSelector` (varje övnings bästa vy), `ExerciseLibrary` och `RepetitionCounter` (räknar repetitioner,

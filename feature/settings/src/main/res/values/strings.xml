@@ -37,7 +37,7 @@
     <string name="settings_data_body">Everything you log is saved on this phone only. Novila has no account and no cloud, so nothing can be restored once deleted.</string>
     <string name="settings_delete_data">Delete all data</string>
     <string name="settings_delete_data_title">Delete all data?</string>
-    <string name="settings_delete_data_body">Your profile and goals, your measurements, your logged sleep, food, mood and workouts and the coach\'s answers are deleted from this phone. This cannot be undone. Data in Health Connect is not affected.</string>
+    <string name="settings_delete_data_body">Your profile and goals, your measurements, your logged sleep, food, mood and workouts and the coach\'s answers are deleted from this phone. Your reminders are turned off. This cannot be undone. Data in Health Connect is not affected.</string>
     <string name="settings_delete_data_confirm">Delete</string>
     <string name="settings_cancel">Cancel</string>
     <string name="settings_data_deleted">All data is deleted.</string>
