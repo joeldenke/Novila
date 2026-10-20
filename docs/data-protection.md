@@ -47,13 +47,14 @@ aldrig Health Connects egna data – det är inte appens att radera.
 *Radera data* i Inställningar (`SettingsViewModel.deleteAllData`) tömmer varje DataStore-fil för
 hälsodata: loggade dagar, coachernas svar, profil, mål, matpreferenser och mätningar.
 `deleteLegacyPreferences` tar dessutom bort de gamla SharedPreferences-filerna, även för en store
-användaren aldrig öppnat. Inställningar (tema, introduktionen klar) och påminnelser behålls, eftersom
-de inte är hälsodata.
+användaren aldrig öppnat. Påminnelserna töms och deras planerade jobb avbryts
+(`RemindersStore.clear`, `ReminderScheduler.cancelAll`), så ingen notis kommer efter en radering.
+Inställningar (tema, introduktionen klar) behålls, eftersom de inte är hälsodata.
 
 Två saker görs **inte**, medvetet:
 
 - **Backupen** rörs inte, för det finns ingen: ingenting säkerhetskopieras (se `docs/backup.md`), så
   det finns ingen molnkopia som kan återställa det raderade.
 - **Tink-nyckelringen** roteras inte. Den innehåller ingen data, den lämnar aldrig enheten, och den
-  behövs för att de inställningar och påminnelser som överlever en radering fortfarande ska kunna
-  läsas. Att rotera den skulle göra dem oläsbara utan att skydda något.
+  behövs för att de inställningar som överlever en radering fortfarande ska kunna läsas. Att rotera
+  den skulle göra dem oläsbara utan att skydda något.
