@@ -274,6 +274,10 @@ där pluginet `firebase@firebase` inte alltid installeras.
 - **Designsystem:** feature-kod använder bara `se.novila.designsystem` och aldrig `androidx.compose.material3`
   direkt. Saknas en komponent, lägg till en `Novila*`-wrapper i `:core:designsystem` (`component/`).
   Använd `NovilaTheme.colors/typography/spacing/shapes`, aldrig hårdkodade färger eller dp-värden i features.
+  Tokens är Novilas egna typer (`NovilaColors`, `NovilaTypography`, `NovilaShapes`), aldrig Material-typer, och
+  `material3` är ett `implementation`-beroende i `:core:designsystem`. Wrappers exponerar inga Material-typer i
+  sitt API (inga `ButtonColors`, `SheetState` o.d.). Behöver en skärm en färgroll som saknas, lägg till den i
+  `NovilaColors` och `toNovilaColors()`.
 - **Designspråk "Skog & sol":** nordiskt lugn. Typsnittet är Hanken Grotesk (Google Font, inbakad i
   `:core:designsystem`, licens i `assets/licenses`). Ladda aldrig ner typsnitt i runtime.
   Varje del har sin färg via `NovilaTheme.pillars`: träning = gran (primary), sömn = sjö (secondary),

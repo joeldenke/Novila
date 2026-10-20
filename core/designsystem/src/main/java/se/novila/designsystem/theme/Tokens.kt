@@ -1,5 +1,6 @@
 package se.novila.designsystem.theme
 
+import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Shapes
 import androidx.compose.runtime.Immutable
@@ -23,14 +24,32 @@ data class NovilaSpacing(
 
 internal val LocalNovilaSpacing = staticCompositionLocalOf { NovilaSpacing() }
 
+/** Corner shapes, read through [NovilaTheme.shapes]. The theme hands the same shapes to Material components. */
+@Immutable
+data class NovilaShapes(
+    val extraSmall: CornerBasedShape,
+    val small: CornerBasedShape,
+    val medium: CornerBasedShape,
+    val large: CornerBasedShape,
+    val extraLarge: CornerBasedShape,
+)
+
 /**
  * Corner radii from one base of 14 dp, restrained for Nordic calm: chips and small controls
  * 10 dp, cards and buttons 14 dp, hero cards 18 dp, sheets and dialogs 26 dp.
  */
-internal val NovilaShapes = Shapes(
+internal val NovilaCorners = NovilaShapes(
     extraSmall = RoundedCornerShape(6.dp),
     small = RoundedCornerShape(10.dp),
     medium = RoundedCornerShape(14.dp),
     large = RoundedCornerShape(18.dp),
     extraLarge = RoundedCornerShape(26.dp),
+)
+
+internal fun NovilaShapes.toMaterial() = Shapes(
+    extraSmall = extraSmall,
+    small = small,
+    medium = medium,
+    large = large,
+    extraLarge = extraLarge,
 )

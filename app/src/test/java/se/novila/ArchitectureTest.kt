@@ -7,8 +7,8 @@ import java.io.File
 /**
  * Cheap guard rails enforced in CI, over every module's sources:
  * - Only :core:designsystem may use Material 3 directly; everything else uses Novila components.
- *   (Modules get Material 3 transitively because NovilaTheme exposes M3 types, so the compiler
- *   alone can't enforce this.)
+ *   (:core:designsystem keeps material3 as an implementation dependency, but other libraries can still bring
+ *   it in transitively, like AboutLibraries in :feature:settings, so the compiler alone can't enforce this.)
  * - UI text comes from string resources, never string literals.
  * - Features never depend on each other: the app connects them through navigation.
  * - ViewModels belong to the feature that shows them and are created by Metro (`metroViewModel()`), scoped to their
