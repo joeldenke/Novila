@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The evening sun from the Skog & sol design: the setting sun with three cuts that thicken downwards, like the
+     launcher icon. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillAlpha="0.16"
+        android:fillColor="#FF000000"
+        android:pathData="M12,1.5a10.5,10.5 0,1 1,0 21a10.5,10.5 0,1 1,0 -21z" />
+    <group>
+        <clip-path android:pathData="M0,0H24V13.2H0Z M0,14.1H24V15.4H0Z M0,16.7H24V18H0Z M0,19.8H24V24H0Z" />
+        <path
+            android:fillColor="#FF000000"
+            android:pathData="M12,4a8,8 0,1 1,0 16a8,8 0,1 1,0 -16z" />
+    </group>
+</vector>
