@@ -33,7 +33,8 @@ fun mealSlotAt(day: DayEntry, hour: Int): MealSlot {
 /**
  * Recipes for what is missing from [day] at [hour]: of the recipes for the [mealSlotAt] that [preferences] allow,
  * those that would raise the nutrition score the most, measured against [goals]. Recipes worth as much are rotated
- * by the day, so the same ties don't come first every day. Always the same result for the same input.
+ * by the day within their points group, so the same ties don't come first every day as long as the group has more than
+ * one recipe. Always the same result for the same input.
  */
 fun suggestRecipes(day: DayEntry, hour: Int, preferences: FoodPreferences, goals: Goals = Goals()): RecipeSuggestions {
     val slot = mealSlotAt(day, hour)
@@ -41,10 +42,14 @@ fun suggestRecipes(day: DayEntry, hour: Int, preferences: FoodPreferences, goals
     val candidates = Recipe.entries.filter { it.slot == slot && preferences.allows(it) }
     val recipes = candidates
         .map { RecipeSuggestion(it, (day.withRecipe(it).nutritionScore(goals)?.total ?: 0) - before) }
-        .sortedWith(
-            compareByDescending<RecipeSuggestion> { it.points }
-                .thenBy { Math.floorMod(it.recipe.ordinal - day.date.toEpochDay(), Recipe.entries.size.toLong()) },
-        )
+        .groupBy { it.points }
+        .entries
+        .sortedByDescending { it.key }
+        .flatMap { (_, samePoints) ->
+            // Rotate the whole tie group, one step a day: an affine shift of every key would not change their order.
+            val offset = Math.floorMod(day.date.toEpochDay(), samePoints.size.toLong()).toInt()
+            samePoints.drop(offset) + samePoints.take(offset)
+        }
         .take(SUGGESTED_RECIPES)
     return RecipeSuggestions(slot, recipes)
 }

@@ -247,4 +247,490 @@
     <string-array name="recipe_yogurt_with_berries_steps">
         <item>Put the yoghurt in a bowl and top it with the berries and oats.</item>
     </string-array>
+    <string name="recipe_rye_porridge_with_lingonberries">Rye porridge with lingonberries</string>
+    <string-array name="recipe_rye_porridge_with_lingonberries_ingredients">
+        <item>1 dl rye flakes</item>
+        <item>2 dl oat drink</item>
+        <item>½ dl lingonberries</item>
+        <item>1 tsp maple syrup</item>
+        <item>A pinch of salt</item>
+    </string-array>
+    <string-array name="recipe_rye_porridge_with_lingonberries_steps">
+        <item>Simmer the rye flakes and oat drink for 5–7 minutes, stirring now and then.</item>
+        <item>Top with the lingonberries and maple syrup.</item>
+    </string-array>
+    <string name="recipe_avocado_toast">Avocado toast with tomato</string>
+    <string-array name="recipe_avocado_toast_ingredients">
+        <item>1 slice of whole grain bread</item>
+        <item>½ avocado</item>
+        <item>1 tomato</item>
+        <item>½ lemon</item>
+        <item>Salt, pepper and chilli flakes</item>
+    </string-array>
+    <string-array name="recipe_avocado_toast_steps">
+        <item>Toast the bread.</item>
+        <item>Mash the avocado with lemon, salt and pepper.</item>
+        <item>Spread it on the bread and top with sliced tomato.</item>
+    </string-array>
+    <string name="recipe_scrambled_eggs_with_spinach">Scrambled eggs with spinach</string>
+    <string-array name="recipe_scrambled_eggs_with_spinach_ingredients">
+        <item>2 eggs</item>
+        <item>2 handfuls of spinach</item>
+        <item>1 tsp butter</item>
+        <item>1 tbsp milk</item>
+        <item>Salt and pepper</item>
+    </string-array>
+    <string-array name="recipe_scrambled_eggs_with_spinach_steps">
+        <item>Let the spinach wilt in the butter.</item>
+        <item>Whisk the eggs with the milk and pour them in.</item>
+        <item>Stir gently until creamy and season to taste.</item>
+    </string-array>
+    <string name="recipe_skyr_with_muesli">Skyr with muesli and blueberries</string>
+    <string-array name="recipe_skyr_with_muesli_ingredients">
+        <item>1½ dl skyr or plain yoghurt</item>
+        <item>½ dl muesli</item>
+        <item>1 dl blueberries</item>
+        <item>1 tsp pumpkin seeds</item>
+    </string-array>
+    <string-array name="recipe_skyr_with_muesli_steps">
+        <item>Put the skyr in a bowl.</item>
+        <item>Top with the muesli, blueberries and pumpkin seeds.</item>
+    </string-array>
+    <string name="recipe_smoked_salmon_rye">Rye bread with smoked salmon and cucumber</string>
+    <string-array name="recipe_smoked_salmon_rye_ingredients">
+        <item>2 slices of rye bread</item>
+        <item>50 g smoked salmon</item>
+        <item>5 cm cucumber</item>
+        <item>A few sprigs of dill</item>
+        <item>½ lemon</item>
+    </string-array>
+    <string-array name="recipe_smoked_salmon_rye_steps">
+        <item>Put the salmon, sliced cucumber and dill on the bread.</item>
+        <item>Squeeze the lemon over before eating.</item>
+    </string-array>
+    <string name="recipe_banana_oat_pancakes">Banana and oat pancakes</string>
+    <string-array name="recipe_banana_oat_pancakes_ingredients">
+        <item>1 banana</item>
+        <item>1 dl rolled oats</item>
+        <item>1 dl oat drink</item>
+        <item>1 tsp rapeseed oil</item>
+        <item>½ tsp baking powder</item>
+    </string-array>
+    <string-array name="recipe_banana_oat_pancakes_steps">
+        <item>Mash the banana and mix it with the oats, oat drink and baking powder.</item>
+        <item>Fry small pancakes in the oil over medium heat.</item>
+    </string-array>
+    <string name="recipe_mango_smoothie_bowl">Mango smoothie bowl with oats</string>
+    <string-array name="recipe_mango_smoothie_bowl_ingredients">
+        <item>1 dl frozen mango</item>
+        <item>1 banana</item>
+        <item>2 handfuls of spinach</item>
+        <item>1 dl oat drink</item>
+        <item>½ dl rolled oats</item>
+        <item>1 tbsp pumpkin seeds</item>
+    </string-array>
+    <string-array name="recipe_mango_smoothie_bowl_steps">
+        <item>Blend the mango, banana, spinach and oat drink until smooth.</item>
+        <item>Pour into a bowl and top with the oats and pumpkin seeds.</item>
+    </string-array>
+    <string name="recipe_tofu_scramble_on_rye">Tofu scramble on rye bread</string>
+    <string-array name="recipe_tofu_scramble_on_rye_ingredients">
+        <item>100 g firm tofu</item>
+        <item>1 slice of rye bread</item>
+        <item>½ red pepper</item>
+        <item>2 tbsp oat drink</item>
+        <item>1 tsp turmeric</item>
+        <item>1 tsp oil, salt and pepper</item>
+    </string-array>
+    <string-array name="recipe_tofu_scramble_on_rye_steps">
+        <item>Crumble the tofu.</item>
+        <item>Fry the pepper in the oil, then add the tofu, turmeric and oat drink and cook for 5 minutes.</item>
+        <item>Serve on the bread.</item>
+    </string-array>
+    <string name="recipe_breakfast_burrito">Breakfast burrito with egg and vegetables</string>
+    <string-array name="recipe_breakfast_burrito_ingredients">
+        <item>1 whole grain tortilla</item>
+        <item>1 egg</item>
+        <item>½ tomato</item>
+        <item>¼ avocado</item>
+        <item>2 tbsp grated cheese</item>
+        <item>A few lettuce leaves</item>
+    </string-array>
+    <string-array name="recipe_breakfast_burrito_steps">
+        <item>Whisk and scramble the egg.</item>
+        <item>Warm the tortilla.</item>
+        <item>Fill with the egg, tomato, avocado, cheese and lettuce and roll it up.</item>
+    </string-array>
+    <string name="recipe_swedish_meatballs">Swedish meatballs with cauliflower mash and lingonberries</string>
+    <string-array name="recipe_swedish_meatballs_ingredients">
+        <item>125 g minced beef and pork</item>
+        <item>1 tbsp breadcrumbs</item>
+        <item>2 tbsp milk</item>
+        <item>½ egg</item>
+        <item>½ onion</item>
+        <item>200 g cauliflower</item>
+        <item>1 potato</item>
+        <item>1 tbsp butter</item>
+        <item>2 tbsp lingonberries</item>
+        <item>Salt and pepper</item>
+    </string-array>
+    <string-array name="recipe_swedish_meatballs_steps">
+        <item>Mix the mince with breadcrumbs, milk, egg and grated onion.</item>
+        <item>Roll small meatballs and fry them in the butter.</item>
+        <item>Boil the cauliflower and potato and mash them with a little butter.</item>
+        <item>Serve the meatballs with the mash and lingonberries.</item>
+    </string-array>
+    <string name="recipe_falafel_with_couscous">Falafel with couscous and tomato salad</string>
+    <string-array name="recipe_falafel_with_couscous_ingredients">
+        <item>150 g cooked chickpeas</item>
+        <item>½ onion</item>
+        <item>1 clove of garlic</item>
+        <item>1 tbsp flour</item>
+        <item>1 tsp cumin</item>
+        <item>1 tbsp tahini</item>
+        <item>¾ dl couscous</item>
+        <item>1 tomato</item>
+        <item>10 cm cucumber</item>
+        <item>½ lemon</item>
+        <item>1 tsp olive oil, salt and pepper</item>
+    </string-array>
+    <string-array name="recipe_falafel_with_couscous_steps">
+        <item>Mash the chickpeas with the onion, garlic, flour and cumin.</item>
+        <item>Shape into small patties and fry them in the oil.</item>
+        <item>Pour boiling water over the couscous and let it swell.</item>
+        <item>Mix the tomato, cucumber, tahini and lemon and serve with the falafel.</item>
+    </string-array>
+    <string name="recipe_salmon_soup">Creamy salmon soup with potatoes and leek</string>
+    <string-array name="recipe_salmon_soup_ingredients">
+        <item>125 g salmon</item>
+        <item>2 potatoes</item>
+        <item>½ leek</item>
+        <item>1 carrot</item>
+        <item>2 dl vegetable stock</item>
+        <item>1 dl cream</item>
+        <item>1 tsp butter</item>
+        <item>Dill, salt and pepper</item>
+    </string-array>
+    <string-array name="recipe_salmon_soup_steps">
+        <item>Soften the leek and carrot in the butter.</item>
+        <item>Add the potatoes and stock and simmer for 10 minutes.</item>
+        <item>Add the salmon and cream and simmer for 5 minutes.</item>
+        <item>Season with dill, salt and pepper.</item>
+    </string-array>
+    <string name="recipe_shrimp_pasta">Pasta with prawns and tomato</string>
+    <string-array name="recipe_shrimp_pasta_ingredients">
+        <item>75 g whole grain pasta</item>
+        <item>100 g prawns</item>
+        <item>200 g crushed tomatoes</item>
+        <item>1 clove of garlic</item>
+        <item>½ red pepper</item>
+        <item>1 tsp olive oil</item>
+        <item>Basil, salt and pepper</item>
+    </string-array>
+    <string-array name="recipe_shrimp_pasta_steps">
+        <item>Cook the pasta as the packet says.</item>
+        <item>Fry the garlic and pepper in the oil, add the tomatoes and simmer for 5 minutes.</item>
+        <item>Add the prawns for 2 minutes and toss with the pasta.</item>
+        <item>Top with basil.</item>
+    </string-array>
+    <string name="recipe_tofu_vegetable_curry">Tofu and vegetable curry with brown rice</string>
+    <string-array name="recipe_tofu_vegetable_curry_ingredients">
+        <item>100 g firm tofu</item>
+        <item>¾ dl brown rice</item>
+        <item>1 dl coconut milk</item>
+        <item>½ red pepper</item>
+        <item>1 carrot</item>
+        <item>2 handfuls of spinach</item>
+        <item>½ onion</item>
+        <item>1 tsp curry powder and 1 tsp oil</item>
+    </string-array>
+    <string-array name="recipe_tofu_vegetable_curry_steps">
+        <item>Cook the rice as the packet says.</item>
+        <item>Fry the tofu cubes in the oil and set them aside.</item>
+        <item>Fry the onion, pepper and carrot with the curry powder, then add the coconut milk and simmer.</item>
+        <item>Return the tofu, stir in the spinach and serve with the rice.</item>
+    </string-array>
+    <string name="recipe_swedish_pea_soup">Swedish pea soup with rye bread</string>
+    <string-array name="recipe_swedish_pea_soup_ingredients">
+        <item>1 dl dried yellow peas</item>
+        <item>50 g pork</item>
+        <item>½ onion</item>
+        <item>1 carrot</item>
+        <item>5 dl water</item>
+        <item>1 tsp marjoram</item>
+        <item>1 slice of rye bread</item>
+        <item>1 tsp mustard</item>
+    </string-array>
+    <string-array name="recipe_swedish_pea_soup_steps">
+        <item>Soak the peas overnight.</item>
+        <item>Simmer the peas, pork, onion and carrot for 30–40 minutes.</item>
+        <item>Season with marjoram and serve with the rye bread and mustard.</item>
+    </string-array>
+    <string name="recipe_root_vegetable_lentil_soup">Root vegetable and lentil soup with rye bread</string>
+    <string-array name="recipe_root_vegetable_lentil_soup_ingredients">
+        <item>½ dl red lentils</item>
+        <item>1 carrot</item>
+        <item>1 parsnip</item>
+        <item>1 potato</item>
+        <item>½ onion</item>
+        <item>1 clove of garlic</item>
+        <item>5 dl vegetable stock</item>
+        <item>1 tsp oil</item>
+        <item>1 slice of rye bread, salt and pepper</item>
+    </string-array>
+    <string-array name="recipe_root_vegetable_lentil_soup_steps">
+        <item>Soften the onion, garlic, carrot and parsnip in the oil.</item>
+        <item>Add the lentils, potato and stock and simmer for 20 minutes.</item>
+        <item>Season to taste and serve with the bread.</item>
+    </string-array>
+    <string name="recipe_chicken_tikka_with_rice">Chicken tikka with rice and yoghurt</string>
+    <string-array name="recipe_chicken_tikka_with_rice_ingredients">
+        <item>125 g chicken fillet</item>
+        <item>½ dl plain yoghurt</item>
+        <item>1 tsp curry powder</item>
+        <item>½ dl brown rice</item>
+        <item>100 g crushed tomatoes</item>
+        <item>½ onion</item>
+        <item>2 handfuls of spinach</item>
+        <item>1 tsp oil and salt</item>
+    </string-array>
+    <string-array name="recipe_chicken_tikka_with_rice_steps">
+        <item>Marinate the chicken in the yoghurt and curry powder for 10 minutes.</item>
+        <item>Cook the rice as the packet says.</item>
+        <item>Fry the onion and chicken, add the tomatoes and simmer.</item>
+        <item>Stir in the spinach and serve with the rice.</item>
+    </string-array>
+    <string name="recipe_cod_with_dill">Cod with dill and new potatoes</string>
+    <string-array name="recipe_cod_with_dill_ingredients">
+        <item>125 g cod</item>
+        <item>3 new potatoes</item>
+        <item>100 g green peas</item>
+        <item>1 tbsp butter</item>
+        <item>1 tbsp chopped dill</item>
+        <item>½ lemon, salt and pepper</item>
+    </string-array>
+    <string-array name="recipe_cod_with_dill_steps">
+        <item>Boil the potatoes and peas.</item>
+        <item>Fry the cod in the butter for 3–4 minutes on each side.</item>
+        <item>Serve with the peas, dill and lemon.</item>
+    </string-array>
+    <string name="recipe_halloumi_skewers">Halloumi skewers with vegetables and flatbread</string>
+    <string-array name="recipe_halloumi_skewers_ingredients">
+        <item>75 g halloumi</item>
+        <item>½ courgette</item>
+        <item>½ red pepper</item>
+        <item>½ red onion</item>
+        <item>1 tsp olive oil</item>
+        <item>1 whole grain flatbread</item>
+        <item>2 tbsp plain yoghurt</item>
+        <item>1 tsp lemon juice</item>
+    </string-array>
+    <string-array name="recipe_halloumi_skewers_steps">
+        <item>Thread the halloumi and vegetables onto skewers and brush with the oil.</item>
+        <item>Grill or fry for 8–10 minutes.</item>
+        <item>Warm the flatbread and mix the yoghurt with the lemon juice. Serve alongside.</item>
+    </string-array>
+    <string name="recipe_jacket_potato_with_beans">Jacket potato with beans and cheese</string>
+    <string-array name="recipe_jacket_potato_with_beans_ingredients">
+        <item>1 large potato</item>
+        <item>150 g white beans in tomato sauce</item>
+        <item>2 tbsp grated cheese</item>
+        <item>1 handful of salad</item>
+        <item>1 tsp butter, salt and pepper</item>
+    </string-array>
+    <string-array name="recipe_jacket_potato_with_beans_steps">
+        <item>Bake or microwave the potato until soft.</item>
+        <item>Warm the beans.</item>
+        <item>Split the potato and fill it with the butter, beans, cheese and salad.</item>
+    </string-array>
+    <string name="recipe_buckwheat_salad">Buckwheat salad with roasted vegetables and chickpeas</string>
+    <string-array name="recipe_buckwheat_salad_ingredients">
+        <item>¾ dl buckwheat</item>
+        <item>½ courgette</item>
+        <item>½ red pepper</item>
+        <item>100 g cooked chickpeas</item>
+        <item>1 tbsp olive oil</item>
+        <item>½ lemon</item>
+        <item>1 handful of parsley, salt and pepper</item>
+    </string-array>
+    <string-array name="recipe_buckwheat_salad_steps">
+        <item>Cook the buckwheat as the packet says.</item>
+        <item>Roast the courgette and pepper with the oil for 15 minutes.</item>
+        <item>Mix with the chickpeas, buckwheat, lemon and parsley.</item>
+    </string-array>
+    <string name="recipe_fish_cakes_with_potatoes">Fish cakes with potatoes and peas</string>
+    <string-array name="recipe_fish_cakes_with_potatoes_ingredients">
+        <item>125 g white fish</item>
+        <item>1 potato</item>
+        <item>1 tbsp breadcrumbs</item>
+        <item>½ egg</item>
+        <item>1 tbsp milk</item>
+        <item>1 tbsp butter</item>
+        <item>100 g peas</item>
+        <item>½ lemon, salt and pepper</item>
+    </string-array>
+    <string-array name="recipe_fish_cakes_with_potatoes_steps">
+        <item>Boil and mash the potato.</item>
+        <item>Mix the fish with the potato, breadcrumbs, egg and milk and shape into cakes.</item>
+        <item>Fry in the butter for 3 minutes on each side.</item>
+        <item>Boil the peas and serve with the lemon.</item>
+    </string-array>
+    <string name="recipe_spinach_ricotta_lasagna">Spinach and ricotta lasagna</string>
+    <string-array name="recipe_spinach_ricotta_lasagna_ingredients">
+        <item>4 lasagna sheets</item>
+        <item>150 g ricotta</item>
+        <item>2 handfuls of spinach</item>
+        <item>200 g crushed tomatoes</item>
+        <item>½ onion</item>
+        <item>1 clove of garlic</item>
+        <item>2 tbsp grated cheese</item>
+        <item>1 tsp oil, salt and pepper</item>
+    </string-array>
+    <string-array name="recipe_spinach_ricotta_lasagna_steps">
+        <item>Fry the onion and garlic in the oil and add the tomatoes. Simmer, then stir in the spinach.</item>
+        <item>Layer the sheets with tomato sauce, spinach and ricotta.</item>
+        <item>Top with cheese and bake at 200 °C for 25–30 minutes.</item>
+    </string-array>
+    <string name="recipe_beef_and_root_vegetable_stew">Beef and root vegetable stew</string>
+    <string-array name="recipe_beef_and_root_vegetable_stew_ingredients">
+        <item>125 g beef</item>
+        <item>2 potatoes</item>
+        <item>1 carrot</item>
+        <item>1 parsnip</item>
+        <item>½ onion</item>
+        <item>1 stalk of celery</item>
+        <item>3 dl beef stock</item>
+        <item>1 tsp oil, salt and pepper</item>
+    </string-array>
+    <string-array name="recipe_beef_and_root_vegetable_stew_steps">
+        <item>Brown the beef in the oil.</item>
+        <item>Add the chopped vegetables and the stock and simmer covered for 30 minutes.</item>
+        <item>Season to taste.</item>
+    </string-array>
+    <string name="recipe_minute_steak_with_tomato_salad">Minute steak with tomato salad</string>
+    <string-array name="recipe_minute_steak_with_tomato_salad_ingredients">
+        <item>125 g minute steak</item>
+        <item>2 tomatoes</item>
+        <item>½ red onion</item>
+        <item>1 handful of rocket</item>
+        <item>1 tsp olive oil</item>
+        <item>½ lemon, salt and pepper</item>
+    </string-array>
+    <string-array name="recipe_minute_steak_with_tomato_salad_steps">
+        <item>Season the steak and fry it for 1–2 minutes on each side, then let it rest.</item>
+        <item>Mix the tomatoes, onion, rocket, oil and lemon and serve alongside.</item>
+    </string-array>
+    <string name="recipe_rice_noodles_with_prawns">Rice noodles with prawns and vegetables</string>
+    <string-array name="recipe_rice_noodles_with_prawns_ingredients">
+        <item>75 g rice noodles</item>
+        <item>100 g prawns</item>
+        <item>1 carrot</item>
+        <item>½ red pepper</item>
+        <item>2 handfuls of cabbage</item>
+        <item>1 tbsp soy sauce</item>
+        <item>1 tsp oil</item>
+        <item>1 clove of garlic and 1 tsp grated ginger</item>
+    </string-array>
+    <string-array name="recipe_rice_noodles_with_prawns_steps">
+        <item>Soak the noodles as the packet says.</item>
+        <item>Stir-fry the garlic, ginger and vegetables in the oil.</item>
+        <item>Add the prawns for 2 minutes, then the noodles and soy sauce, and toss.</item>
+    </string-array>
+    <string name="recipe_chana_masala">Chana masala with rice</string>
+    <string-array name="recipe_chana_masala_ingredients">
+        <item>150 g cooked chickpeas</item>
+        <item>¾ dl brown rice</item>
+        <item>200 g crushed tomatoes</item>
+        <item>½ onion</item>
+        <item>1 clove of garlic</item>
+        <item>1 tsp garam masala</item>
+        <item>½ tsp turmeric</item>
+        <item>1 tsp oil and salt</item>
+    </string-array>
+    <string-array name="recipe_chana_masala_steps">
+        <item>Cook the rice as the packet says.</item>
+        <item>Fry the onion and garlic in the oil and add the spices.</item>
+        <item>Add the tomatoes and chickpeas and simmer for 15 minutes.</item>
+        <item>Serve with the rice.</item>
+    </string-array>
+    <string name="recipe_banana_with_peanut_butter">Banana with peanut butter</string>
+    <string-array name="recipe_banana_with_peanut_butter_ingredients">
+        <item>1 banana</item>
+        <item>1 tbsp peanut butter</item>
+    </string-array>
+    <string-array name="recipe_banana_with_peanut_butter_steps">
+        <item>Slice the banana and spread or dip it in the peanut butter.</item>
+    </string-array>
+    <string name="recipe_edamame">Edamame with sea salt</string>
+    <string-array name="recipe_edamame_ingredients">
+        <item>150 g frozen edamame beans</item>
+        <item>A pinch of sea salt</item>
+    </string-array>
+    <string-array name="recipe_edamame_steps">
+        <item>Boil the edamame for 4–5 minutes.</item>
+        <item>Drain and sprinkle with the salt.</item>
+    </string-array>
+    <string name="recipe_roasted_chickpeas">Roasted chickpeas</string>
+    <string-array name="recipe_roasted_chickpeas_ingredients">
+        <item>150 g cooked chickpeas</item>
+        <item>1 tsp olive oil</item>
+        <item>½ tsp paprika</item>
+        <item>¼ tsp salt</item>
+    </string-array>
+    <string-array name="recipe_roasted_chickpeas_steps">
+        <item>Heat the oven to 200 °C.</item>
+        <item>Dry the chickpeas and toss them with the oil and spices.</item>
+        <item>Roast for 15–20 minutes until crisp.</item>
+    </string-array>
+    <string name="recipe_cottage_cheese_with_tomato">Cottage cheese with tomato and pepper</string>
+    <string-array name="recipe_cottage_cheese_with_tomato_ingredients">
+        <item>1 dl cottage cheese</item>
+        <item>1 tomato</item>
+        <item>½ red pepper</item>
+        <item>Salt and pepper</item>
+    </string-array>
+    <string-array name="recipe_cottage_cheese_with_tomato_steps">
+        <item>Dice the tomato and pepper and mix them with the cottage cheese.</item>
+        <item>Season to taste.</item>
+    </string-array>
+    <string name="recipe_boiled_egg_with_crispbread">Boiled egg with rye crispbread</string>
+    <string-array name="recipe_boiled_egg_with_crispbread_ingredients">
+        <item>1 egg</item>
+        <item>2 rye crispbreads</item>
+        <item>5 cm cucumber</item>
+        <item>Salt</item>
+    </string-array>
+    <string-array name="recipe_boiled_egg_with_crispbread_steps">
+        <item>Boil the egg for 8 minutes and cool it.</item>
+        <item>Peel and slice it and put it on the crispbread with the cucumber.</item>
+        <item>Sprinkle with salt.</item>
+    </string-array>
+    <string name="recipe_tuna_rye_crispbread">Tuna on rye crispbread</string>
+    <string-array name="recipe_tuna_rye_crispbread_ingredients">
+        <item>1 can of tuna in water, about 60 g</item>
+        <item>2 rye crispbreads</item>
+        <item>2 tbsp plain yoghurt</item>
+        <item>5 cm cucumber</item>
+        <item>Dill and pepper</item>
+    </string-array>
+    <string-array name="recipe_tuna_rye_crispbread_steps">
+        <item>Drain the tuna.</item>
+        <item>Mix the yoghurt with dill and pepper and spread it on the crispbread.</item>
+        <item>Top with the tuna and cucumber.</item>
+    </string-array>
+    <string name="recipe_quick_bean_wrap">Quick bean and avocado wrap</string>
+    <string-array name="recipe_quick_bean_wrap_ingredients">
+        <item>1 whole grain tortilla</item>
+        <item>150 g cooked black beans</item>
+        <item>½ avocado</item>
+        <item>1 tomato</item>
+        <item>A few lettuce leaves</item>
+        <item>½ lime</item>
+        <item>½ tsp cumin, salt and pepper</item>
+    </string-array>
+    <string-array name="recipe_quick_bean_wrap_steps">
+        <item>Mash the beans with the lime, cumin, salt and pepper.</item>
+        <item>Warm the tortilla and spread the beans on it.</item>
+        <item>Top with avocado, tomato and lettuce and roll it up.</item>
+    </string-array>
 </resources>

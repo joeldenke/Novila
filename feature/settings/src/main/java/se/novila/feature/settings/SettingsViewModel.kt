@@ -97,6 +97,9 @@ class SettingsViewModel(
         goalsStore.clear()
         foodPreferencesStore.clear()
         measurementsStore.clear()
+        // Clear first, so a worker that is already running reads "off"; then cancel what is still planned.
+        remindersStore.clear()
+        reminderScheduler.cancelAll()
         deleteLegacyPreferences(context)
         // Clear first, so a worker that is already running reads "off"; then cancel what is still planned.
         remindersStore.clear()
