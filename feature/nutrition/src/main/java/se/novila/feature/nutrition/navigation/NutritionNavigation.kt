@@ -7,6 +7,7 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.serialization.Serializable
+import se.novila.feature.nutrition.DrinkActions
 import se.novila.feature.nutrition.NutritionScreen
 import se.novila.feature.nutrition.NutritionViewModel
 import se.novila.feature.nutrition.RecipeActions
@@ -33,6 +34,7 @@ fun EntryProviderScope<NavKey>.nutritionEntry(onOpenFoodPreferences: () -> Unit,
             goals = state.goals,
             onPortions = viewModel::changePortions,
             onTreats = viewModel::changeTreats,
+            drinkActions = DrinkActions(onAdd = viewModel::addDrink, onUndo = viewModel::removeLastDrink),
             contentPadding = contentPadding,
             today = state.today,
             onSelectDay = viewModel::selectDay,

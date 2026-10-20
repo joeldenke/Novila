@@ -8,6 +8,7 @@ import se.novila.model.HistoryRange
 import se.novila.model.Profile
 import se.novila.model.SLEEP_WINDOW_NIGHTS
 import se.novila.model.SleepFactor
+import se.novila.model.glassesOfWater
 import se.novila.model.historyOf
 import se.novila.model.nutritionScore
 import se.novila.movement.MovementState
@@ -35,7 +36,7 @@ object PreviewData {
         diary: String = "",
     ) = DayEntry(
         date.minusDays(daysAgo),
-        waterGlasses = water,
+        drinks = glassesOfWater(water),
         sleepHours = sleep,
         mood = mood,
         energy = energy,
@@ -85,7 +86,7 @@ object PreviewData {
         val like = history[daysAgo % history.size]
         val day = like.copy(date = date, food = foodOn(daysAgo), sleepHours = 0f)
         if (daysAgo % 11 == 0) return day
-        val dayBefore = DayEntry(date, waterGlasses = waterOn(daysAgo + 1), food = foodOn(daysAgo + 1))
+        val dayBefore = DayEntry(date, drinks = glassesOfWater(waterOn(daysAgo + 1)), food = foodOn(daysAgo + 1))
         val ateWellBefore = (dayBefore.nutritionScore()?.total ?: 0) >= GOOD_NUTRITION_SCORE
         val caffeine = daysAgo % 4 == 1
         val effect = (if (ateWellBefore) 1 else 0) - (if (caffeine) 1 else 0)

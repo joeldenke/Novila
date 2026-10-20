@@ -47,7 +47,7 @@ class GoalsTest {
         assertEquals(0.5f, stepsProgress(5000, goals))
         assertEquals(1f, DayEntry(date, sleepHours = 7f).sleepProgress(goals))
         val food = FoodLog(vegetables = 5, meals = 3, protein = 3, wholeGrain = 3)
-        val day = DayEntry(date, waterGlasses = 4, sleepHours = 7f, food = food)
+        val day = DayEntry(date, drinks = glassesOfWater(4), sleepHours = 7f, food = food)
         assertEquals(100, day.balance(steps = 10000, goals = goals))
         assertNull(day.nextPortion(goals))
         assertEquals(NextPortion(FoodGroup.Water, 2), day.nextPortion())

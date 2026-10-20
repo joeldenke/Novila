@@ -93,11 +93,13 @@ fun NutritionScoreCard(today: DayEntry, goals: Goals, isToday: Boolean = true) {
     }
 }
 
-/** Steppers for each food group, water against the user's goal, and for treats, for today or an earlier day. */
+/**
+ * Steppers for each food group and for treats, for today or an earlier day. Water is logged as drinks
+ * ([DrinksCard]).
+ */
 @Composable
 fun FoodLogCard(
     today: DayEntry,
-    goals: Goals,
     onPortions: (FoodGroup, Int) -> Unit,
     onTreats: (Int) -> Unit,
     isToday: Boolean = true,
@@ -105,12 +107,12 @@ fun FoodLogCard(
     val nutrition = NovilaTheme.pillars.nutrition
     NovilaCard(title = stringResource(if (isToday) R.string.food_log_title else R.string.food_log_title_day)) {
         Column(verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.m)) {
-            FoodGroup.entries.forEach { group ->
+            FoodGroup.entries.filter { it != FoodGroup.Water }.forEach { group ->
                 val name = foodName(group)
                 val count = today.portions(group)
                 NovilaStepper(
                     title = name,
-                    value = stringResource(R.string.food_progress, count, group.dailyGoal(goals)),
+                    value = stringResource(R.string.food_progress, count, group.dailyGoal()),
                     onDecrement = { onPortions(group, -1) },
                     onIncrement = { onPortions(group, +1) },
                     decrementDescription = stringResource(R.string.food_remove, name),

@@ -21,7 +21,7 @@ class DayChecklistTest {
         val day = DayEntry(
             date,
             sleepHours = 7.5f,
-            waterGlasses = 8,
+            drinks = glassesOfWater(8),
             food = FoodLog(vegetables = 5, meals = 3, protein = 3, wholeGrain = 3),
         )
         val checklist = dayChecklist(day, Goals(), TrainingToday(plannedMinutes = 30, doneMinutes = 30))
@@ -40,14 +40,14 @@ class DayChecklistTest {
     }
 
     @Test fun `food is done at a good day's score`() {
-        val good = DayEntry(date, waterGlasses = 8, food = FoodLog(vegetables = 5, meals = 3, protein = 2))
+        val good = DayEntry(date, drinks = glassesOfWater(8), food = FoodLog(vegetables = 5, meals = 3, protein = 2))
         val nutrition = dayChecklist(good, Goals(), training).tasks.filterIsInstance<DayTask.Nutrition>().single()
         assertTrue(nutrition.done)
         assertFalse(dayChecklist(DayEntry(date), Goals(), training).tasks[2].done)
     }
 
     @Test fun `water counts towards the user's own goal`() {
-        val day = DayEntry(date, waterGlasses = 6)
+        val day = DayEntry(date, drinks = glassesOfWater(6))
         assertTrue(dayChecklist(day, Goals(waterGlasses = 6), training).tasks.any { it is DayTask.Water && it.done })
         assertFalse(dayChecklist(day, Goals(), training).tasks.any { it is DayTask.Water && it.done })
     }

@@ -11,14 +11,15 @@ class DayHighlightsTest {
     private val walk = CardioLog(CardioType.Walking, 30)
 
     @Test fun `a workout is the latest log before food, water and the night`() {
-        val day = DayEntry(june, sleepHours = 7f, waterGlasses = 2)
+        val day = DayEntry(june, sleepHours = 7f, drinks = glassesOfWater(2))
             .withPortions(FoodGroup.Vegetables, 2)
             .withCardio(CardioLog(CardioType.Cycling, 20))
             .withCardio(walk)
         assertEquals(LatestLog.Cardio(walk), day.latestLog())
         assertEquals(LatestLog.Strength(25), DayEntry(june, sleepHours = 7f).withStrengthSession(25).latestLog())
-        assertEquals(LatestLog.Food(2), DayEntry(june, waterGlasses = 3).withPortions(FoodGroup.Protein, 2).latestLog())
-        assertEquals(LatestLog.Water(3), DayEntry(june, sleepHours = 7f, waterGlasses = 3).latestLog())
+        val ate = DayEntry(june, drinks = glassesOfWater(3)).withPortions(FoodGroup.Protein, 2)
+        assertEquals(LatestLog.Food(2), ate.latestLog())
+        assertEquals(LatestLog.Water(3), DayEntry(june, sleepHours = 7f, drinks = glassesOfWater(3)).latestLog())
         assertEquals(LatestLog.Sleep(7f), DayEntry(june, sleepHours = 7f).latestLog())
         assertNull(DayEntry(june).latestLog())
     }
@@ -42,7 +43,7 @@ class DayHighlightsTest {
     }
 
     @Test fun `what the user did comes first, then the night, then food and water`() {
-        val day = DayEntry(june, sleepHours = 8f, waterGlasses = 8)
+        val day = DayEntry(june, sleepHours = 8f, drinks = glassesOfWater(8))
             .withStrengthSession(30)
             .withPortions(FoodGroup.Vegetables, 5)
         assertEquals(

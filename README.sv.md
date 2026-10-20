@@ -16,7 +16,7 @@ Appen finns på svenska och engelska.
 | **Idag** | Vad du gör nu: hälsning med namn, dagens balans som en ring per del (tryck på en del för att öppna den), *Din dag* (sömn, dagens pass, kost och vatten, var och en med knappen som gör det), och insikter |
 | **Träning** | Veckoprogram efter WHO:s råd (150–300 min kondition, styrka två dagar i veckan, högst +10 % kondition per vecka). En coach på enheten som bygger veckan ur ditt mål, dina dagar, tid per pass, fokus och hänsyn, med skonsam träning för knä, ländrygg, axel, nacke och höft i tre nivåer. 15 illustrerade övningar och ett passläge med set, vila och nedräkning. Konditionspass loggas med "Jag gjorde det" eller läses från Health Connect, och efter passet ändrar ansträngning (RPE) och smärta dosen och ger förslag på nästa nivå |
 | **Sömn** | Läggtid och uppvakning (eller bara timmar, eller natten klockan registrerade, från Health Connect), hur natten kändes och vad som kan ha påverkat den, och vad som påverkar din sömn: samband mellan dagen före (kost, vatten, träning, sött), kvällen och natten, prövade på dina egna loggar och visade med nätterna bakom. En graf över veckan, fyra veckor eller ett år jämförd med perioden innan |
-| **Kost** | Portioner per livsmedelsgrupp, vatten och sött, poäng 0–100 efter Livsmedelsverkets kostråd, ett förslag på nästa steg, recept för det som saknas i dag (efter din kosthållning, allergier och tid), och poängen över veckan, fyra veckor eller ett år jämförd med perioden innan |
+| **Kost** | Portioner per livsmedelsgrupp, drycker (vatten, kaffe, te med mera, per glas, flaska eller valfri mängd; sent koffein ingår i sömnens samband) och sött, poäng 0–100 efter Livsmedelsverkets kostråd, ett förslag på nästa steg, recept för det som saknas i dag (efter din kosthållning, allergier och tid), och poängen över veckan, fyra veckor eller ett år jämförd med perioden innan |
 | **Rörelse** | Dagens steg och aktiva kalorier, de senaste fem veckornas träningspass och dina nätter, från Health Connect, bara medan appen är öppen |
 | **Påminnelser** | Logga sömnen, träna och logga kosten, var och en på egen tid och bara om det inte redan är loggat. Ett WorkManager-jobb per påminnelse och dag, inget annat i bakgrunden |
 | **Widget** | I dag på hemskärmen, på ett frostat kort som släpper igenom bakgrunden: dagens balans, sömn, kostpoäng och vatten, och något uppmuntrande om det du gjort (en sommarpromenad nämner D-vitamin, ett styrkepass nattens sömn). Ett tryck öppnar appen |
@@ -82,7 +82,7 @@ varandra, vilket ett test kontrollerar.
 :feature:today           Vad du gör nu: balans, Din dag, insikter
 :feature:training        Veckoprogram, coach, övningar, passläge
 :feature:sleep           Sömnlogg och historik
-:feature:nutrition       Livsmedelsgrupper, vatten, poäng
+:feature:nutrition       Livsmedelsgrupper, drycker, poäng
 :feature:onboarding      Introduktionen vid första start
 :feature:settings        Inställningar
 :feature:widget          Widgeten på hemskärmen (Glance)

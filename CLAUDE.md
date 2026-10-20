@@ -9,7 +9,7 @@ CI är därför den enda sanningen om att något bygger och fungerar.
 - Jetpack Compose med eget designsystem ovanpå Material 3 1.5 (beta), compileSdk/targetSdk 37, minSdk 26
 - Navigation 3 (`androidx.navigation3`) med en back stack per flik: Idag, Träning, Sömn, Kost
 - Alla versioner i `gradle/libs.versions.toml`. Hårdkoda aldrig versioner i byggfiler.
-- Data lokalt i Preferences DataStore via `HealthStore`, kodat av `DayEntryCodec` (versionerat format, v5 sedan läggtid, uppvakning, sömnkvalitet och orsaker)
+- Data lokalt i Preferences DataStore via `HealthStore`, kodat av `DayEntryCodec` (versionerat format, v7 sedan drycker)
 - DI med [Metro](https://zacsweers.github.io/metro/) (`dev.zacsweers.metro`, Kotlin-kompilatorplugin, ingen KSP).
   Varje skärm har en egen ViewModel (`StateFlow`) i sin feature, skapad av Metro och scopad till sin Navigation 3-entry.
   Ingen delad ViewModel. Skärmarna i `feature/*` är tillståndslösa.
@@ -66,7 +66,7 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   (`HealthConnectExerciseSource`, träningspass) och `SleepSource` (`HealthConnectSleepSource`, nätter), behörigheterna i modulens manifest (`HEALTH_PERMISSIONS`, frågas i en
   dialog via `rememberHealthPermissionRequest`) och integritetsskärmen (`HealthDataInfoActivity`)
 - Ren Kotlin, utan Android (`novila.jvm.library`, testas på sekunder):
-  - `:core:model` – `DayEntry` (`DayEntryCodec`), kost, dagens balans, insikter, dagens sista logg (`LatestLog`) och uppmuntran (`cheers`), `analyzeSleep` (se *Sömnens samband*
+  - `:core:model` – `DayEntry` (`DayEntryCodec`), kost, drycker (`Drink`, se *Drycker* under Regler), dagens balans, insikter, dagens sista logg (`LatestLog`) och uppmuntran (`cheers`), `analyzeSleep` (se *Sömnens samband*
     under Regler), `History` (dagarna över en
     `HistoryRange` i perioder, plus lika många dagar före att jämföra med; Sömn och Kost läser den via `HealthStore`), `Profile`, `Goals` (egna mål för
     steg, sömn och vatten; balans, insikter och kostpoäng mäts mot dem) och `AppSettings` (`ThemeMode`)
@@ -329,6 +329,12 @@ där pluginet `firebase@firebase` inte alltid installeras.
   med den, och säger om de tidigare nätterna bekräftar det. Ändra trösklarna bara medvetet: `SleepAnalysisTest`.
 - **Kostpoäng:** `nutritionScore()` (0–100) viktar livsmedelsgrupper efter Livsmedelsverkets kostråd (`FoodGroup`) med
   avdrag för sött och snacks. Ändra vikterna bara medvetet: `NutritionTest` och dagens balans bygger på dem.
+- **Drycker:** vätska loggas som `Drink` (slag, ml, klockslag) i `DayEntry.drinks`, per glas, flaska eller valfri mängd
+  (`DrinksCard` på Kost). Vatten, kaffe, te och mjölk räknas mot vattenmålet (`DrinkKind.hydrates`, `waterGlasses` är
+  hela glas à `Goals.GLASS_ML`); juice, läsk och energidryck loggas men räknas inte. Koffein från kl. 14 räknas som sent
+  koffein i `analyzeSleep` (`DayEntry.lateCaffeine`), med samma trösklar som andra samband. Appen räknar aldrig ut
+  koffein i mg, näringsämnen eller kosttillskott: det kräver en livsmedelsdatabas och närmar sig hälsopåståenden
+  (förordning 1924/2006). Lägg inte till det utan att ägaren ber om det.
 - **Recept:** förslagen väljs alltid deterministiskt ur `Recipe` (testat i `RecipeSuggestionsTest`), aldrig
   genererade av Gemini Nano eller någon annan modell: ett påhittat recept kan innehålla något användaren är allergisk
   mot. Ett recept som innehåller en av användarens allergener föreslås aldrig, och kortet ber alltid användaren

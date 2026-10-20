@@ -29,14 +29,15 @@ import se.novila.exercise.ExerciseRepository
 import se.novila.exercise.ExerciseState
 import se.novila.model.CONNECTION_WINDOW_DAYS
 import se.novila.model.Connection
-import se.novila.model.FoodGroup
+import se.novila.model.Drink
+import se.novila.model.DrinkKind
 import se.novila.model.Goals
 import se.novila.model.SLEEP_WINDOW_NIGHTS
 import se.novila.model.SleepAnalysis
 import se.novila.model.TrainingToday
 import se.novila.model.analyzeSleep
 import se.novila.model.connections
-import se.novila.model.withPortions
+import se.novila.model.withDrink
 import se.novila.movement.MovementRepository
 import se.novila.movement.MovementState
 import se.novila.recovery.RecoveryRepository
@@ -50,6 +51,7 @@ import se.novila.sleep.nightsByDate
 import se.novila.sleep.withNight
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 
 /**
  * The dashboard: the week so far, and [hour] of day when it was read, the user's [name] for the greeting, the
@@ -175,5 +177,6 @@ class TodayViewModel(
     }
 
     /** One more glass of water today, from the checklist. */
-    fun addWater() = store.update(LocalDate.now()) { it.withPortions(FoodGroup.Water, +1) }
+    fun addWater() =
+        store.update(LocalDate.now()) { it.withDrink(Drink(DrinkKind.Water, Goals.GLASS_ML, LocalTime.now())) }
 }

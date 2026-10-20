@@ -43,7 +43,7 @@ data class Reminders(
 fun Reminder.isNeeded(day: DayEntry, trainingDay: Boolean): Boolean = when (this) {
     Reminder.Sleep -> day.sleepHours == 0f
     Reminder.Training -> trainingDay && day.strengthMinutes == 0 && day.cardio.isEmpty()
-    Reminder.Nutrition -> day.food == FoodLog() && day.waterGlasses == 0
+    Reminder.Nutrition -> day.food == FoodLog() && day.drinks.isEmpty()
 }
 
 /** A reminder that comes this much later than planned (the phone was asleep, say) is no longer timely. */

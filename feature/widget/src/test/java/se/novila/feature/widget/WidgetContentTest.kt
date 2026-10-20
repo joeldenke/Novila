@@ -14,6 +14,7 @@ import se.novila.model.CardioLog
 import se.novila.model.CardioType
 import se.novila.model.DayEntry
 import se.novila.model.Goals
+import se.novila.model.glassesOfWater
 import java.time.LocalDate
 
 @RunWith(RobolectricTestRunner::class)
@@ -28,7 +29,7 @@ class WidgetContentTest {
     }
 
     @Test fun `shows the balance and the parts of the day`() = show(
-        DayEntry(june, sleepHours = 7.5f, waterGlasses = 3),
+        DayEntry(june, sleepHours = 7.5f, drinks = glassesOfWater(3)),
         Goals(waterGlasses = 8),
     ) {
         onNode(hasText("Today's balance")).assertExists()
@@ -37,7 +38,7 @@ class WidgetContentTest {
     }
 
     @Test fun `has no way to log water`() = show(
-        DayEntry(june, sleepHours = 7.5f, waterGlasses = 3),
+        DayEntry(june, sleepHours = 7.5f, drinks = glassesOfWater(3)),
         Goals(waterGlasses = 8),
     ) {
         onNode(hasText("+ Glass of water")).assertDoesNotExist()
