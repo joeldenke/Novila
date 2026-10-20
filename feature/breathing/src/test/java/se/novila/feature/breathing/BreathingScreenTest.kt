@@ -2,43 +2,34 @@ package se.novila.feature.breathing
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasScrollToNodeAction
-import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performScrollTo
-import androidx.compose.ui.test.performScrollToNode
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import se.novila.designsystem.theme.NovilaTheme
 
 @RunWith(RobolectricTestRunner::class)
+@Config(qualifiers = "w411dp-h1600dp")
 class BreathingScreenTest {
     @get:Rule val composeRule = createComposeRule()
-
-    private fun scrollTo(text: String) {
-        composeRule.onNode(hasScrollToNodeAction()).performScrollToNode(hasText(text))
-    }
 
     @Test fun `the list shows every session with its length and a start button`() {
         composeRule.setContent {
             NovilaTheme { BreathingScreen(BreathingActions(), PaddingValues()) }
         }
 
-        scrollTo("Calm breathing")
         composeRule.onNodeWithText("Calm breathing").assertIsDisplayed()
         composeRule.onNodeWithText("About 1 min").assertIsDisplayed()
-        composeRule.onNodeWithContentDescription("Start Calm breathing").performScrollTo().assertIsDisplayed()
-
-        scrollTo("4-7-8 breathing")
+        composeRule.onNodeWithContentDescription("Start Calm breathing").assertIsDisplayed()
         composeRule.onNodeWithText("4-7-8 breathing").assertIsDisplayed()
         composeRule.onNodeWithText("About 1 min 16 s").assertIsDisplayed()
-        composeRule.onNodeWithContentDescription("Start 4-7-8 breathing").performScrollTo().assertIsDisplayed()
+        composeRule.onNodeWithContentDescription("Start 4-7-8 breathing").assertIsDisplayed()
     }
 
     @Test fun `starting a session opens it by id`() {
@@ -47,8 +38,7 @@ class BreathingScreenTest {
             NovilaTheme { BreathingScreen(BreathingActions(onOpenSession = { opened = it }), PaddingValues()) }
         }
 
-        scrollTo("Box breathing")
-        composeRule.onNodeWithContentDescription("Start Box breathing").performScrollTo().performClick()
+        composeRule.onNodeWithContentDescription("Start Box breathing").performClick()
         assertEquals("box", opened)
     }
 
@@ -58,10 +48,10 @@ class BreathingScreenTest {
         }
 
         // Six seconds into box breathing is the hold after the in-breath.
-        composeRule.onNodeWithText("Hold").performScrollTo().assertIsDisplayed()
-        composeRule.onNodeWithText("Round 1 of 5").performScrollTo().assertIsDisplayed()
-        composeRule.onNodeWithText("1:14 left").performScrollTo().assertIsDisplayed()
-        composeRule.onNodeWithText("Pause").performScrollTo().assertIsDisplayed()
+        composeRule.onNodeWithText("Hold").assertIsDisplayed()
+        composeRule.onNodeWithText("Round 1 of 5").assertIsDisplayed()
+        composeRule.onNodeWithText("1:14 left").assertIsDisplayed()
+        composeRule.onNodeWithText("Pause").assertIsDisplayed()
     }
 
     @Test fun `pause and restart are wired to the screen's actions`() {
@@ -78,8 +68,8 @@ class BreathingScreenTest {
             }
         }
 
-        composeRule.onNodeWithText("Continue").performScrollTo().performClick()
-        composeRule.onNodeWithText("Start again").performScrollTo().performClick()
+        composeRule.onNodeWithText("Continue").performClick()
+        composeRule.onNodeWithText("Start again").performClick()
         assertEquals(1, toggled)
         assertEquals(1, restarted)
     }
@@ -95,7 +85,7 @@ class BreathingScreenTest {
             }
         }
 
-        composeRule.onNodeWithText("Session complete").performScrollTo().assertIsDisplayed()
-        composeRule.onNodeWithText("Start again").performScrollTo().assertIsDisplayed()
+        composeRule.onNodeWithText("Session complete").assertIsDisplayed()
+        composeRule.onNodeWithText("Start again").assertIsDisplayed()
     }
 }
