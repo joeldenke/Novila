@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Andning och återhämtning -->
+    <string name="breathing_title">Andning och avslappning</string>
+    <string name="breathing_intro">Korta guidade andningsövningar för att varva ner, eller för att somna lättare. Följ cirkeln: den växer när du andas in och krymper när du andas ut.</string>
+    <string name="breathing_session_calm">Lugn andning</string>
+    <string name="breathing_session_calm_body">En aning längre utandning, för att landa på en minut.</string>
+    <string name="breathing_session_box">Boxandning</string>
+    <string name="breathing_session_box_body">Fyra lika långa delar: in, håll, ut, håll. Jämnt och lugnt.</string>
+    <string name="breathing_session_four_seven_eight">4-7-8-andning</string>
+    <string name="breathing_session_four_seven_eight_body">En lång, långsam utandning. Ett lugnt val för kvällen.</string>
+    <string name="breathing_time" translatable="false">%1$d:%2$02d</string>
+    <string name="breathing_duration_about">Cirka %1$s</string>
+    <string name="breathing_duration_minutes">%1$d min</string>
+    <string name="breathing_duration_seconds">%1$d s</string>
+    <string name="breathing_duration_minutes_seconds">%1$d min %2$d s</string>
+    <string name="breathing_start">Börja</string>
+    <string name="breathing_start_session">Börja %1$s</string>
+    <string name="breathing_round">Runda %1$d av %2$d</string>
+    <string name="breathing_remaining">%1$s kvar</string>
+    <string name="breathing_phase_inhale">Andas in</string>
+    <string name="breathing_phase_hold_in">Håll</string>
+    <string name="breathing_phase_exhale">Andas ut</string>
+    <string name="breathing_phase_hold_out">Håll</string>
+    <string name="breathing_pause">Pausa</string>
+    <string name="breathing_resume">Fortsätt</string>
+    <string name="breathing_restart">Börja om</string>
+    <string name="breathing_done_title">Övningen är klar</string>
+    <string name="breathing_done_body">Stanna en stund och känn efter.</string>
+    <string name="breathing_note">Andas bekvämt i din egen takt. Räkningen är en ledtråd, inte ett mål.</string>
+    <string name="breathing_footer">Novila sparar inte dina övningar. De är stunder för dig, inte en poäng.</string>
+</resources>
