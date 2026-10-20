@@ -3,7 +3,7 @@
     <!-- Training program -->
     <string name="program_title">This week\'s program</string>
     <string name="program_summary">%1$d minutes of cardio and strength on %2$d days a week.</string>
-    <string name="program_basis">Based on WHO\'s activity guidelines and your recent workouts. Cardio time rises by at most a tenth a week.</string>
+    <string name="program_basis">Based on the WHO\'s activity guidelines and your recent workouts. Cardio time rises by at most a tenth a week.</string>
     <string name="program_done">Done</string>
     <string name="minutes_value" translatable="false">%1$d min</string>
     <string name="exercise_walking">Brisk walk</string>
@@ -119,7 +119,7 @@
         <item>Nod slowly, bringing your chin down towards your chest.</item>
         <item>Return just as slowly to looking straight ahead.</item>
     </string-array>
-    <string name="move_neck_nod_tip">Keep the movement small and slow. Stop if it makes the pain worse.</string>
+    <string name="move_neck_nod_tip">Keep the movement small and slow. Stop if it hurts.</string>
     <string name="move_figure_description">%1$s. Works %2$s.</string>
     <string name="dose_reps" translatable="false">%1$d × %2$d</string>
     <string name="dose_reps_per_side">%1$d × %2$d per side</string>
@@ -206,7 +206,7 @@
     <string name="movement_title">Today\'s movement</string>
     <string name="movement_active_calories">Active calories</string>
     <string name="movement_source">From Health Connect. Novila only reads it and stores nothing.</string>
-    <string name="movement_connect_body">See today\'s steps and active calories from your watch or phone, via Health Connect, let the week\'s program count the workouts your watch recorded and fill in your sleep from it. Novila only reads them and the data stays on your phone.</string>
+    <string name="movement_connect_body">Connect Health Connect to see today\'s steps and active calories from your watch or phone, let the week\'s program count the workouts your watch recorded, fill in your sleep from it, and let your resting heart rate and HRV lighten a session while you recover. Novila only reads the data and it stays on your phone.</string>
     <string name="movement_connect">Connect Health Connect</string>
     <string name="movement_denied_body">Access was declined. You can allow it for Novila in Health Connect.</string>
     <string name="movement_install_body">Health Connect needs to be installed or updated to show your steps and active calories.</string>
@@ -258,7 +258,7 @@
     <string name="coach_create">Create my program</string>
     <string name="coach_suggest">Suggest another program</string>
     <string name="coach_reset">Use the standard program</string>
-    <string name="coach_note_goal_health">All-round health: full-body strength and cardio along WHO\'s guidelines.</string>
+    <string name="coach_note_goal_health">All-round health: full-body strength and cardio along the WHO\'s guidelines.</string>
     <string name="coach_note_goal_strength">Getting stronger: more sets, longer rests and a third strength day when you have the time.</string>
     <string name="coach_note_goal_endurance">Better fitness: more cardio days, more repetitions and shorter rests.</string>
     <string name="coach_note_goal_mobility">Mobility: mobility sessions and calm exercises for the back and hips.</string>
@@ -308,7 +308,7 @@
     <string name="coach_note_rehab_stay">The latest session hurt %1$d of 10. Stay at this level until the pain is at most 3 of 10 and has settled by the next morning.</string>
     <string name="coach_note_rehab_step_back">The latest session hurt %1$d of 10, more than the program should. The coach suggests going back to level %2$d.</string>
     <string name="coach_note_rehab_seek_care">The latest session hurt %1$d of 10 already at the first level. Rest for a few days and talk to a physiotherapist or your health centre before going on.</string>
-    <string name="coach_note_rehab_done">The last level is calm: %1$d sessions in a row with pain at most 3 of 10. Keep going, or change the goal to Health for ordinary training.</string>
+    <string name="coach_note_rehab_done">The last level is calm: %1$d sessions in a row with pain at most 3 of 10. Keep going, or change the goal to All-round health for ordinary training.</string>
     <string name="coach_rehab_change_phase">Change to level %1$d</string>
     <string name="coach_ai_title">The coach\'s comment</string>
     <string name="coach_ai_unavailable">Gemini Nano is not available on this phone, so the coach explains the week with its own reasons above.</string>

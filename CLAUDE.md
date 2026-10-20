@@ -32,7 +32,7 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   `NovilaSceneImage` med parallax), namn, mål och tid för coachen, Health Connect och en sammanfattning i `NovilaHeroBanner`.
   Visas ensam (utan flikar) tills `AppSettings.onboarded` är satt; `NovilaApp` ger den en egen entry via
   `rememberStandaloneEntries`. Kan visas igen från Inställningar.
-- `:feature:settings` – Inställningar (profil, *Mina mål*, tema, påminnelser, Health Connect, ansvarsfriskrivning, radera data, introduktionen, version).
+- `:feature:settings` – Inställningar (profil, *Mina mål*, tema, påminnelser, Health Connect, ansvarsfriskrivning, radera data, integritetspolicy, licenser, introduktionen, version).
   Ingen flik: öppnas med kugghjulet i toppraden (på Idag i hälsningen) och läggs på aktuell fliks back stack. `Navigator` flyttar
   den om den öppnas från en annan flik, så samma nyckel aldrig ligger i två stackar som visas samtidigt.
 - `:feature:widget` – widgeten på hemskärmen (Glance): `NovilaWidget` visar dagens balans, sömn, kost och vatten samt
@@ -139,6 +139,8 @@ Strängar och ikoner ligger i modulen som använder dem; det flera moduler anvä
   säg det i PR-beskrivningen. Fel syns då först vid merge.
 - Kan din miljö inte nå Google Maven: pusha och följ körningen (`gh pr checks`, `gh run view --log-failed`)
   och rätta tills den är grön. Säg aldrig att något fungerar utan grönt CI.
+- `Dependency submission` skickar bibliotekens beroendegraf till GitHub vid varje push till `main`, så Dependabot larmar
+  om sårbara bibliotek (fliken Security). Testklassvägar räknas inte. Kör bara upplösning, ingen kompilering.
 - När PR:en mergas skickar `Distribute to testers` debug-APK:n (`se.novila.debug`) via Firebase App Distribution.
   Samma körning bygger även release (R8), signerad bara om release-nyckeln finns i GitHub-hemligheterna.
 
@@ -407,6 +409,11 @@ där pluginet `firebase@firebase` inte alltid installeras.
   `DayHighlightsTest`) och påstår aldrig mer än appen vet: ingen väderdata (ingen `INTERNET`), så solen nämns bara
   via årstiden. Uppdateras när appen sparar (`WidgetUpdates`) och av systemet en gång i timmen, för midnatt; inga
   egna jobb. Nya knappar är en `ActionCallback` med en keep-regel i `app/proguard-rules.pro`.
+- **Integritetspolicy och Play:** policyn finns i appen (`PrivacyPolicyScreen`, strängarna `privacy_*`) och som
+  publik text i `docs/privacy-policy.md`; ändra båda och datumet. `docs/play-console.md` håller svaren för Data
+  safety, Health apps declaration och Health Connect-behörigheterna. Ändras vad appen läser, sparar eller skickar,
+  eller tillkommer en behörighet, uppdatera policyn, `HealthDataInfoActivity`s text och `docs/play-console.md` i
+  samma PR. Text före en Health Connect-dialog ska nämna alla typer dialogen frågar om.
 - Hälsodata stannar på enheten. Inga nätverksanrop, analysverktyg eller Firebase-SDK:er i appen utan att ägaren ber om det.
   Appen har ingen `INTERNET`-behörighet: ML Kit drar in Googles telemetri (`datatransport`), som ber om den för att
   skicka användningsstatistik, så den tas bort i appens manifest (`tools:node="remove"`). Lägg aldrig tillbaka den
