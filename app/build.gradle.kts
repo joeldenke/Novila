@@ -18,6 +18,7 @@ novila {
 dependencies {
     implementation(projects.feature.today)
     implementation(projects.feature.training)
+    implementation(projects.feature.breathing)
     implementation(projects.feature.sleep)
     implementation(projects.feature.nutrition)
     implementation(projects.feature.onboarding)

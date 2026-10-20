@@ -1,5 +1,6 @@
 package se.novila.designsystem.component
 
+import android.animation.ValueAnimator
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.Easing
@@ -27,6 +28,17 @@ internal object NovilaMotion {
     const val ENTER_MILLIS = 700
     const val DRAW_MILLIS = 1200
     const val STAGGER_MILLIS = 70
+}
+
+/**
+ * Whether moving content should hold still: the user has turned animations off (Android's animation scale is 0), or
+ * a preview/screenshot is being drawn (which must show a settled frame). A pacer or a counter can then keep updating
+ * its text while its picture stays calm.
+ */
+@Composable
+fun rememberNovilaReducedMotion(): Boolean {
+    val drawing = LocalInspectionMode.current
+    return remember { drawing || !ValueAnimator.areAnimatorsEnabled() }
 }
 
 /** Progress from 0f to 1f that plays once when the caller enters composition. */

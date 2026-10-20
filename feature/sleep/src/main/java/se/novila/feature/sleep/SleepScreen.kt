@@ -1,10 +1,16 @@
 package se.novila.feature.sleep
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import se.novila.designsystem.component.NovilaButton
+import se.novila.designsystem.component.NovilaCard
 import se.novila.designsystem.component.NovilaReveal
+import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.model.DayEntry
 import se.novila.model.Goals
@@ -26,6 +32,7 @@ import se.novila.ui.common.section
 import se.novila.ui.preview.PreviewData
 import java.time.LocalDate
 import java.time.LocalTime
+import se.novila.ui.R as UiR
 
 /** What the Sleep screen can do. The entry connects these to the ViewModel. */
 data class SleepActions(
@@ -39,6 +46,7 @@ data class SleepActions(
     val onConnectHealth: () -> Unit = {},
     val onOpenHealthSettings: () -> Unit = {},
     val onOpenCoach: () -> Unit = {},
+    val onOpenBreathing: () -> Unit = {},
 )
 
 /**
@@ -76,9 +84,36 @@ fun SleepScreen(
         item(key = "details") { NovilaReveal(order = 1) { SleepDetailsCard(day, actions) } }
         section(ScreenSection.Plan)
         item(key = "coach") { NovilaReveal(order = 2) { SleepCoachCard(coach, actions.onOpenCoach) } }
+        item(key = "breathing") { NovilaReveal(order = 3) { BreathingLinkCard(actions.onOpenBreathing) } }
         section(ScreenSection.Trends)
-        item(key = "history") { NovilaReveal(order = 3) { SleepHistoryCard(history, goals, actions.onRange) } }
-        item(key = "findings") { NovilaReveal(order = 4) { SleepFindingsCard(analysis) } }
+        item(key = "history") { NovilaReveal(order = 4) { SleepHistoryCard(history, goals, actions.onRange) } }
+        item(key = "findings") { NovilaReveal(order = 5) { SleepFindingsCard(analysis) } }
+    }
+}
+
+/**
+ * A quiet link to the guided breathing sessions, in Sleep's plan beside the coach: a few calm minutes fit the
+ * evening routine. The sessions themselves live in their own feature; this only opens them.
+ */
+@Composable
+private fun BreathingLinkCard(onOpen: () -> Unit) {
+    val sleep = NovilaTheme.pillars.sleep
+    NovilaCard(
+        title = stringResource(R.string.sleep_breathing_title),
+        icon = painterResource(UiR.drawable.ic_sleep),
+        role = sleep,
+    ) {
+        NovilaText(
+            stringResource(R.string.sleep_breathing_body),
+            style = NovilaTheme.typography.bodyMedium,
+            color = NovilaTheme.colors.onSurfaceVariant,
+        )
+        NovilaButton(
+            text = stringResource(R.string.sleep_breathing_open),
+            onClick = onOpen,
+            role = sleep,
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }
 

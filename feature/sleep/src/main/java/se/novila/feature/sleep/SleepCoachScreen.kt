@@ -44,6 +44,7 @@ fun SleepCoachScreen(
     onChange: (SleepCoachPreferences) -> Unit,
     onStart: () -> Unit,
     onReset: () -> Unit,
+    onOpenBreathing: () -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
@@ -82,7 +83,7 @@ fun SleepCoachScreen(
             }
         }
         item(key = "routine") {
-            RoutineCard(state.preferences, onChange)
+            RoutineCard(state.preferences, onChange, onOpenBreathing)
         }
         item(key = "week") {
             WeekCard(state)
@@ -121,7 +122,11 @@ private enum class CoachTime { Bedtime, WakeTime }
 /** The wind-down steps the user wants, with the times they belong before the bedtime goal. */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun RoutineCard(preferences: SleepCoachPreferences, onChange: (SleepCoachPreferences) -> Unit) {
+private fun RoutineCard(
+    preferences: SleepCoachPreferences,
+    onChange: (SleepCoachPreferences) -> Unit,
+    onOpenBreathing: () -> Unit,
+) {
     val sleep = NovilaTheme.pillars.sleep
     NovilaCard(title = stringResource(R.string.sleep_coach_routine_title), role = sleep) {
         NovilaText(
@@ -149,6 +154,13 @@ private fun RoutineCard(preferences: SleepCoachPreferences, onChange: (SleepCoac
                 color = NovilaTheme.colors.onSurfaceVariant,
             )
         }
+        // A wind-down step in its own right, but guided: the sessions open in their own feature.
+        NovilaButton(
+            text = stringResource(R.string.sleep_coach_breathing),
+            onClick = onOpenBreathing,
+            role = sleep,
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }
 
@@ -267,6 +279,7 @@ private fun SleepCoachScreenNewPreview() {
             onChange = {},
             onStart = {},
             onReset = {},
+            onOpenBreathing = {},
             contentPadding = PaddingValues(),
         )
     }
@@ -282,6 +295,7 @@ private fun SleepCoachScreenPreview() {
             onChange = {},
             onStart = {},
             onReset = {},
+            onOpenBreathing = {},
             contentPadding = PaddingValues(),
         )
     }

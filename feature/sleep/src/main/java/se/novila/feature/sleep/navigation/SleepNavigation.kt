@@ -31,7 +31,11 @@ import se.novila.navigation.Navigator
  * (`metroViewModel()`), so it lives as long as the entry is on the back stack. Navigation inside the tab goes
  * through [navigator].
  */
-fun EntryProviderScope<NavKey>.sleepEntries(navigator: Navigator, contentPadding: PaddingValues) {
+fun EntryProviderScope<NavKey>.sleepEntries(
+    navigator: Navigator,
+    contentPadding: PaddingValues,
+    onOpenBreathing: () -> Unit,
+) {
     entry<SleepRoute> {
         val viewModel = metroViewModel<SleepViewModel>()
         LifecycleResumeEffect(viewModel) {
@@ -59,6 +63,7 @@ fun EntryProviderScope<NavKey>.sleepEntries(navigator: Navigator, contentPadding
                 onConnectHealth = connectHealth,
                 onOpenHealthSettings = { HealthConnectSource.openSettings(context) },
                 onOpenCoach = { navigator.navigate(SleepCoachRoute) },
+                onOpenBreathing = onOpenBreathing,
             ),
             contentPadding = contentPadding,
             today = state.today,
@@ -79,6 +84,7 @@ fun EntryProviderScope<NavKey>.sleepEntries(navigator: Navigator, contentPadding
             onChange = viewModel::change,
             onStart = viewModel::start,
             onReset = viewModel::reset,
+            onOpenBreathing = onOpenBreathing,
             contentPadding = contentPadding,
         )
     }

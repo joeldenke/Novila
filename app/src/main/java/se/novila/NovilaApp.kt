@@ -15,6 +15,9 @@ import se.novila.designsystem.component.NovilaScaffold
 import se.novila.designsystem.component.NovilaTopAppBar
 import se.novila.designsystem.theme.NovilaColorRole
 import se.novila.designsystem.theme.NovilaTheme
+import se.novila.feature.breathing.navigation.BreathingRoute
+import se.novila.feature.breathing.navigation.breathingDetailTitle
+import se.novila.feature.breathing.navigation.breathingEntries
 import se.novila.feature.nutrition.navigation.NutritionRoute
 import se.novila.feature.nutrition.navigation.nutritionEntry
 import se.novila.feature.onboarding.navigation.OnboardingRoute
@@ -81,8 +84,10 @@ private fun Tabs() {
     NovilaScaffold(
         // Today is a dashboard with its own greeting header instead of a title bar.
         topBar = {
-            val detailTitle =
-                trainingDetailTitle(currentRoute) ?: sleepDetailTitle(currentRoute) ?: settingsTitle(currentRoute)
+            val detailTitle = trainingDetailTitle(currentRoute)
+                ?: sleepDetailTitle(currentRoute)
+                ?: breathingDetailTitle(currentRoute)
+                ?: settingsTitle(currentRoute)
             when {
                 detailTitle != null -> NovilaTopAppBar(
                     title = detailTitle,
@@ -126,7 +131,13 @@ private fun Tabs() {
                 contentPadding = innerPadding,
             )
             trainingEntries(navigator = navigator, contentPadding = innerPadding)
-            sleepEntries(navigator = navigator, contentPadding = innerPadding)
+            // The breathing sessions open from Sleep's plan, alongside the sleep coach's evening routine.
+            sleepEntries(
+                navigator = navigator,
+                contentPadding = innerPadding,
+                onOpenBreathing = { navigator.navigate(BreathingRoute) },
+            )
+            breathingEntries(navigator = navigator, contentPadding = innerPadding)
             nutritionEntry(
                 onOpenFoodPreferences = { navigator.navigate(FoodPreferencesRoute) },
                 contentPadding = innerPadding,
