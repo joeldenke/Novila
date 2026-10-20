@@ -36,6 +36,12 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   vattenloggning; ett tryck öppnar appen. Ingen flik och ingen ViewModel: receivern skapas av systemet och når storarna
   via `WidgetGraph` (som `AppGraph` utökar, genom `NovilaApplication`). `WidgetUpdates` ritar om widgeten när appen
   sparar. Läser aldrig Health Connect (bara i förgrunden), så balansen är sömn och kost.
+- `:wear` – Wear OS-appen (`se.novila.wear`, egen app med `novila.android.wear`): en fristående klockapp som kör ett
+  styrkepass och dess vila. `StandaloneSession` i `:core:exercise` bygger dagens pass (A/B, nivå), och klockan stegar
+  genom samma `Workout`-steg som telefonens passläge, med nedräkning på skärmen, håll skärmen tänd och en summering.
+  Den är medvetet fristående: ingen Wearable Data Layer, ingen delning med telefonen, inget sparat och ingen
+  Health Connect på klockan. Temat är `NovilaTheme` mappat till Compose for Wear OS Material 3 (`NovilaWearTheme`),
+  så klockan ser ut som appen. Egen Metro-graf (`WearGraph`). Se *Wear OS* under Regler.
 - `:core:designsystem` – `se.novila.designsystem`, enda modulen som använder Material 3 direkt
   - `theme` – `NovilaTheme`: färger, typografi, former och spacing-tokens
   - `component` – `Novila*`-komponenter som wrappar Material 3
@@ -391,6 +397,11 @@ där pluginet `firebase@firebase` inte alltid installeras.
   `DayHighlightsTest`) och påstår aldrig mer än appen vet: ingen väderdata (ingen `INTERNET`), så solen nämns bara
   via årstiden. Uppdateras när appen sparar (`WidgetUpdates`) och av systemet en gång i timmen, för midnatt; inga
   egna jobb. Nya knappar är en `ActionCallback` med en keep-regel i `app/proguard-rules.pro`.
+- **Wear OS:** `:wear` är en egen app (`se.novila.wear`, minSdk 30) med samma designspråk men utan flikar, navigation
+  eller sparade data. Den får bara köra ett pass ur `StandaloneSession` och visa `Workout`-stegen; ingen Wearable Data
+  Layer, ingen Health Connect och ingen lagring på klockan, eftersom det skulle ändra integritets- och Play-deklarationen.
+  Delning med telefonen (Wearable Data Layer eller Health Connect) kräver ägarens ok. `NovilaWearTheme` mappar
+  `NovilaTheme` till Compose for Wear OS Material 3; klockan får inte importera `androidx.compose.material3` själv.
 - Hälsodata stannar på enheten. Inga nätverksanrop, analysverktyg eller Firebase-SDK:er i appen utan att ägaren ber om det.
   Appen har ingen `INTERNET`-behörighet: ML Kit drar in Googles telemetri (`datatransport`), som ber om den för att
   skicka användningsstatistik, så den tas bort i appens manifest (`tools:node="remove"`). Lägg aldrig tillbaka den

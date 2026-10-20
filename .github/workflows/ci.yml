@@ -43,7 +43,7 @@ jobs:
       - name: Spotless (ktlint) and Android lint
         run: |
           set -o pipefail
-          ./gradlew spotlessCheck :app:lintDebug :core:googlehealth:lint --continue 2>&1 | tee build.log
+          ./gradlew spotlessCheck :app:lintDebug :core:googlehealth:lint :wear:lintDebug --continue 2>&1 | tee build.log
       - name: Annotate failures
         if: failure()
         uses: ./.github/actions/annotate-gradle-failures
@@ -200,7 +200,7 @@ jobs:
       - name: Debug build and badging check
         run: |
           set -o pipefail
-          ./gradlew :app:assembleDebug :app:checkDebugBadging --console=plain 2>&1 | tee build.log
+          ./gradlew :app:assembleDebug :app:checkDebugBadging :wear:assembleDebug --console=plain 2>&1 | tee build.log
       # Compares the badging on its own, after the Gradle check, against the reviewed file as committed: the job fails on
       # any difference, even if the Gradle check didn't run or compared the wrong thing (it once compared the file with
       # itself, see Badging.kt). Each added permission is shown with the library or manifest it came from (the manifest

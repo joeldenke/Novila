@@ -93,7 +93,8 @@ Nano for more than the comment, or data that leaves the app.
 - [x] **Home screen widget** (Glance): the day's balance, sleep, nutrition and water, and encouragement
   based on what you have done (`cheers`), on a frosted card. More quick logging (servings) remains.
 - [ ] **Quick Settings tile and shortcuts:** "Start the session", "Log water"
-- [ ] **Wear OS:** workout mode and the rest timer on the watch
+- [x] **Wear OS:** workout mode and the rest timer on the watch. A standalone app in `:wear` runs a strength
+  session and its rests; it does not share the session with the phone yet (see *Wear OS* in `CLAUDE.md`).
 - [ ] **Tablets and foldables** (the `adaptive` skill)
 - [ ] **Accessibility:** a pass with TalkBack and large text
 - [ ] **iOS via Kotlin and Compose Multiplatform:** the pure Kotlin modules (`:core:model`, `:core:coach`,

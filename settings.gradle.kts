@@ -35,6 +35,9 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 include(":app")
 
+// The Wear OS companion: workout mode and the rest timer on the watch (see docs/roadmap.md).
+include(":wear")
+
 include(":core:anatomy")
 include(":core:coach")
 include(":core:data")
