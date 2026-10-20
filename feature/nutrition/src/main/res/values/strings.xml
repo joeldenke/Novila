@@ -48,6 +48,10 @@
     <string name="recipe_steps">How to</string>
     <string name="recipe_ingredient" translatable="false">• %1$s</string>
     <string name="recipe_step" translatable="false">%1$d. %2$s</string>
+    <string name="recipe_expand">Show recipe</string>
+    <string name="recipe_collapse">Hide recipe</string>
+    <string name="recipe_expanded">Expanded</string>
+    <string name="recipe_collapsed">Collapsed</string>
     <string name="recipe_log">I ate this</string>
 
     <!-- Recipes: one serving each, see se.novila.recipes.Recipe -->

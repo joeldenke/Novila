@@ -42,6 +42,10 @@
     <string name="recipe_contains_none">Inget av de allergener som måste märkas ut.</string>
     <string name="recipe_ingredients">Ingredienser, en portion</string>
     <string name="recipe_steps">Gör så här</string>
+    <string name="recipe_expand">Visa recept</string>
+    <string name="recipe_collapse">Dölj recept</string>
+    <string name="recipe_expanded">Utfälld</string>
+    <string name="recipe_collapsed">Ihopfälld</string>
     <string name="recipe_log">Jag åt det här</string>
 
     <!-- Recept: en portion vardera, se se.novila.recipes.Recipe -->

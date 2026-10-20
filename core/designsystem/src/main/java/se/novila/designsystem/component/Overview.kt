@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -35,6 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -68,7 +70,12 @@ fun NovilaHeroPanel(
         verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.l),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(title, style = NovilaTheme.typography.labelLarge, color = hero.content, modifier = Modifier.weight(1f))
+            Text(
+                title,
+                style = NovilaTheme.typography.labelLarge,
+                color = hero.content,
+                modifier = Modifier.weight(1f).semantics { heading() },
+            )
             NovilaIcon(
                 painter = painterResource(R.drawable.ic_novila_sun),
                 contentDescription = null,
@@ -103,7 +110,7 @@ fun NovilaHeroRing(
 ) {
     val hero = NovilaTheme.hero
     val reveal by rememberReveal(durationMillis = 1600)
-    Box(modifier.size(size), contentAlignment = Alignment.Center) {
+    Box(modifier.size(size).novilaProgressSemantics(progress), contentAlignment = Alignment.Center) {
         Rings(listOf(NovilaHeroSegment(unit, progress, hero.training)), hero.track, reveal, Modifier.size(size))
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(value, style = NovilaTheme.typography.headlineSmall, color = hero.content)
@@ -150,6 +157,7 @@ fun NovilaWeekStrip(days: List<NovilaWeekDay>, modifier: Modifier = Modifier) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.xs),
                 modifier = tap
+                    .heightIn(min = 48.dp)
                     .padding(horizontal = NovilaTheme.spacing.xxs)
                     // The day's sentence replaces the short label; the tap above stays.
                     .clearAndSetSemantics { contentDescription = day.description },
@@ -222,7 +230,7 @@ fun NovilaPlayButton(
         onClick = onClick,
         shape = CircleShape,
         color = role.color,
-        modifier = modifier.size(44.dp).semantics { contentDescription = description },
+        modifier = modifier.size(48.dp).semantics { contentDescription = description },
     ) {
         Canvas(Modifier.fillMaxSize()) {
             val unit = 6.dp.toPx()

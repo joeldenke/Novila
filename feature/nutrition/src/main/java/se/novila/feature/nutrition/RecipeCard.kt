@@ -57,10 +57,17 @@ fun RecipeCard(
         )
         suggestions.recipes.forEach { suggestion ->
             val recipe = suggestion.recipe
+            val isExpanded = expanded == recipe
             NovilaListRow(
                 title = stringResource(recipe.text.name),
                 summary = summary(suggestion),
-                onClick = { onExpand(if (expanded == recipe) null else recipe) },
+                onClick = { onExpand(if (isExpanded) null else recipe) },
+                onClickLabel = stringResource(
+                    if (isExpanded) R.string.recipe_collapse else R.string.recipe_expand,
+                ),
+                stateDescription = stringResource(
+                    if (isExpanded) R.string.recipe_expanded else R.string.recipe_collapsed,
+                ),
             )
             if (expanded == recipe) RecipeDetails(recipe, onLog = { onLog(recipe) })
         }

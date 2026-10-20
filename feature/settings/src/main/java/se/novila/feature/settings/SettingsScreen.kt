@@ -2,8 +2,9 @@ package se.novila.feature.settings
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -113,6 +114,7 @@ private fun ProfileCard(profile: Profile, measurements: List<MeasurementEntry>?,
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun AppearanceCard(
     settings: AppSettings,
@@ -126,13 +128,15 @@ private fun AppearanceCard(
             style = NovilaTheme.typography.labelLarge,
             color = NovilaTheme.colors.onSurfaceVariant,
         )
-        Row(horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s)) {
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s),
+            verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s),
+        ) {
             ThemeMode.entries.forEach { theme ->
                 NovilaChoiceChip(
                     label = stringResource(theme.label()),
                     selected = settings.theme == theme,
                     onClick = { actions.onTheme(theme) },
-                    modifier = Modifier.weight(1f),
                 )
             }
         }

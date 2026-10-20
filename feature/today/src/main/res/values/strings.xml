@@ -37,6 +37,8 @@
     <!-- Your day: today's checklist -->
     <string name="checklist_title">Your day</string>
     <string name="checklist_progress">%1$d of %2$d done</string>
+    <string name="checklist_task_done">Done</string>
+    <string name="checklist_task_todo">Not done</string>
     <string name="checklist_all_done">All done for today.</string>
     <string name="checklist_sleep">Log last night</string>
     <string name="checklist_sleep_done">Last night</string>
