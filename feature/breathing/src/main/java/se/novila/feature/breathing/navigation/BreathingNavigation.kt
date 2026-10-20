@@ -2,6 +2,7 @@ package se.novila.feature.breathing.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
@@ -52,9 +53,11 @@ fun EntryProviderScope<NavKey>.breathingEntries(navigator: Navigator, contentPad
 @Composable
 fun breathingDetailTitle(route: NavKey?): String? = when (route) {
     BreathingRoute -> stringResource(R.string.breathing_title)
+
     is BreathingSessionRoute -> {
         val session = BreathingCatalog.session(route.sessionId) ?: BreathingCatalog.calm
         stringResource(sessionName(session))
     }
+
     else -> null
 }
