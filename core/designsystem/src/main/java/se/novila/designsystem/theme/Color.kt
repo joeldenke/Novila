@@ -178,6 +178,32 @@ internal val NovilaDarkColors: ColorScheme = with(NovilaPalette) {
     )
 }
 
+/**
+ * The neutral color roles UI code reads through [NovilaTheme.colors]: text, surfaces, outline and error. Novila's
+ * own type, so nothing outside :core:designsystem sees Material 3. The theme picks them from the active
+ * [ColorScheme] (also with dynamic color); add a role here when a screen needs one.
+ */
+@Immutable
+data class NovilaColors(
+    val surface: Color,
+    val onSurface: Color,
+    val onSurfaceVariant: Color,
+    val surfaceContainerLow: Color,
+    val surfaceContainer: Color,
+    val outline: Color,
+    val error: Color,
+)
+
+internal fun ColorScheme.toNovilaColors() = NovilaColors(
+    surface = surface,
+    onSurface = onSurface,
+    onSurfaceVariant = onSurfaceVariant,
+    surfaceContainerLow = surfaceContainerLow,
+    surfaceContainer = surfaceContainer,
+    outline = outline,
+    error = error,
+)
+
 /** A color with its content color and a softer container pair, like a Material 3 color role. */
 @Immutable
 data class NovilaColorRole(
