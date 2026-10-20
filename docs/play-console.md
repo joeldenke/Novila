@@ -146,6 +146,8 @@ ingen `QUERY_ALL_PACKAGES` (bara `<queries>` för Health Connect och AICore), in
 ## Butikssidan
 
 - Kategori *Health & Fitness*. E-post till utvecklaren ifylld.
+- Appikonen: `docs/play-icon.png` (512 px, 32-bitars PNG). Den ritas av `tools/icon/render_icon.py` ur appens
+  adaptiva ikon, så butiken och telefonen visar samma ikon.
 - Samma regler som i appen (CLAUDE.md, *Inga medicinska påståenden*): skriv *skonsam träning* och *nivåer*, aldrig
   rehab, rehabilitering, behandling, terapi, eller att appen läker, lindrar, hjälper mot eller förebygger sjukdomar
   eller besvär (sömnlöshet, skada, stress som tillstånd). Inga löften om viktnedgång eller bättre sömn.

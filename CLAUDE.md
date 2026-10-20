@@ -311,6 +311,11 @@ där pluginet `firebase@firebase` inte alltid installeras.
   I texter, butikssidan och Gemini Nano-prompten heter målet `Rehab` *skonsam träning* och dess faser *nivåer*;
   skriv aldrig rehab, rehabilitering, behandling, terapi eller att appen läker, lindrar eller hjälper mot en
   sjukdom eller besvär (sömnlöshet, skada). Råden om när man ska söka vård behålls. Koden får heta `Rehab`.
+- **Appikonen:** ett vitt N på granplattan, med solen i skåran och solnedgången som tre snitt genom N:ets nedre del
+  (snitten blir tjockare nedåt). Vektorerna i `app/src/main/res/drawable/ic_launcher_*` är källan och
+  `mipmap-anydpi` den adaptiva ikonen. Ändras de: kör `python3 tools/icon/render_icon.py`, som ritar WebP-reserverna
+  i `mipmap-*dpi` (Firebase App Distribution kan inte visa en adaptiv ikon) och Play-ikonen `docs/play-icon.png`.
+  Rita aldrig om dem för hand.
 - **Inga emojis i UI:t.** Novila ska kännas som en professionell hälsoapp: använd vektorikoner och ritade komponenter
   (t.ex. `NovilaLevelPicker` för nivåer), aldrig emoji-tecken.
 - **Övningsillustrationer:** en övning är data (keyframes med ledvinklar i `ExerciseLibrary`), aldrig video eller
