@@ -16,7 +16,7 @@ The app is in English and Swedish.
 | **Today** | What to do now: a greeting by name, the day's balance as one ring per part (tap a part to open it), *Your day* (sleep, today's training, food and water, each with the one button that does it), and insights |
 | **Training** | A weekly program following WHO's guidelines (150–300 min cardio, strength two days a week, at most +10 % cardio per week). An on-device coach that builds the week from your goal, days, time per session, focus and limitations, including gentle training for the knee, lower back, shoulder, neck and hip in three levels. 15 illustrated exercises and a workout mode with sets, rests and countdowns. Cardio is logged with "I did it" or read from Health Connect, and after a session the effort (RPE) and pain you report adjust the dose and suggest the next level |
 | **Sleep** | Bedtime and wake time (or just hours, or the night your watch recorded, from Health Connect), how the night felt and what may have affected it, and what affects your sleep: links between the day before (food, water, training, sweets), the evening and the night, tested on your own logs and shown with the nights behind them. A chart over the week, four weeks or a year compared with the period before |
-| **Nutrition** | Servings per food group, water and sweets, scored 0–100 after the Swedish Food Agency's dietary guidelines, with a suggested next step, recipes for what today is missing (for your diet, allergens and time), and the scores over the week, four weeks or a year compared with the period before |
+| **Nutrition** | Servings per food group, drinks (water, coffee, tea and more, by the glass, bottle or any amount; caffeine late in the day feeds the sleep links) and sweets, scored 0–100 after the Swedish Food Agency's dietary guidelines, with a suggested next step, recipes for what today is missing (for your diet, allergens and time), and the scores over the week, four weeks or a year compared with the period before |
 | **Movement** | Today's steps and active calories, the last five weeks' workouts and your nights, from Health Connect, read in the foreground only |
 | **Reminders** | Log sleep, train and log food, each at your own time and only when it isn't logged yet. One WorkManager job per reminder and day, nothing else in the background |
 | **Widget** | Today on the home screen, on a frosted card that lets the wallpaper through: the day's balance, sleep, food score and water, and something encouraging about what you did (a summer walk mentions vitamin D, a strength session tonight's sleep). Tapping it opens the app |
@@ -83,7 +83,7 @@ each other, which a test checks.
 :feature:today           What to do now: balance, Your day, insights
 :feature:training        Weekly program, coach, exercises, workout mode
 :feature:sleep           Sleep log and history
-:feature:nutrition       Food groups, water, score
+:feature:nutrition       Food groups, drinks, score
 :feature:onboarding      The intro at first start
 :feature:settings        Settings
 :feature:widget          The home-screen widget (Glance)

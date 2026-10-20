@@ -21,6 +21,8 @@ enum class SleepDriver(val expected: Int) {
 
     /** [TREATS_PORTIONS] or more portions of sweets and snacks the day before. */
     Treats(-1),
+
+    /** Caffeine late the day before: said about the evening, or a drink logged late ([DayEntry.lateCaffeine]). */
     LateCaffeine(-1),
     Screens(-1),
     Alcohol(-1),
@@ -143,7 +145,7 @@ private fun Night.value(outcome: SleepOutcome): Double? = when (outcome) {
 private fun Night.has(driver: SleepDriver, goals: Goals): Boolean? {
     val day = dayBefore
     val ateLogged = day.food != FoodLog()
-    val anyLogged = ateLogged || day.waterGlasses > 0 || day.mood > 0 || day.strengthMinutes > 0 ||
+    val anyLogged = ateLogged || day.drinks.isNotEmpty() || day.mood > 0 || day.strengthMinutes > 0 ||
         day.cardio.isNotEmpty()
     // Factors are only known for nights where the user filled in the details: quality or any factor.
     val detailed = night.sleepQuality > 0 || night.sleepFactors.isNotEmpty()
@@ -152,13 +154,20 @@ private fun Night.has(driver: SleepDriver, goals: Goals): Boolean? {
         SleepDriver.DrankEnough -> if (anyLogged) day.waterGlasses >= goals.waterGlasses else null
         SleepDriver.Trained -> if (anyLogged) day.strengthMinutes + day.cardioMinutes >= TRAINED_MINUTES else null
         SleepDriver.Treats -> if (ateLogged) day.food.treats >= TREATS_PORTIONS else null
-        SleepDriver.LateCaffeine -> factor(SleepFactor.LateCaffeine, detailed)
+        SleepDriver.LateCaffeine -> lateCaffeine(detailed)
         SleepDriver.Screens -> factor(SleepFactor.Screens, detailed)
         SleepDriver.Alcohol -> factor(SleepFactor.Alcohol, detailed)
         SleepDriver.Stress -> factor(SleepFactor.Stress, detailed)
         SleepDriver.LateMeal -> factor(SleepFactor.LateMeal, detailed)
         SleepDriver.LateExercise -> factor(SleepFactor.LateExercise, detailed)
     }
+}
+
+/** Said about the evening, or a coffee, tea or energy drink logged late the day before. */
+private fun Night.lateCaffeine(detailed: Boolean): Boolean? = when {
+    dayBefore.lateCaffeine() == true -> true
+    detailed -> SleepFactor.LateCaffeine in night.sleepFactors
+    else -> dayBefore.lateCaffeine()
 }
 
 private fun Night.factor(factor: SleepFactor, detailed: Boolean): Boolean? =

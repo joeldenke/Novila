@@ -18,6 +18,7 @@ import se.novila.model.DayEntry
 import se.novila.model.Goals
 import se.novila.model.TrainingToday
 import se.novila.model.dayChecklist
+import se.novila.model.glassesOfWater
 import java.time.LocalDate
 
 @RunWith(RobolectricTestRunner::class)
@@ -40,7 +41,7 @@ class DayChecklistCardTest {
     @Test fun `each open task has the button that does it`() {
         val opened = mutableListOf<String>()
         show(
-            DayEntry(date, waterGlasses = 3),
+            DayEntry(date, drinks = glassesOfWater(3)),
             TrainingToday(plannedMinutes = 30),
             ChecklistActions(
                 onOpenSleep = { opened += "sleep" },

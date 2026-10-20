@@ -13,6 +13,7 @@ import se.novila.model.DayEntryCodec
 import se.novila.model.FoodGroup
 import se.novila.model.HistoryRange
 import se.novila.model.averageSleep
+import se.novila.model.glassesOfWater
 import se.novila.model.portions
 import se.novila.model.withPortions
 import java.time.LocalDate
@@ -83,7 +84,7 @@ class HealthStoreTest {
         store.update(today) { it.withMood(3) }
         val saved = store.days.await { it.day(today).mood == 3 }
 
-        val shown = saved.showing { it.withSleep(7f) }.showing { it.copy(waterGlasses = 2) }
+        val shown = saved.showing { it.withSleep(7f) }.showing { it.copy(drinks = glassesOfWater(2)) }
 
         assertEquals(7f, shown.day(today).sleepHours)
         assertEquals(2, shown.week(today).history.first().waterGlasses)

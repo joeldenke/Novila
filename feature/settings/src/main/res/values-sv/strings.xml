@@ -32,7 +32,7 @@
     <string name="settings_data_body">Allt du loggar sparas bara i den här telefonen. Novila har inget konto och inget moln, så inget kan återställas när det har raderats.</string>
     <string name="settings_delete_data">Radera all data</string>
     <string name="settings_delete_data_title">Radera all data?</string>
-    <string name="settings_delete_data_body">Din profil och dina mål, dina mått, din loggade sömn, kost, mående och dina pass samt coachens svar raderas från telefonen. Dina påminnelser stängs av. Det går inte att ångra. Data i Health Connect påverkas inte.</string>
+    <string name="settings_delete_data_body">Din profil och dina mål, dina mått, din loggade sömn, kost, dryck, mående och dina pass samt coachens svar raderas från telefonen. Dina påminnelser stängs av. Det går inte att ångra. Data i Health Connect påverkas inte.</string>
     <string name="settings_delete_data_confirm">Radera</string>
     <string name="settings_cancel">Avbryt</string>
     <string name="settings_data_deleted">All data är raderad.</string>

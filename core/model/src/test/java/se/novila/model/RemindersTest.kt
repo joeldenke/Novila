@@ -29,7 +29,7 @@ class RemindersTest {
 
         assertTrue(Reminder.Nutrition.isNeeded(empty, trainingDay = false))
         assertFalse(Reminder.Nutrition.isNeeded(empty.copy(food = FoodLog(vegetables = 1)), trainingDay = false))
-        assertFalse(Reminder.Nutrition.isNeeded(empty.copy(waterGlasses = 2), trainingDay = false))
+        assertFalse(Reminder.Nutrition.isNeeded(empty.copy(drinks = glassesOfWater(2)), trainingDay = false))
     }
 
     @Test fun `training only on planned days, and not once the user has trained`() {
