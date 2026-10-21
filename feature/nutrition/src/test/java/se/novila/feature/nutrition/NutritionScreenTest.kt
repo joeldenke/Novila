@@ -30,6 +30,7 @@ class NutritionScreenTest {
                     goals = Goals(),
                     onPortions = { _, _ -> },
                     onTreats = {},
+                    onLogMeal = {},
                     contentPadding = PaddingValues(),
                     setupIncomplete = setupIncomplete,
                     onCompleteSetup = onCompleteSetup,
