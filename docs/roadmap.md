@@ -18,7 +18,7 @@ fallback for people without a watch.
 |---|---|---|
 | Today | Greeting by name, the day's balance (rings), *Your day*: a checklist of sleep, today's training, food and water with the one button that does each, a tile per part and insights | Says what to do now |
 | Training | Weekly program (WHO), coach with goal, days, focus and considerations, rehab (knee, lower back, shoulder, neck, hip, phases 1–3), 15 illustrated exercises, workout mode with timer, cardio sessions (logged and from Health Connect), RPE and pain after the session, recovery from the watch that can lighten today's session, Gemini Nano comment, weekly review | The app's strongest part |
-| Sleep | Bedtime and wake-up (or the watch's night from Health Connect), quality and causes, what affects your sleep, chart over a week, four weeks or a year, sleep coach with bedtime goal, evening routine and advice from your own nights | Good |
+| Sleep | Bedtime and wake-up (or the watch's night from Health Connect), quality and causes, what affects your sleep, chart over a week, four weeks or a year, sleep coach with bedtime goal, evening routine and advice from your own nights, guided breathing (calm, box, 4-7-8) | Good |
 | Nutrition | Servings per food group, water against your own goal, sweets, score 0–100, "next step", the score over a week, four weeks or a year, recipe suggestions for what is missing (diet, allergens, time) | Good and simple |
 | Movement | Today's steps and active calories, five weeks of workouts, the nights and recovery (resting heart rate, HRV), from Health Connect, in the foreground | Steps only for today |
 | Settings | Profile, *My goals* (daily goals, both coaches and food preferences in one place), theme, reminders, Health Connect, disclaimer, delete data | Complete for its level |
@@ -79,7 +79,8 @@ Nano for more than the comment, or data that leaves the app.
   Training with today's values and a line about the status; today's session gets a little lighter (fewer sets, shorter
   cardio) when the resting heart rate is clearly higher or HRV clearly lower than the user's own baseline. In memory
   only, read in the foreground.
-- [ ] **Breathing and relaxation:** short guided sessions, drawn like the anatomy figure
+- [x] **Breathing and relaxation:** short guided sessions (calm breathing, box breathing, 4-7-8) with a visual pacer,
+  opened from Sleep and the sleep coach's evening routine. Nothing is logged (#76)
 
 ### 6. The coach as a whole
 - [x] **One coach for all parts:** "You slept 5.5 h. Do a lighter session and go to bed at 22:30." `dailyCoach`
@@ -97,8 +98,9 @@ Nano for more than the comment, or data that leaves the app.
 - [ ] **Quick Settings tile and shortcuts:** "Start the session", "Log water"
 - [x] **Wear OS:** workout mode and the rest timer on the watch. A standalone app in `:wear` runs a strength
   session and its rests; it does not share the session with the phone yet (see *Wear OS* in `CLAUDE.md`).
-- [ ] **Tablets and foldables** (the `adaptive` skill)
-- [ ] **Accessibility:** a pass with TalkBack and large text
+- [x] **Tablets and foldables** (the `adaptive` skill): a navigation rail from 600 dp, content centred at most
+  720 dp wide, and two to four entry tiles per row (#87)
+- [x] **Accessibility:** a pass with TalkBack and large text (#77)
 - [ ] **iOS via Kotlin and Compose Multiplatform:** the pure Kotlin modules (`:core:model`, `:core:coach`,
   `:core:exercise`, `:core:sleep`, `:core:anatomy`, `:core:movement`) already have no Android dependencies and can
   become shared code first. Then the design system and the screens in Compose Multiplatform, with Apple Health
@@ -115,12 +117,12 @@ now, and every tab has the same parts in the same order.
   about the app (#60)
 - [x] **No duplicates on Today:** the text under the balance rings said the same as the food task, and the rings and
   the tiles below showed the same three values. The rings are the summary and each part opens its own tab.
-- [ ] **Explain a serving on Nutrition:** "Vegetables 3 of 5" is abstract. A short line per food group, e.g. a
+- [x] **Explain a serving on Nutrition:** "Vegetables 3 of 5" is abstract. A short line per food group, e.g. a
   serving is about a handful or 100 g, and potatoes don't count.
 - [x] **A shorter Training tab:** the next session and the week's program show the same sessions; fold the next
   session into the program, opened by tapping a day.
-- [ ] **A steady CI:** the stores' "survives a restart" tests sometimes time out after 5 s, on `main` as well, and turn
-  CI red. Find what the reopened store waits on and fix it.
+- [x] **A steady CI:** the stores' "survives a restart" tests sometimes time out after 5 s, on `main` as well, and turn
+  CI red. Fixed by setting the snapshot from each write's result instead of a new emission from `dataStore.data` (#68).
 
 ## Order
 
@@ -135,4 +137,23 @@ now, and every tab has the same parts in the same order.
 9. Recovery (resting heart rate and HRV from the watch) ← done
 10. Recipe suggestions and food preferences ← done
 11. Structure: Today as a checklist, the same parts on every tab, My goals ← done
-12. Structure: no duplicates on Today, explain a serving, a shorter Training tab, a steady CI
+12. Structure: no duplicates on Today, explain a serving, a shorter Training tab, a steady CI ← done
+
+Next, first what needs no approval and is used every day, then what needs the owner's approval:
+
+13. Quick picks and favorites on Nutrition: the most common meals and drinks with one tap, from what the user has
+    already logged. The fastest way to make daily logging easier.
+14. Progression per exercise: save sets and reps per exercise, and let the coach increase step by step. It
+    strengthens the app's strongest part, and `CoachFeedback` already reads effort and pain.
+15. Shortcuts and a Quick Settings tile: "Start the session" and "Log water", plus logging servings from the widget.
+    App shortcuts first; the tile is an exported service, so it needs a new badging line and the owner's approval.
+16. More exercises and equipment: variations, dumbbells, resistance bands and gym, via the `add-exercise` skill.
+    Makes progression worth more and gives the coach more to choose from.
+17. Achievements and streaks: restrained, built on what the user already logs, and never rewarding overtraining
+    (recovery and rest days count).
+18. Export and import as a local file **(ok)**: a backup without the cloud before users have much data to lose.
+19. Gemini Nano weekly summary **(ok)**: explains the week's numbers, like the coach's comment, never new advice.
+20. Count reps with the camera **(ok)**: needs `CAMERA` and an on-device pose model, which changes the privacy policy
+    and the Play declaration.
+21. iOS via Kotlin and Compose Multiplatform: last, when the Android app is complete. Moving the pure Kotlin modules to
+    shared code can start earlier without changing the app.
