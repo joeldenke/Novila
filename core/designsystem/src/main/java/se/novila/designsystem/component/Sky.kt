@@ -1,5 +1,6 @@
 package se.novila.designsystem.component
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -43,17 +44,23 @@ enum class NovilaSky {
     }
 }
 
-/** The [sky]'s sun or moon in the hero's top corner, rising into place as the card is [reveal]ed. */
-@Composable
-internal fun NovilaSkyIcon(sky: NovilaSky, hero: NovilaHeroColors, reveal: Float) {
-    val icon = when (sky) {
+/** The sky's sun or moon, shared with the widget. */
+internal val NovilaSky.icon: Int
+    @DrawableRes get() = when (this) {
         NovilaSky.Morning -> R.drawable.ic_novila_sun_morning
         NovilaSky.Day -> R.drawable.ic_novila_sun
         NovilaSky.Evening -> R.drawable.ic_novila_sun_evening
         NovilaSky.Night -> R.drawable.ic_novila_moon
     }
+
+/** How strongly the sky's light shines in the hero's corner: the moon gives a fainter light than the sun. */
+internal val NovilaSky.glow: Float get() = if (this == NovilaSky.Night) 0.14f else 0.28f
+
+/** The [sky]'s sun or moon in the hero's top corner, rising into place as the card is [reveal]ed. */
+@Composable
+internal fun NovilaSkyIcon(sky: NovilaSky, hero: NovilaHeroColors, reveal: Float) {
     NovilaIcon(
-        painter = painterResource(icon),
+        painter = painterResource(sky.icon),
         contentDescription = null,
         modifier = Modifier.size(SkyIconSize).graphicsLayer {
             alpha = reveal
@@ -70,9 +77,30 @@ internal fun NovilaSkyIcon(sky: NovilaSky, hero: NovilaHeroColors, reveal: Float
  * like a map of the hills around the day.
  */
 internal fun Modifier.heroContours(hero: NovilaHeroColors, sky: NovilaSky): Modifier = drawWithCache {
-    val center = Offset(size.width - 64.dp.toPx(), size.height - 16.dp.toPx())
-    val step = 18.dp.toPx()
     val contours = Path()
+    contourLines(
+        center = Offset(size.width - 64.dp.toPx(), size.height - 16.dp.toPx()),
+        step = 18.dp.toPx(),
+        moveTo = contours::moveTo,
+        lineTo = contours::lineTo,
+        close = contours::close,
+    )
+    val line = Stroke(1.dp.toPx())
+    val color = hero.content.copy(alpha = 0.09f)
+    onSky(hero, sky) { drawPath(contours, color, style = line) }
+}
+
+/**
+ * The contour lines around [center], [step] apart, as path commands, so the app (Compose) and the widget
+ * (android.graphics) draw the same hills.
+ */
+internal fun contourLines(
+    center: Offset,
+    step: Float,
+    moveTo: (Float, Float) -> Unit,
+    lineTo: (Float, Float) -> Unit,
+    close: () -> Unit,
+) {
     for (ring in 1..CONTOURS) {
         val radius = step * ring
         for (point in 0..CONTOUR_POINTS) {
@@ -84,13 +112,10 @@ internal fun Modifier.heroContours(hero: NovilaHeroColors, sky: NovilaSky): Modi
                 0.04 * sin(2 * angle + 2.32 + ring * 0.3)
             val x = center.x + (radius * wobble * cos(angle)).toFloat()
             val y = center.y + (radius * wobble * CONTOUR_FLATTEN * sin(angle)).toFloat()
-            if (point == 0) contours.moveTo(x, y) else contours.lineTo(x, y)
+            if (point == 0) moveTo(x, y) else lineTo(x, y)
         }
-        contours.close()
+        close()
     }
-    val line = Stroke(1.dp.toPx())
-    val color = hero.content.copy(alpha = 0.09f)
-    onSky(hero, sky) { drawPath(contours, color, style = line) }
 }
 
 /**
@@ -123,9 +148,7 @@ private fun CacheDrawScope.onSky(
 ): DrawResult {
     val center = Offset(size.width - 36.dp.toPx(), 36.dp.toPx())
     val radius = 120.dp.toPx()
-    // The moon gives a fainter light than the sun.
-    val glow = if (sky == NovilaSky.Night) 0.14f else 0.28f
-    val brush = Brush.radialGradient(listOf(hero.sun.copy(alpha = glow), hero.sun.copy(alpha = 0f)), center, radius)
+    val brush = Brush.radialGradient(listOf(hero.sun.copy(alpha = sky.glow), hero.sun.copy(alpha = 0f)), center, radius)
     return onDrawBehind {
         drawCircle(brush, radius = radius, center = center)
         lines()

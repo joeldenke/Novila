@@ -4,6 +4,7 @@
     <string name="widget_description">Today\'s balance, sleep, food and water, and something encouraging about your day.</string>
     <string name="widget_balance">Today\'s balance</string>
     <string name="widget_balance_value" translatable="false">%1$d</string>
+    <string name="widget_balance_description">Today\'s balance: %1$d of 100</string>
     <string name="widget_sleep">Sleep</string>
     <string name="widget_food">Food</string>
     <string name="widget_water">Water</string>
