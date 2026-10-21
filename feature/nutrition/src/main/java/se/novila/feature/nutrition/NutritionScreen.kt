@@ -104,7 +104,9 @@ fun NutritionScreen(
         }
         item(key = "entries") {
             NovilaReveal(order = 2) {
-                NovilaEntries(nutritionHubEntries(history, goals, recipes.takeIf { isToday }, foodPreferences, navigation))
+                // Recipes are for today only.
+                val recipesToday = recipes.takeIf { isToday }
+                NovilaEntries(nutritionHubEntries(history, goals, recipesToday, foodPreferences, navigation))
             }
         }
     }
