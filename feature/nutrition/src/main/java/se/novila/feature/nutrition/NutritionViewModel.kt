@@ -26,7 +26,10 @@ import se.novila.model.FoodGroup
 import se.novila.model.Goals
 import se.novila.model.History
 import se.novila.model.HistoryRange
+import se.novila.model.QUICK_PICK_DAYS
+import se.novila.model.QuickPicks
 import se.novila.model.parseMeal
+import se.novila.model.recentDrinks
 import se.novila.model.withDrink
 import se.novila.model.withMeal
 import se.novila.model.withPortions
@@ -95,6 +98,19 @@ class NutritionViewModel(
         return NutritionUiState(history, goals, day.today.value, preferences, hour.value)
     }
 
+    /**
+     * The meals and drinks to log again with one tap: the starred meals, then the ones logged most often lately, and
+     * the drinks drunk most often lately. Empty until the stores' first reads.
+     */
+    val quickPicks: StateFlow<QuickPicks> =
+        combine(
+            foodPreferencesStore.meals.filterNotNull(),
+            store.days.filterNotNull(),
+            day.today,
+        ) { meals, days, today ->
+            QuickPicks(meals.picks(today), recentDrinks(days.lastDays(QUICK_PICK_DAYS, today)))
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, QuickPicks())
+
     /** Called on resume so "today" stays correct after midnight, and the recipes fit the time of day. */
     fun refresh() {
         day.refresh()
@@ -119,12 +135,20 @@ class NutritionViewModel(
 
     fun removeLastDrink() = store.update(day.value) { it.withoutLastDrink() }
 
-    /** Adds what the meal written in the user's own words translates into: one portion per recognized word. */
+    /**
+     * Adds what the meal written in the user's own words translates into: one portion per recognized word. The meal
+     * is remembered, so it can be logged again with one tap.
+     */
     fun logMeal(text: String) {
         val meal = parseMeal(text)
         if (meal.isEmpty) return
-        store.update(day.value) { it.withMeal(meal) }
+        val date = day.value
+        store.update(date) { it.withMeal(meal) }
+        foodPreferencesStore.updateMeals { it.withLogged(text, date) }
     }
+
+    /** Stars [meal] so it stays first among the quick picks, or takes the star away. */
+    fun toggleFavorite(meal: String) = foodPreferencesStore.updateMeals { it.toggledFavorite(meal) }
 
     /** Reopens the intro so the setup that was skipped earlier can be finished. */
     fun openSetup() {

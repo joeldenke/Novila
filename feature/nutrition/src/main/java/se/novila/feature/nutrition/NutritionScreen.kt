@@ -27,6 +27,8 @@ import se.novila.model.Goals
 import se.novila.model.History
 import se.novila.model.HistoryRange
 import se.novila.model.MAX_DRINKS
+import se.novila.model.MealPick
+import se.novila.model.QuickPicks
 import se.novila.model.averageNutrition
 import se.novila.navigation.SharedScreen
 import se.novila.recipes.FoodPreferences
@@ -62,7 +64,8 @@ enum class NutritionSheet { Food, Drinks }
  * of water in one tap, any other drink) and the ways into the rest ([navigation]): today's [recipes] for what is still
  * missing, chosen for [foodPreferences], the scores over time from the [history] (a week up to the shown day) and the
  * food preferences. Food ([onLogMeal], [onPortions], [onTreats]) and drinks ([drinkActions]) are logged in a sheet
- * ([NutritionSheet]), [openSheet] at first. [today] is the day it really is: the user can go back to an earlier day
+ * ([NutritionSheet]), [openSheet] at first, each with the [quickPicks] to log again with one tap and a star that
+ * keeps a meal first ([onToggleFavorite]). [today] is the day it really is: the user can go back to an earlier day
  * ([onSelectDay]) and fill in what was forgotten. When the introduction was skipped ([setupIncomplete]), a quiet card
  * under the day picker leads to finishing the setup ([onCompleteSetup]).
  */
@@ -83,6 +86,8 @@ fun NutritionScreen(
     foodPreferences: FoodPreferences = FoodPreferences(),
     navigation: NutritionNavigation = NutritionNavigation(),
     openSheet: NutritionSheet? = null,
+    quickPicks: QuickPicks = QuickPicks(),
+    onToggleFavorite: (String) -> Unit = {},
     /** The introduction was skipped, so the setup is unfinished: one quiet card offers to finish it. */
     setupIncomplete: Boolean = false,
     onCompleteSetup: () -> Unit = {},
@@ -116,21 +121,21 @@ fun NutritionScreen(
             title = stringResource(R.string.nutrition_sheet_food),
             onDismiss = { sheet = null },
         ) {
-            FoodSheet(day, onPortions, onTreats, onLogMeal, isToday)
+            FoodSheet(day, onPortions, onTreats, onLogMeal, isToday, quickPicks.meals, onToggleFavorite)
         }
 
         NutritionSheet.Drinks -> NovilaBottomSheet(
             title = stringResource(R.string.nutrition_sheet_drinks),
             onDismiss = { sheet = null },
         ) {
-            DrinksCard(day, goals, drinkActions, isToday)
+            DrinksCard(day, goals, drinkActions, isToday, quickPicks.drinks)
         }
 
         null -> Unit
     }
 }
 
-/** Food in the user's own words or per food group, as the sheet shows it. */
+/** The usual meals with one tap, then food in the user's own words or per food group, as the sheet shows it. */
 @Composable
 internal fun FoodSheet(
     day: DayEntry,
@@ -138,7 +143,10 @@ internal fun FoodSheet(
     onTreats: (Int) -> Unit,
     onLogMeal: (String) -> Unit,
     isToday: Boolean,
+    picks: List<MealPick> = emptyList(),
+    onToggleFavorite: (String) -> Unit = {},
 ) {
+    QuickPicksCard(picks, onLogMeal, onToggleFavorite)
     MealLogCard(onLogMeal)
     FoodLogCard(day, onPortions, onTreats, isToday)
 }
@@ -266,10 +274,31 @@ private fun NutritionScreenYesterdayPreview() = NutritionScreenContent(
 @Composable
 private fun NutritionScreenTabletPreview() = NutritionScreenContent()
 
-/** The food sheet as it slides up: a meal in the user's own words, and the food groups. */
-@Preview(showBackground = true, heightDp = 1400)
+/** The food sheet as it slides up: the usual meals, a meal in the user's own words, and the food groups. */
+@Preview(showBackground = true, heightDp = 1700)
 @Composable
 private fun FoodSheetPreview() {
+    NovilaTheme {
+        NovilaSheetContent(stringResource(R.string.nutrition_sheet_food)) {
+            FoodSheet(
+                PreviewData.today,
+                onPortions = { _, _ -> },
+                onTreats = {},
+                onLogMeal = {},
+                isToday = true,
+                picks = listOf(
+                    MealPick("Frukost: gröt, bär", favorite = true),
+                    MealPick("Lunch: lax, potatis, sallad", favorite = false),
+                ),
+            )
+        }
+    }
+}
+
+/** The food sheet before any meal is written in the user's own words: no usual meals yet. */
+@Preview(showBackground = true, heightDp = 1400)
+@Composable
+private fun FoodSheetFirstTimePreview() {
     NovilaTheme {
         NovilaSheetContent(stringResource(R.string.nutrition_sheet_food)) {
             FoodSheet(PreviewData.today, onPortions = { _, _ -> }, onTreats = {}, onLogMeal = {}, isToday = true)

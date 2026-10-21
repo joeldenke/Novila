@@ -21,6 +21,7 @@ import se.novila.model.DayEntry
 import se.novila.model.Drink
 import se.novila.model.DrinkKind
 import se.novila.model.Goals
+import se.novila.model.MealPick
 import se.novila.model.withDrink
 import java.time.LocalDate
 import java.time.LocalTime
@@ -75,6 +76,47 @@ class NutritionCardsTest {
 
         assertEquals(listOf(DrinkKind.Coffee to 550), added)
         assertTrue(undone)
+    }
+
+    @Test fun `a usual meal is logged again with one tap, and the star keeps it first`() {
+        val logged = mutableListOf<String>()
+        val starred = mutableListOf<String>()
+        show {
+            QuickPicksCard(
+                picks = listOf(MealPick("Gröt, bär", favorite = true), MealPick("Lax, potatis", favorite = false)),
+                onLogMeal = { logged += it },
+                onToggleFavorite = { starred += it },
+            )
+        }
+
+        composeRule.onNodeWithContentDescription("Log Lax, potatis").performClick()
+        composeRule.onNodeWithContentDescription("Star Lax, potatis").performClick()
+        composeRule.onNodeWithContentDescription("Remove the star from Gröt, bär").performClick()
+
+        assertEquals(listOf("Lax, potatis"), logged)
+        assertEquals(listOf("Lax, potatis", "Gröt, bär"), starred)
+    }
+
+    @Test fun `no usual meals shows nothing`() {
+        show { QuickPicksCard(picks = emptyList(), onLogMeal = {}, onToggleFavorite = {}) }
+
+        composeRule.onNodeWithText("Your usual").assertDoesNotExist()
+    }
+
+    @Test fun `a recent drink is logged again with one tap`() {
+        val added = mutableListOf<Pair<DrinkKind, Int>>()
+        show {
+            DrinksCard(
+                day = DayEntry(LocalDate.of(2026, 10, 19)),
+                goals = Goals(),
+                actions = DrinkActions(onAdd = { kind, ml -> added += kind to ml }),
+                recent = listOf(Drink(DrinkKind.Coffee, 150)),
+            )
+        }
+
+        composeRule.onNodeWithText("Coffee · 1.5 dl").performScrollTo().performClick()
+
+        assertEquals(listOf(DrinkKind.Coffee to 150), added)
     }
 
     @Test fun `late caffeine today comes with a word on sleep`() {

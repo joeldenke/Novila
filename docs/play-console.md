@@ -44,7 +44,7 @@ och i Play Console i samma PR/release.** Typiska utlösare: en ny Health Connect
 Välj de hälsofunktioner appen har:
 
 - **Activity and fitness** – träningsprogram, passläge, steg och kalorier från Health Connect.
-- **Nutrition and weight management** – kostloggning per livsmedelsgrupp, vatten, recept, vikt och kroppsmått.
+- **Nutrition and weight management** – kostloggning per livsmedelsgrupp och måltider med egna ord, vatten, recept, vikt och kroppsmått.
 - **Sleep management** – sömnlogg, sömncoach, samband mellan dag och natt.
 - **Stress management, relaxation, mental acuity** – andningsövningarna (Andning och avslappning).
 

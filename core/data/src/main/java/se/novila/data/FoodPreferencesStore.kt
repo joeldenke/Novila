@@ -7,12 +7,15 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
+import se.novila.model.MealMemory
+import se.novila.model.MealMemoryCodec
 import se.novila.recipes.FoodPreferences
 import se.novila.recipes.FoodPreferencesCodec
 
 /**
- * The user's diet, allergens and time for recipe suggestions in Preferences DataStore (file `food`), on the device
- * only. One instance for the whole app, so the Nutrition tab suggests other recipes as soon as Settings saves.
+ * The user's diet, allergens and time for recipe suggestions, and the meals they wrote in their own words and starred
+ * ([MealMemory], for the quick picks), in Preferences DataStore (file `food`), on the device only. One instance for the
+ * whole app, so the Nutrition tab suggests other recipes as soon as Settings saves.
  */
 @SingleIn(AppScope::class)
 class FoodPreferencesStore internal constructor(context: Context, scope: CoroutineScope, cipher: DatastoreCipher) {
@@ -26,11 +29,23 @@ class FoodPreferencesStore internal constructor(context: Context, scope: Corouti
 
     fun save(preferences: FoodPreferences) = store.edit { it[KEY] = FoodPreferencesCodec.encode(preferences) }
 
-    /** Back to the defaults. */
-    fun clear() = store.edit { it.remove(KEY) }
+    /** The meals logged lately and the starred ones. Null until the first read is done. */
+    val meals: StateFlow<MealMemory?> = store.snapshots { MealMemoryCodec.decode(it[MEALS]) }
+
+    /** Changes the remembered meals and saves them, in order with other saves. */
+    fun updateMeals(change: (MealMemory) -> MealMemory) = store.edit { prefs ->
+        prefs[MEALS] = MealMemoryCodec.encode(change(MealMemoryCodec.decode(prefs[MEALS])))
+    }
+
+    /** Back to the defaults, and no meals remembered. */
+    fun clear() = store.edit {
+        it.remove(KEY)
+        it.remove(MEALS)
+    }
 
     private companion object {
         const val NAME = "food"
         val KEY = stringPreferencesKey("preferences")
+        val MEALS = stringPreferencesKey("meals")
     }
 }

@@ -51,6 +51,7 @@ fun EntryProviderScope<NavKey>.nutritionEntries(
         // Nothing to show until the saved days are read, a moment at app start.
         val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
         val setupIncomplete = viewModel.setupIncomplete.collectAsStateWithLifecycle().value
+        val quickPicks = viewModel.quickPicks.collectAsStateWithLifecycle().value
         NutritionScreen(
             day = state.day,
             history = state.history,
@@ -71,6 +72,8 @@ fun EntryProviderScope<NavKey>.nutritionEntries(
             ),
             setupIncomplete = setupIncomplete,
             onCompleteSetup = viewModel::openSetup,
+            quickPicks = quickPicks,
+            onToggleFavorite = viewModel::toggleFavorite,
         )
     }
     entry<RecipesRoute>(metadata = sharedScreen(SharedScreen.Recipes)) {
