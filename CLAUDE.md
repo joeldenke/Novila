@@ -147,7 +147,7 @@ Strängar och ikoner ligger i modulen som använder dem; det flera moduler anvä
   sammanfattning. `scripts/release-notes.sh` listar allt på `main` sedan förra lyckade distributionen.
 - `CI`-workflowen måste vara grön innan PR:en är klar. Den kör tre jobb parallellt: Format and lint (`spotlessCheck`
   och `:app:lintDebug`, alla moduler), Tests (`test verifyAndRecordRoborazziDebug koverXmlReportCoverage`) och Build
-  (`:app:assembleDebug :app:checkDebugBadging`); kontrollen *Lint, test and build* samlar dem och är den som krävs. Gemensamma steg ligger
+  (`:app:assembleDebug :app:checkDebugBadging :app:compileReleaseKotlin`); kontrollen *Lint, test and build* samlar dem och är den som krävs. Gemensamma steg ligger
   i `.github/actions/`. Cachen sköts av `gradle/actions/setup-gradle` (standardcachen, sparas bara från `main`), och
   CI-flaggorna för de publika runnerna (4 kärnor, 16 GB) ligger i `.github/ci-gradle.properties`. Bygg aldrig egen cachelogik.
   Release-bygget (R8) körs inte på PR:er. Ändrar du `proguard-rules.pro` eller R8-känslig kod,
@@ -224,6 +224,10 @@ Misstag som redan har gjorts i det här repot. Gör dem inte igen.
   den tasken. Så körde `checkDebugBadging` först `updateDebugBadging`, som skrev över den granskade filen, och
   kontrollen gick alltid igenom (från #16 till #41). Ge tasks vanliga värden (strängar) för sådant som bara är text.
   CI jämför dessutom badgingen mot filen i git, och fallerar om bygget skriver till `app/badging`.
+- **Beroenden som bara debug får:** `NovilaGlanceHero` använde `ResourcesCompat` utan att `:core:designsystem`
+  berodde på `androidx.core`. Debug-bygget fick det transitivt via ett debug-beroende, så PR:en var grön men
+  release-bygget i `Distribute to testers` kompilerade inte (#91). Deklarera varje bibliotek en modul importerar
+  direkt i modulen. Build-jobbet kompilerar nu även release (`:app:compileReleaseKotlin`, utan R8).
 - **Spotless och Isolated Projects:** ge Spotless filträd (`fileTree(...)`) som `target`, aldrig glob-strängar som
   `"**/*.kt"`. För en glob slår Spotless upp varje undermoduls `build`-katalog, och då fallerar bygget med
   "cannot access 'Project.layout' functionality on subprojects". Isolated Projects stoppar sådant i varje bygge.

@@ -14,4 +14,7 @@ dependencies {
     implementation(libs.compose.material3)
     // NovilaGlanceTheme: the same color schemes for the home-screen widget. Only modules with a widget use it.
     implementation(libs.androidx.glance.material3)
+    // NovilaGlanceHero loads the bundled font with ResourcesCompat. Declared directly: the debug build only got
+    // androidx.core through a debug-only dependency, so the release build didn't compile.
+    implementation(libs.androidx.core.ktx)
 }

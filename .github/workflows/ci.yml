@@ -240,7 +240,9 @@ jobs:
       - name: Debug build and badging check
         run: |
           set -o pipefail
-          ./gradlew :app:assembleDebug :app:checkDebugBadging --console=plain 2>&1 | tee build.log
+          # compileReleaseKotlin: every module's release sources compile (no R8), so a dependency only debug gets
+          # transitively fails here instead of in Distribute to testers after the merge.
+          ./gradlew :app:assembleDebug :app:checkDebugBadging :app:compileReleaseKotlin --console=plain 2>&1 | tee build.log
       # Compares the badging on its own, after the Gradle check, against the reviewed file as committed: the job fails on
       # any difference, even if the Gradle check didn't run or compared the wrong thing (it once compared the file with
       # itself, see Badging.kt). Each added permission is shown with the library or manifest it came from (the manifest
