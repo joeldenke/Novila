@@ -56,6 +56,9 @@ private val SkyIconSize = 24.dp
 /** A part's coloured dot in the legend. */
 private val DotSize = 10.dp
 
+/** The titles' width in the one-line legend: room for "Vatten" with a gap before the value. */
+private val CompactTitleWidth = 60.dp
+
 /** The header row: the title and the sky icon. */
 private val HeaderHeight = 24.dp
 
@@ -212,8 +215,8 @@ private fun LegendRow(hero: NovilaGlanceHero, title: String, value: String, colo
         Spacer(modifier = GlanceModifier.size(DotSize).cornerRadius(DotSize / 2).background(color))
         Spacer(modifier = GlanceModifier.width(NovilaGlance.spacing.s))
         if (compact) {
-            Text(text = title, style = titleStyle, maxLines = 1)
-            Spacer(modifier = GlanceModifier.width(NovilaGlance.spacing.s))
+            // A fixed width for the titles, so the values line up in a column.
+            Text(text = title, style = titleStyle, maxLines = 1, modifier = GlanceModifier.width(CompactTitleWidth))
             Text(text = value, style = valueStyle, maxLines = 1)
         } else {
             Column {
