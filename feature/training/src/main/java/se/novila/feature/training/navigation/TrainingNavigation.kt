@@ -38,6 +38,8 @@ import se.novila.healthconnect.HealthConnectSource
 import se.novila.healthconnect.RECOVERY_PERMISSIONS
 import se.novila.healthconnect.rememberHealthPermissionRequest
 import se.novila.navigation.Navigator
+import se.novila.navigation.SharedScreen
+import se.novila.navigation.sharedScreen
 import java.time.DayOfWeek
 
 /** The Training tab: movement, the week's program, the coach and the exercise library. */
@@ -127,7 +129,7 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
             setupIncomplete = setupIncomplete,
         )
     }
-    entry<TrainingProgramRoute> {
+    entry<TrainingProgramRoute>(metadata = sharedScreen(SharedScreen.TrainingProgram)) {
         val viewModel = metroViewModel<TrainingProgramViewModel>()
         LifecycleResumeEffect(viewModel) {
             viewModel.refresh()
@@ -156,7 +158,7 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
             contentPadding = contentPadding,
         )
     }
-    entry<ExerciseLibraryRoute> {
+    entry<ExerciseLibraryRoute>(metadata = sharedScreen(SharedScreen.ExerciseLibrary)) {
         ExerciseLibraryScreen(onOpenExercise = openExercise, contentPadding = contentPadding)
     }
     entry<CardioLogRoute> {
@@ -168,7 +170,7 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
         val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
         CardioLogScreen(state, onLog = viewModel::log, onUndo = viewModel::undo, contentPadding = contentPadding)
     }
-    entry<CoachRoute> {
+    entry<CoachRoute>(metadata = sharedScreen(SharedScreen.TrainingCoach)) {
         val viewModel = metroViewModel<CoachViewModel>()
         LifecycleResumeEffect(viewModel) {
             viewModel.refresh()

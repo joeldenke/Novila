@@ -56,6 +56,8 @@ import se.novila.healthconnect.HealthDataInfoScreen
 import se.novila.healthconnect.rememberHealthPermissionRequest
 import se.novila.model.Reminder
 import se.novila.navigation.Navigator
+import se.novila.navigation.SharedScreen
+import se.novila.navigation.sharedScreen
 import se.novila.healthconnect.R as HealthConnectR
 import se.novila.ui.R as UiR
 
@@ -170,7 +172,7 @@ fun EntryProviderScope<NavKey>.settingsEntries(
             contentPadding = contentPadding,
         )
     }
-    entry<FoodPreferencesRoute> {
+    entry<FoodPreferencesRoute>(metadata = sharedScreen(SharedScreen.FoodPreferences)) {
         val viewModel = metroViewModel<FoodPreferencesViewModel>()
         // Nothing to show until the preferences are read, a moment at app start.
         val preferences = viewModel.preferences.collectAsStateWithLifecycle().value ?: return@entry

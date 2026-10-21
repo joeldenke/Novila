@@ -5,6 +5,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.IOException
 import java.time.LocalDate
+import kotlin.time.TestTimeSource
 
 class RecoveryRepositoryTest {
     private val today = LocalDate.of(2026, 10, 15)
@@ -34,15 +35,37 @@ class RecoveryRepositoryTest {
     }
 
     @Test fun `a temporary failure keeps the last reading`() = runBlocking {
-        val repository = RecoveryRepository(FakeSource(listOf(connected, failed)))
+        val clock = TestTimeSource()
+        val repository = RecoveryRepository(FakeSource(listOf(connected, failed)), clock)
         repository.refresh(today)
+        clock += RecoveryRepository.FRESH_FOR
         repository.refresh(today)
         assertEquals(RecoveryState.Connected(listOf(day)), repository.state.value)
     }
 
     @Test fun `revoked access forgets the readings`() = runBlocking {
+        val clock = TestTimeSource()
+        val repository = RecoveryRepository(FakeSource(listOf(connected, needsPermission)), clock)
+        repository.refresh(today)
+        clock += RecoveryRepository.FRESH_FOR
+        repository.refresh(today)
+        assertEquals(RecoveryState.NeedsPermission(), repository.state.value)
+    }
+
+    @Test fun `a recent reading is kept instead of asking again`() = runBlocking {
+        val clock = TestTimeSource()
+        val source = FakeSource(listOf(connected))
+        val repository = RecoveryRepository(source, clock)
+        repository.refresh(today)
+        clock += RecoveryRepository.FRESH_FOR / 2
+        repository.refresh(today)
+        assertEquals(1, source.asked.size)
+    }
+
+    @Test fun `an expired reading is read again`() = runBlocking {
         val repository = RecoveryRepository(FakeSource(listOf(connected, needsPermission)))
         repository.refresh(today)
+        repository.expire()
         repository.refresh(today)
         assertEquals(RecoveryState.NeedsPermission(), repository.state.value)
     }

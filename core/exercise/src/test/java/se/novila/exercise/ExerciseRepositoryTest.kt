@@ -6,6 +6,7 @@ import org.junit.Test
 import java.io.IOException
 import java.time.LocalDate
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.TestTimeSource
 
 class ExerciseRepositoryTest {
     private val today = LocalDate.of(2026, 10, 15)
@@ -35,15 +36,37 @@ class ExerciseRepositoryTest {
     }
 
     @Test fun `a temporary failure keeps the last reading`() = runBlocking {
-        val repository = ExerciseRepository(FakeSource(listOf(connected, failed)))
+        val clock = TestTimeSource()
+        val repository = ExerciseRepository(FakeSource(listOf(connected, failed)), clock)
         repository.refresh(today)
+        clock += ExerciseRepository.FRESH_FOR
         repository.refresh(today)
         assertEquals(ExerciseState.Connected(listOf(walk)), repository.state.value)
     }
 
     @Test fun `revoked access forgets the workouts`() = runBlocking {
+        val clock = TestTimeSource()
+        val repository = ExerciseRepository(FakeSource(listOf(connected, needsPermission)), clock)
+        repository.refresh(today)
+        clock += ExerciseRepository.FRESH_FOR
+        repository.refresh(today)
+        assertEquals(ExerciseState.NeedsPermission(), repository.state.value)
+    }
+
+    @Test fun `a recent reading is kept instead of asking again`() = runBlocking {
+        val clock = TestTimeSource()
+        val source = FakeSource(listOf(connected))
+        val repository = ExerciseRepository(source, clock)
+        repository.refresh(today)
+        clock += ExerciseRepository.FRESH_FOR / 2
+        repository.refresh(today)
+        assertEquals(1, source.asked.size)
+    }
+
+    @Test fun `an expired reading is read again`() = runBlocking {
         val repository = ExerciseRepository(FakeSource(listOf(connected, needsPermission)))
         repository.refresh(today)
+        repository.expire()
         repository.refresh(today)
         assertEquals(ExerciseState.NeedsPermission(), repository.state.value)
     }

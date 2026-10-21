@@ -28,6 +28,7 @@ import se.novila.model.History
 import se.novila.model.HistoryRange
 import se.novila.model.MAX_DRINKS
 import se.novila.model.averageNutrition
+import se.novila.navigation.SharedScreen
 import se.novila.recipes.FoodPreferences
 import se.novila.recipes.Recipe
 import se.novila.recipes.RecipeSuggestions
@@ -197,6 +198,7 @@ private fun nutritionHubEntries(
                 icon = painterResource(R.drawable.ic_recipe),
                 role = nutrition,
                 onClick = navigation.onOpenRecipes,
+                sharedKey = SharedScreen.Recipes,
                 summary = it.recipes.firstOrNull()?.let { first -> stringResource(first.recipe.text.name) }
                     ?: stringResource(R.string.nutrition_entry_recipes_none),
             )
@@ -206,6 +208,7 @@ private fun nutritionHubEntries(
             icon = painterResource(UiR.drawable.ic_trend),
             role = nutrition,
             onClick = navigation.onOpenTrends,
+            sharedKey = SharedScreen.NutritionTrends,
             summary = average?.let { stringResource(R.string.nutrition_entry_trends_summary, it) }
                 ?: stringResource(R.string.nutrition_entry_trends_empty),
         ),
@@ -214,6 +217,7 @@ private fun nutritionHubEntries(
             icon = painterResource(UiR.drawable.ic_nutrition),
             role = nutrition,
             onClick = navigation.onOpenPreferences,
+            sharedKey = SharedScreen.FoodPreferences,
             summary = foodPreferencesSummary(preferences),
         ),
     )

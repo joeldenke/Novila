@@ -8,8 +8,10 @@ class Navigator(val state: NavigationState) {
     fun navigate(route: NavKey) {
         if (route in state.backStacks.keys) {
             // Top-level route: switch tab and keep that tab's history.
+            state.switchedTab = route != state.topLevelRoute
             state.topLevelRoute = route
         } else {
+            state.switchedTab = false
             // A screen that opens from any tab (Settings) lives in one back stack at a time: the start tab's stack is
             // shown under the current one, and the same key twice in NavDisplay clashes. Opening it in another tab
             // moves it here, together with what was opened from it.
@@ -29,6 +31,7 @@ class Navigator(val state: NavigationState) {
         val currentRoute = currentStack.last()
 
         // At the root of a tab, go back to the start tab instead of leaving the app.
+        state.switchedTab = false
         if (currentRoute == state.topLevelRoute) {
             state.topLevelRoute = state.startRoute
         } else {

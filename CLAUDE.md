@@ -58,11 +58,13 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   (`SleepHistoryCard`, `NutritionHistoryCard`: vecka, fyra veckor eller år, jämfört med perioden innan),
   flikikonerna och `PreviewData` (samma person i alla previews)
 - `:core:navigation` – `NavigationState` (en back stack per flik, varje entry med egen sparad state och
-  `ViewModelStore` via `rememberViewModelStoreNavEntryDecorator`) och `Navigator`
+  `ViewModelStore` via `rememberViewModelStoreNavEntryDecorator`), `Navigator` och `SharedScreen` (nycklarna som
+  låter en ingång växa till skärmen den öppnar, se *Rörelse* under Regler)
 - `:core:data` – lagring i Preferences DataStore (`HealthStore`, `CoachStore`, `SettingsStore`, `ProfileStore`, `GoalsStore`,
   singletons i `AppScope` vars `StateFlow` `days`/`answers`/`settings`/`profile`/`goals` får alla ViewModels att läsa om efter en sparning) och `GeminiNanoCoachModel` (bunden som
   `CoachLanguageModel`). `PreferencesStore` flyttar gamla SharedPreferences hit vid första läsningen, håller datan i
-  minnet och köar sparningar i storens egen scope (i ordning, klara även när ViewModeln rensas). Tills första läsningen
+  minnet och köar sparningar i storens egen scope (i ordning, klara även när ViewModeln rensas). `SavedDays` avkodar
+  varje dag en gång per ögonblicksbild, även genom `showing`. Tills första läsningen
   är klar är ViewModelns state `null` och entryn ritar inget. Använd aldrig SharedPreferences för ny data.
   `RemindersStore` håller påminnelserna (på/av och tid). `trainingWeek` planerar veckan på samma sätt för
   Träningsfliken och träningspåminnelsen. `SelectedDay` är dagen en skärm visar och ändrar (i dag, eller en tidigare dag inom `EditableDays`, 30 dagar
@@ -374,6 +376,12 @@ där pluginet `firebase@firebase` inte alltid installeras.
   tema. Ritar inget förrän inställningarna är lästa, så temat aldrig blinkar.
 - **Rörelse:** lugn och engångs. Animationer spelas när innehållet visas (`NovilaReveal`, diagram som ritar in sig)
   via `NovilaMotion` i `:core:designsystem`. Inga oändliga animationer: de får skärmdumpstesterna att hänga.
+  Mellan skärmar (`NovilaTransitions`, kopplat i `NovilaApp`): djupare in i en flik och tillbaka glider skärmarna
+  några procent längs samma axel och tonar över varandra, flikbyten tonar igenom utan sidled (`Navigator` sätter
+  `switchedTab`), och prediktiv bakåt följer fingret. En ingång (`NovilaEntry.sharedKey`) växer till skärmen den
+  öppnar och krymper tillbaka (`NovilaSharedBounds`): ge rutan och entryn samma `SharedScreen`, entryn via
+  `entry<Rutt>(metadata = sharedScreen(SharedScreen.X))`. Utan app-navigation (previews, skärmdumpar) är det en vanlig
+  ruta. Lägg aldrig egna `transitionSpec` per skärm.
   I en pager styrs rörelsen av fingret, läst när det ritas: `Modifier.novilaPagerDepth` (block i lager som tonar
   över), `NovilaPagerBackdrop` (delens färg tonar till nästa) och `NovilaPageIndicator(offset = …)`. Lagren och
   indikatorn står still när sidan gör det, så previews och skärmdumpar visar slutläget.
@@ -431,7 +439,9 @@ där pluginet `firebase@firebase` inte alltid installeras.
   Sömn och Idag), samt vilopuls och HRV de senaste två veckorna (`READ_RESTING_HEART_RATE`,
   `READ_HEART_RATE_VARIABILITY`, för Träningens återhämtning), i förgrunden. Inget skrivs, ingen bakgrundsläsning och
   ingen `READ_HEALTH_DATA_HISTORY`
-  (Health Connect ger 30 dagar före första godkännandet, det räcker). Cachen ligger bara i minnet
+  (Health Connect ger 30 dagar före första godkännandet, det räcker). Varje flik läser vid resume, så samma läsning
+  återanvänds i `FRESH_FOR` (två minuter) inom appen; den glöms när appen lämnar skärmen (`MainActivity.onStop`) och
+  efter en behörighetsdialog, så en återkallad behörighet aldrig visar gammal data. Cachen ligger bara i minnet
   (`InMemoryMovementCache`, `ExerciseRepository`, `SleepRepository`, `RecoveryRepository`); pass, nätter och
   återhämtning från Health Connect sparas
   aldrig i `HealthStore`. En cache

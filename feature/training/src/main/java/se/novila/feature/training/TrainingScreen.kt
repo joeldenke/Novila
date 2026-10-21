@@ -20,6 +20,7 @@ import se.novila.designsystem.theme.NovilaTheme
 import se.novila.exercise.ExerciseState
 import se.novila.model.CardioLog
 import se.novila.movement.MovementState
+import se.novila.navigation.SharedScreen
 import se.novila.recovery.RecoveryState
 import se.novila.recovery.RecoveryStatus
 import se.novila.ui.common.ScreenList
@@ -125,6 +126,7 @@ private fun trainingHubEntries(state: TrainingUiState, actions: TrainingActions)
             icon = painterResource(R.drawable.ic_program),
             role = training,
             onClick = actions.onOpenProgram,
+            sharedKey = SharedScreen.TrainingProgram,
             summary = stringResource(R.string.training_entry_program_summary, state.program.sessions.size),
         ),
         NovilaEntry(
@@ -132,6 +134,7 @@ private fun trainingHubEntries(state: TrainingUiState, actions: TrainingActions)
             icon = painterResource(UiR.drawable.ic_insight),
             role = training,
             onClick = actions.onOpenCoach,
+            sharedKey = SharedScreen.TrainingCoach,
             summary = stringResource(
                 if (state.coach.active) R.string.training_entry_coach_on else R.string.training_entry_coach_off,
             ),
@@ -141,6 +144,7 @@ private fun trainingHubEntries(state: TrainingUiState, actions: TrainingActions)
             icon = painterResource(UiR.drawable.ic_training),
             role = training,
             onClick = actions.onOpenLibrary,
+            sharedKey = SharedScreen.ExerciseLibrary,
             summary = stringResource(R.string.exercises_body),
         ),
     )

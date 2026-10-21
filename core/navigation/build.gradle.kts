@@ -12,4 +12,6 @@ novila {
 dependencies {
     api(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigation3.ui)
+    // NovilaSharedBounds: each screen is one end of the move from the tile that opened it (sharedScreenEntries).
+    implementation(projects.core.designsystem)
 }

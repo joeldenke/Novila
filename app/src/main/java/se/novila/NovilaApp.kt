@@ -1,5 +1,7 @@
 package se.novila
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -18,6 +21,7 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import se.novila.R
+import se.novila.designsystem.component.LocalNovilaSharedTransitionScope
 import se.novila.designsystem.component.NovilaEntryLayout
 import se.novila.designsystem.component.NovilaIconButton
 import se.novila.designsystem.component.NovilaNavigationBar
@@ -27,6 +31,7 @@ import se.novila.designsystem.component.NovilaNavigationRailItem
 import se.novila.designsystem.component.NovilaRailMinWidth
 import se.novila.designsystem.component.NovilaScaffold
 import se.novila.designsystem.component.NovilaTopAppBar
+import se.novila.designsystem.component.NovilaTransitions
 import se.novila.designsystem.theme.NovilaColorRole
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.breathing.navigation.BreathingRoute
@@ -183,6 +188,7 @@ private fun Tabs() {
 }
 
 /** The current tab's back stack, with every feature's entries. */
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun TabContent(
     navigator: Navigator,
@@ -222,11 +228,24 @@ private fun TabContent(
             licensesResId = R.raw.aboutlibraries,
         )
     }
-    NavDisplay(
-        entries = navigationState.toEntries(entryProvider),
-        // Popping an entry clears its ViewModel: leaving a session without finishing it discards it.
-        onBack = navigator::goBack,
-    )
+    // Tiles grow into the screens they open (NovilaSharedBounds); the moves between screens are Novila's own: deeper
+    // and back along one axis, a fade between tabs, and the screen below showing through while dragging back.
+    SharedTransitionLayout(Modifier.fillMaxSize()) {
+        CompositionLocalProvider(LocalNovilaSharedTransitionScope provides this) {
+            NavDisplay(
+                entries = navigationState.toEntries(entryProvider),
+                transitionSpec = {
+                    if (navigationState.switchedTab) NovilaTransitions.tab else NovilaTransitions.forward
+                },
+                popTransitionSpec = {
+                    if (navigationState.switchedTab) NovilaTransitions.tab else NovilaTransitions.back
+                },
+                predictivePopTransitionSpec = { NovilaTransitions.predictiveBack },
+                // Popping an entry clears its ViewModel: leaving a session without finishing it discards it.
+                onBack = navigator::goBack,
+            )
+        }
+    }
 }
 
 /** Each tab shows its part's color. Today has no part of its own and uses the brand pine. */

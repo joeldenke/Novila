@@ -37,6 +37,11 @@ interface AppGraph :
     /** Creates the reminders' work with the stores from this graph, for WorkManager's configuration. */
     val reminderWorkerFactory: ReminderWorkerFactory
 
+    /** What was read from Health Connect, which [se.novila.MainActivity] lets expire when the app leaves the screen. */
+    val nights: SleepRepository
+    val exercises: ExerciseRepository
+    val recovery: RecoveryRepository
+
     /**
      * Movement for Today and Training, one repository for the app. Swap [HealthConnectSource] for another
      * MovementSource, or the cache for a persistent one, here.
