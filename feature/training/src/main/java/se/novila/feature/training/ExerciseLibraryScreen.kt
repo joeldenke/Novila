@@ -39,9 +39,13 @@ fun ExerciseLibraryScreen(
     var query by rememberSaveable { mutableStateOf(initialQuery) }
     var area by rememberSaveable { mutableStateOf<BodyArea?>(null) }
     val locale = LocalConfiguration.current.locales[0]
-    // What a search can find: each exercise's name and the muscles it trains, in the user's language.
+    // What a search can find: each exercise's name, the muscles it trains and its equipment, in the user's language.
     val texts = ExerciseLibrary.all.associate { motion ->
-        motion.id to listOf(moveName(motion.id), muscleList(motion.primary + motion.secondary))
+        motion.id to listOfNotNull(
+            moveName(motion.id),
+            muscleList(motion.primary + motion.secondary),
+            motion.equipment?.let { stringResource(it.label) },
+        )
     }
     val found = ExerciseLibrary.all.filter { motion ->
         trains(motion, area) && matchesSearch(query, texts.getValue(motion.id), locale)

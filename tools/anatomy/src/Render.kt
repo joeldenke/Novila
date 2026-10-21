@@ -4,6 +4,7 @@ import se.novila.anatomy.ExerciseLibrary
 import se.novila.anatomy.ExerciseMotion
 import se.novila.anatomy.Layer
 import se.novila.anatomy.Point2
+import se.novila.anatomy.PropKind
 import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Graphics2D
@@ -21,6 +22,9 @@ private val OUTLINE = Color(0x2F, 0x58, 0x85)
 private val SHADOW = Color(0x2F, 0x58, 0x85, 36)
 private val MUSCLE = Color(0xBC, 0x4C, 0x08)
 private val MUSCLE_SECONDARY = Color(0xF8, 0xD3, 0xB4)
+private val GEAR = Color(0x4A, 0x4F, 0x55)
+private val PLATE = Color(0x2E, 0x33, 0x38)
+private val BAND = Color(0x3D, 0x6B, 0x3A)
 private const val CELL = 260
 private val FRAMES = listOf(0f, 0.25f, 0.5f, 0.75f)
 
@@ -95,6 +99,21 @@ private fun draw(
                 g.color = mix(BODY, BODY_SHADE, layer.shade)
                 g.fill(shape)
                 pending = shape
+            }
+
+            is Layer.Gear -> {
+                flush()
+                when (layer.kind) {
+                    PropKind.Bar -> g.color = GEAR
+                    PropKind.Weight -> g.color = Color(PLATE.red, PLATE.green, PLATE.blue, 64)
+                    PropKind.Band -> g.color = BAND
+                }
+                g.fill(shape)
+                if (layer.kind == PropKind.Weight) {
+                    g.color = PLATE
+                    g.stroke = BasicStroke(0.009f * scale)
+                    g.draw(shape)
+                }
             }
 
             is Layer.Muscle -> if (layer.emphasis == Emphasis.Primary) {

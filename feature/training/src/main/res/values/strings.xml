@@ -120,6 +120,111 @@
         <item>Return just as slowly to looking straight ahead.</item>
     </string-array>
     <string name="move_neck_nod_tip">Keep the movement small and slow. Stop if it hurts.</string>
+    <string name="move_knee_push_up">Knee push-up</string>
+    <string-array name="move_knee_push_up_steps">
+        <item>Kneel with your hands a little wider than your shoulders and your body straight from knees to head.</item>
+        <item>Bend your elbows and lower your chest towards the floor.</item>
+        <item>Press up until your arms are straight.</item>
+    </string-array>
+    <string name="move_knee_push_up_tip">The same push-up with less weight. When 12 feel easy, try a few from your toes.</string>
+    <string name="move_single_leg_bridge">Single-leg glute bridge</string>
+    <string-array name="move_single_leg_bridge_steps">
+        <item>Lie on your back with one foot on the floor and the other leg straight, in line with the thigh.</item>
+        <item>Push through your heel and lift your hips until your body is straight from knee to shoulders.</item>
+        <item>Lower slowly, then switch legs.</item>
+    </string-array>
+    <string name="move_single_leg_bridge_tip">Keep your hips level, so they don\'t drop to the side of the straight leg.</string>
+    <string name="move_dead_bug">Dead bug</string>
+    <string-array name="move_dead_bug_steps">
+        <item>Lie on your back with your arms pointing up and your hips and knees at right angles.</item>
+        <item>Slowly reach one arm overhead and straighten the opposite leg, just above the floor.</item>
+        <item>Bring them back and switch sides.</item>
+    </string-array>
+    <string name="move_dead_bug_tip">Press your lower back gently into the floor the whole time. Breathe out as you reach.</string>
+    <string name="move_high_knees">High knees</string>
+    <string-array name="move_high_knees_steps">
+        <item>Stand tall with your elbows bent.</item>
+        <item>Run in place, driving one knee up to hip height.</item>
+        <item>Switch legs quickly and swing your arms along.</item>
+    </string-array>
+    <string name="move_high_knees_tip">Land softly on the balls of your feet. Lower the knees for a quieter version.</string>
+    <string name="move_goblet_squat">Goblet squat</string>
+    <string-array name="move_goblet_squat_steps">
+        <item>Hold one dumbbell upright against your chest, feet shoulder-width apart.</item>
+        <item>Sit down between your heels with your chest up until your thighs are level.</item>
+        <item>Push through your heels to stand up.</item>
+    </string-array>
+    <string name="move_goblet_squat_tip">Keep your elbows in and the weight close to your chest.</string>
+    <string name="move_dumbbell_row">Dumbbell row</string>
+    <string-array name="move_dumbbell_row_steps">
+        <item>Hold a dumbbell in each hand and hinge forward with soft knees and a flat back.</item>
+        <item>Pull the dumbbells up to your lower ribs, elbows close to your body.</item>
+        <item>Lower them slowly until your arms are straight.</item>
+    </string-array>
+    <string name="move_dumbbell_row_tip">Squeeze your shoulder blades together at the top, and keep your neck in line with your back.</string>
+    <string name="move_dumbbell_press">Dumbbell shoulder press</string>
+    <string-array name="move_dumbbell_press_steps">
+        <item>Stand tall with a dumbbell at each shoulder, elbows in front of you.</item>
+        <item>Press the dumbbells straight up until your arms are straight.</item>
+        <item>Lower them slowly back to your shoulders.</item>
+    </string-array>
+    <string name="move_dumbbell_press_tip">Brace your stomach so your lower back doesn\'t arch.</string>
+    <string name="move_biceps_curl">Biceps curl</string>
+    <string-array name="move_biceps_curl_steps">
+        <item>Stand tall with a dumbbell in each hand, arms straight.</item>
+        <item>Bend your elbows and curl the dumbbells up to your shoulders.</item>
+        <item>Lower them slowly until your arms are straight.</item>
+    </string-array>
+    <string name="move_biceps_curl_tip">Keep your elbows by your sides and let your arms do the work, not your back.</string>
+    <string name="move_dumbbell_deadlift">Dumbbell Romanian deadlift</string>
+    <string-array name="move_dumbbell_deadlift_steps">
+        <item>Stand with a dumbbell in each hand in front of your thighs.</item>
+        <item>Push your hips back with soft knees and a flat back, the weights close to your legs.</item>
+        <item>Stop when you feel the back of your thighs, then push your hips forward to stand up.</item>
+    </string-array>
+    <string name="move_dumbbell_deadlift_tip">The movement comes from the hips. Keep your back flat all the way.</string>
+    <string name="move_band_row">Band row</string>
+    <string-array name="move_band_row_steps">
+        <item>Anchor a band at chest height and hold an end in each hand, arms straight in front.</item>
+        <item>Pull your elbows back along your sides until your hands reach your ribs.</item>
+        <item>Let your arms out slowly.</item>
+    </string-array>
+    <string name="move_band_row_tip">Squeeze your shoulder blades together and keep your shoulders down.</string>
+    <string name="move_band_pulldown">Band pulldown</string>
+    <string-array name="move_band_pulldown_steps">
+        <item>Anchor a band high in front of you and hold it with straight arms reaching up.</item>
+        <item>Pull your arms down to your thighs, keeping them almost straight.</item>
+        <item>Let them back up slowly.</item>
+    </string-array>
+    <string name="move_band_pulldown_tip">Brace your stomach and stand still; only your arms move.</string>
+    <string name="move_band_chest_press">Band chest press</string>
+    <string-array name="move_band_chest_press_steps">
+        <item>Anchor a band behind you at chest height and hold an end in each hand at your chest.</item>
+        <item>Press your hands straight forward until your arms are straight.</item>
+        <item>Bring them back slowly.</item>
+    </string-array>
+    <string name="move_band_chest_press_tip">Take a small step forward if the band is too light, and keep your wrists straight.</string>
+    <string name="move_front_squat">Barbell front squat</string>
+    <string-array name="move_front_squat_steps">
+        <item>Rest the bar on the front of your shoulders, elbows high and forward.</item>
+        <item>Sit down between your heels with an upright chest until your thighs are level.</item>
+        <item>Push through your heels to stand up.</item>
+    </string-array>
+    <string name="move_front_squat_tip">Keep your elbows high so the bar stays on your shoulders. Start with a light bar.</string>
+    <string name="move_deadlift">Barbell Romanian deadlift</string>
+    <string-array name="move_deadlift_steps">
+        <item>Stand tall holding the bar in front of your thighs, hands just outside your legs.</item>
+        <item>Push your hips back with soft knees and a flat back, sliding the bar down your thighs.</item>
+        <item>Stop below your knees and push your hips forward to stand up.</item>
+    </string-array>
+    <string name="move_deadlift_tip">Keep the bar close to your legs and your back flat. Start with a light bar.</string>
+    <string name="move_barbell_row">Barbell row</string>
+    <string-array name="move_barbell_row_steps">
+        <item>Hold the bar with straight arms and hinge forward with soft knees and a flat back.</item>
+        <item>Pull the bar up to your lower ribs.</item>
+        <item>Lower it slowly until your arms are straight.</item>
+    </string-array>
+    <string name="move_barbell_row_tip">Keep your back still: if you need to swing, the bar is too heavy.</string>
     <string name="move_figure_description">%1$s. Works %2$s.</string>
     <string name="dose_reps" translatable="false">%1$d × %2$d</string>
     <string name="dose_reps_per_side">%1$d × %2$d per side</string>
@@ -137,6 +242,7 @@
     <string name="exercise_repetition">Repetition %1$d of %2$d</string>
     <string name="exercise_in_program">In your program: %1$s, %2$s</string>
     <string name="exercise_muscles_title">Muscles</string>
+    <string name="exercise_equipment">Equipment: %1$s</string>
     <string name="exercise_primary_legend">Main muscles: %1$s</string>
     <string name="exercise_secondary_legend">Also working: %1$s</string>
     <string name="exercise_how_title">How to do it</string>
@@ -249,6 +355,11 @@
     <string name="coach_consider_knees">Sensitive knees</string>
     <string name="coach_consider_back">Sensitive back</string>
     <string name="coach_consider_quiet">No jumping</string>
+    <string name="coach_equipment_title">Equipment you have</string>
+    <string name="coach_equipment_body">The coach picks exercises you can do with it. Without any, the sessions use bodyweight.</string>
+    <string name="equipment_dumbbells">Dumbbells</string>
+    <string name="equipment_band">Resistance band</string>
+    <string name="equipment_barbell">Barbell</string>
     <string name="coach_why_title">Why this program</string>
     <string name="coach_create">Create my program</string>
     <string name="coach_suggest">Suggest another program</string>
@@ -265,6 +376,7 @@
     <string name="coach_note_knees">Easy on the knees: no jumps or lunges.</string>
     <string name="coach_note_back">Easy on the back: calm trunk exercises instead of ones that bend or arch the back.</string>
     <string name="coach_note_quiet">No jumping, so it works in an apartment.</string>
+    <string name="coach_note_equipment">The sessions use your equipment (%1$s) where it trains the same muscles, since it can be made heavier as you get stronger.</string>
     <string name="coach_note_cardio_low">The program has %1$d minutes of cardio. WHO recommends at least 150 a week, so add brisk walks in everyday life too.</string>
     <string name="coach_note_cardio_progression">Cardio builds on your recent workouts and rises by at most a tenth a week.</string>
     <string name="coach_goal_rehab">Gentle training</string>

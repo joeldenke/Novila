@@ -1,5 +1,6 @@
 package se.novila.coach
 
+import se.novila.anatomy.Equipment
 import se.novila.anatomy.MuscleGroup
 
 /**
@@ -43,7 +44,8 @@ enum class Consideration {
  * The user's answers to the coach: [goal], how many [daysPerWeek] they can train and for how many
  * [sessionMinutes], areas to [focus] on and [considerations]. [variation] is bumped for a new
  * suggestion with the same answers; 0 is the coach's first choice. With the [CoachGoal.Rehab] goal,
- * [rehabArea] and [rehabPhase] (1 to 3, from gentle to harder) choose the exercises.
+ * [rehabArea] and [rehabPhase] (1 to 3, from gentle to harder) choose the exercises. [equipment] is what the
+ * user has at hand; without any, the sessions use bodyweight alone.
  */
 data class CoachPreferences(
     val goal: CoachGoal = CoachGoal.Health,
@@ -54,6 +56,7 @@ data class CoachPreferences(
     val variation: Int = 0,
     val rehabArea: RehabArea = RehabArea.Knee,
     val rehabPhase: Int = 1,
+    val equipment: Set<Equipment> = emptySet(),
 ) {
     fun withDays(days: Int) = copy(daysPerWeek = days.coerceIn(MIN_DAYS, MAX_DAYS))
 
@@ -69,6 +72,8 @@ data class CoachPreferences(
             considerations + consideration
         },
     )
+
+    fun toggle(item: Equipment) = copy(equipment = if (item in equipment) equipment - item else equipment + item)
 
     fun withRehabPhase(phase: Int) = copy(rehabPhase = phase.coerceIn(1, MAX_REHAB_PHASE))
 
@@ -87,14 +92,15 @@ data class CoachPreferences(
 }
 
 /**
- * Stores [CoachPreferences] as text: "c2;goal;days;minutes;focus;considerations;variation;rehabArea;rehabPhase",
- * where focus and considerations are comma-separated names. c1 (before rehab) is still read. Plain Kotlin, so it is
+ * Stores [CoachPreferences] as text:
+ * "c3;goal;days;minutes;focus;considerations;variation;rehabArea;rehabPhase;equipment", where focus, considerations
+ * and equipment are comma-separated names. c1 (before rehab) and c2 (before equipment) are still read. Plain Kotlin, so it is
  * unit tested. Unknown names (from a later version) are skipped, and anything unreadable gives null: the coach is
  * then simply not set up.
  */
 object CoachPreferencesCodec {
-    private const val VERSION = "c2"
-    private val FIELDS = mapOf("c1" to 7, VERSION to 9)
+    private const val VERSION = "c3"
+    private val FIELDS = mapOf("c1" to 7, "c2" to 9, VERSION to 10)
 
     fun encode(preferences: CoachPreferences): String = with(preferences) {
         listOf(
@@ -107,6 +113,7 @@ object CoachPreferencesCodec {
             variation,
             rehabArea.name,
             rehabPhase,
+            equipment.sorted().joinToString(",") { it.name },
         ).joinToString(";")
     }
 
@@ -122,6 +129,7 @@ object CoachPreferencesCodec {
             considerations = names(parts[5], Consideration.entries),
             variation = parts[6].toIntOrNull()?.coerceAtLeast(0) ?: 0,
             rehabArea = RehabArea.entries.firstOrNull { it.name == parts.getOrNull(7) } ?: RehabArea.Knee,
+            equipment = parts.getOrNull(9)?.let { names(it, Equipment.entries) }.orEmpty(),
         ).withDays(days).withMinutes(minutes).withRehabPhase(parts.getOrNull(8)?.toIntOrNull() ?: 1)
     }
 

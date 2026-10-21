@@ -25,7 +25,8 @@ Keyframe(at, Pose) ──► Movement.poseAt(progress)      ledvinklar, utjämna
 | `Muscles.kt` | `MuscleGroup` och `MuscleMap` (var varje grupp sitter på kroppen) |
 | `Scene.kt` | `Camera`, `SceneBuilder`, `Layer`, golvskugga |
 | `ViewSelector.kt` | väljer varje övnings bästa kamera |
-| `ExerciseMotion.kt` | en övning: rörelse, muskler, kontakter, ankare, kamera |
+| `ExerciseMotion.kt` | en övning: rörelse, muskler, kontakter, ankare, kamera, redskap |
+| `Gear.kt` | redskapen (`Equipment`, `Gear`, `Prop`): hantlar, gummiband och skivstång i händerna |
 | `ExerciseLibrary.kt` | alla övningar och deras lösta vinklar |
 | `RepetitionCounter.kt` | räknar repetitioner ur observerade ledvinklar, se *Räkna repetitioner* |
 
@@ -62,6 +63,29 @@ Texterna (namn, steg och tips) finns i `ExerciseCards.kt` (`moveText`) och i `st
   låta en hand glida eller sjunka.
 - `AnatomyTest` kontrollerar att kontakterna flyttar sig mindre än 2 % av kroppslängden och aldrig sjunker
   ner i golvet.
+
+## Redskap
+
+En övning kan ha ett redskap (`ExerciseMotion.gear`). Redskapet har inga egna vinklar: det ritas ur den poserade
+kroppens händer, så samma keyframes fungerar för varje kropp och kamera.
+
+- `Gear.Dumbbells`: en hantel i varje hand, handtaget tvärs över handflatan.
+- `Gear.Goblet`: en hantel upprätt mot bröstet, mellan händerna (gobletknäböj).
+- `Gear.Barbell`: en skivstång mellan händerna med en viktskiva i varje ände.
+- `Gear.Band(anchor)`: ett gummiband från varje hand till en fast punkt, i första keyframens koordinater (där
+  kroppen står vid start). Punkten gäller vänster hand; höger hands ände sitter i spegelbilden, så med `x = 0`
+  möts banden i en punkt (dörrankare framför), och med `x` utanför axlarna går de förbi kroppen.
+
+Varje del är en cylinder (`Prop`) som ritas som det konvexa höljet av sina två ändcirklar, så en viktskiva är rund
+framifrån och smal från sidan. Delarna sorteras in bland kroppsdelarna efter djup (`Layer.Gear`), så en hantel på
+bortre sidan hamnar bakom kroppen. Viktskivor ritas som en kant runt en genomskinlig yta, så de aldrig döljer
+huvudet eller musklerna. Färgerna är `NovilaTheme.anatomy.gear`, `weight` och `band`.
+
+Riggen kan fortfarande inte vrida överarmen, så rörelser som kräver utåtrotation (knäböj med stången på ryggen,
+sidolyft med raka armar framåt) går inte att rita. Välj då en variant som går, som frontböj.
+
+`Equipment` (hantlar, gummiband, skivstång) är det coachen frågar efter: `CoachPreferences.equipment` är vad
+användaren har, och `CoachCatalog` väljer bara övningar vars redskap finns där.
 
 ## Muskler
 

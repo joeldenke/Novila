@@ -161,18 +161,21 @@ class TrainingScreenTest {
         composeRule.onNodeWithText("Weekly review").assertDoesNotExist()
     }
 
-    @Test fun `the library finds exercises by name and muscle`() {
+    @Test fun `the library finds exercises by name, muscle and equipment`() {
         composeRule.setContent {
             NovilaTheme { ExerciseLibraryScreen(onOpenExercise = {}, contentPadding = PaddingValues()) }
         }
-        composeRule.onNodeWithText("15 exercises").assertExists()
+        composeRule.onNodeWithText("30 exercises").assertExists()
         composeRule.onNode(hasSetTextAction()).performTextInput("push")
         composeRule.onNodeWithText("Push-up").assertExists()
         composeRule.onNodeWithText("Squat").assertDoesNotExist()
         composeRule.onNode(hasSetTextAction()).performTextReplacement("calves")
         composeRule.onNodeWithText("Calf raise").assertExists()
+        composeRule.onNode(hasSetTextAction()).performTextReplacement("dumbbells")
+        composeRule.onNodeWithText("Biceps curl").assertExists()
+        composeRule.onNodeWithText("Push-up").assertDoesNotExist()
         composeRule.onNodeWithContentDescription("Clear the search").performClick()
-        composeRule.onNodeWithText("15 exercises").assertExists()
+        composeRule.onNodeWithText("30 exercises").assertExists()
     }
 
     @Test fun `a low recovery shows the readings and says today's session is lighter`() {

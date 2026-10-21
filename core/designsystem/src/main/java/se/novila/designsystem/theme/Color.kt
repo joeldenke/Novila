@@ -317,7 +317,8 @@ internal val NovilaDarkSurfaces = with(NovilaPalette) { NovilaSurfaceColors(card
  * The anatomy figure in exercise illustrations: a calm lake blue [body] (parts on the far side in
  * [bodyShade]) with an [outline], and the muscles an exercise trains in warm ember. Main muscles are
  * filled with [musclePrimary]; supporting muscles get a [muscleSecondary] fill edged in [musclePrimary],
- * so the two read apart by shape as well as color.
+ * so the two read apart by shape as well as color. Equipment is drawn in quiet iron: handles and bars in
+ * [gear], weight plates in the darker [weight], and resistance bands in pine ([band]).
  */
 @Immutable
 data class NovilaAnatomyColors(
@@ -327,6 +328,9 @@ data class NovilaAnatomyColors(
     val shadow: Color,
     val musclePrimary: Color,
     val muscleSecondary: Color,
+    val gear: Color,
+    val weight: Color,
+    val band: Color,
 )
 
 internal val NovilaLightAnatomy = with(NovilaPalette) {
@@ -337,6 +341,9 @@ internal val NovilaLightAnatomy = with(NovilaPalette) {
         shadow = Lake40.copy(alpha = 0.14f),
         musclePrimary = Ember40,
         muscleSecondary = Ember90,
+        gear = Moss35,
+        weight = Bark20,
+        band = Pine45,
     )
 }
 
@@ -348,5 +355,8 @@ internal val NovilaDarkAnatomy = with(NovilaPalette) {
         shadow = Lake80.copy(alpha = 0.12f),
         musclePrimary = Ember80,
         muscleSecondary = Ember20,
+        gear = Night55,
+        weight = Night72,
+        band = Pine80,
     )
 }

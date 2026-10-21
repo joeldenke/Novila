@@ -277,6 +277,286 @@ object ExerciseLibrary {
         camera = Camera(60f, pitch = 0f),
     )
 
+    val kneePushUp = ExerciseMotion(
+        id = "knee_push_up",
+        movement = Movement(
+            listOf(
+                Keyframe(0f, KNEE_PUSH_UP[0]),
+                Keyframe(0.06f, KNEE_PUSH_UP[1]),
+                Keyframe(0.12f, KNEE_PUSH_UP[2]),
+                Keyframe(0.22f, KNEE_PUSH_UP[3]),
+                Keyframe(0.36f, KNEE_PUSH_UP[4]),
+                Keyframe(0.5f, KNEE_PUSH_UP[5]),
+                Keyframe(0.58f, KNEE_PUSH_UP[5]),
+                Keyframe(0.72f, KNEE_PUSH_UP[4]),
+                Keyframe(0.85f, KNEE_PUSH_UP[3]),
+                Keyframe(0.91f, KNEE_PUSH_UP[2]),
+                Keyframe(0.96f, KNEE_PUSH_UP[1]),
+                Keyframe(1f, KNEE_PUSH_UP[0]),
+            ),
+        ),
+        primary = setOf(MuscleGroup.Chest, MuscleGroup.Triceps),
+        secondary = setOf(MuscleGroup.Shoulders, MuscleGroup.Abs),
+        contacts = setOf(Landmark.LeftKnee, Landmark.RightKnee, Landmark.LeftHand, Landmark.RightHand),
+        anchor = Landmark.LeftKnee,
+        camera = Camera(90f, pitch = 0f),
+        peak = 0.54f,
+    )
+
+    val singleLegBridge = ExerciseMotion(
+        id = "single_leg_bridge",
+        movement = Movement(
+            listOf(
+                Keyframe(0f, SINGLE_LEG_BRIDGE[0]),
+                Keyframe(0.22f, SINGLE_LEG_BRIDGE[1]),
+                Keyframe(0.42f, SINGLE_LEG_BRIDGE[2]),
+                Keyframe(0.6f, SINGLE_LEG_BRIDGE[2]),
+                Keyframe(0.8f, SINGLE_LEG_BRIDGE[1]),
+                Keyframe(1f, SINGLE_LEG_BRIDGE[0]),
+            ),
+        ),
+        primary = setOf(MuscleGroup.Glutes),
+        secondary = setOf(MuscleGroup.Hamstrings, MuscleGroup.Abs),
+        contacts = setOf(Landmark.LeftHeel, Landmark.LeftToe, Landmark.UpperBack),
+        anchor = Landmark.LeftHeel,
+        camera = Camera(90f, pitch = 0f),
+    )
+
+    val deadBug = ExerciseMotion(
+        id = "dead_bug",
+        movement = Movement(
+            listOf(
+                Keyframe(0f, DEAD_BUG[0]),
+                Keyframe(0.42f, DEAD_BUG[1]),
+                Keyframe(0.58f, DEAD_BUG[1]),
+                Keyframe(1f, DEAD_BUG[0]),
+            ),
+        ),
+        primary = setOf(MuscleGroup.Abs),
+        secondary = setOf(MuscleGroup.LowerBack),
+        contacts = setOf(Landmark.Belly, Landmark.UpperBack),
+        anchor = Landmark.Belly,
+        camera = Camera(90f),
+    )
+
+    val highKnees = ExerciseMotion(
+        id = "high_knees",
+        movement = Movement(
+            listOf(
+                Keyframe(0f, RUN_MIDDLE),
+                Keyframe(0.25f, HIGH_KNEE),
+                Keyframe(0.5f, RUN_MIDDLE),
+                Keyframe(0.75f, HIGH_KNEE.mirrored()),
+                Keyframe(1f, RUN_MIDDLE),
+            ),
+        ),
+        primary = setOf(MuscleGroup.Quads, MuscleGroup.Calves),
+        secondary = setOf(MuscleGroup.Abs, MuscleGroup.Glutes),
+        contacts = feet,
+        anchor = null,
+        camera = Camera(60f, pitch = 0f),
+        peak = 0.25f,
+        repetitionMillis = 1400,
+    )
+
+    val gobletSquat = ExerciseMotion(
+        id = "goblet_squat",
+        movement = Movement(
+            listOf(
+                Keyframe(0f, GOBLET_TOP),
+                Keyframe(0.45f, GOBLET_BOTTOM),
+                Keyframe(0.58f, GOBLET_BOTTOM),
+                Keyframe(1f, GOBLET_TOP),
+            ),
+        ),
+        primary = setOf(MuscleGroup.Quads, MuscleGroup.Glutes),
+        secondary = setOf(MuscleGroup.Hamstrings, MuscleGroup.Abs),
+        contacts = feet,
+        anchor = Landmark.LeftHeel,
+        camera = Camera(60f, pitch = -8f),
+        gear = Gear.Goblet,
+    )
+
+    val dumbbellRow = ExerciseMotion(
+        id = "dumbbell_row",
+        movement = Movement(
+            listOf(
+                Keyframe(0f, ROW_HANG),
+                Keyframe(0.42f, ROW_PULL),
+                Keyframe(0.58f, ROW_PULL),
+                Keyframe(1f, ROW_HANG),
+            ),
+        ),
+        primary = setOf(MuscleGroup.Lats, MuscleGroup.UpperBack),
+        secondary = setOf(MuscleGroup.Biceps, MuscleGroup.LowerBack),
+        contacts = feet,
+        anchor = Landmark.LeftHeel,
+        camera = Camera(90f),
+        gear = Gear.Dumbbells,
+    )
+
+    val dumbbellPress = ExerciseMotion(
+        id = "dumbbell_press",
+        movement = Movement(
+            listOf(
+                Keyframe(0f, PRESS_RACK),
+                Keyframe(0.42f, PRESS_TOP),
+                Keyframe(0.58f, PRESS_TOP),
+                Keyframe(1f, PRESS_RACK),
+            ),
+        ),
+        primary = setOf(MuscleGroup.Shoulders, MuscleGroup.Triceps),
+        secondary = setOf(MuscleGroup.UpperBack, MuscleGroup.Abs),
+        contacts = feet,
+        anchor = Landmark.LeftHeel,
+        camera = Camera(0f, pitch = -8f),
+        gear = Gear.Dumbbells,
+    )
+
+    val bicepsCurl = ExerciseMotion(
+        id = "biceps_curl",
+        movement = Movement(
+            listOf(
+                Keyframe(0f, Pose.STANDING),
+                Keyframe(0.42f, CURL_TOP),
+                Keyframe(0.58f, CURL_TOP),
+                Keyframe(1f, Pose.STANDING),
+            ),
+        ),
+        primary = setOf(MuscleGroup.Biceps),
+        secondary = setOf(MuscleGroup.Shoulders),
+        contacts = feet,
+        anchor = Landmark.LeftHeel,
+        camera = Camera(30f, pitch = -8f),
+        gear = Gear.Dumbbells,
+    )
+
+    val dumbbellDeadlift = ExerciseMotion(
+        id = "dumbbell_deadlift",
+        movement = Movement(
+            listOf(
+                Keyframe(0f, DEADLIFT_TOP),
+                Keyframe(0.45f, DEADLIFT_BOTTOM),
+                Keyframe(0.58f, DEADLIFT_BOTTOM),
+                Keyframe(1f, DEADLIFT_TOP),
+            ),
+        ),
+        primary = setOf(MuscleGroup.Hamstrings, MuscleGroup.Glutes),
+        secondary = setOf(MuscleGroup.LowerBack, MuscleGroup.UpperBack),
+        contacts = feet,
+        anchor = Landmark.LeftHeel,
+        camera = Camera(90f, pitch = 0f),
+        gear = Gear.Dumbbells,
+    )
+
+    val bandRow = ExerciseMotion(
+        id = "band_row",
+        movement = Movement(
+            listOf(
+                Keyframe(0f, BAND_REACH),
+                Keyframe(0.42f, BAND_ROW_PULL),
+                Keyframe(0.58f, BAND_ROW_PULL),
+                Keyframe(1f, BAND_REACH),
+            ),
+        ),
+        primary = setOf(MuscleGroup.UpperBack, MuscleGroup.Lats),
+        secondary = setOf(MuscleGroup.Biceps, MuscleGroup.Shoulders),
+        contacts = feet,
+        anchor = Landmark.LeftHeel,
+        camera = Camera(90f),
+        gear = Gear.Band(Vec3(0f, 0.24f, 0.75f)),
+    )
+
+    val bandPulldown = ExerciseMotion(
+        id = "band_pulldown",
+        movement = Movement(
+            listOf(
+                Keyframe(0f, BAND_OVERHEAD),
+                Keyframe(0.42f, BAND_PULLED_DOWN),
+                Keyframe(0.58f, BAND_PULLED_DOWN),
+                Keyframe(1f, BAND_OVERHEAD),
+            ),
+        ),
+        primary = setOf(MuscleGroup.Lats),
+        secondary = setOf(MuscleGroup.Triceps, MuscleGroup.Abs),
+        contacts = feet,
+        anchor = Landmark.LeftHeel,
+        camera = Camera(90f, pitch = 0f),
+        gear = Gear.Band(Vec3(0f, 0.78f, 0.6f)),
+    )
+
+    val bandChestPress = ExerciseMotion(
+        id = "band_chest_press",
+        movement = Movement(
+            listOf(
+                Keyframe(0f, BAND_CHEST),
+                Keyframe(0.42f, BAND_PRESSED),
+                Keyframe(0.58f, BAND_PRESSED),
+                Keyframe(1f, BAND_CHEST),
+            ),
+        ),
+        primary = setOf(MuscleGroup.Chest, MuscleGroup.Triceps),
+        secondary = setOf(MuscleGroup.Shoulders),
+        contacts = feet,
+        anchor = Landmark.LeftHeel,
+        camera = Camera(90f, pitch = 0f),
+        gear = Gear.Band(Vec3(0.22f, 0.16f, -0.45f)),
+    )
+
+    val frontSquat = ExerciseMotion(
+        id = "front_squat",
+        movement = Movement(
+            listOf(
+                Keyframe(0f, FRONT_SQUAT_TOP),
+                Keyframe(0.45f, FRONT_SQUAT_BOTTOM),
+                Keyframe(0.58f, FRONT_SQUAT_BOTTOM),
+                Keyframe(1f, FRONT_SQUAT_TOP),
+            ),
+        ),
+        primary = setOf(MuscleGroup.Quads, MuscleGroup.Glutes),
+        secondary = setOf(MuscleGroup.Abs, MuscleGroup.UpperBack, MuscleGroup.Hamstrings),
+        contacts = feet,
+        anchor = Landmark.LeftHeel,
+        camera = Camera(90f),
+        gear = Gear.Barbell,
+    )
+
+    val deadlift = ExerciseMotion(
+        id = "deadlift",
+        movement = Movement(
+            listOf(
+                Keyframe(0f, DEADLIFT_TOP),
+                Keyframe(0.45f, DEADLIFT_BOTTOM),
+                Keyframe(0.58f, DEADLIFT_BOTTOM),
+                Keyframe(1f, DEADLIFT_TOP),
+            ),
+        ),
+        primary = setOf(MuscleGroup.Hamstrings, MuscleGroup.Glutes),
+        secondary = setOf(MuscleGroup.LowerBack, MuscleGroup.UpperBack),
+        contacts = feet,
+        anchor = Landmark.LeftHeel,
+        camera = Camera(90f, pitch = 0f),
+        gear = Gear.Barbell,
+    )
+
+    val barbellRow = ExerciseMotion(
+        id = "barbell_row",
+        movement = Movement(
+            listOf(
+                Keyframe(0f, ROW_HANG),
+                Keyframe(0.42f, ROW_PULL),
+                Keyframe(0.58f, ROW_PULL),
+                Keyframe(1f, ROW_HANG),
+            ),
+        ),
+        primary = setOf(MuscleGroup.Lats, MuscleGroup.UpperBack),
+        secondary = setOf(MuscleGroup.Biceps, MuscleGroup.LowerBack),
+        contacts = feet,
+        anchor = Landmark.LeftHeel,
+        camera = Camera(90f),
+        gear = Gear.Barbell,
+    )
+
     val all: List<ExerciseMotion> = listOf(
         squat,
         pushUp,
@@ -293,6 +573,21 @@ object ExerciseLibrary {
         crunch,
         armRaise,
         neckNod,
+        kneePushUp,
+        singleLegBridge,
+        deadBug,
+        highKnees,
+        gobletSquat,
+        dumbbellRow,
+        dumbbellPress,
+        bicepsCurl,
+        dumbbellDeadlift,
+        bandRow,
+        bandPulldown,
+        bandChestPress,
+        frontSquat,
+        deadlift,
+        barbellRow,
     )
 
     fun byId(id: String): ExerciseMotion? = all.firstOrNull { it.id == id }
@@ -404,4 +699,154 @@ private val BIRD_DOG = ALL_FOURS.copy(
 private val CRUNCH = listOf(
     BRIDGE[0],
     BRIDGE[0].copy(trunk = 32f, neck = 18f, leftArm = LimbPose(raise = 55f), rightArm = LimbPose(raise = 55f)),
+)
+
+/** On the knees, the shins resting on the floor and the body straight from the knees to the head. */
+private fun kneePushUp(lean: Float, raise: Float, bend: Float) = Pose.symmetric(
+    leg = LimbPose(bend = 90f - lean),
+    arm = LimbPose(raise = raise, bend = bend),
+    lean = lean,
+    feet = 180f,
+    flatHands = true,
+)
+
+/** From the top to the bottom of a push-up on the knees, pivoting on the knees with the hands planted (solved). */
+private val KNEE_PUSH_UP = listOf(
+    kneePushUp(lean = 53.5f, raise = 53.5f, bend = 0f),
+    kneePushUp(lean = 56.3f, raise = 36.2f, bend = 40f),
+    kneePushUp(lean = 59.7f, raise = 27.6f, bend = 60f),
+    kneePushUp(lean = 64.7f, raise = 17.8f, bend = 82f),
+    kneePushUp(lean = 70.6f, raise = 8f, bend = 102f),
+    kneePushUp(lean = 76.1f, raise = -1.4f, bend = 118f),
+)
+
+/**
+ * The glute bridge on the left foot, the right leg straight and in line with the left thigh. A straight leg's
+ * foot is at right angles to it, which is the leg's own angle to the floor.
+ */
+private val SINGLE_LEG_BRIDGE = BRIDGE.map { pose ->
+    val raise = pose.leftLeg.raise
+    pose.copy(rightLeg = LimbPose(raise = raise), rightFoot = pose.lean - raise)
+}
+
+/**
+ * Lying on the back with the hips and knees at right angles and the arms pointing up, then the left arm
+ * reaches overhead and the right leg straightens out, both just above the floor.
+ */
+private val DEAD_BUG = listOf(
+    Pose.symmetric(leg = LimbPose(raise = 90f, bend = 90f), arm = LimbPose(raise = 90f), lean = -90f, feet = -90f),
+    Pose(
+        lean = -90f,
+        leftLeg = LimbPose(raise = 90f, bend = 90f),
+        rightLeg = LimbPose(raise = 15f),
+        leftArm = LimbPose(raise = 165f),
+        rightArm = LimbPose(raise = 90f),
+        leftFoot = -90f,
+        rightFoot = -105f,
+    ),
+)
+
+/** Running in place, both feet down and the elbows bent. */
+private val RUN_MIDDLE = Pose.symmetric(arm = LimbPose(bend = 90f))
+
+/** The left knee driven up to hip height, toes pointing down, the arms swinging the other way. */
+private val HIGH_KNEE = Pose(
+    leftLeg = LimbPose(raise = 85f, bend = 95f),
+    leftArm = LimbPose(raise = -25f, bend = 90f),
+    rightArm = LimbPose(raise = 40f, bend = 90f),
+    leftFoot = 40f,
+)
+
+/** The same pose with left and right swapped. */
+private fun Pose.mirrored() = copy(
+    leftLeg = rightLeg,
+    rightLeg = leftLeg,
+    leftArm = rightArm,
+    rightArm = leftArm,
+    leftFoot = rightFoot,
+    rightFoot = leftFoot,
+)
+
+/** Holding a dumbbell upright against the chest, elbows in. */
+private val GOBLET_ARMS = LimbPose(raise = 5f, spread = -12f, bend = 125f)
+
+private val GOBLET_TOP = Pose.symmetric(arm = GOBLET_ARMS)
+
+/** A deep squat with an upright chest: the thighs level and the shins leaning forward. */
+private val GOBLET_BOTTOM = Pose.symmetric(
+    leg = LimbPose(raise = 125f, bend = 125f),
+    arm = GOBLET_ARMS,
+    lean = 30f,
+    neck = -22f,
+)
+
+/** Hinged forward with soft knees and the weights hanging straight down from the shoulders. */
+private val ROW_HANG = Pose.symmetric(
+    leg = LimbPose(raise = 95f, bend = 25f),
+    arm = LimbPose(raise = 70f),
+    lean = 70f,
+    neck = -30f,
+)
+
+/** The elbows pulled back past the body, the weights at the lower ribs. */
+private val ROW_PULL = ROW_HANG.copy(
+    leftArm = LimbPose(raise = 10f, bend = 70f),
+    rightArm = LimbPose(raise = 10f, bend = 70f),
+)
+
+/** The weights at the shoulders, elbows forward and down. */
+private val PRESS_RACK = Pose.symmetric(arm = LimbPose(raise = 30f, spread = 15f, bend = 140f))
+
+/** The arms straight overhead. */
+private val PRESS_TOP = Pose.symmetric(arm = LimbPose(raise = 172f, spread = 8f, bend = 4f))
+
+/** The elbows by the sides and the forearms curled up. */
+private val CURL_TOP = Pose.symmetric(arm = LimbPose(raise = 10f, bend = 135f))
+
+/** Standing tall with the weight hanging in front of the thighs. */
+private val DEADLIFT_TOP = Pose.symmetric(arm = LimbPose(raise = 12f, spread = 6f))
+
+/**
+ * Hinged at the hips with soft knees and a flat back, the hips pushed back so the weight hangs straight
+ * down over the feet.
+ */
+private val DEADLIFT_BOTTOM = Pose.symmetric(
+    leg = LimbPose(raise = 77f, bend = 20f),
+    arm = LimbPose(raise = 54f, spread = 6f),
+    lean = 52f,
+    neck = -25f,
+)
+
+/** Soft knees for the standing band exercises. */
+private val SOFT_KNEES = LimbPose(raise = 6f, bend = 12f)
+
+/** Standing with the arms reaching straight forward at chest height. */
+private val BAND_REACH = Pose.symmetric(leg = SOFT_KNEES, arm = LimbPose(raise = 85f))
+
+/** The elbows pulled back along the sides, the hands at the ribs. */
+private val BAND_ROW_PULL = Pose.symmetric(leg = SOFT_KNEES, arm = LimbPose(raise = -25f, bend = 95f))
+
+/** The arms reaching up and forward, nearly straight. */
+private val BAND_OVERHEAD = Pose.symmetric(leg = SOFT_KNEES, arm = LimbPose(raise = 150f, bend = 10f))
+
+/** The straight arms pulled down to the thighs. */
+private val BAND_PULLED_DOWN = Pose.symmetric(leg = SOFT_KNEES, arm = LimbPose(raise = 5f, bend = 10f))
+
+/** The hands at the chest, the elbows just behind the body. */
+private val BAND_CHEST = Pose.symmetric(leg = SOFT_KNEES, arm = LimbPose(raise = -10f, bend = 100f))
+
+/** The arms pressed straight forward. */
+private val BAND_PRESSED = Pose.symmetric(leg = SOFT_KNEES, arm = LimbPose(raise = 85f, bend = 4f))
+
+/** The bar resting on the front of the shoulders, the elbows high and forward. */
+private val FRONT_RACK = LimbPose(raise = 90f, spread = 10f, bend = 150f)
+
+private val FRONT_SQUAT_TOP = Pose.symmetric(arm = FRONT_RACK)
+
+/** Squatting down with an upright chest, the thighs level and the elbows kept high. */
+private val FRONT_SQUAT_BOTTOM = Pose.symmetric(
+    leg = LimbPose(raise = 120f, bend = 125f),
+    arm = FRONT_RACK,
+    lean = 25f,
+    neck = -18f,
 )

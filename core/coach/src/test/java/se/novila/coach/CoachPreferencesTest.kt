@@ -3,6 +3,7 @@ package se.novila.coach
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
+import se.novila.anatomy.Equipment
 
 class CoachPreferencesTest {
     @Test fun `preferences survive encoding`() {
@@ -35,6 +36,21 @@ class CoachPreferencesTest {
             CoachPreferences.MAX_REHAB_PHASE,
             CoachPreferencesCodec.decode("c2;Rehab;4;30;;;0;Knee;9")?.rehabPhase,
         )
+    }
+
+    @Test fun `equipment survives encoding, and answers from before equipment are still read`() {
+        val equipped = CoachPreferences(equipment = setOf(Equipment.Band, Equipment.Dumbbells))
+        assertEquals(equipped, CoachPreferencesCodec.decode(CoachPreferencesCodec.encode(equipped)))
+        assertEquals(
+            CoachPreferences(goal = CoachGoal.Rehab, rehabArea = RehabArea.Hip, rehabPhase = 2),
+            CoachPreferencesCodec.decode("c2;Rehab;4;30;;;0;Hip;2"),
+        )
+        assertEquals(
+            setOf(Equipment.Barbell),
+            CoachPreferencesCodec.decode("c3;Health;4;30;;;0;Knee;1;Barbell,Kettlebell")?.equipment,
+        )
+        assertEquals(setOf(Equipment.Band), CoachPreferences().toggle(Equipment.Band).equipment)
+        assertEquals(emptySet<Equipment>(), CoachPreferences().toggle(Equipment.Band).toggle(Equipment.Band).equipment)
     }
 
     @Test fun `nothing stored or unreadable means no coach`() {

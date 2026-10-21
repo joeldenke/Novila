@@ -119,6 +119,111 @@
         <item>Återgå lika långsamt till att titta rakt fram.</item>
     </string-array>
     <string name="move_neck_nod_tip">Håll rörelsen liten och långsam. Avbryt om det gör ont.</string>
+    <string name="move_knee_push_up">Armhävning på knä</string>
+    <string-array name="move_knee_push_up_steps">
+        <item>Stå på knä med händerna strax bredare än axlarna och kroppen rak från knän till huvud.</item>
+        <item>Böj armbågarna och sänk bröstet mot golvet.</item>
+        <item>Pressa upp tills armarna är raka.</item>
+    </string-array>
+    <string name="move_knee_push_up_tip">Samma armhävning med mindre vikt. När 12 känns lätta kan du prova några på tårna.</string>
+    <string name="move_single_leg_bridge">Höftlyft på ett ben</string>
+    <string-array name="move_single_leg_bridge_steps">
+        <item>Ligg på rygg med en fot i golvet och det andra benet rakt, i linje med låret.</item>
+        <item>Tryck ifrån med hälen och lyft höften tills kroppen är rak från knä till axlar.</item>
+        <item>Sänk långsamt och byt ben.</item>
+    </string-array>
+    <string name="move_single_leg_bridge_tip">Håll höften i våg så att den inte sjunker åt det raka benets sida.</string>
+    <string name="move_dead_bug">Död insekt</string>
+    <string-array name="move_dead_bug_steps">
+        <item>Ligg på rygg med armarna rakt upp och höfter och knän i rät vinkel.</item>
+        <item>Sträck långsamt ena armen bakåt och motsatt ben framåt, strax ovanför golvet.</item>
+        <item>För tillbaka dem och byt sida.</item>
+    </string-array>
+    <string name="move_dead_bug_tip">Tryck ländryggen lätt mot golvet hela tiden. Andas ut när du sträcker.</string>
+    <string name="move_high_knees">Höga knän</string>
+    <string-array name="move_high_knees_steps">
+        <item>Stå rak med böjda armbågar.</item>
+        <item>Spring på stället och för ena knät upp till höfthöjd.</item>
+        <item>Byt ben snabbt och låt armarna följa med.</item>
+    </string-array>
+    <string name="move_high_knees_tip">Landa mjukt på framfoten. Lyft knäna lägre för en tystare variant.</string>
+    <string name="move_goblet_squat">Gobletknäböj</string>
+    <string-array name="move_goblet_squat_steps">
+        <item>Håll en hantel upprätt mot bröstet, fötterna axelbrett isär.</item>
+        <item>Sätt dig ner mellan hälarna med bröstet uppe tills låren är vågräta.</item>
+        <item>Tryck ifrån med hälarna och res dig.</item>
+    </string-array>
+    <string name="move_goblet_squat_tip">Håll armbågarna inne och vikten nära bröstet.</string>
+    <string name="move_dumbbell_row">Hantelrodd</string>
+    <string-array name="move_dumbbell_row_steps">
+        <item>Håll en hantel i varje hand och fäll framåt med mjuka knän och rak rygg.</item>
+        <item>Dra hantlarna upp mot de nedre revbenen, armbågarna nära kroppen.</item>
+        <item>Sänk dem långsamt tills armarna är raka.</item>
+    </string-array>
+    <string name="move_dumbbell_row_tip">Dra ihop skulderbladen i toppen och håll nacken i linje med ryggen.</string>
+    <string name="move_dumbbell_press">Axelpress med hantlar</string>
+    <string-array name="move_dumbbell_press_steps">
+        <item>Stå rak med en hantel vid varje axel, armbågarna framför dig.</item>
+        <item>Pressa hantlarna rakt upp tills armarna är raka.</item>
+        <item>Sänk dem långsamt tillbaka till axlarna.</item>
+    </string-array>
+    <string name="move_dumbbell_press_tip">Spänn magen så att du inte svankar.</string>
+    <string name="move_biceps_curl">Bicepscurl</string>
+    <string-array name="move_biceps_curl_steps">
+        <item>Stå rak med en hantel i varje hand och raka armar.</item>
+        <item>Böj armbågarna och för upp hantlarna mot axlarna.</item>
+        <item>Sänk dem långsamt tills armarna är raka.</item>
+    </string-array>
+    <string name="move_biceps_curl_tip">Håll armbågarna vid sidorna och låt armarna göra jobbet, inte ryggen.</string>
+    <string name="move_dumbbell_deadlift">Rumänsk marklyft med hantlar</string>
+    <string-array name="move_dumbbell_deadlift_steps">
+        <item>Stå med en hantel i varje hand framför låren.</item>
+        <item>Skjut höften bakåt med mjuka knän och rak rygg, vikterna nära benen.</item>
+        <item>Vänd när du känner baksidan av låren och skjut fram höften för att resa dig.</item>
+    </string-array>
+    <string name="move_dumbbell_deadlift_tip">Rörelsen kommer från höften. Håll ryggen rak hela vägen.</string>
+    <string name="move_band_row">Rodd med gummiband</string>
+    <string-array name="move_band_row_steps">
+        <item>Fäst ett gummiband i brösthöjd och håll en ände i varje hand, armarna raka framåt.</item>
+        <item>Dra armbågarna bakåt längs sidorna tills händerna når revbenen.</item>
+        <item>Släpp ut armarna långsamt.</item>
+    </string-array>
+    <string name="move_band_row_tip">Dra ihop skulderbladen och håll axlarna nere.</string>
+    <string name="move_band_pulldown">Neddrag med gummiband</string>
+    <string-array name="move_band_pulldown_steps">
+        <item>Fäst ett gummiband högt framför dig och håll det med raka armar uppåt.</item>
+        <item>Dra ner armarna mot låren med nästan raka armar.</item>
+        <item>Låt dem gå upp långsamt.</item>
+    </string-array>
+    <string name="move_band_pulldown_tip">Spänn magen och stå still; bara armarna rör sig.</string>
+    <string name="move_band_chest_press">Bröstpress med gummiband</string>
+    <string-array name="move_band_chest_press_steps">
+        <item>Fäst ett gummiband bakom dig i brösthöjd och håll en ände i varje hand vid bröstet.</item>
+        <item>Pressa händerna rakt fram tills armarna är raka.</item>
+        <item>För tillbaka dem långsamt.</item>
+    </string-array>
+    <string name="move_band_chest_press_tip">Ta ett litet steg framåt om bandet är för lätt, och håll handlederna raka.</string>
+    <string name="move_front_squat">Frontböj med skivstång</string>
+    <string-array name="move_front_squat_steps">
+        <item>Låt stången vila framtill på axlarna, armbågarna högt och framåt.</item>
+        <item>Sätt dig ner mellan hälarna med upprätt bröst tills låren är vågräta.</item>
+        <item>Tryck ifrån med hälarna och res dig.</item>
+    </string-array>
+    <string name="move_front_squat_tip">Håll armbågarna höga så att stången ligger kvar på axlarna. Börja med en lätt stång.</string>
+    <string name="move_deadlift">Rumänsk marklyft med skivstång</string>
+    <string-array name="move_deadlift_steps">
+        <item>Stå rak med stången framför låren, händerna strax utanför benen.</item>
+        <item>Skjut höften bakåt med mjuka knän och rak rygg och låt stången glida längs låren.</item>
+        <item>Vänd nedanför knäna och skjut fram höften för att resa dig.</item>
+    </string-array>
+    <string name="move_deadlift_tip">Håll stången nära benen och ryggen rak. Börja med en lätt stång.</string>
+    <string name="move_barbell_row">Skivstångsrodd</string>
+    <string-array name="move_barbell_row_steps">
+        <item>Håll stången med raka armar och fäll framåt med mjuka knän och rak rygg.</item>
+        <item>Dra stången upp mot de nedre revbenen.</item>
+        <item>Sänk den långsamt tills armarna är raka.</item>
+    </string-array>
+    <string name="move_barbell_row_tip">Håll ryggen still: behöver du gunga är stången för tung.</string>
     <string name="move_figure_description">%1$s. Tränar %2$s.</string>
     <string name="dose_reps_per_side">%1$d × %2$d per sida</string>
     <string name="dose_rest">Vila %1$d s</string>
@@ -133,6 +238,7 @@
     <string name="exercise_repetition">Repetition %1$d av %2$d</string>
     <string name="exercise_in_program">I ditt program: %1$s, %2$s</string>
     <string name="exercise_muscles_title">Muskler</string>
+    <string name="exercise_equipment">Redskap: %1$s</string>
     <string name="exercise_primary_legend">Huvudmuskler: %1$s</string>
     <string name="exercise_secondary_legend">Arbetar också: %1$s</string>
     <string name="exercise_how_title">Så gör du</string>
@@ -243,6 +349,11 @@
     <string name="coach_consider_knees">Känsliga knän</string>
     <string name="coach_consider_back">Känslig rygg</string>
     <string name="coach_consider_quiet">Inga hopp</string>
+    <string name="coach_equipment_title">Redskap du har</string>
+    <string name="coach_equipment_body">Coachen väljer övningar du kan göra med dem. Utan redskap tränar du med kroppsvikt.</string>
+    <string name="equipment_dumbbells">Hantlar</string>
+    <string name="equipment_band">Gummiband</string>
+    <string name="equipment_barbell">Skivstång</string>
     <string name="coach_why_title">Därför ser programmet ut så här</string>
     <string name="coach_create">Skapa mitt program</string>
     <string name="coach_suggest">Föreslå ett annat program</string>
@@ -259,6 +370,7 @@
     <string name="coach_note_knees">Skonsamt för knäna: inga hopp eller utfall.</string>
     <string name="coach_note_back">Skonsamt för ryggen: lugna bålövningar i stället för sådana som böjer eller svankar ryggen.</string>
     <string name="coach_note_quiet">Inga hopp, så det fungerar i lägenhet.</string>
+    <string name="coach_note_equipment">Passen använder dina redskap (%1$s) där de tränar samma muskler, eftersom de kan bli tyngre när du blir starkare.</string>
     <string name="coach_note_cardio_low">Programmet har %1$d minuter kondition. WHO rekommenderar minst 150 i veckan, så ta gärna raska promenader i vardagen också.</string>
     <string name="coach_note_cardio_progression">Konditionen bygger på dina senaste pass och ökar med högst en tiondel i veckan.</string>
     <string name="coach_goal_rehab">Skonsam träning</string>

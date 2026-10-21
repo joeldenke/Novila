@@ -11,6 +11,7 @@ package se.novila.anatomy
  * @param shadowUnder landmarks the floor shadow spans, when more than the [contacts] rest on the floor
  *   at times (the feet in mountain climbers).
  * @param peak the moment of the repetition that thumbnails show, where the muscles work hardest.
+ * @param gear what the exercise is done with, drawn in the hands; null for bodyweight exercises.
  */
 class ExerciseMotion(
     val id: String,
@@ -23,7 +24,11 @@ class ExerciseMotion(
     val shadowUnder: Set<Landmark> = contacts,
     val peak: Float = 0.5f,
     val repetitionMillis: Int = 3200,
+    val gear: Gear? = null,
 ) {
+    /** The equipment the exercise needs, or null for bodyweight. */
+    val equipment: Equipment? get() = gear?.equipment
+
     val highlights: Map<MuscleGroup, Emphasis> =
         secondary.associateWith { Emphasis.Secondary } + primary.associateWith { Emphasis.Primary }
 
@@ -44,7 +49,10 @@ class ExerciseMotion(
         shape: BodyShape = BodyShape.NEUTRAL,
         camera: Camera = this.camera,
         highlights: Map<MuscleGroup, Emphasis> = this.highlights,
-    ): Scene = SceneBuilder.build(bodyAt(progress, shape), camera, highlights, contacts, shadowUnder)
+    ): Scene {
+        val body = bodyAt(progress, shape)
+        return SceneBuilder.build(body, camera, highlights, contacts, shadowUnder, gear?.props(body).orEmpty())
+    }
 
     /** Holds such as the plank don't move; there is nothing to replay. */
     val isHold: Boolean get() = movement.keyframes.all { it.pose == movement.keyframes.first().pose }

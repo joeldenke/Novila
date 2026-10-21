@@ -116,6 +116,12 @@ class ColorContrastTest {
             "outline/body" to (figure.outline to figure.body),
             "outline/bodyShade" to (figure.outline to figure.bodyShade),
             "outline/card" to (figure.outline to card.card),
+            "gear/card" to (figure.gear to card.card),
+            "gear/body" to (figure.gear to figure.body),
+            "weight/card" to (figure.weight to card.card),
+            "weight/body" to (figure.weight to figure.body),
+            "band/card" to (figure.band to card.card),
+            "band/body" to (figure.band to figure.body),
         )
     }
 

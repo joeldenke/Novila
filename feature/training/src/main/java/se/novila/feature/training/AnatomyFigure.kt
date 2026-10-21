@@ -38,6 +38,7 @@ import se.novila.anatomy.Emphasis
 import se.novila.anatomy.ExerciseMotion
 import se.novila.anatomy.Layer
 import se.novila.anatomy.Point2
+import se.novila.anatomy.PropKind
 import se.novila.anatomy.Scene
 import se.novila.designsystem.component.NovilaPlayButton
 import se.novila.designsystem.component.NovilaSlider
@@ -52,10 +53,12 @@ import kotlin.math.min
 private const val OUTLINE = 0.0055f
 private const val MUSCLE_EDGE = 0.0045f
 private const val MARGIN = 0.04f
+private const val PLATE_RIM = 0.009f
+private const val PLATE_FACE_ALPHA = 0.25f
 
 /**
- * An exercise on Novila's anatomy figure: a lake blue body with the trained muscles in ember, seen
- * from the exercise's own best camera. Still at the hardest moment of the repetition by default, for
+ * An exercise on Novila's anatomy figure: a lake blue body with the trained muscles in ember and its equipment in
+ * iron or pine, seen from the exercise's own best camera. Still at the hardest moment of the repetition by default, for
  * thumbnails. With [repetitions], it plays that many calm repetitions once and comes to rest; change
  * [replay] to play them again. Never loops, so screenshot tests and battery stay calm.
  */
@@ -189,6 +192,7 @@ private fun DrawScope.drawScene(scene: Scene, bounds: Bounds, colors: NovilaAnat
     }
     val outline = Stroke(max(1f, OUTLINE * scale), cap = StrokeCap.Round, join = StrokeJoin.Round)
     val edge = Stroke(max(1f, MUSCLE_EDGE * scale), join = StrokeJoin.Round)
+    val rim = Stroke(max(1f, PLATE_RIM * scale), join = StrokeJoin.Round)
 
     scene.shadow?.let { shadow ->
         drawOval(
@@ -210,6 +214,21 @@ private fun DrawScope.drawScene(scene: Scene, bounds: Bounds, colors: NovilaAnat
                 flushOutline()
                 drawPath(shape, lerp(colors.body, colors.bodyShade, layer.shade))
                 pendingOutline = shape
+            }
+
+            is Layer.Gear -> {
+                flushOutline()
+                when (layer.kind) {
+                    PropKind.Bar -> drawPath(shape, colors.gear)
+
+                    PropKind.Band -> drawPath(shape, colors.band)
+
+                    // A plate is a rim around a see-through face, so it never hides the head or the muscles.
+                    PropKind.Weight -> {
+                        drawPath(shape, colors.weight.copy(alpha = PLATE_FACE_ALPHA))
+                        drawPath(shape, colors.weight, style = rim)
+                    }
+                }
             }
 
             is Layer.Muscle -> when (layer.emphasis) {

@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import se.novila.anatomy.Equipment
 import se.novila.anatomy.ExerciseLibrary
 import se.novila.coach.AssistantAvailability
 import se.novila.coach.BodyArea
@@ -126,6 +127,23 @@ fun CoachScreen(
                             label = stringResource(area.label),
                             selected = area in preferences.focus,
                             onClick = { onChange(preferences.toggle(area)) },
+                            modifier = chipModifier,
+                        )
+                    }
+                }
+            }
+            item(key = "equipment") {
+                NovilaCard(title = stringResource(R.string.coach_equipment_title)) {
+                    NovilaText(
+                        stringResource(R.string.coach_equipment_body),
+                        style = NovilaTheme.typography.bodyMedium,
+                        color = NovilaTheme.colors.onSurfaceVariant,
+                    )
+                    ChipRows(Equipment.entries, columns = 3) { equipment, chipModifier ->
+                        NovilaChoiceChip(
+                            label = stringResource(equipment.label),
+                            selected = equipment in preferences.equipment,
+                            onClick = { onChange(preferences.toggle(equipment)) },
                             modifier = chipModifier,
                         )
                     }
