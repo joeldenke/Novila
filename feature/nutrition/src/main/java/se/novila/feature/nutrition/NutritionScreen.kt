@@ -32,7 +32,6 @@ import se.novila.model.QuickPicks
 import se.novila.model.averageNutrition
 import se.novila.navigation.SharedScreen
 import se.novila.recipes.FoodPreferences
-import se.novila.recipes.Recipe
 import se.novila.recipes.RecipeSuggestions
 import se.novila.recipes.suggestRecipes
 import se.novila.ui.common.DayPicker
@@ -42,12 +41,6 @@ import se.novila.ui.common.setupHint
 import se.novila.ui.preview.PreviewData
 import java.time.LocalDate
 import se.novila.ui.R as UiR
-
-/** Today's recipe suggestions for the user's food preferences, what logging one does and where to change them. */
-data class RecipeActions(
-    val onLog: (Recipe) -> Unit = {},
-    val onOpenPreferences: () -> Unit = {},
-)
 
 /** Where the Nutrition tab leads: the recipes, the history and the food preferences. */
 data class NutritionNavigation(

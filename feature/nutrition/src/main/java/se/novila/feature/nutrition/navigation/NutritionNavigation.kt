@@ -7,6 +7,7 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.serialization.Serializable
 import se.novila.feature.nutrition.DrinkActions
@@ -15,6 +16,9 @@ import se.novila.feature.nutrition.NutritionScreen
 import se.novila.feature.nutrition.NutritionTrendsScreen
 import se.novila.feature.nutrition.NutritionTrendsViewModel
 import se.novila.feature.nutrition.NutritionViewModel
+import se.novila.feature.nutrition.OwnRecipeActions
+import se.novila.feature.nutrition.OwnRecipeScreen
+import se.novila.feature.nutrition.OwnRecipeViewModel
 import se.novila.feature.nutrition.R
 import se.novila.feature.nutrition.RecipeActions
 import se.novila.feature.nutrition.RecipesScreen
@@ -28,6 +32,9 @@ import se.novila.navigation.sharedScreen
 
 /** Today's recipes for what is still missing. */
 @Serializable data object RecipesRoute : NavKey
+
+/** Writing a recipe of the user's own, or changing the one with [recipeId] (0 for a new one). */
+@Serializable data class OwnRecipeRoute(val recipeId: Int = 0) : NavKey
 
 /** The nutrition scores over a week, four weeks or a year. */
 @Serializable data object NutritionTrendsRoute : NavKey
@@ -86,7 +93,36 @@ fun EntryProviderScope<NavKey>.nutritionEntries(
         RecipesScreen(
             recipes = state.recipes,
             preferences = state.preferences,
-            actions = RecipeActions(onLog = viewModel::logRecipe, onOpenPreferences = onOpenFoodPreferences),
+            book = state.book,
+            actions = RecipeActions(
+                onLog = viewModel::logRecipe,
+                onLogOwn = viewModel::logOwnRecipe,
+                onOpenPreferences = onOpenFoodPreferences,
+                onWrite = { navigator.navigate(OwnRecipeRoute()) },
+                onEdit = { navigator.navigate(OwnRecipeRoute(it)) },
+            ),
+            contentPadding = contentPadding,
+        )
+    }
+    entry<OwnRecipeRoute> { route ->
+        val viewModel = assistedMetroViewModel<OwnRecipeViewModel, OwnRecipeViewModel.Factory> {
+            create(route.recipeId)
+        }
+        val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
+        OwnRecipeScreen(
+            draft = state.draft,
+            new = state.new,
+            actions = OwnRecipeActions(
+                onChange = viewModel::change,
+                onSave = {
+                    viewModel.save()
+                    navigator.goBack()
+                },
+                onDelete = {
+                    viewModel.delete()
+                    navigator.goBack()
+                },
+            ),
             contentPadding = contentPadding,
         )
     }
@@ -110,6 +146,12 @@ fun EntryProviderScope<NavKey>.nutritionEntries(
 @Composable
 fun nutritionDetailTitle(route: NavKey?): String? = when (route) {
     RecipesRoute -> stringResource(R.string.nutrition_entry_recipes)
+
+    is OwnRecipeRoute -> stringResource(
+        if (route.recipeId == 0) R.string.own_recipe_title_new else R.string.own_recipe_title_edit,
+    )
+
     NutritionTrendsRoute -> stringResource(R.string.nutrition_entry_trends)
+
     else -> null
 }

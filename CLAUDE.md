@@ -131,7 +131,11 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
     `FoodPreferences` (kosthållning, allergener och tid, sparas i `FoodPreferencesStore`) och `suggestRecipes`, som
     väljer recepten som höjer dagens kostpoäng mest för måltiden just nu (`MealSlot`) och roterar lika bra recept
     mellan dagar. Namn, ingredienser och steg ligger i `:feature:nutrition`s strängar. `RecipeDataTest` kräver minst
-    40 recept och minst fem per måltid och kosthållning. Se `docs/recipes.md` och *Recept* under Regler.
+    40 recept och minst fem per måltid och kosthållning. Användarens egna recept (`OwnRecipe`, `RecipeBook`, sparade i
+    `FoodPreferencesStore`) skrivs på Receptskärmen med autokomplettering ur måltidsloggningens ordlista
+    (`completeIngredient`); portionerna räknas ur ingredienserna (`parseIngredients`) och allergenerna slås upp
+    (`ingredientAllergens`) och bekräftas av användaren. Det användaren lagar (`withCooked`) styr förslagen.
+    Se `docs/recipes.md` och *Recept* under Regler.
   - `:core:googlehealth` – Google Health API (REST v4) som `ExerciseSource`: läser
     `users/me/dataTypes/exercise/dataPoints`. Ännu inte inkopplad i `:app`, se *Google Health API* under Regler.
 - `build-logic` – inkluderat bygge med convention plugins (`novila.*`) och `novila { }`, se `build-logic/README.md`
@@ -407,9 +411,9 @@ där pluginet `firebase@firebase` inte alltid installeras.
   koffein i `analyzeSleep` (`DayEntry.lateCaffeine`), med samma trösklar som andra samband. Appen räknar aldrig ut
   koffein i mg, näringsämnen eller kosttillskott: det kräver en livsmedelsdatabas och närmar sig hälsopåståenden
   (förordning 1924/2006). Lägg inte till det utan att ägaren ber om det.
-- **Recept:** förslagen väljs alltid deterministiskt ur `Recipe` (testat i `RecipeSuggestionsTest`), aldrig
-  genererade av Gemini Nano eller någon annan modell: ett påhittat recept kan innehålla något användaren är allergisk
-  mot. Ett recept som innehåller en av användarens allergener föreslås aldrig, och kortet ber alltid användaren
+- **Recept:** förslagen väljs alltid deterministiskt ur `Recipe` och användarens egna recept (testat i
+  `RecipeSuggestionsTest` och `OwnRecipeTest`), aldrig genererade av Gemini Nano eller någon annan modell: ett påhittat
+  recept kan innehålla något användaren är allergisk mot. Ett recept som innehåller en av användarens allergener föreslås aldrig, och kortet ber alltid användaren
   kontrollera ingredienserna själv. Nytt recept: ange portioner (grönsaker cirka 100 g per portion, potatis räknas
   inte), diet, alla allergener i ingredienserna, tid och ingrediensfamiljer (`FoodKind`), plus namn, ingredienser och
   steg på båda språken i `Recipe`-enumen, `RecipeText.kt` och strängarna. Följ `docs/recipes.md`. Inga recept "för"

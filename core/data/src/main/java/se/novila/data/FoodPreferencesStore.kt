@@ -11,10 +11,13 @@ import se.novila.model.MealMemory
 import se.novila.model.MealMemoryCodec
 import se.novila.recipes.FoodPreferences
 import se.novila.recipes.FoodPreferencesCodec
+import se.novila.recipes.RecipeBook
+import se.novila.recipes.RecipeBookCodec
 
 /**
- * The user's diet, allergens and time for recipe suggestions, and the meals they wrote in their own words and starred
- * ([MealMemory], for the quick picks), in Preferences DataStore (file `food`), on the device only. One instance for the
+ * The user's diet, allergens and time for recipe suggestions, the meals they wrote in their own words and starred
+ * ([MealMemory], for the quick picks), and their own recipes and the ones they cooked lately ([RecipeBook]), in
+ * Preferences DataStore (file `food`), on the device only. One instance for the
  * whole app, so the Nutrition tab suggests other recipes as soon as Settings saves.
  */
 @SingleIn(AppScope::class)
@@ -37,15 +40,25 @@ class FoodPreferencesStore internal constructor(context: Context, scope: Corouti
         prefs[MEALS] = MealMemoryCodec.encode(change(MealMemoryCodec.decode(prefs[MEALS])))
     }
 
-    /** Back to the defaults, and no meals remembered. */
+    /** The user's own recipes and what they cooked lately. Null until the first read is done. */
+    val recipes: StateFlow<RecipeBook?> = store.snapshots { RecipeBookCodec.decode(it[RECIPES]) }
+
+    /** Changes the recipe book and saves it, in order with other saves. */
+    fun updateRecipes(change: (RecipeBook) -> RecipeBook) = store.edit { prefs ->
+        prefs[RECIPES] = RecipeBookCodec.encode(change(RecipeBookCodec.decode(prefs[RECIPES])))
+    }
+
+    /** Back to the defaults, no meals remembered and no own recipes. */
     fun clear() = store.edit {
         it.remove(KEY)
         it.remove(MEALS)
+        it.remove(RECIPES)
     }
 
     private companion object {
         const val NAME = "food"
         val KEY = stringPreferencesKey("preferences")
         val MEALS = stringPreferencesKey("meals")
+        val RECIPES = stringPreferencesKey("recipes")
     }
 }

@@ -98,6 +98,43 @@
     <string name="recipe_collapsed">Ihopfälld</string>
     <string name="recipe_log">Jag åt det här</string>
 
+    <!-- Användarens egna recept, se se.novila.recipes.OwnRecipe -->
+    <string name="own_recipes_title">Dina recept</string>
+    <string name="own_recipes_empty">Skriv ner en rätt du ofta lagar. Novila räknar ut vad en portion ger ur ingredienserna och föreslår den när den fyller det som saknas i dag.</string>
+    <string name="own_recipes_hint">Föreslås ovanför när de fyller det som saknas i dag. Tryck på ett för att ändra det.</string>
+    <string name="own_recipes_full">Du har skrivit så många recept som Novila sparar. Radera ett för att skriva ett nytt.</string>
+    <string name="own_recipe_write">Skriv ett recept</string>
+    <string name="own_recipe_edit">Ändra receptet</string>
+    <string name="own_recipe_summary">Ditt recept · %1$s</string>
+    <string name="own_recipe_title_new">Nytt recept</string>
+    <string name="own_recipe_title_edit">Ditt recept</string>
+    <string name="own_recipe_about">Namn och tid</string>
+    <string name="own_recipe_name">Namn</string>
+    <string name="own_recipe_when">När du äter den</string>
+    <string name="own_recipe_minutes">Tid</string>
+    <string name="own_recipe_minutes_less">Kortare tid</string>
+    <string name="own_recipe_minutes_more">Längre tid</string>
+    <string name="meal_slot_breakfast">Frukost</string>
+    <string name="meal_slot_main">Lunch eller middag</string>
+    <string name="meal_slot_snack">Mellanmål</string>
+    <string name="own_recipe_ingredients_hint">En i taget, för en portion, som du skulle skriva dem: ”2 dl röda linser”. Livsmedel som Novila känner till föreslås medan du skriver.</string>
+    <string name="own_recipe_add_ingredient">Lägg till en ingrediens</string>
+    <string name="own_recipe_add_step">Lägg till ett steg</string>
+    <string name="own_recipe_add">Lägg till</string>
+    <string name="own_recipe_remove">Ta bort %1$s</string>
+    <string name="own_recipe_gives">En portion ger: %1$s</string>
+    <string name="own_recipe_gives_nothing">Ingen av ingredienserna fyller en livsmedelsgrupp än.</string>
+    <string name="own_recipe_allergens">Allergener</string>
+    <string name="own_recipe_allergens_found">Hittade i ingredienserna: %1$s. Färdiga produkter som buljong eller kryddmixar kan innehålla fler, så kontrollera förpackningen och välj det de innehåller.</string>
+    <string name="own_recipe_allergens_none_found">Inga hittade i ingredienserna. Färdiga produkter som buljong eller kryddmixar kan innehålla allergener, så kontrollera förpackningen och välj det de innehåller.</string>
+    <string name="own_recipe_allergens_checked">Jag har kontrollerat allergenerna</string>
+    <string name="own_recipe_save">Spara receptet</string>
+    <string name="own_recipe_delete">Radera receptet</string>
+    <string name="own_recipe_delete_title">Radera receptet?</string>
+    <string name="own_recipe_delete_text">%1$s raderas från dina recept. Det du redan har loggat finns kvar.</string>
+    <string name="own_recipe_delete_confirm">Radera</string>
+    <string name="own_recipe_delete_cancel">Avbryt</string>
+
     <!-- Recept: en portion vardera, se se.novila.recipes.Recipe -->
     <string name="recipe_overnight_oats">Kylskåpsgröt med bär</string>
     <string-array name="recipe_overnight_oats_ingredients">

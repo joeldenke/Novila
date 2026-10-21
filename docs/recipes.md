@@ -85,3 +85,31 @@ User-created recipes are not part of this library. They would need a separate st
 review path, and the deterministic suggestions would have to treat them with the same validation. That is a larger
 feature than extending the curated library. Recipe text stays in the app's existing two languages; adding a third
 language means adding the same resources under another `values-*` directory, not changing the schema.
+
+## The user's own recipes
+
+Besides the library, the user can write their own recipes on the Recipes screen (*Your recipes* → *Write a recipe*,
+`OwnRecipeScreen`). They live in `OwnRecipe.kt` and `Ingredients.kt` in `:core:recipes` and are saved as a
+`RecipeBook` in `FoodPreferencesStore` (file `food`, key `recipes`, `RecipeBookCodec`), so *Delete data* removes
+them with the food preferences. Nothing is generated: the user writes the name, the ingredients and the steps.
+
+- **Servings are counted, never entered.** `parseIngredients` looks every word of the ingredients up in the same
+  dictionary as meal logging (`foodGroupOf` in `:core:model`): each food once, at most `MAX_PORTIONS_PER_GROUP` per
+  group, sweets as treats, cooking water not at all. Amounts and units ("2 dl") are skipped; other unknown words are
+  listed in the editor, not guessed at. A breakfast or main meal also counts as a meal, like the library.
+- **Allergens are looked up, then confirmed.** `ingredientAllergens` finds the labelled allergens from whole words
+  and two-word phrases ("soy sauce") in both languages. Nothing is inferred from part of a word, and when in doubt
+  the dictionary says more rather than less. The editor starts from what it found; new ingredients bring their
+  allergens with them, the user can add what ready-made products contain or take one away, and every change asks
+  for a new check (`OwnRecipeDraft.checked`) before the recipe can be saved.
+- **Autocomplete** (`completeIngredient`) offers dictionary foods for the last word being typed, from two letters,
+  the shortest first.
+- **Suggestions.** `suggestRecipes(..., book)` suggests up to `SUGGESTED_OWN_RECIPES` own recipes for the slot
+  alongside the library's, by points and then by how often they were cooked. Own recipes are never suggested with an
+  allergen the user avoids or over their time limit; any diet may see them, since the user wrote them.
+- **What the user cooks steers the suggestions.** Logging a recipe ("I ate this") remembers it as cooked
+  (`RecipeBook.withCooked`, the last `QUICK_PICK_DAYS` days, like the quick picks). Among library recipes worth as
+  many points, the ones cooked on more days come first; the rotation between days only decides the rest.
+
+`OwnRecipeTest` covers counting, allergen lookup, autocomplete, the draft's allergen check, the book and its codec,
+and the suggestions.

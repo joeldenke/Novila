@@ -108,6 +108,44 @@
     <string name="recipe_collapsed">Collapsed</string>
     <string name="recipe_log">I ate this</string>
 
+    <!-- The user's own recipes, see se.novila.recipes.OwnRecipe -->
+    <string name="own_recipes_title">Your recipes</string>
+    <string name="own_recipes_empty">Write down a dish you often cook. Novila counts what a serving gives from the ingredients and suggests it when it fills what the day is missing.</string>
+    <string name="own_recipes_hint">Suggested above when they fill what the day is missing. Tap one to change it.</string>
+    <string name="own_recipes_full">You have written as many recipes as Novila keeps. Delete one to write another.</string>
+    <string name="own_recipe_write">Write a recipe</string>
+    <string name="own_recipe_edit">Change recipe</string>
+    <string name="own_recipe_row" translatable="false">%1$d min · %2$s</string>
+    <string name="own_recipe_summary">Your recipe · %1$s</string>
+    <string name="own_recipe_title_new">New recipe</string>
+    <string name="own_recipe_title_edit">Your recipe</string>
+    <string name="own_recipe_about">Name and time</string>
+    <string name="own_recipe_name">Name</string>
+    <string name="own_recipe_when">When you eat it</string>
+    <string name="own_recipe_minutes">Time</string>
+    <string name="own_recipe_minutes_less">Less time</string>
+    <string name="own_recipe_minutes_more">More time</string>
+    <string name="meal_slot_breakfast">Breakfast</string>
+    <string name="meal_slot_main">Lunch or dinner</string>
+    <string name="meal_slot_snack">Snack</string>
+    <string name="own_recipe_ingredients_hint">One at a time, for one serving, as you would write them: “2 dl red lentils”. Foods Novila knows are offered as you type.</string>
+    <string name="own_recipe_add_ingredient">Add an ingredient</string>
+    <string name="own_recipe_add_step">Add a step</string>
+    <string name="own_recipe_add">Add</string>
+    <string name="own_recipe_remove">Remove %1$s</string>
+    <string name="own_recipe_gives">One serving gives: %1$s</string>
+    <string name="own_recipe_gives_nothing">None of the ingredients fills a food group yet.</string>
+    <string name="own_recipe_allergens">Allergens</string>
+    <string name="own_recipe_allergens_found">Found in the ingredients: %1$s. Ready-made products such as stock or spice mixes can contain more, so check the packaging and choose what they contain.</string>
+    <string name="own_recipe_allergens_none_found">None found in the ingredients. Ready-made products such as stock or spice mixes can contain allergens, so check the packaging and choose what they contain.</string>
+    <string name="own_recipe_allergens_checked">I have checked the allergens</string>
+    <string name="own_recipe_save">Save recipe</string>
+    <string name="own_recipe_delete">Delete recipe</string>
+    <string name="own_recipe_delete_title">Delete the recipe?</string>
+    <string name="own_recipe_delete_text">%1$s is deleted from your recipes. What you have already logged stays.</string>
+    <string name="own_recipe_delete_confirm">Delete</string>
+    <string name="own_recipe_delete_cancel">Cancel</string>
+
     <!-- Recipes: one serving each, see se.novila.recipes.Recipe -->
     <string name="recipe_overnight_oats">Overnight oats with berries</string>
     <string-array name="recipe_overnight_oats_ingredients">

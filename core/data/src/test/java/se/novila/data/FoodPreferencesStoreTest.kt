@@ -11,6 +11,8 @@ import se.novila.model.MealMemory
 import se.novila.recipes.Allergen
 import se.novila.recipes.Diet
 import se.novila.recipes.FoodPreferences
+import se.novila.recipes.OwnRecipe
+import se.novila.recipes.RecipeBook
 import java.time.LocalDate
 
 @RunWith(RobolectricTestRunner::class)
@@ -52,5 +54,22 @@ class FoodPreferencesStoreTest {
 
         reopened.clear()
         reopened.meals.await { it == MealMemory() }
+    }
+
+    @Test fun `own recipes survive a restart and are forgotten when cleared`() {
+        val store = FoodPreferencesStore(context, stores.scope, stores.cipher)
+        val date = LocalDate.of(2026, 10, 21)
+        val soup = OwnRecipe("Linssoppa", ingredients = listOf("röda linser", "morot"), steps = listOf("Koka."))
+        store.updateRecipes { it.saved(soup) }
+        store.updateRecipes { it.withCooked(it.recipes.first().key, date) }
+        val saved = RecipeBook().saved(soup).let { it.withCooked(it.recipes.first().key, date) }
+        store.recipes.await { it == saved }
+
+        stores.restart()
+        val reopened = FoodPreferencesStore(context, stores.scope, stores.cipher)
+        assertEquals(saved, reopened.recipes.await())
+
+        reopened.clear()
+        reopened.recipes.await { it == RecipeBook() }
     }
 }
