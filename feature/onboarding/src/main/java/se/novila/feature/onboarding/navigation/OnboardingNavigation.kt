@@ -1,5 +1,6 @@
 package se.novila.feature.onboarding.navigation
 
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -27,10 +28,13 @@ fun EntryProviderScope<NavKey>.onboardingEntry() {
         }
         // Nothing to show until the profile and the coach's answers are read, a moment at app start.
         val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
+        val startPage by viewModel.startPage.collectAsStateWithLifecycle()
         val context = LocalContext.current
         val connectHealth = rememberHealthPermissionRequest(viewModel::onMovementPermissionsResult)
         OnboardingScreen(
             state = state,
+            // The questions when the setup was skipped earlier, so the user lands where there is something to do.
+            initialPage = startPage,
             actions = OnboardingActions(
                 onName = viewModel::onName,
                 onPreferences = viewModel::onPreferences,
@@ -38,6 +42,7 @@ fun EntryProviderScope<NavKey>.onboardingEntry() {
                 onOpenHealthSettings = { HealthConnectSource.openSettings(context) },
                 onInstallHealth = { HealthConnectSource.openInstall(context) },
                 onFinish = viewModel::finish,
+                onSkipAll = viewModel::skip,
             ),
         )
     }

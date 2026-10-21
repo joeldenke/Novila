@@ -44,6 +44,7 @@ import se.novila.model.weekOf
 import se.novila.movement.MovementState
 import se.novila.ui.common.ScreenList
 import se.novila.ui.common.longDateText
+import se.novila.ui.common.setupHint
 import se.novila.ui.preview.PreviewData
 import java.time.DayOfWeek
 import se.novila.ui.R as UiR
@@ -54,7 +55,8 @@ import se.novila.ui.R as UiR
  * with the one button that does it) and an insights card. When the logs join the parts ([connections]), a
  * connections card follows it. The rings are the summary of the day; tapping a part on
  * them opens that part's tab, so the balance is not repeated as a row of tiles. Everything is measured against the
- * user's [goals]; the weeks in charts are on each part's own tab. Blocks arrive one by one.
+ * user's [goals]; the weeks in charts are on each part's own tab. Blocks arrive one by one. When the introduction
+ * was skipped ([setupIncomplete]), a quiet card under the greeting leads to finishing the setup ([onCompleteSetup]).
  */
 @Composable
 fun TodayScreen(
@@ -75,6 +77,9 @@ fun TodayScreen(
     modifier: Modifier = Modifier,
     training: TrainingToday = TrainingToday(),
     connections: List<Connection> = emptyList(),
+    /** The introduction was skipped, so the profile and the coaches are not set up: one card offers to finish it. */
+    setupIncomplete: Boolean = false,
+    onCompleteSetup: () -> Unit = {},
 ) {
     // Today's steps once Health Connect is connected, otherwise null.
     val steps = (movement as? MovementState.Connected)?.today?.steps
@@ -93,6 +98,7 @@ fun TodayScreen(
     )
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
         item(key = "header") { NovilaReveal(order = 0) { Header(today, greetingFor(hour), name, onOpenSettings) } }
+        setupHint(setupIncomplete, onCompleteSetup)
         item(key = "balance") {
             NovilaReveal(order = 1) {
                 BalanceCard(today, steps, goals, NovilaSky.at(hour), onOpenTraining, onOpenSleep, onOpenNutrition)

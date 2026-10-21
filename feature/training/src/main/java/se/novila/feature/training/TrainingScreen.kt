@@ -21,6 +21,7 @@ import se.novila.recovery.RecoveryStatus
 import se.novila.ui.common.ScreenList
 import se.novila.ui.common.ScreenSection
 import se.novila.ui.common.section
+import se.novila.ui.common.setupHint
 import se.novila.ui.preview.PreviewData
 import java.time.DayOfWeek
 
@@ -28,7 +29,8 @@ import java.time.DayOfWeek
  * The Training tab in the parts every tab has ([ScreenSection]). Overview: the week at a glance with today's one main
  * action, and recovery from the watch, which today's session may be lighter for. Log: another workout, and what
  * Health Connect recorded. Your plan: the coach, the week's program (tap a day to open its session) and the exercise
- * library. Trends: the weekly review of what's done and what next week holds.
+ * library. Trends: the weekly review of what's done and what next week holds. When the introduction was skipped
+ * ([setupIncomplete]), a quiet card at the top leads to finishing the setup (actions.onCompleteSetup).
  */
 @Composable
 fun TrainingScreen(
@@ -40,10 +42,13 @@ fun TrainingScreen(
     exercise: ExerciseState = ExerciseState.Unavailable,
     recovery: RecoveryState = RecoveryState.Unavailable,
     sky: NovilaSky = NovilaSky.Day,
+    /** The introduction was skipped, so the coach's answers are not set up: one quiet card offers to finish it. */
+    setupIncomplete: Boolean = false,
 ) {
     val today = state.today
     val plan = remember(state) { state.todayPlan() }
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
+        setupHint(setupIncomplete, actions.onCompleteSetup)
         section(ScreenSection.Overview)
         item(key = "overview") {
             NovilaReveal(order = 0) {
@@ -135,6 +140,8 @@ data class TrainingActions(
     val onConnectRecovery: () -> Unit = {},
     val onOpenHealthSettings: () -> Unit = {},
     val onInstallHealth: () -> Unit = {},
+    /** Reopens the intro, for the card shown when the setup was skipped. */
+    val onCompleteSetup: () -> Unit = {},
 )
 
 @Composable

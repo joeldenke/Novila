@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import se.novila.coach.CoachPreferences
@@ -17,6 +18,7 @@ import se.novila.data.CoachStore
 import se.novila.data.ProfileStore
 import se.novila.data.SavedCoach
 import se.novila.data.SettingsStore
+import se.novila.model.AppSettings
 import se.novila.model.Profile
 import se.novila.movement.MovementRepository
 import se.novila.movement.MovementState
@@ -31,8 +33,10 @@ data class OnboardingUiState(
 
 /**
  * The intro at first start, or opened again from Settings. Starts from what is saved, so a second run shows the
- * user's own answers. Nothing is saved until [finish]: then the name goes to the profile, the goal and time become the
- * coach's answers (so Training shows the coach's program from day one) and the app opens on Today.
+ * user's own answers, and on the questions when the setup was skipped earlier. Nothing is saved until [finish]: then
+ * the name goes to the profile, the goal and time become the coach's answers (so Training shows the coach's program
+ * from day one) and the app opens on Today. [skip] leaves without saving anything, so the setup can be finished
+ * later.
  */
 @ViewModelKey
 @ContributesIntoMap(AppScope::class)
@@ -46,6 +50,14 @@ class OnboardingViewModel(
     /** What the user has typed or chosen here, or null for what is saved. */
     private val typedName = MutableStateFlow<String?>(null)
     private val chosen = MutableStateFlow<CoachPreferences?>(null)
+
+    /**
+     * The page the intro starts on: the questions when the setup was skipped earlier, so the user lands where there
+     * is something left to do; otherwise the first one. Read once when the intro opens.
+     */
+    val startPage: StateFlow<OnboardingPage> = settingsStore.settings
+        .map(::introStartPage)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, OnboardingPage.Welcome)
 
     /** The answers, or null before the stores' first read. */
     val state: StateFlow<OnboardingUiState?> = combine(
@@ -110,6 +122,24 @@ class OnboardingViewModel(
         }
         typedName.value = null
         chosen.value = null
-        settingsStore.setOnboarded(true)
+        settingsStore.finishOnboarding()
+    }
+
+    /**
+     * Leaves the whole intro without saving anything: the app opens with no name, no goals and no coach answers, and
+     * remembers that the setup is unfinished, so Settings and the tabs can lead back here. What was typed is
+     * forgotten, the same way as after finishing.
+     */
+    fun skip() {
+        typedName.value = null
+        chosen.value = null
+        settingsStore.skipOnboarding()
     }
 }
+
+/**
+ * Where the intro starts for these [settings]: the questions when the setup was skipped earlier, and the first page
+ * otherwise, so a phone that never saw the intro gets the tour.
+ */
+internal fun introStartPage(settings: AppSettings?): OnboardingPage =
+    if (settings?.setupSkipped == true) OnboardingPage.You else OnboardingPage.Welcome

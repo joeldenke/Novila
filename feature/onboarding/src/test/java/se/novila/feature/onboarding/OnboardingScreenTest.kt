@@ -15,6 +15,7 @@ import org.robolectric.annotation.Config
 import se.novila.coach.CoachGoal
 import se.novila.coach.CoachPreferences
 import se.novila.designsystem.theme.NovilaTheme
+import se.novila.model.AppSettings
 import se.novila.movement.MovementState
 
 // A tall screen, so each page's list shows all of its items without scrolling.
@@ -100,5 +101,34 @@ class OnboardingScreenTest {
         composeRule.onNodeWithText("Get started").performClick()
 
         assertEquals(1, finishes)
+    }
+
+    @Test fun `set up later on the welcome page leaves the whole intro`() {
+        var skipped = 0
+        show(OnboardingActions(onSkipAll = { skipped++ }))
+
+        composeRule.onNodeWithText("Set up later").performClick()
+
+        assertEquals(1, skipped)
+    }
+
+    @Test fun `set up later is on the last page too, where the setup would be finished`() {
+        var skipped = 0
+        show(OnboardingActions(onSkipAll = { skipped++ }), page = OnboardingPage.Ready)
+
+        composeRule.onNodeWithText("Set up later").performClick()
+
+        assertEquals(1, skipped)
+    }
+
+    @Test fun `the intro starts on the questions when the setup was skipped before`() {
+        assertEquals(OnboardingPage.You, introStartPage(AppSettings(onboarded = true, setupSkipped = true)))
+        assertEquals(OnboardingPage.You, introStartPage(AppSettings(setupSkipped = true)))
+    }
+
+    @Test fun `the intro starts on the welcome page for everyone else`() {
+        assertEquals(OnboardingPage.Welcome, introStartPage(AppSettings()))
+        assertEquals(OnboardingPage.Welcome, introStartPage(AppSettings(onboarded = true)))
+        assertEquals(OnboardingPage.Welcome, introStartPage(null))
     }
 }

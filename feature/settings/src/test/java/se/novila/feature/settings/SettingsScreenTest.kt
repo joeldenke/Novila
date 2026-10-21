@@ -29,11 +29,12 @@ class SettingsScreenTest {
         actions: SettingsActions,
         movement: MovementState = MovementState.NeedsPermission(),
         measurements: List<MeasurementEntry>? = emptyList(),
+        settings: AppSettings = AppSettings(),
     ) {
         composeRule.setContent {
             NovilaTheme {
                 SettingsScreen(
-                    settings = AppSettings(),
+                    settings = settings,
                     profile = Profile(),
                     measurements = measurements,
                     movement = movement,
@@ -152,5 +153,23 @@ class SettingsScreenTest {
 
         assertEquals(1, privacy)
         assertEquals(1, licenses)
+    }
+
+    @Test fun `a skipped setup shows the row that finishes it`() {
+        var shows = 0
+        show(
+            SettingsActions(onShowIntro = { shows++ }),
+            settings = AppSettings(onboarded = true, setupSkipped = true),
+        )
+
+        scrollTo("Finish setup").performClick()
+
+        assertEquals(1, shows)
+    }
+
+    @Test fun `a finished setup says nothing about it`() {
+        show(SettingsActions(), settings = AppSettings(onboarded = true))
+
+        composeRule.onNodeWithText("Finish setup").assertDoesNotExist()
     }
 }

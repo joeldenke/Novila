@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import se.novila.coach.DailyCoach
@@ -22,6 +23,7 @@ import se.novila.data.HealthStore.SavedDays
 import se.novila.data.ProfileStore
 import se.novila.data.SavedCoach
 import se.novila.data.SavedSleepCoach
+import se.novila.data.SettingsStore
 import se.novila.data.SleepCoachStore
 import se.novila.data.Week
 import se.novila.data.trainingWeek
@@ -93,6 +95,7 @@ class TodayViewModel(
     private val sleepCoachStore: SleepCoachStore,
     private val exerciseRepository: ExerciseRepository,
     private val recoveryRepository: RecoveryRepository,
+    private val settingsStore: SettingsStore,
 ) : ViewModel() {
     private val now = MutableStateFlow(LocalDateTime.now())
 
@@ -124,6 +127,15 @@ class TodayViewModel(
     }
 
     val movement: StateFlow<MovementState> = movementRepository.state
+
+    /**
+     * Whether the introduction was skipped, so the name, the goals and the coaches are not set up: Today then shows
+     * one quiet card that finishes the setup. False until the settings are read, and for a phone that finished the
+     * intro.
+     */
+    val setupIncomplete: StateFlow<Boolean> = settingsStore.settings
+        .map { it?.setupIncomplete == true }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     private fun read(
         inputs: TodayInputs,
@@ -179,4 +191,9 @@ class TodayViewModel(
     /** One more glass of water today, from the checklist. */
     fun addWater() =
         store.update(LocalDate.now()) { it.withDrink(Drink(DrinkKind.Water, Goals.GLASS_ML, LocalTime.now())) }
+
+    /** Reopens the intro so the setup that was skipped earlier can be finished. */
+    fun openSetup() {
+        settingsStore.setOnboarded(false)
+    }
 }

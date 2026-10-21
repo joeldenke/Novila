@@ -34,6 +34,8 @@ class TodayScreenTest {
         opened: MutableList<String>,
         coach: DailyCoach = dailyCoach(PreviewData.today, Goals(), TrainingToday(plannedMinutes = 30)),
         connections: List<Connection> = emptyList(),
+        setupIncomplete: Boolean = false,
+        onCompleteSetup: () -> Unit = {},
     ) {
         composeRule.setContent {
             NovilaTheme {
@@ -54,6 +56,8 @@ class TodayScreenTest {
                     contentPadding = PaddingValues(0.dp),
                     training = TrainingToday(plannedMinutes = 30),
                     connections = connections,
+                    setupIncomplete = setupIncomplete,
+                    onCompleteSetup = onCompleteSetup,
                 )
             }
         }
@@ -119,5 +123,20 @@ class TodayScreenTest {
         show(mutableListOf())
 
         composeRule.onNodeWithText("Connections").assertDoesNotExist()
+    }
+
+    @Test fun `a skipped setup offers to finish it`() {
+        var completions = 0
+        show(mutableListOf(), setupIncomplete = true, onCompleteSetup = { completions++ })
+
+        composeRule.onNodeWithText("Finish setup").performClick()
+
+        assertEquals(1, completions)
+    }
+
+    @Test fun `nothing asks for the setup when it is finished`() {
+        show(mutableListOf())
+
+        composeRule.onNodeWithText("Setup not finished").assertDoesNotExist()
     }
 }

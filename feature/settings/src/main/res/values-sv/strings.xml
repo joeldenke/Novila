@@ -97,6 +97,8 @@
     <!-- Profil -->
     <string name="settings_profile">Profil</string>
     <string name="settings_profile_empty">Lägg till ditt namn och dina kroppsmått</string>
+    <string name="settings_setup">Slutför uppsättningen</string>
+    <string name="settings_setup_summary">Din profil, dina mål och coacherna är inte inställda ännu.</string>
     <string name="profile_title">Profil</string>
     <string name="profile_about_you">Om dig</string>
     <string name="profile_name">Namn</string>

@@ -3,6 +3,7 @@ package se.novila.data
 import android.content.Context
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -39,5 +40,37 @@ class SettingsStoreTest {
 
         stores.restart()
         assertEquals(true, SettingsStore(context, stores.scope, stores.cipher).settings.await().onboarded)
+    }
+
+    @Test fun `skipping the intro opens the app and remembers the setup is unfinished`() {
+        val store = SettingsStore(context, stores.scope, stores.cipher)
+        store.skipOnboarding()
+        store.settings.await { it.setupIncomplete }
+
+        stores.restart()
+        assertTrue(SettingsStore(context, stores.scope, stores.cipher).settings.await().setupIncomplete)
+    }
+
+    @Test fun `finishing the setup clears a skip, and stays finished after a restart`() {
+        val store = SettingsStore(context, stores.scope, stores.cipher)
+        store.skipOnboarding()
+        store.settings.await { it.setupIncomplete }
+
+        store.finishOnboarding()
+        store.settings.await { it.setupComplete }
+
+        stores.restart()
+        assertTrue(SettingsStore(context, stores.scope, stores.cipher).settings.await().setupComplete)
+    }
+
+    @Test fun `showing the intro again keeps a finished setup finished`() {
+        val store = SettingsStore(context, stores.scope, stores.cipher)
+        store.finishOnboarding()
+        store.settings.await { it.setupComplete }
+
+        // From Settings the intro is shown again without a skip standing in the way, so finishing it is enough.
+        store.setOnboarded(false)
+        store.setOnboarded(true)
+        store.settings.await { it.setupComplete }
     }
 }

@@ -45,6 +45,7 @@ class TrainingScreenTest {
         state: TrainingUiState,
         actions: TrainingActions,
         recovery: RecoveryState = RecoveryState.Unavailable,
+        setupIncomplete: Boolean = false,
     ) = composeRule.setContent {
         NovilaTheme {
             TrainingScreen(
@@ -53,6 +54,7 @@ class TrainingScreenTest {
                 actions,
                 contentPadding = PaddingValues(),
                 recovery = recovery,
+                setupIncomplete = setupIncomplete,
             )
         }
     }
@@ -178,5 +180,20 @@ class TrainingScreenTest {
         // The chip and the card's button both ask to connect.
         composeRule.onAllNodesWithText("Connect recovery")[0].performClick()
         assertTrue(connected)
+    }
+
+    @Test fun `a skipped setup offers to finish it`() {
+        var completions = 0
+        show(state, TrainingActions(onCompleteSetup = { completions++ }), setupIncomplete = true)
+
+        composeRule.onNodeWithText("Finish setup").performClick()
+
+        assertEquals(1, completions)
+    }
+
+    @Test fun `nothing asks for the setup when it is finished`() {
+        show(state, TrainingActions())
+
+        composeRule.onNodeWithText("Setup not finished").assertDoesNotExist()
     }
 }
