@@ -2,6 +2,9 @@ package se.novila.feature.training
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import org.junit.Assert.assertEquals
@@ -11,6 +14,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import se.novila.designsystem.theme.NovilaTheme
+import se.novila.exercise.Dosage
 import se.novila.exercise.Workout
 import se.novila.exercise.WorkoutStep
 import kotlin.time.Duration.Companion.seconds
@@ -94,5 +98,62 @@ class WorkoutScreenTest {
         composeRule.onNodeWithText("Rest").assertExists()
         composeRule.onNodeWithText("Skip the rest").performClick()
         assertEquals(1, advanced)
+    }
+
+    private fun show(state: WorkoutUiState, onDone: (Int) -> Unit = {}) {
+        composeRule.setContent {
+            NovilaTheme {
+                WorkoutScreen(
+                    state = state,
+                    onNext = {},
+                    onEffort = {},
+                    onPain = {},
+                    onFinish = {},
+                    onShowHow = {},
+                    contentPadding = PaddingValues(),
+                    onDone = onDone,
+                )
+            }
+        }
+    }
+
+    @Test fun `a repetition set asks how many were done, starting from the plan`() {
+        var workout = Workout.start(session, Instant.fromEpochSeconds(0))
+        while ((workout.step as? WorkoutStep.Work)?.exercise?.dosage != Dosage.Repetitions) {
+            workout = workout.next(Instant.fromEpochSeconds(0))
+        }
+        val planned = (workout.step as WorkoutStep.Work).exercise.amount
+        var done: Int? = null
+        show(WorkoutUiState(workout, secondsLeft = null)) { done = it }
+
+        composeRule.onNodeWithText("You did").assertExists()
+        composeRule.onNodeWithContentDescription("One repetition fewer").performClick()
+        assertEquals(planned - 1, done)
+    }
+
+    @Test fun `a rehab set does not ask for repetitions`() {
+        var workout = Workout.start(session, Instant.fromEpochSeconds(0))
+        while ((workout.step as? WorkoutStep.Work)?.exercise?.dosage != Dosage.Repetitions) {
+            workout = workout.next(Instant.fromEpochSeconds(0))
+        }
+        show(WorkoutUiState(workout, secondsLeft = null, rehab = true))
+
+        composeRule.onNodeWithText("You did").assertDoesNotExist()
+    }
+
+    @Test fun `the finished session says how each exercise moves on next time`() {
+        var workout = Workout.start(session, Instant.fromEpochSeconds(0))
+        var now = Instant.fromEpochSeconds(0)
+        while (!workout.isFinished) {
+            now += 60.seconds
+            workout = workout.next(now)
+        }
+        show(WorkoutUiState(workout, secondsLeft = null))
+
+        composeRule.onNodeWithText("Next time").assertExists()
+        val first = workout.nextChanges().first().first
+        val more = if (first.dosage == Dosage.Seconds) "5 seconds more" else "1 repetition more"
+        // Every exercise reached its sets, so each line says it moves on; the first one is checked.
+        composeRule.onAllNodesWithText(more, substring = true).onFirst().assertExists()
     }
 }

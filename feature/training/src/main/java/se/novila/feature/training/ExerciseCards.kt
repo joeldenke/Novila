@@ -176,12 +176,23 @@ fun muscleList(groups: Set<MuscleGroup>): String {
     return groups.map { stringResource(it.label) }.joinToString(separator)
 }
 
-/** "3 × 10", "3 × 10 per side" or "3 × 30 s". */
+/**
+ * "3 × 10", "3 × 10 per side" or "3 × 30 s", and "up from 9" or "down from 11" when the progression moved the
+ * amount on from the last time ([PlannedExercise.previous]).
+ */
 @Composable
-fun dosageText(planned: PlannedExercise): String = when {
-    planned.dosage == Dosage.Seconds -> stringResource(R.string.dose_seconds, planned.sets, planned.amount)
-    planned.perSide -> stringResource(R.string.dose_reps_per_side, planned.sets, planned.amount)
-    else -> stringResource(R.string.dose_reps, planned.sets, planned.amount)
+fun dosageText(planned: PlannedExercise): String {
+    val dose = when {
+        planned.dosage == Dosage.Seconds -> stringResource(R.string.dose_seconds, planned.sets, planned.amount)
+        planned.perSide -> stringResource(R.string.dose_reps_per_side, planned.sets, planned.amount)
+        else -> stringResource(R.string.dose_reps, planned.sets, planned.amount)
+    }
+    val previous = planned.previous ?: return dose
+    return when {
+        planned.amount > previous -> stringResource(R.string.dose_up_from, dose, previous)
+        planned.amount < previous -> stringResource(R.string.dose_down_from, dose, previous)
+        else -> dose
+    }
 }
 
 /** The anatomy figure still at the exercise's peak, on a soft backdrop. */

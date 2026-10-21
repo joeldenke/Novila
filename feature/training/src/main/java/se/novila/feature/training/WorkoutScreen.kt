@@ -12,6 +12,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
@@ -26,9 +27,11 @@ import se.novila.designsystem.component.NovilaCard
 import se.novila.designsystem.component.NovilaProgressBar
 import se.novila.designsystem.component.NovilaScaffold
 import se.novila.designsystem.component.NovilaSlider
+import se.novila.designsystem.component.NovilaStepper
 import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.exercise.Dosage
+import se.novila.exercise.PlannedExercise
 import se.novila.exercise.Workout
 import se.novila.exercise.WorkoutStep
 import se.novila.feature.training.R
@@ -60,6 +63,7 @@ fun WorkoutScreen(
     onShowHow: (String) -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
+    onDone: (Int) -> Unit = {},
 ) {
     val view = LocalView.current
     DisposableEffect(view) {
@@ -74,7 +78,7 @@ fun WorkoutScreen(
             workout == null -> item(key = "none") { NoWorkout() }
 
             step == null -> {
-                item(key = "finished") { Finished(workout) }
+                item(key = "finished") { Finished(workout, progression = !state.rehab) }
                 item(key = "feedback") {
                     Feedback(state.feedback, onEffort, onPain, onFinish)
                 }
@@ -82,7 +86,9 @@ fun WorkoutScreen(
 
             step is WorkoutStep.Work -> {
                 item(key = "progress") { Progress(workout, step) }
-                item(key = "work") { Work(workout, step, secondsLeft, onNext, onShowHow) }
+                item(key = "work") {
+                    Work(workout, step, secondsLeft, onNext, onShowHow, onDone.takeUnless { state.rehab })
+                }
             }
 
             step is WorkoutStep.Rest -> {
@@ -155,6 +161,7 @@ private fun Work(
     secondsLeft: Int?,
     onNext: () -> Unit,
     onShowHow: (String) -> Unit,
+    onDone: ((Int) -> Unit)?,
 ) {
     val motion = ExerciseLibrary.byId(step.exercise.exerciseId) ?: return
     val planned = step.exercise
@@ -200,6 +207,24 @@ private fun Work(
                 style = NovilaTheme.typography.bodyMedium,
                 color = NovilaTheme.colors.onSurfaceVariant,
             )
+            val done = workout.doneInSet
+            if (onDone != null && done != null) {
+                NovilaStepper(
+                    title = stringResource(R.string.workout_done_label),
+                    value = stringResource(
+                        if (planned.perSide) R.string.workout_reps_per_side else R.string.workout_reps,
+                        done,
+                    ),
+                    onDecrement = { onDone(done - 1) },
+                    onIncrement = { onDone(done + 1) },
+                    decrementDescription = stringResource(R.string.workout_done_less),
+                    incrementDescription = stringResource(R.string.workout_done_more),
+                    role = NovilaTheme.pillars.training,
+                    hint = stringResource(R.string.workout_done_hint),
+                    decrementEnabled = done > 0,
+                    incrementEnabled = done < Workout.MAX_DONE,
+                )
+            }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.m)) {
             NovilaButton(
@@ -289,8 +314,12 @@ private fun Countdown(seconds: Int) {
     )
 }
 
+/**
+ * What the session was, and with [progression] how each exercise moves on next time: a step up when every set was
+ * reached, a step back when one fell clearly short.
+ */
 @Composable
-private fun Finished(workout: Workout) {
+private fun Finished(workout: Workout, progression: Boolean) {
     NovilaCard(title = stringResource(R.string.workout_finished_title)) {
         NovilaText(
             stringResource(
@@ -301,6 +330,25 @@ private fun Finished(workout: Workout) {
             ),
             style = NovilaTheme.typography.bodyLarge,
         )
+        val changes = if (progression) workout.nextChanges() else emptyList()
+        if (changes.isNotEmpty()) {
+            NovilaText(stringResource(R.string.workout_next_title), style = NovilaTheme.typography.titleSmall)
+            changes.forEach { (exercise, change) ->
+                NovilaText(nextTimeText(exercise, change), style = NovilaTheme.typography.bodyMedium)
+            }
+        }
+    }
+}
+
+/** "Squat: 1 repetition more", "Plank: 5 seconds more", "the same again" or "a step back". */
+@Composable
+private fun nextTimeText(exercise: PlannedExercise, change: Int): String {
+    val name = moveName(exercise.exerciseId)
+    return when {
+        change < 0 -> stringResource(R.string.workout_next_less, name)
+        change == 0 -> stringResource(R.string.workout_next_same, name)
+        exercise.dosage == Dosage.Seconds -> stringResource(R.string.workout_next_more_seconds, name, change)
+        else -> pluralStringResource(R.plurals.workout_next_more_reps, change, name, change)
     }
 }
 

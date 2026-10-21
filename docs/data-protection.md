@@ -45,7 +45,7 @@ aldrig Health Connects egna data – det är inte appens att radera.
 ## Radera data
 
 *Radera data* i Inställningar (`SettingsViewModel.deleteAllData`) tömmer varje DataStore-fil för
-hälsodata: loggade dagar, coachernas svar, profil, mål, matpreferenser (med egna recept) och mätningar.
+hälsodata: loggade dagar, coachernas svar (med resultaten per övning), profil, mål, matpreferenser (med egna recept) och mätningar.
 `deleteLegacyPreferences` tar dessutom bort de gamla SharedPreferences-filerna, även för en store
 användaren aldrig öppnat. Påminnelserna töms och deras planerade jobb avbryts
 (`RemindersStore.clear`, `ReminderScheduler.cancelAll`), så ingen notis kommer efter en radering.

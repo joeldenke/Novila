@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import se.novila.data.CoachStore
 import se.novila.data.HealthStore
 import se.novila.exercise.ExerciseType
 import se.novila.exercise.Workout
@@ -37,6 +38,8 @@ class WorkoutViewModel(
     @Assisted day: DayOfWeek,
     training: TrainingRepository,
     private val store: HealthStore,
+    /** Where what the user did of each exercise is remembered, so the next session builds on it. */
+    private val coach: CoachStore,
     /** [Clock.System] in the app; a test can step time instead of waiting for it. */
     private val clock: Clock,
     /** The rest timer as a notification, so a rest is still counted with the screen off. */
@@ -51,6 +54,9 @@ class WorkoutViewModel(
     /** The rehab phase the session belongs to, or 0 when it isn't a rehab session. */
     private var rehabPhase = 0
 
+    /** Whether the session is a rehab session, which pain doses rather than repetitions. */
+    private var rehab = false
+
     init {
         // The stores are almost always read by now; only a screen restored at app start waits for them.
         val today = LocalDate.now()
@@ -59,7 +65,8 @@ class WorkoutViewModel(
 
     private fun start(state: TrainingUiState, day: DayOfWeek) {
         val session = state.program.sessions.firstOrNull { it.day == day && it.exercises.isNotEmpty() } ?: return
-        if (session.type == ExerciseType.Rehab && state.coach.active) rehabPhase = state.coach.preferences.rehabPhase
+        rehab = session.type == ExerciseType.Rehab
+        if (rehab && state.coach.active) rehabPhase = state.coach.preferences.rehabPhase
         show(Workout.start(session, clock.now()))
     }
 
@@ -67,6 +74,11 @@ class WorkoutViewModel(
     fun next() {
         notifications.cancel()
         _state.value?.let { show(it.workout.next(clock.now())) }
+    }
+
+    /** The user did [amount] repetitions in the current set. */
+    fun setDone(amount: Int) {
+        _state.update { it?.copy(workout = it.workout.withDone(amount)) }
     }
 
     /** How hard the finished session was, RPE 1–10. */
@@ -81,17 +93,20 @@ class WorkoutViewModel(
 
     /**
      * Saves a finished session as today's strength training, with what the user said about it, so next week's program
-     * builds on it and the coach can adjust the dose.
+     * builds on it and the coach can adjust the dose. What they did of each exercise is remembered too, so the next
+     * session raises it a step at a time; a rehab session is dosed by pain instead, so it isn't.
      */
     fun finish() {
         val state = _state.value ?: return
         val workout = state.workout
         val now = clock.now()
         if (workout.isFinished) {
-            store.update(LocalDate.now()) {
+            val today = LocalDate.now()
+            store.update(today) {
                 it.withStrengthSession(workout.minutes(now))
                     .withFeedback(state.feedback.effort, state.feedback.pain, rehabPhase)
             }
+            if (!rehab) coach.recordSession(workout.results(today))
         }
         timer?.cancel()
         notifications.cancel()
@@ -109,7 +124,7 @@ class WorkoutViewModel(
      */
     private fun show(workout: Workout) {
         timer?.cancel()
-        _state.value = WorkoutUiState(workout, workout.secondsLeft(clock.now()))
+        _state.value = WorkoutUiState(workout, workout.secondsLeft(clock.now()), rehab = rehab)
         val step = workout.step
         val endsAt = workout.endsAt
         if (step is WorkoutStep.Timed && endsAt != null) {
@@ -122,7 +137,7 @@ class WorkoutViewModel(
             while (true) {
                 val now = clock.now()
                 if (now >= endsAt) break
-                _state.value = WorkoutUiState(workout, workout.secondsLeft(now))
+                _state.value = WorkoutUiState(workout, workout.secondsLeft(now), rehab = rehab)
                 // Wake just after the shown second changes.
                 delay((endsAt - now).inWholeMilliseconds % 1000L + 1L)
             }

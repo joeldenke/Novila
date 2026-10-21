@@ -15,7 +15,8 @@ enum class StrengthLevel(val sets: Int, val repetitions: Int, val seconds: Int, 
 
 /**
  * One exercise in a strength session: [sets] of [amount] repetitions or seconds (per side when
- * [perSide]), with [rest] between sets. [exerciseId] is an exercise in the anatomy library.
+ * [perSide]), with [rest] between sets. [exerciseId] is an exercise in the anatomy library. [previous] is the target
+ * the last time the user did it, when [Progression] moved the amount on from there.
  */
 data class PlannedExercise(
     val exerciseId: String,
@@ -24,6 +25,7 @@ data class PlannedExercise(
     val dosage: Dosage,
     val perSide: Boolean,
     val rest: Duration,
+    val previous: Int? = null,
 )
 
 /**

@@ -211,6 +211,7 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
             },
             onShowHow = openExercise,
             contentPadding = contentPadding,
+            onDone = viewModel::setDone,
         )
     }
     entry<ExerciseRoute> { route ->

@@ -258,6 +258,20 @@
     <string name="workout_tempo">Follow the figure\'s calm pace.</string>
     <string name="workout_hold">Hold until the timer runs out.</string>
     <string name="workout_set_done">Set done</string>
+    <string name="workout_done_label">You did</string>
+    <string name="workout_done_hint">Change it if you did more or fewer. The next session builds on it.</string>
+    <string name="workout_done_less">One repetition fewer</string>
+    <string name="workout_done_more">One repetition more</string>
+    <string name="workout_next_title">Next time</string>
+    <plurals name="workout_next_more_reps">
+        <item quantity="one">%1$s: %2$d repetition more</item>
+        <item quantity="other">%1$s: %2$d repetitions more</item>
+    </plurals>
+    <string name="workout_next_more_seconds">%1$s: %2$d seconds more</string>
+    <string name="workout_next_same">%1$s: the same again, until every set is done</string>
+    <string name="workout_next_less">%1$s: a step back, to build up again</string>
+    <string name="dose_up_from">%1$s · up from %2$d</string>
+    <string name="dose_down_from">%1$s · down from %2$d</string>
     <string name="workout_rest_title">Rest</string>
     <string name="workout_next">Next: %1$s, set %2$d of %3$d</string>
     <string name="workout_skip_rest">Skip the rest</string>

@@ -42,7 +42,10 @@ Nano for more than the comment, or data that leaves the app.
 ### 2. Training
 - [x] **Log cardio sessions** ("I did it"), and read them from Health Connect (`ExerciseSessionRecord`) **(ok)**
 - [x] **Effort (RPE) and pain (0–10) after the session**, so the coach itself suggests dose and rehab phase
-- [ ] **Progression per exercise:** save sets and reps, and increase step by step
+- [x] **Progression per exercise:** save sets and reps, and increase step by step. Session mode asks how many
+  repetitions each set was (holds count the seconds held); when every set reached the target, the next session has
+  one repetition (or five seconds) more, and a set clearly short takes a step back (`Progression`, double
+  progression). Rehab stays dosed by pain.
 - [ ] **Count reps automatically:** `RepetitionCounter` counts reps, depth and tempo from joint angles (done);
   the camera and an on-device pose model in workout mode remain **(ok)**
 - [x] **More exercises and equipment:** bodyweight variations (knee push-up, single-leg bridge, dead bug, high
@@ -159,7 +162,7 @@ Next, first what needs no approval and is used every day, then what needs the ow
 14. Own recipes with autocomplete: saved recipes written by the user, with foods suggested from the dictionary and
     servings and allergens counted by the app, never by a model. Builds on the quick picks. ← done
 15. Progression per exercise: save sets and reps per exercise, and let the coach increase step by step. It
-    strengthens the app's strongest part, and `CoachFeedback` already reads effort and pain.
+    strengthens the app's strongest part, and `CoachFeedback` already reads effort and pain. ← done
 16. Shortcuts and a Quick Settings tile: "Start the session" and "Log water", plus logging servings from the widget.
     App shortcuts first; the tile is an exported service, so it needs a new badging line and the owner's approval.
 17. More exercises and equipment: variations, dumbbells, resistance bands and gym, via the `add-exercise` skill.
