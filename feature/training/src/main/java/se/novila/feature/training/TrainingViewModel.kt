@@ -22,6 +22,7 @@ import se.novila.movement.MovementState
 import se.novila.recovery.RecoveryRepository
 import se.novila.recovery.RecoveryState
 import java.time.LocalDate
+import java.time.LocalTime
 
 /**
  * The Training tab: movement and workouts from Health Connect, recovery from the watch, the week's program and
@@ -39,6 +40,7 @@ class TrainingViewModel(
     private val settingsStore: SettingsStore,
 ) : ViewModel() {
     private val date = MutableStateFlow(LocalDate.now())
+    private val now = MutableStateFlow(LocalTime.now().hour)
 
     /** The week's program, or null before the stores' first read. */
     val state: StateFlow<TrainingUiState?> = training.states(date)
@@ -58,6 +60,9 @@ class TrainingViewModel(
 
     val recovery: StateFlow<RecoveryState> = recoveryRepository.state
 
+    /** The hour of day when the tab was last shown, for the sun (or moon) over the week's overview. */
+    val hour: StateFlow<Int> = now
+
     /**
      * Called on resume, so "today" stays correct after midnight. Health Connect only allows reads while the app is in
      * the foreground, so movement, workouts and recovery are read here too.
@@ -65,6 +70,7 @@ class TrainingViewModel(
     fun refresh() {
         val today = LocalDate.now()
         date.value = today
+        now.value = LocalTime.now().hour
         viewModelScope.launch { movementRepository.refresh(today) }
         viewModelScope.launch { exerciseRepository.refresh(today) }
         viewModelScope.launch { recoveryRepository.refresh(today) }

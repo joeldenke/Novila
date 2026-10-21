@@ -14,6 +14,7 @@ import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.serialization.Serializable
 import se.novila.anatomy.ExerciseLibrary
+import se.novila.designsystem.component.NovilaSky
 import se.novila.feature.training.CardioLogScreen
 import se.novila.feature.training.CardioLogViewModel
 import se.novila.feature.training.CoachScreen
@@ -87,6 +88,7 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
         val movement by viewModel.movement.collectAsStateWithLifecycle()
         val exercise by viewModel.exercise.collectAsStateWithLifecycle()
         val recovery by viewModel.recovery.collectAsStateWithLifecycle()
+        val hour by viewModel.hour.collectAsStateWithLifecycle()
         val setupIncomplete = viewModel.setupIncomplete.collectAsStateWithLifecycle().value
         val context = LocalContext.current
         val connectHealth = rememberHealthPermissionRequest(viewModel::onHealthPermissionsResult)
@@ -115,6 +117,7 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
             contentPadding = contentPadding,
             exercise = exercise,
             recovery = recovery,
+            sky = NovilaSky.at(hour),
             setupIncomplete = setupIncomplete,
         )
     }

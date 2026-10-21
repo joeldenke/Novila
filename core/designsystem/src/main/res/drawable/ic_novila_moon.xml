@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The night from the Skog & sol design: a crescent moon and two faint stars. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M11,4.47A7.6,7.6 0,1 0,19.06 14.82A6.6,6.6 0,0 1,11 4.47Z" />
+    <path
+        android:fillAlpha="0.7"
+        android:fillColor="#FF000000"
+        android:pathData="M20.6,18.2a0.8,0.8 0,1 1,0 1.6a0.8,0.8 0,1 1,0 -1.6z" />
+    <path
+        android:fillAlpha="0.5"
+        android:fillColor="#FF000000"
+        android:pathData="M18.5,2.6a0.6,0.6 0,1 1,0 1.2a0.6,0.6 0,1 1,0 -1.2z" />
+</vector>

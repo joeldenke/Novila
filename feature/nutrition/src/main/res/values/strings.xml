@@ -31,6 +31,15 @@
     <string name="food_add">Add %1$s</string>
     <string name="food_remove">Remove %1$s</string>
 
+    <string name="meal_log_title">Log a meal</string>
+    <string name="meal_log_label">What did you eat?</string>
+    <string name="meal_log_hint">For example Breakfast: porridge, berries</string>
+    <string name="meal_log_preview">Adds %1$s</string>
+    <string name="meal_portion" translatable="false">%1$s +%2$d</string>
+    <string name="meal_log_unknown">Not recognized: %1$s</string>
+    <string name="meal_log_add">Add the meal</string>
+    <string name="meal_summary_separator" translatable="false">" · "</string>
+
     <!-- Drinks -->
     <string name="drinks_title">Drinks today</string>
     <string name="drinks_title_day">Drinks</string>

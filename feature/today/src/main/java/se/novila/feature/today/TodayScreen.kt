@@ -19,6 +19,7 @@ import se.novila.designsystem.component.NovilaHeroSegment
 import se.novila.designsystem.component.NovilaIconButton
 import se.novila.designsystem.component.NovilaReveal
 import se.novila.designsystem.component.NovilaScaffold
+import se.novila.designsystem.component.NovilaSky
 import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.today.R
@@ -100,7 +101,7 @@ fun TodayScreen(
         setupHint(setupIncomplete, onCompleteSetup)
         item(key = "balance") {
             NovilaReveal(order = 1) {
-                BalanceCard(today, steps, goals, onOpenTraining, onOpenSleep, onOpenNutrition)
+                BalanceCard(today, steps, goals, NovilaSky.at(hour), onOpenTraining, onOpenSleep, onOpenNutrition)
             }
         }
         item(key = "coach") { NovilaReveal(order = 2) { DailyCoachCard(coach) } }
@@ -162,6 +163,7 @@ private fun BalanceCard(
     today: DayEntry,
     steps: Long?,
     goals: Goals,
+    sky: NovilaSky,
     onOpenTraining: () -> Unit,
     onOpenSleep: () -> Unit,
     onOpenNutrition: () -> Unit,
@@ -196,17 +198,18 @@ private fun BalanceCard(
                 clickLabel = stringResource(UiR.string.nav_nutrition),
             ),
         ),
+        sky = sky,
     )
 }
 
 @Composable
-private fun TodayScreenContent() {
+private fun TodayScreenContent(hour: Int = 8) {
     NovilaTheme {
         NovilaScaffold { padding ->
             TodayScreen(
                 today = PreviewData.today,
                 history = PreviewData.history,
-                hour = 8,
+                hour = hour,
                 name = PreviewData.profile.name,
                 goals = Goals(),
                 sleep = analyzeSleep(PreviewData.days()),
@@ -232,6 +235,7 @@ private fun TodayScreenContent() {
 @Composable
 private fun TodayScreenPreview() = TodayScreenContent()
 
+/** Dark theme late in the evening, under the moon. */
 @Preview(heightDp = 2000, uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
-private fun TodayScreenDarkPreview() = TodayScreenContent()
+private fun TodayScreenDarkPreview() = TodayScreenContent(hour = 22)
