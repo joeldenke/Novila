@@ -14,8 +14,13 @@ novila {
 }
 
 dependencies {
-    // Novila's colors, type and shapes, so the watch looks like the phone app.
-    implementation(projects.core.designsystem)
+    // Novila's colors, type and shapes, so the watch looks like the phone app. Without Glance: NovilaGlanceTheme is
+    // the phone widget's, and Glance brings WorkManager and its permissions (wake lock, network state, boot,
+    // foreground service) onto the watch, which uses none of them. wear.yml fails on any permission in the APK.
+    implementation(projects.core.designsystem) {
+        exclude(group = "androidx.glance")
+        exclude(group = "androidx.work")
+    }
     // Workout, WorkoutStep and StandaloneSession: the same steps, rests and countdown as the phone.
     implementation(projects.core.exercise)
 
