@@ -26,7 +26,7 @@ något av Novilas data.
 Det som annars skulle ha ingått och nu medvetet lämnas utanför:
 
 - **`:core:data`s Preferences DataStore** (`files/datastore/`): loggade dagar, coachernas svar,
-  profil, mål, påminnelser, mätningar, matpreferenser, inställningar.
+  profil, mål, påminnelser, mätningar, matpreferenser (med egna recept), inställningar.
 - **De gamla SharedPreferences-filerna** med samma namn.
 - **Tink-nyckelringen** (`sharedpref/novila_datastore_keys`). Den är förseglad med Androids
   Keystore-nyckel, som inte går att säkerhetskopiera, så en återställd kopia skulle ändå inte kunna

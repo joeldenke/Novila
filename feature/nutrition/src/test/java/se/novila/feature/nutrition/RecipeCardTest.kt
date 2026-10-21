@@ -17,8 +17,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import se.novila.designsystem.theme.NovilaTheme
+import se.novila.recipes.Allergen
 import se.novila.recipes.FoodPreferences
 import se.novila.recipes.MealSlot
+import se.novila.recipes.OwnRecipe
+import se.novila.recipes.OwnRecipeSuggestion
 import se.novila.recipes.Recipe
 import se.novila.recipes.RecipeSuggestion
 import se.novila.recipes.RecipeSuggestions
@@ -32,8 +35,8 @@ class RecipeCardTest {
         listOf(RecipeSuggestion(Recipe.LentilBolognese, points = 23), RecipeSuggestion(Recipe.BakedSalmon, points = 0)),
     )
 
-    private fun show(suggestions: RecipeSuggestions, logged: MutableList<Recipe> = mutableListOf()) {
-        var expanded by mutableStateOf<Recipe?>(null)
+    private fun show(suggestions: RecipeSuggestions, logged: MutableList<Any> = mutableListOf()) {
+        var expanded by mutableStateOf<String?>(null)
         composeRule.setContent {
             NovilaTheme {
                 // The open recipe is longer than the test's screen.
@@ -43,8 +46,7 @@ class RecipeCardTest {
                         preferences = FoodPreferences(),
                         expanded = expanded,
                         onExpand = { expanded = it },
-                        onLog = { logged += it },
-                        onOpenPreferences = {},
+                        actions = RecipeActions(onLog = { logged += it }, onLogOwn = { logged += it }),
                     )
                 }
             }
@@ -52,7 +54,7 @@ class RecipeCardTest {
     }
 
     @Test fun `a recipe opens to its ingredients, steps and allergens and can be logged`() {
-        val logged = mutableListOf<Recipe>()
+        val logged = mutableListOf<Any>()
         show(suggestions, logged)
 
         composeRule.onNodeWithText("30 min · +23 to the nutrition score").assertExists()
@@ -69,5 +71,27 @@ class RecipeCardTest {
         show(RecipeSuggestions(MealSlot.Main, emptyList()))
 
         composeRule.onNodeWithText("No recipe fits your food preferences right now.").assertExists()
+    }
+
+    @Test fun `the user's own recipe comes first, with what its ingredients give and the allergens they confirmed`() {
+        val soup = OwnRecipe(
+            name = "Grandma's lentil soup",
+            minutes = 25,
+            ingredients = listOf("2 dl lentils", "1 carrot", "1 dl cream"),
+            steps = listOf("Boil everything."),
+            allergens = setOf(Allergen.Milk, Allergen.Celery),
+            id = 1,
+        )
+        val logged = mutableListOf<Any>()
+        show(suggestions.copy(own = listOf(OwnRecipeSuggestion(soup, points = 12))), logged)
+
+        composeRule.onNodeWithText("Your recipe · 25 min · +12 to the nutrition score").assertExists()
+        composeRule.onNodeWithText("Grandma's lentil soup").performClick()
+        composeRule.onNodeWithText("• 1 dl cream").assertExists()
+        composeRule.onNodeWithText("Contains: Milk, Celery").assertExists()
+        composeRule.onNodeWithText("Gives: Vegetables & fruit 1, Meals 1, Protein 1").assertExists()
+        composeRule.onNodeWithText("I ate this").performScrollTo().performClick()
+
+        assertEquals(listOf<Any>(soup), logged)
     }
 }

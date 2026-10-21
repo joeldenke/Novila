@@ -14,27 +14,28 @@ import se.novila.designsystem.component.NovilaTextButton
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.nutrition.R
 import se.novila.model.FoodGroup
+import se.novila.recipes.Allergen
 import se.novila.recipes.FoodPreferences
 import se.novila.recipes.MealSlot
-import se.novila.recipes.Recipe
-import se.novila.recipes.RecipeSuggestion
+import se.novila.recipes.OwnRecipe
 import se.novila.recipes.RecipeSuggestions
+import se.novila.recipes.key
 import se.novila.ui.common.allergenName
 import se.novila.ui.common.foodPreferencesSummary
 import se.novila.ui.R as UiR
 
 /**
- * Recipes for what today is still missing, chosen for the user's [preferences]. Tapping a recipe shows its
- * ingredients and steps ([expanded], [onExpand]), and [onLog] logs one serving of it.
+ * Recipes for what today is still missing, chosen for the user's [preferences]: their own first, then Novila's.
+ * Tapping a recipe shows its ingredients and steps ([expanded] is the open recipe's key, [onExpand]), and [actions]
+ * log one serving of it.
  */
 @Composable
 fun RecipeCard(
     suggestions: RecipeSuggestions,
     preferences: FoodPreferences,
-    expanded: Recipe?,
-    onExpand: (Recipe?) -> Unit,
-    onLog: (Recipe) -> Unit,
-    onOpenPreferences: () -> Unit,
+    expanded: String?,
+    onExpand: (String?) -> Unit,
+    actions: RecipeActions,
 ) {
     val nutrition = NovilaTheme.pillars.nutrition
     NovilaCard(
@@ -44,7 +45,7 @@ fun RecipeCard(
     ) {
         Hint(
             stringResource(
-                if (suggestions.recipes.isEmpty()) {
+                if (suggestions.recipes.isEmpty() && suggestions.own.isEmpty()) {
                     R.string.recipes_none
                 } else {
                     when (suggestions.slot) {
@@ -55,26 +56,37 @@ fun RecipeCard(
                 },
             ),
         )
-        suggestions.recipes.forEach { suggestion ->
-            val recipe = suggestion.recipe
-            val isExpanded = expanded == recipe
-            NovilaListRow(
+        suggestions.own.forEach { (recipe, points) ->
+            ExpandableRecipe(
+                title = recipe.name,
+                summary = stringResource(R.string.own_recipe_summary, summary(recipe.minutes, points)),
+                expanded = expanded == recipe.key,
+                onExpand = { onExpand(if (it) recipe.key else null) },
+            ) {
+                OwnRecipeDetails(recipe, onLog = { actions.onLogOwn(recipe) })
+            }
+        }
+        suggestions.recipes.forEach { (recipe, points) ->
+            ExpandableRecipe(
                 title = stringResource(recipe.text.name),
-                summary = summary(suggestion),
-                onClick = { onExpand(if (isExpanded) null else recipe) },
-                onClickLabel = stringResource(
-                    if (isExpanded) R.string.recipe_collapse else R.string.recipe_expand,
-                ),
-                stateDescription = stringResource(
-                    if (isExpanded) R.string.recipe_expanded else R.string.recipe_collapsed,
-                ),
-            )
-            if (expanded == recipe) RecipeDetails(recipe, onLog = { onLog(recipe) })
+                summary = summary(recipe.minutes, points),
+                expanded = expanded == recipe.key,
+                onExpand = { onExpand(if (it) recipe.key else null) },
+            ) {
+                val text = recipe.text
+                RecipeDetails(
+                    portions = FoodGroup.entries.associateWith(recipe::portions),
+                    allergens = recipe.allergens,
+                    ingredients = stringArrayResource(text.ingredients).toList(),
+                    steps = stringArrayResource(text.steps).toList(),
+                    onLog = { actions.onLog(recipe) },
+                )
+            }
         }
         Hint(foodPreferencesSummary(preferences))
         NovilaTextButton(
             text = stringResource(R.string.recipes_preferences),
-            onClick = onOpenPreferences,
+            onClick = actions.onOpenPreferences,
             role = nutrition,
         )
         NovilaText(
@@ -86,50 +98,93 @@ fun RecipeCard(
 }
 
 @Composable
-private fun summary(suggestion: RecipeSuggestion): String = if (suggestion.points > 0) {
-    stringResource(R.string.recipe_summary, suggestion.recipe.minutes, suggestion.points)
+private fun summary(minutes: Int, points: Int): String = if (points > 0) {
+    stringResource(R.string.recipe_summary, minutes, points)
 } else {
-    stringResource(R.string.recipe_minutes, suggestion.recipe.minutes)
+    stringResource(R.string.recipe_minutes, minutes)
+}
+
+/** A recipe as a row that opens to show its [details] below it. */
+@Composable
+private fun ExpandableRecipe(
+    title: String,
+    summary: String,
+    expanded: Boolean,
+    onExpand: (Boolean) -> Unit,
+    details: @Composable () -> Unit,
+) {
+    NovilaListRow(
+        title = title,
+        summary = summary,
+        onClick = { onExpand(!expanded) },
+        onClickLabel = stringResource(if (expanded) R.string.recipe_collapse else R.string.recipe_expand),
+        stateDescription = stringResource(if (expanded) R.string.recipe_expanded else R.string.recipe_collapsed),
+    )
+    if (expanded) details()
+}
+
+/** One of the user's own recipes, opened: what its ingredients give, its confirmed allergens and the text. */
+@Composable
+private fun OwnRecipeDetails(recipe: OwnRecipe, onLog: () -> Unit) {
+    RecipeDetails(
+        portions = FoodGroup.entries.associateWith(recipe::portions),
+        allergens = recipe.allergens,
+        ingredients = recipe.ingredients,
+        steps = recipe.steps,
+        onLog = onLog,
+        treats = recipe.contents.treats,
+    )
 }
 
 /** What one serving gives, its allergens, ingredients and steps, and a button to log it. */
 @Composable
-private fun RecipeDetails(recipe: Recipe, onLog: () -> Unit) {
-    val text = recipe.text
+private fun RecipeDetails(
+    portions: Map<FoodGroup, Int>,
+    allergens: Set<Allergen>,
+    ingredients: List<String>,
+    steps: List<String>,
+    onLog: () -> Unit,
+    treats: Int = 0,
+) {
     Column(verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s)) {
-        val portions = FoodGroup.entries
-            .filter { recipe.portions(it) > 0 }
-            .map { stringResource(R.string.recipe_portion, foodName(it), recipe.portions(it)) }
-        Hint(stringResource(R.string.recipe_gives, portions.joinToString(", ")))
-        Hint(
-            if (recipe.allergens.isEmpty()) {
-                stringResource(R.string.recipe_contains_none)
-            } else {
-                val names = recipe.allergens.sorted().map { allergenName(it) }
-                stringResource(R.string.recipe_contains, names.joinToString(", "))
-            },
-        )
+        val gives = portions.filterValues { it > 0 }
+            .map { (group, count) -> stringResource(R.string.recipe_portion, foodName(group), count) } +
+            listOfNotNull(
+                treats.takeIf { it > 0 }?.let {
+                    stringResource(R.string.recipe_portion, stringResource(R.string.food_treats), it)
+                },
+            )
+        if (gives.isNotEmpty()) Hint(stringResource(R.string.recipe_gives, gives.joinToString(", ")))
+        Hint(allergensText(allergens))
         Heading(stringResource(R.string.recipe_ingredients))
-        stringArrayResource(text.ingredients).forEach { Body(stringResource(R.string.recipe_ingredient, it)) }
-        Heading(stringResource(R.string.recipe_steps))
-        stringArrayResource(text.steps).forEachIndexed { index, step ->
-            Body(stringResource(R.string.recipe_step, index + 1, step))
+        ingredients.forEach { Body(stringResource(R.string.recipe_ingredient, it)) }
+        if (steps.isNotEmpty()) {
+            Heading(stringResource(R.string.recipe_steps))
+            steps.forEachIndexed { index, step -> Body(stringResource(R.string.recipe_step, index + 1, step)) }
         }
         NovilaButton(text = stringResource(R.string.recipe_log), onClick = onLog, role = NovilaTheme.pillars.nutrition)
     }
 }
 
+/** "Contains: gluten, milk", or that it has none of the labelled allergens. */
 @Composable
-private fun Heading(text: String) {
+internal fun allergensText(allergens: Set<Allergen>): String = if (allergens.isEmpty()) {
+    stringResource(R.string.recipe_contains_none)
+} else {
+    stringResource(R.string.recipe_contains, allergens.sorted().map { allergenName(it) }.joinToString(", "))
+}
+
+@Composable
+internal fun Heading(text: String) {
     NovilaText(text, style = NovilaTheme.typography.labelLarge)
 }
 
 @Composable
-private fun Body(text: String) {
+internal fun Body(text: String) {
     NovilaText(text, style = NovilaTheme.typography.bodyMedium)
 }
 
 @Composable
-private fun Hint(text: String) {
+internal fun Hint(text: String) {
     NovilaText(text, style = NovilaTheme.typography.bodyMedium, color = NovilaTheme.colors.onSurfaceVariant)
 }

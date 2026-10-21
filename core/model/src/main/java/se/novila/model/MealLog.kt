@@ -28,12 +28,12 @@ fun parseMeal(text: String): MealLog {
     var treats = 0
     val unknown = mutableListOf<String>()
     val counted = mutableSetOf<String>()
-    for (word in words(foods)) {
+    for (word in foodWords(foods)) {
         if (!counted.add(word)) continue
-        val group = FOODS[word]
+        val group = foodGroupOf(word)
         when {
             group != null -> portions[group] = (portions[group] ?: 0) + 1
-            word in SWEETS -> treats++
+            isSweet(word) -> treats++
             else -> unknown += word
         }
     }
@@ -45,8 +45,17 @@ fun DayEntry.withMeal(meal: MealLog): DayEntry = meal.portions.entries
     .fold(this) { day, (group, portions) -> day.withPortions(group, portions) }
     .withTreats(meal.treats)
 
+/** The food group [word] (lowercased, as [foodWords] gives it) belongs to in the dictionary, or null. */
+fun foodGroupOf(word: String): FoodGroup? = FOODS[word]
+
+/** Whether [word] (lowercased) is a sweet or a snack, which counts as a treat. */
+fun isSweet(word: String): Boolean = word in SWEETS
+
+/** Every food and sweet the dictionary knows, in both of the app's languages. */
+val knownFoods: Set<String> get() = FOODS.keys + SWEETS
+
 /** The words of a meal, lowercased and split on whitespace and punctuation, with "and"/"och" dropped as filler. */
-private fun words(text: String): List<String> = text
+fun foodWords(text: String): List<String> = text
     .lowercase()
     .split(SEPARATOR)
     .map { it.trim(*WORD_EDGE) }
