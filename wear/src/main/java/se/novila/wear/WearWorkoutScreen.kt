@@ -54,16 +54,19 @@ fun WearWorkoutScreen(
 ) {
     val workout = state.workout
     KeepScreenOn(enabled = workout != null && !state.isFinished)
-    // A new step starts at the top, instead of keeping the plan's scroll position.
-    val scrollState = key(state.workout?.index, state.isFinished) { rememberScalingLazyListState() }
+    // A new step starts at the top, instead of keeping the plan's scroll position, with its first item (the title)
+    // in the middle, where a round screen is widest. Above it, the circle cuts long titles off and scrolling up can't
+    // bring them in.
+    val scrollState = key(state.workout?.index, state.isFinished) {
+        rememberScalingLazyListState(initialCenterItemIndex = 0)
+    }
     ScreenScaffold(scrollState = scrollState, modifier = modifier) { innerPadding ->
         ScalingLazyColumn(
             state = scrollState,
             modifier = Modifier.fillMaxSize(),
             // The scaffold's padding includes Wear's side margin for lists.
             contentPadding = innerPadding,
-            // The first item (each screen's title) starts in the middle, where a round screen is widest, instead
-            // of above it, where the circle cuts long titles off and scrolling up can't bring them in.
+            // Lets the title scroll back to the middle, too.
             autoCentering = AutoCenteringParams(itemIndex = 0),
             verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.xs),
             horizontalAlignment = Alignment.CenterHorizontally,
