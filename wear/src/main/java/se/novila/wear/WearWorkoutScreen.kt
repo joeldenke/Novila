@@ -2,6 +2,8 @@ package se.novila.wear
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -56,17 +58,27 @@ fun WearWorkoutScreen(
     // A new step starts at the top, instead of keeping the plan's scroll position.
     val scrollState = key(state.workout?.index, state.isFinished) { rememberScalingLazyListState() }
     ScreenScaffold(scrollState = scrollState, modifier = modifier) { innerPadding ->
-        ScalingLazyColumn(
-            state = scrollState,
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = innerPadding,
-            verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.xs),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            when {
-                workout == null -> planItems(state, onLevel, onSession, onStart)
-                state.isFinished -> finishedItems(workout, onNewSession)
-                else -> stepItems(state, onNext)
+        // Wear's side margin for lists, a share of the screen's width, so text and buttons stay clear of a round
+        // screen's edge and the scroll indicator on every watch size. The scaffold gives the top and bottom.
+        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+            val side = maxWidth * SIDE_MARGIN
+            ScalingLazyColumn(
+                state = scrollState,
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(
+                    start = side,
+                    top = innerPadding.calculateTopPadding(),
+                    end = side,
+                    bottom = innerPadding.calculateBottomPadding(),
+                ),
+                verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.xs),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                when {
+                    workout == null -> planItems(state, onLevel, onSession, onStart)
+                    state.isFinished -> finishedItems(workout, onNewSession)
+                    else -> stepItems(state, onNext)
+                }
             }
         }
     }
@@ -459,3 +471,6 @@ private fun previewState(steps: Int): WearWorkoutUiState {
 }
 
 private val PREVIEW_STEP = 1.minutes
+
+/** Wear OS's side margin for scrolling lists, as a share of the screen's width. */
+private const val SIDE_MARGIN = 0.052f
