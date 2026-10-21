@@ -4,6 +4,7 @@
     <string name="onboarding_next">Next</string>
     <string name="onboarding_begin">Show me</string>
     <string name="onboarding_skip">Skip</string>
+    <string name="onboarding_set_up_later">Set up later</string>
     <string name="onboarding_back">Back</string>
     <string name="onboarding_finish">Get started</string>
 

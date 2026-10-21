@@ -11,11 +11,13 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import se.novila.data.FoodPreferencesStore
 import se.novila.data.GoalsStore
 import se.novila.data.HealthStore
 import se.novila.data.SelectedDay
+import se.novila.data.SettingsStore
 import se.novila.model.DayEntry
 import se.novila.model.Drink
 import se.novila.model.DrinkKind
@@ -61,10 +63,19 @@ class NutritionViewModel(
     private val store: HealthStore,
     private val goalsStore: GoalsStore,
     private val foodPreferencesStore: FoodPreferencesStore,
+    private val settingsStore: SettingsStore,
 ) : ViewModel() {
     private val day = SelectedDay()
     private val range = MutableStateFlow(HistoryRange.Week)
     private val hour = MutableStateFlow(LocalTime.now().hour)
+
+    /**
+     * Whether the introduction was skipped, so the food preferences and the rest of the setup are missing: the tab
+     * then shows one quiet card that finishes the setup. False until the settings are read, and after the intro.
+     */
+    val setupIncomplete: StateFlow<Boolean> = settingsStore.settings
+        .map { it?.setupIncomplete == true }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     /** The history, the goals and the food preferences, or null before the stores' first reads. */
     val state: StateFlow<NutritionUiState?> =
@@ -115,4 +126,9 @@ class NutritionViewModel(
 
     /** Logs one serving of [recipe]: its portions in each food group, and a meal unless it is a snack. */
     fun logRecipe(recipe: Recipe) = store.update(day.value) { it.withRecipe(recipe) }
+
+    /** Reopens the intro so the setup that was skipped earlier can be finished. */
+    fun openSetup() {
+        settingsStore.setOnboarded(false)
+    }
 }

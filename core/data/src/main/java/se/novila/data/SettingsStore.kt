@@ -28,6 +28,7 @@ class SettingsStore internal constructor(context: Context, scope: CoroutineScope
             theme = ThemeMode.fromName(it[THEME]),
             dynamicColor = it[DYNAMIC_COLOR] ?: false,
             onboarded = it[ONBOARDED] ?: false,
+            setupSkipped = it[SETUP_SKIPPED] ?: false,
         )
     }
 
@@ -38,10 +39,29 @@ class SettingsStore internal constructor(context: Context, scope: CoroutineScope
     /** The intro is done, and the app opens on Today; or, from Settings, not done, to show it again. */
     fun setOnboarded(done: Boolean) = store.edit { it[ONBOARDED] = done }
 
+    /**
+     * The setup is finished: the intro is done and no skip stands in its way, so nothing asks for the setup again.
+     * One save, so a phone that dies between the two writes never ends up half done.
+     */
+    fun finishOnboarding() = store.edit {
+        it[ONBOARDED] = true
+        it[SETUP_SKIPPED] = false
+    }
+
+    /**
+     * The intro was left with "set up later": the app opens on Today with nothing set up, and remembers that the
+     * setup is still worth finishing, so the tabs can say so.
+     */
+    fun skipOnboarding() = store.edit {
+        it[ONBOARDED] = true
+        it[SETUP_SKIPPED] = true
+    }
+
     private companion object {
         const val NAME = "settings"
         val THEME = stringPreferencesKey("theme")
         val DYNAMIC_COLOR = booleanPreferencesKey("dynamic_color")
         val ONBOARDED = booleanPreferencesKey("onboarded")
+        val SETUP_SKIPPED = booleanPreferencesKey("setup_skipped")
     }
 }

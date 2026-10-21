@@ -26,6 +26,7 @@ import se.novila.ui.common.NutritionHistoryCard
 import se.novila.ui.common.ScreenList
 import se.novila.ui.common.ScreenSection
 import se.novila.ui.common.section
+import se.novila.ui.common.setupHint
 import se.novila.ui.preview.PreviewData
 import java.time.LocalDate
 
@@ -40,7 +41,8 @@ data class RecipeActions(
  * breakdown, logging per food group and drinks ([drinkActions]), and the scores in the [history] up to it, over a week, four weeks or a year
  * ([onRange]), water against [goals]. [today] is the day it really is: the user can go back to an earlier day
  * ([onSelectDay]) and fill in what was forgotten. On today, the plan is [recipes] for what is still missing, chosen
- * for [foodPreferences]; [expandedRecipe] is the one shown open at first.
+ * for [foodPreferences]; [expandedRecipe] is the one shown open at first. When the introduction was skipped
+ * ([setupIncomplete]), a quiet card under the day picker leads to finishing the setup ([onCompleteSetup]).
  */
 @Composable
 fun NutritionScreen(
@@ -59,11 +61,15 @@ fun NutritionScreen(
     foodPreferences: FoodPreferences = FoodPreferences(),
     recipeActions: RecipeActions = RecipeActions(),
     expandedRecipe: Recipe? = null,
+    /** The introduction was skipped, so the setup is unfinished: one quiet card offers to finish it. */
+    setupIncomplete: Boolean = false,
+    onCompleteSetup: () -> Unit = {},
 ) {
     val isToday = day.date == today
     var expanded by rememberSaveable(expandedRecipe) { mutableStateOf(expandedRecipe) }
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
         item(key = "day") { DayPicker(day.date, today, onSelectDay, NovilaTheme.pillars.nutrition) }
+        setupHint(setupIncomplete, onCompleteSetup)
         section(ScreenSection.Overview)
         item(key = "score") { NovilaReveal(order = 0) { NutritionScoreCard(day, goals, isToday) } }
         section(ScreenSection.Log)

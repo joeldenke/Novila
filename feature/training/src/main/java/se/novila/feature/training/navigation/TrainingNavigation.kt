@@ -87,6 +87,7 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
         val movement by viewModel.movement.collectAsStateWithLifecycle()
         val exercise by viewModel.exercise.collectAsStateWithLifecycle()
         val recovery by viewModel.recovery.collectAsStateWithLifecycle()
+        val setupIncomplete = viewModel.setupIncomplete.collectAsStateWithLifecycle().value
         val context = LocalContext.current
         val connectHealth = rememberHealthPermissionRequest(viewModel::onHealthPermissionsResult)
         // Recovery's own dialog asks only for resting heart rate and HRV, so it can be connected on its own.
@@ -109,10 +110,12 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
                 onConnectRecovery = connectRecovery,
                 onOpenHealthSettings = { HealthConnectSource.openSettings(context) },
                 onInstallHealth = { HealthConnectSource.openInstall(context) },
+                onCompleteSetup = viewModel::openSetup,
             ),
             contentPadding = contentPadding,
             exercise = exercise,
             recovery = recovery,
+            setupIncomplete = setupIncomplete,
         )
     }
     entry<SessionRoute> { route ->

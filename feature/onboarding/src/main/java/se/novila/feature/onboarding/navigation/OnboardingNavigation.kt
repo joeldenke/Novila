@@ -31,6 +31,8 @@ fun EntryProviderScope<NavKey>.onboardingEntry() {
         val connectHealth = rememberHealthPermissionRequest(viewModel::onMovementPermissionsResult)
         OnboardingScreen(
             state = state,
+            // The questions when the setup was skipped earlier, so the user lands where there is something to do.
+            initialPage = viewModel.startPage.value,
             actions = OnboardingActions(
                 onName = viewModel::onName,
                 onPreferences = viewModel::onPreferences,
@@ -38,6 +40,7 @@ fun EntryProviderScope<NavKey>.onboardingEntry() {
                 onOpenHealthSettings = { HealthConnectSource.openSettings(context) },
                 onInstallHealth = { HealthConnectSource.openInstall(context) },
                 onFinish = viewModel::finish,
+                onSkipAll = viewModel::skip,
             ),
         )
     }

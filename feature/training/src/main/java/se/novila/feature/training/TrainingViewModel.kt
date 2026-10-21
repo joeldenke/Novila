@@ -9,9 +9,11 @@ import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import se.novila.data.HealthStore
+import se.novila.data.SettingsStore
 import se.novila.exercise.ExerciseRepository
 import se.novila.exercise.ExerciseState
 import se.novila.model.CardioLog
@@ -34,12 +36,21 @@ class TrainingViewModel(
     private val exerciseRepository: ExerciseRepository,
     private val recoveryRepository: RecoveryRepository,
     private val store: HealthStore,
+    private val settingsStore: SettingsStore,
 ) : ViewModel() {
     private val date = MutableStateFlow(LocalDate.now())
 
     /** The week's program, or null before the stores' first read. */
     val state: StateFlow<TrainingUiState?> = training.states(date)
         .stateIn(viewModelScope, SharingStarted.Eagerly, training.current(date.value))
+
+    /**
+     * Whether the introduction was skipped, so the training coach's answers are not set up: the tab then shows one
+     * quiet card that finishes the setup. False until the settings are read, and after the intro.
+     */
+    val setupIncomplete: StateFlow<Boolean> = settingsStore.settings
+        .map { it?.setupIncomplete == true }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     val movement: StateFlow<MovementState> = movementRepository.state
 
@@ -75,5 +86,10 @@ class TrainingViewModel(
     /** The user did a cardio session ("I did it"): saved as today's, so the program builds on it. */
     fun logCardio(log: CardioLog) {
         store.update(date.value) { it.withCardio(log) }
+    }
+
+    /** Reopens the intro so the setup that was skipped earlier can be finished. */
+    fun openSetup() {
+        settingsStore.setOnboarded(false)
     }
 }

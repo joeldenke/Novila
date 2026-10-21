@@ -58,7 +58,8 @@ data class SettingsActions(
 
 /**
  * Settings: the user's profile and the way to My goals, then what is about the app itself: appearance, reminders,
- * Health Connect access, health disclaimer, the user's data and the app version.
+ * Health Connect access, health disclaimer, the user's data and the app version. When the setup was skipped, the
+ * profile card also has the row that finishes it ([SettingsActions.onShowIntro]).
  *
  * @param canUseDynamicColor wallpaper colors exist (Android 12+)
  * @param canChooseLanguage the phone has per-app language settings (Android 13+)
@@ -77,7 +78,7 @@ fun SettingsScreen(
     modifier: Modifier = Modifier,
 ) {
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
-        item(key = "profile") { ProfileCard(profile, measurements, actions) }
+        item(key = "profile") { ProfileCard(settings, profile, measurements, actions) }
         item(key = "appearance") {
             AppearanceCard(settings, canUseDynamicColor, canChooseLanguage, actions)
         }
@@ -91,10 +92,26 @@ fun SettingsScreen(
     }
 }
 
-/** Who uses the app: the name (or what it is for when empty), the way to My goals, and the measurements. */
+/**
+ * Who uses the app: the name (or what it is for when empty), the way to My goals, and the measurements. When the
+ * introduction was skipped, the card starts with the row that finishes the setup, which reopens the intro.
+ */
 @Composable
-private fun ProfileCard(profile: Profile, measurements: List<MeasurementEntry>?, actions: SettingsActions) {
+private fun ProfileCard(
+    settings: AppSettings,
+    profile: Profile,
+    measurements: List<MeasurementEntry>?,
+    actions: SettingsActions,
+) {
     NovilaCard(title = stringResource(R.string.settings_profile)) {
+        if (settings.setupIncomplete) {
+            NovilaListRow(
+                title = stringResource(R.string.settings_setup),
+                summary = stringResource(R.string.settings_setup_summary),
+                onClick = actions.onShowIntro,
+                trailing = { Chevron() },
+            )
+        }
         NovilaListRow(
             title = profile.name.ifEmpty { stringResource(R.string.profile_title) },
             summary = if (profile.name.isEmpty()) stringResource(R.string.settings_profile_empty) else null,

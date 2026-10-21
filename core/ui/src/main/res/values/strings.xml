@@ -152,4 +152,9 @@
     <string name="section_log">Log</string>
     <string name="section_plan">Your plan</string>
     <string name="section_trends">Trends</string>
+
+    <!-- The card on a tab's root when the introduction was skipped, see SetupHint -->
+    <string name="setup_hint_title">Setup not finished</string>
+    <string name="setup_hint_body">You skipped the introduction, so your profile, goals and coaches are not set up yet.</string>
+    <string name="setup_hint_action">Finish setup</string>
 </resources>

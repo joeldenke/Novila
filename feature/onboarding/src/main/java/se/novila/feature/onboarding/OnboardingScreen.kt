@@ -69,6 +69,8 @@ data class OnboardingActions(
     val onOpenHealthSettings: () -> Unit = {},
     val onInstallHealth: () -> Unit = {},
     val onFinish: () -> Unit = {},
+    /** Leaves the whole intro without saving anything: the app opens, and the setup can be finished later. */
+    val onSkipAll: () -> Unit = {},
 )
 
 /**
@@ -77,7 +79,8 @@ data class OnboardingActions(
  * behind its page and steps back, the text and cards travel past it in layers and cross-fade with the next page, the
  * light behind shifts to the next part's color, and the page indicator follows the finger. Swipe or use the buttons;
  * system back goes to the previous page. "Skip" jumps past the tour to the questions, and every question has a ready
- * answer, so the user can get started in two taps.
+ * answer, so the user can get started in two taps. "Set up later" on any page leaves the whole intro: the app opens
+ * with nothing set up, and the setup can be finished later from Settings or from the tabs.
  */
 @Composable
 fun OnboardingScreen(
@@ -100,6 +103,7 @@ fun OnboardingScreen(
             Controls(
                 page = current,
                 onSkip = { goTo(OnboardingPage.You) },
+                onSkipAll = actions.onSkipAll,
                 onBack = { goTo(pages[(current.ordinal - 1).coerceAtLeast(0)]) },
                 onNext = {
                     if (current == OnboardingPage.Ready) actions.onFinish() else goTo(pages[current.ordinal + 1])
@@ -142,11 +146,15 @@ private fun OnboardingPage.role(): NovilaColorRole = when (this) {
     else -> NovilaTheme.pillars.training
 }
 
-/** Where the user is, and the way on: skip the tour or go back on the left, the next step in sunlight on the right. */
+/**
+ * Where the user is, and the way on: skip the tour or go back on the left, the next step in sunlight on the right,
+ * and "set up later" in between, which works on every page.
+ */
 @Composable
 private fun Controls(
     page: OnboardingPage,
     onSkip: () -> Unit,
+    onSkipAll: () -> Unit,
     onBack: () -> Unit,
     onNext: () -> Unit,
     offset: () -> Float,
@@ -176,9 +184,11 @@ private fun Controls(
                 else -> R.string.onboarding_next
             },
         )
+        val laterLabel = stringResource(R.string.onboarding_set_up_later)
         if (LocalDensity.current.fontScale >= LARGE_TEXT_SCALE) {
-            // At the largest text sizes the two buttons no longer fit on one line.
+            // At the largest text sizes the buttons no longer fit on one line.
             Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s)) {
+                NovilaTextButton(laterLabel, onSkipAll)
                 when {
                     page < OnboardingPage.You -> NovilaTextButton(stringResource(R.string.onboarding_skip), onSkip)
                     else -> NovilaTextButton(stringResource(R.string.onboarding_back), onBack)
@@ -191,6 +201,8 @@ private fun Controls(
                     page < OnboardingPage.You -> NovilaTextButton(stringResource(R.string.onboarding_skip), onSkip)
                     else -> NovilaTextButton(stringResource(R.string.onboarding_back), onBack)
                 }
+                Spacer(Modifier.weight(1f))
+                NovilaTextButton(laterLabel, onSkipAll)
                 Spacer(Modifier.weight(1f))
                 NovilaAccentButton(text = nextLabel, onClick = onNext)
             }

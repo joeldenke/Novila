@@ -25,4 +25,22 @@ class AppSettingsTest {
     @Test fun `the brand palette in the phone's theme is the default`() {
         assertEquals(AppSettings(theme = ThemeMode.System, dynamicColor = false), AppSettings())
     }
+
+    @Test fun `the setup is complete when the intro was finished`() {
+        assertTrue(AppSettings(onboarded = true).setupComplete)
+        assertFalse(AppSettings(onboarded = true).setupIncomplete)
+    }
+
+    @Test fun `a skipped setup is open until the intro is finished again`() {
+        val skipped = AppSettings(onboarded = true, setupSkipped = true)
+        assertFalse(skipped.setupComplete)
+        assertTrue(skipped.setupIncomplete)
+        // Finishing the intro again clears the skip, which the store saves.
+        assertTrue(skipped.copy(setupSkipped = false).setupComplete)
+    }
+
+    @Test fun `nothing asks for the setup while the intro itself is on screen`() {
+        // Before the first start the intro is shown by itself, so the tabs never need to point at it.
+        assertFalse(AppSettings(onboarded = false).setupIncomplete)
+    }
 }

@@ -102,6 +102,8 @@
     <!-- Profile -->
     <string name="settings_profile">Profile</string>
     <string name="settings_profile_empty">Add your name and body measurements</string>
+    <string name="settings_setup">Finish setup</string>
+    <string name="settings_setup_summary">Your profile, goals and coaches are not set up yet.</string>
     <string name="profile_title">Profile</string>
     <string name="profile_about_you">About you</string>
     <string name="profile_name">Name</string>

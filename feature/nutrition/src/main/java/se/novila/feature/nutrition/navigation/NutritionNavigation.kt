@@ -28,6 +28,7 @@ fun EntryProviderScope<NavKey>.nutritionEntry(onOpenFoodPreferences: () -> Unit,
         }
         // Nothing to show until the saved days are read, a moment at app start.
         val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
+        val setupIncomplete = viewModel.setupIncomplete.collectAsStateWithLifecycle().value
         NutritionScreen(
             day = state.day,
             history = state.history,
@@ -42,6 +43,8 @@ fun EntryProviderScope<NavKey>.nutritionEntry(onOpenFoodPreferences: () -> Unit,
             recipes = state.recipes,
             foodPreferences = state.foodPreferences,
             recipeActions = RecipeActions(onLog = viewModel::logRecipe, onOpenPreferences = onOpenFoodPreferences),
+            setupIncomplete = setupIncomplete,
+            onCompleteSetup = viewModel::openSetup,
         )
     }
 }

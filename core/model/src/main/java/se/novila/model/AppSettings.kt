@@ -9,7 +9,19 @@ data class AppSettings(
     val dynamicColor: Boolean = false,
     /** The intro at first start is done or skipped, so the app opens on Today. */
     val onboarded: Boolean = false,
-)
+    /**
+     * The intro was left without finishing it ("set up later"), so the app opened without a name, goals or coach
+     * answers. Cleared when the setup is finished. A user who finished the intro before this key existed never
+     * has it set, so their setup stays complete.
+     */
+    val setupSkipped: Boolean = false,
+) {
+    /** The whole setup is done: the intro was finished, not skipped. */
+    val setupComplete: Boolean get() = onboarded && !setupSkipped
+
+    /** The app is open on the tabs, but the intro was skipped, so the setup is still worth finishing. */
+    val setupIncomplete: Boolean get() = onboarded && setupSkipped
+}
 
 /** Light, dark, or whatever the phone uses. */
 enum class ThemeMode {
