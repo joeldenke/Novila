@@ -247,13 +247,13 @@ fun NovilaSheetContent(title: String, content: @Composable ColumnScope.() -> Uni
 }
 
 /**
- * The tab's quick actions below its overview, side by side: give each [NovilaButton] `Modifier.weight(1f)` so they
- * share the width equally.
+ * The tab's quick actions below its overview, side by side: give each [NovilaButton] `Modifier.weight(1f)` and
+ * `fillMaxHeight()` so they share the width equally and stay as tall as the tallest, when a label wraps.
  */
 @Composable
 fun NovilaQuickActions(modifier: Modifier = Modifier, content: @Composable RowScope.() -> Unit) {
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().height(IntrinsicSize.Min),
         horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s),
         content = content,
     )

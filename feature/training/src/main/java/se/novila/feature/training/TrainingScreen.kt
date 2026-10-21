@@ -1,6 +1,7 @@
 package se.novila.feature.training
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -77,7 +78,7 @@ fun TrainingScreen(
                     NovilaButton(
                         text = stringResource(R.string.overview_log_other),
                         onClick = actions.onOpenCardioLog,
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(1f).fillMaxHeight(),
                     )
                 }
             }

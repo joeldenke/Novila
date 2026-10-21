@@ -1,6 +1,7 @@
 package se.novila.feature.nutrition
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -149,7 +150,7 @@ private fun LogActions(day: DayEntry, onFood: () -> Unit, onWater: () -> Unit, o
             text = stringResource(R.string.nutrition_log_food),
             onClick = onFood,
             role = nutrition,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).fillMaxHeight(),
         )
         NovilaButton(
             text = stringResource(R.string.nutrition_log_water, decilitersText(water.defaultMl)),
@@ -161,13 +162,13 @@ private fun LogActions(day: DayEntry, onFood: () -> Unit, onWater: () -> Unit, o
                 decilitersText(water.defaultMl),
                 drinkName(water).lowercase(),
             ),
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).fillMaxHeight(),
         )
         NovilaButton(
             text = stringResource(R.string.nutrition_log_drink),
             onClick = onDrink,
             role = nutrition,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).fillMaxHeight(),
         )
     }
 }
