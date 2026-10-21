@@ -25,11 +25,14 @@ plugins {
 // Formatting and ktlint for every Kotlin file in the repo, configured from .editorconfig.
 // Runs on the root project only and just reads files. The targets are file trees, not glob strings: for a glob
 // Spotless looks up every subproject's build directory, which Isolated Projects forbids.
+// The Wear OS app is checked on its own: with -Pnovila.wear=true only wear/ (wear.yml), otherwise everything but it.
+val wear = providers.gradleProperty("novila.wear").orNull == "true"
 spotless {
     val ktlintVersion = libs.versions.ktlint.get()
     fun sources(pattern: String) = fileTree(layout.projectDirectory) {
-        include(pattern)
+        if (wear) include("wear/$pattern") else include(pattern)
         exclude("**/build/**", "**/.gradle/**", "**/.kotlin/**")
+        if (!wear) exclude("wear/**")
     }
     kotlin {
         target(sources("**/*.kt"))

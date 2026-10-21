@@ -46,8 +46,9 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   Den är medvetet fristående: ingen Wearable Data Layer, ingen delning med telefonen, inget sparat och ingen
   Health Connect på klockan. Temat är `NovilaTheme` mappat till Compose for Wear OS Material 3 (`NovilaWearTheme`),
   så klockan ser ut som appen, alltid i mörkt läge. Egen Metro-graf (`WearGraph`). Se *Wear OS* under Regler.
-  Ingår bara i bygget med `-Pnovila.wear=true` (`settings.gradle.kts`), så telefonens CI aldrig konfigurerar,
-  testar eller bygger den; workflowen `Wear OS` (`wear.yml`) kontrollerar den, se *Arbetsflöde*.
+  Ingår bara i bygget med `-Pnovila.wear=true` (`settings.gradle.kts`; Spotless kontrollerar då bara `wear/`, annars
+  allt utom `wear/`), så telefonens flöden aldrig ser den; bara workflowen `Wear OS` (`wear.yml`) gör det, se
+  *Arbetsflöde*. `ArchitectureTest` läser inte `wear/`.
 - `:core:designsystem` – `se.novila.designsystem`, enda modulen som använder Material 3 direkt
   - `theme` – `NovilaTheme`: färger, typografi, former och spacing-tokens
   - `component` – `Novila*`-komponenter som wrappar Material 3
@@ -145,12 +146,17 @@ Strängar och ikoner ligger i modulen som använder dem; det flera moduler anvä
   CI-flaggorna för de publika runnerna (4 kärnor, 16 GB) ligger i `.github/ci-gradle.properties`. Bygg aldrig egen cachelogik.
   Release-bygget (R8) körs inte på PR:er. Ändrar du `proguard-rules.pro` eller R8-känslig kod,
   säg det i PR-beskrivningen. Fel syns då först vid merge.
-- `Wear OS` (`wear.yml`) kontrollerar klockappen isolerat från telefonens CI, bara när `wear/`, det den bygger på
-  (`:core:exercise`, `:core:recovery`, `:core:designsystem`) eller bygget ändras: lint, tester, skärmdumpar på runda
-  och fyrkantiga klockor och debug-APK:n, med `-Pnovila.wear=true`. Den kollar också i APK:n att klockappen aldrig
-  kan ersätta telefonappen (paketet `se.novila.wear.debug`, kräver `android.hardware.type.watch`, inga egna
-  behörigheter). Lägg aldrig `:wear`-tasks i `ci.yml`. Den är ingen obligatorisk kontroll, så titta på den i PR:er
-  som rör klockan. `/record-screenshots` fungerar likadant där, och `Record references` spelar in klockans bilder också.
+- `Wear OS` (`wear.yml`) är klockappens egen workflow och den enda som rör `:wear`. Inga andra workflows (`ci.yml`,
+  `screenshots.yml`, `distribute.yml`, `dependency-submission.yml`) bygger, testar, formaterar eller spelar in klockan,
+  och `wear.yml` använder inget i `.github/actions/`. Lägg aldrig in klockan i de andra flödena eller tvärtom.
+  Den körs bara när `wear/`, det klockan bygger på (`:core:exercise`, `:core:recovery`, `:core:designsystem`) eller
+  bygget ändras, med `-Pnovila.wear=true`: Spotless på `wear/`, lint, tester, skärmdumpar och debug-APK:n. Den kollar
+  också i APK:n att klockappen aldrig kan ersätta telefonappen (paketet `se.novila.wear.debug`, kräver
+  `android.hardware.type.watch`, inga egna behörigheter) och att klockan inte importerar telefonens Material 3.
+  Klockans skärmdumpar spelas in med `/record-wear-screenshots` i PR-beskrivningen, eller genom att köra workflowen
+  med *record* från Actions-fliken; telefonens `/record-screenshots` rör dem aldrig. Efter en sådan push startar den
+  sig själv och `CI` på den nya commiten (en push med GITHUB_TOKEN startar inget, och den krävda kontrollen måste
+  finnas). Den är ingen obligatorisk kontroll, så titta på den i PR:er som rör klockan.
 - Kan din miljö inte nå Google Maven: pusha och följ körningen (`gh pr checks`, `gh run view --log-failed`)
   och rätta tills den är grön. Säg aldrig att något fungerar utan grönt CI.
 - `Dependency submission` skickar bibliotekens beroendegraf till GitHub vid varje push till `main`, så Dependabot larmar

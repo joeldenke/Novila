@@ -85,8 +85,7 @@ jobs:
           if [ "$WHAT" = badging ]; then
             ./gradlew :app:updateDebugBadging --stacktrace
           else
-            # -Pnovila.wear=true: the watch's screenshots too (:wear is only in the build with it, see wear.yml).
-            ./gradlew -Pnovila.wear=true recordRoborazziDebug --stacktrace
+            ./gradlew recordRoborazziDebug --stacktrace
           fi
 
       - name: Commit and push
@@ -131,9 +130,7 @@ jobs:
         if: steps.push.outputs.changed != '0'
         env:
           TARGET: ${{ steps.push.outputs.target }}
-        run: |
-          gh workflow run ci.yml --ref "$TARGET"
-          gh workflow run wear.yml --ref "$TARGET"
+        run: gh workflow run ci.yml --ref "$TARGET"
 
       - name: Reply
         if: always() && (env.PR_NUMBER != '' || steps.push.outputs.pr != '')

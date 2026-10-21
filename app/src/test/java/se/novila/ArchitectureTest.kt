@@ -23,7 +23,7 @@ class ArchitectureTest {
 
     private fun modules(): List<File> = listOf("core", "feature").flatMap { group ->
         File(root, group).listFiles().orEmpty().filter { File(it, "build.gradle.kts").isFile }
-    } + listOf(File(root, "app"), File(root, "wear"))
+    } + File(root, "app")
 
     private fun sources(): List<File> = modules()
         .filterNot { it.name == "designsystem" }

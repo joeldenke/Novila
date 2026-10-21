@@ -126,19 +126,50 @@ jobs:
         if: failure()
         uses: ./.github/actions/annotate-gradle-failures
 
-      # Commits the screenshots recorded above to the PR branch and starts CI on that commit. Only when the PR
-      # description says the UI changes on purpose (/record-screenshots), otherwise a changed screenshot just fails.
-      # Only for PRs from this repository: a fork's token can't push, and the run started here is a workflow_dispatch,
-      # so it never records again.
+      # Commits the screenshots recorded above to the PR branch, where they show up in the PR diff for review, and
+      # starts CI on that commit (pushes by GITHUB_TOKEN trigger nothing). Only when the PR description says the UI
+      # changes on purpose (/record-screenshots), otherwise a changed screenshot just fails. Only for PRs from this
+      # repository: a fork's token can't push, and the run started here is a workflow_dispatch, so it never records
+      # again.
+      # The job checked out the PR merged into main, so the images move over to the PR head before the commit.
       - name: Push recorded screenshots
         if: >-
           failure() && github.event_name == 'pull_request' &&
           github.event.pull_request.head.repo.full_name == github.repository &&
           contains(github.event.pull_request.body, '/record-screenshots')
-        uses: ./.github/actions/push-recorded-screenshots
-        with:
-          token: ${{ github.token }}
-          workflows: ci.yml
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          screenshots=':(glob)**/src/test/screenshots/**'
+          git add -A -- "$screenshots"
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git diff --cached --name-only -z --diff-filter=AM | tar --null -T - -cf "$RUNNER_TEMP/screenshots.tar"
+          git reset -q --hard
+
+          auth="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
+          git -c "http.https://github.com/.extraheader=$auth" fetch -q --no-tags origin "$HEAD_SHA"
+          git checkout -q --detach FETCH_HEAD
+          tar -xf "$RUNNER_TEMP/screenshots.tar"
+          git add -A -- "$screenshots"
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          changed=$(git diff --cached --name-only | wc -l)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -q -m "Record screenshot references" -m "$(git diff --cached --name-only | sed 's/^/- /')"
+          git -c "http.https://github.com/.extraheader=$auth" push -q origin "HEAD:refs/heads/$BRANCH"
+          gh workflow run ci.yml --ref "$BRANCH"
+
+          run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          body="Recorded $changed changed screenshot(s) and pushed them to this branch. Check them in the diff; CI is running on the new commit. ([run]($run_url))"
+          gh api "repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" -f body="$body" > /dev/null
+          echo "::notice title=Screenshots recorded::Pushed $changed screenshot(s) to $BRANCH, CI restarts on that commit"
 
       - name: Upload test reports on failure
         if: failure()

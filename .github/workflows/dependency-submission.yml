@@ -41,6 +41,5 @@ jobs:
       - uses: gradle/actions/dependency-submission@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
         with:
           cache-read-only: true
-          # -Pnovila.wear=true: the watch app's libraries too (:wear is only in the build with it, see wear.yml).
-          additional-arguments: --no-configuration-cache -Dorg.gradle.isolated-projects=false -Pnovila.wear=true
+          additional-arguments: --no-configuration-cache -Dorg.gradle.isolated-projects=false
           dependency-graph-exclude-configurations: '.*[Tt]est.*'
