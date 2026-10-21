@@ -2,6 +2,8 @@ package se.novila.feature.training
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -151,6 +153,7 @@ class WorkoutScreenTest {
         composeRule.onNodeWithText("Next time").assertExists()
         val first = workout.nextChanges().first().first
         val more = if (first.dosage == Dosage.Seconds) "5 seconds more" else "1 repetition more"
-        composeRule.onNodeWithText(more, substring = true).assertExists()
+        // Every exercise reached its sets, so each line says it moves on; the first one is checked.
+        composeRule.onAllNodesWithText(more, substring = true).onFirst().assertExists()
     }
 }
