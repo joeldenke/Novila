@@ -21,6 +21,7 @@ import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.ContentScale
 import androidx.glance.layout.Row
+import androidx.glance.layout.RowScope
 import androidx.glance.layout.Spacer
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
@@ -183,7 +184,7 @@ private fun Rings(context: Context, hero: NovilaGlanceHero, size: Dp, day: DayEn
 
 /** Sleep, food and water, each with its pillar's dot. [compact] puts each on one line, for a low widget. */
 @Composable
-private fun Legend(context: Context, hero: NovilaGlanceHero, day: DayEntry, goals: Goals, compact: Boolean) {
+private fun RowScope.Legend(context: Context, hero: NovilaGlanceHero, day: DayEntry, goals: Goals, compact: Boolean) {
     val parts = listOf(
         Triple(R.string.widget_sleep, sleepValue(context, day), NovilaGlancePillar.Sleep),
         Triple(R.string.widget_food, foodValue(context, day, goals), NovilaGlancePillar.Nutrition),
