@@ -5,13 +5,12 @@ import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.hasScrollToNodeAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performScrollToNode
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,9 +19,7 @@ import se.novila.designsystem.theme.NovilaTheme
 import se.novila.model.DayEntry
 import se.novila.model.Goals
 import se.novila.model.HistoryRange
-import se.novila.model.SleepAnalysis
 import se.novila.model.SleepFactor
-import se.novila.model.analyzeSleep
 import se.novila.sleep.SleepCoachPreferences
 import se.novila.sleep.SleepCoachWeek
 import se.novila.sleep.SleepState
@@ -36,35 +33,36 @@ import java.time.LocalTime
 class SleepScreenTest {
     @get:Rule val composeRule = createComposeRule()
 
+    private val newCoach = SleepCoachCardState(
+        active = false,
+        bedtime = SleepCoachPreferences().bedtime,
+        wakeTime = SleepCoachPreferences().wakeTime,
+        week = SleepCoachWeek(nearGoal = 0, logged = 0),
+        tonight = null,
+        hasSteps = false,
+    )
+
     private fun show(
         day: DayEntry = PreviewData.today,
-        range: HistoryRange = HistoryRange.Week,
-        analysis: SleepAnalysis = analyzeSleep(PreviewData.days()),
-        coach: SleepCoachCardState = SleepCoachCardState(
-            active = false,
-            bedtime = SleepCoachPreferences().bedtime,
-            wakeTime = SleepCoachPreferences().wakeTime,
-            week = SleepCoachWeek(nearGoal = 0, logged = 0),
-            tonight = null,
-            hasSteps = false,
-        ),
+        coach: SleepCoachCardState = newCoach,
         actions: SleepActions = SleepActions(),
         watch: SleepState = SleepState.Unavailable,
         fromWatch: Boolean = false,
+        openSheet: Boolean = false,
     ) {
         composeRule.setContent {
             NovilaTheme {
                 SleepScreen(
                     day = day,
-                    history = PreviewData.history(range, until = day.date),
+                    history = PreviewData.history(HistoryRange.Week, until = day.date),
                     goals = Goals(),
-                    analysis = analysis,
                     coach = coach,
                     actions = actions,
                     contentPadding = PaddingValues(),
                     today = PreviewData.date,
                     watch = watch,
                     fromWatch = fromWatch,
+                    openSheet = openSheet,
                 )
             }
         }
@@ -92,35 +90,22 @@ class SleepScreenTest {
         composeRule.onNodeWithText("Sleep the night before").assertExists()
     }
 
-    @Test fun `factors and quality go to the entry`() {
-        val factors = mutableListOf<Pair<SleepFactor, Boolean>>()
-        val qualities = mutableListOf<Int>()
-        show(actions = SleepActions(onFactor = { f, on -> factors += f to on }, onQuality = { qualities += it }))
-        scrollTo("Late caffeine").performClick()
-        assertEquals(listOf(SleepFactor.LateCaffeine to true), factors)
+    @Test fun `a night without sleep asks to log it, and the sheet logs it`() {
+        show(day = DayEntry(PreviewData.date))
+        composeRule.onNodeWithText("Log the night").performClick()
+        composeRule.onNodeWithText("How did you sleep?").assertExists()
     }
 
-    @Test fun `the findings say what the logs show, and on how many nights`() {
+    @Test fun `a logged night can be changed`() {
         show()
-        scrollTo("After days you ate well", substring = true).assertExists()
-        // Every link says how many nights it stands on.
-        val links = composeRule.onAllNodesWithText("nights with", substring = true).fetchSemanticsNodes()
-        assertTrue(links.isNotEmpty())
-        scrollTo("A link isn't proof of cause", substring = true).assertExists()
+        composeRule.onNodeWithText("Change the night").assertExists()
     }
 
-    @Test fun `without enough nights the findings say how far there is to go`() {
-        show(analysis = analyzeSleep(PreviewData.days(count = 5)))
-        scrollTo("of 14 nights logged", substring = true).assertExists()
-    }
-
-    @Test fun `picks a longer range and compares it with the one before`() {
-        val ranges = mutableListOf<HistoryRange>()
-        show(range = HistoryRange.Month, actions = SleepActions(onRange = { ranges += it }))
-        scrollTo("Sleep, last four weeks").assertExists()
-        scrollTo("the four weeks before", substring = true).assertExists()
-        scrollTo("Year").performClick()
-        assertEquals(listOf(HistoryRange.Year), ranges)
+    @Test fun `factors and quality in the sheet go to the entry`() {
+        val factors = mutableListOf<Pair<SleepFactor, Boolean>>()
+        show(actions = SleepActions(onFactor = { f, on -> factors += f to on }), openSheet = true)
+        composeRule.onNodeWithText("Late caffeine").performScrollTo().performClick()
+        assertEquals(listOf(SleepFactor.LateCaffeine to true), factors)
     }
 
     @Test fun `a night from the watch says where it came from`() {
@@ -146,38 +131,39 @@ class SleepScreenTest {
         assertEquals(1, settings)
     }
 
-    @Test fun `before the sleep coach is set up it says what it is and how to open it`() {
-        var opened = 0
-        show(actions = SleepActions(onOpenCoach = { opened++ }))
-        scrollTo("A bedtime to aim for", substring = true).assertExists()
-        scrollTo("Set up the sleep coach").performClick()
-        assertEquals(1, opened)
+    @Test fun `the entries open the coach, the breathing sessions and the trends`() {
+        val opened = mutableListOf<String>()
+        show(
+            actions = SleepActions(
+                onOpenCoach = { opened += "coach" },
+                onOpenBreathing = { opened += "breathing" },
+                onOpenTrends = { opened += "trends" },
+            ),
+        )
+        scrollTo("Sleep coach").performClick()
+        scrollTo("Breathing and relaxation").performClick()
+        scrollTo("Trends").performClick()
+        assertEquals(listOf("coach", "breathing", "trends"), opened)
     }
 
-    @Test fun `the set up sleep coach shows its goal, the week and tonight's step`() {
-        val coach = SleepCoachCardState(
+    @Test fun `before the sleep coach is set up its way in says what it is`() {
+        show()
+        scrollTo("A bedtime to aim for", substring = true).assertExists()
+    }
+
+    @Test fun `the set up sleep coach says tonight's step`() {
+        val coach = newCoach.copy(
             active = true,
-            bedtime = SleepCoachPreferences().bedtime,
-            wakeTime = SleepCoachPreferences().wakeTime,
             week = SleepCoachWeek(nearGoal = 4, logged = 6),
             tonight = WindDownMoment(WindDownStep.ScreensOff, LocalTime.of(21, 30)),
             hasSteps = true,
         )
         show(coach = coach)
-        scrollTo("4 of 6 nights near your bedtime goal", substring = true).assertExists()
         scrollTo("Screens off", substring = true).assertExists()
-        scrollTo("Adjust the sleep coach").assertExists()
     }
 
-    @Test fun `the sleep coach card says the evening's steps are done when none are left`() {
-        val coach = SleepCoachCardState(
-            active = true,
-            bedtime = SleepCoachPreferences().bedtime,
-            wakeTime = SleepCoachPreferences().wakeTime,
-            week = SleepCoachWeek(nearGoal = 2, logged = 3),
-            tonight = null,
-            hasSteps = true,
-        )
+    @Test fun `the sleep coach says the evening's steps are done when none are left`() {
+        val coach = newCoach.copy(active = true, week = SleepCoachWeek(nearGoal = 2, logged = 3), hasSteps = true)
         show(coach = coach)
         scrollTo("The evening's steps are done", substring = true).assertExists()
     }

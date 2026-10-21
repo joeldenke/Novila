@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import se.novila.data.FoodPreferencesStore
@@ -32,15 +33,13 @@ import se.novila.model.withPortions
 import se.novila.model.withTreats
 import se.novila.model.withoutLastDrink
 import se.novila.recipes.FoodPreferences
-import se.novila.recipes.Recipe
 import se.novila.recipes.RecipeSuggestions
 import se.novila.recipes.suggestRecipes
-import se.novila.recipes.withRecipe
 import java.time.LocalDate
 import java.time.LocalTime
 
 /**
- * The [history] over the chosen range up to the shown day (today, or an earlier one the user went back to), [today],
+ * The [history] over a week up to the shown day (today, or an earlier one the user went back to), [today],
  * the user's [goals] (water counts towards its own) and [foodPreferences], and the [hour] it is now.
  */
 data class NutritionUiState(
@@ -68,7 +67,6 @@ class NutritionViewModel(
     private val settingsStore: SettingsStore,
 ) : ViewModel() {
     private val day = SelectedDay()
-    private val range = MutableStateFlow(HistoryRange.Week)
     private val hour = MutableStateFlow(LocalTime.now().hour)
 
     /**
@@ -82,7 +80,7 @@ class NutritionViewModel(
     /** The history, the goals and the food preferences, or null before the stores' first reads. */
     val state: StateFlow<NutritionUiState?> =
         combine(
-            store.histories(day.dates, range),
+            store.histories(day.dates, flowOf(HistoryRange.Week)),
             goalsStore.goals.filterNotNull(),
             day.today,
             foodPreferencesStore.preferences.filterNotNull(),
@@ -91,7 +89,7 @@ class NutritionViewModel(
         ).stateIn(viewModelScope, SharingStarted.Eagerly, initial())
 
     private fun initial(): NutritionUiState? {
-        val history = store.history(range.value, day.value) ?: return null
+        val history = store.history(HistoryRange.Week, day.value) ?: return null
         val goals = goalsStore.goals.value ?: return null
         val preferences = foodPreferencesStore.preferences.value ?: return null
         return NutritionUiState(history, goals, day.today.value, preferences, hour.value)
@@ -105,11 +103,6 @@ class NutritionViewModel(
 
     /** Shows and changes [date] instead, to fill in what was eaten on a day that was forgotten. */
     fun selectDay(date: LocalDate) = day.select(date)
-
-    /** Shows the scores over a week, four weeks or a year. */
-    fun selectRange(range: HistoryRange) {
-        this.range.value = range
-    }
 
     fun changePortions(group: FoodGroup, delta: Int) = store.update(day.value) { it.withPortions(group, delta) }
 
@@ -125,9 +118,6 @@ class NutritionViewModel(
     }
 
     fun removeLastDrink() = store.update(day.value) { it.withoutLastDrink() }
-
-    /** Logs one serving of [recipe]: its portions in each food group, and a meal unless it is a snack. */
-    fun logRecipe(recipe: Recipe) = store.update(day.value) { it.withRecipe(recipe) }
 
     /** Adds what the meal written in the user's own words translates into: one portion per recognized word. */
     fun logMeal(text: String) {

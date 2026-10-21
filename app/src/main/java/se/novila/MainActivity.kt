@@ -36,7 +36,12 @@ class MainActivity : ComponentActivity() {
             }
             // metroViewModel() in each Navigation 3 entry creates its ViewModels with this factory.
             CompositionLocalProvider(LocalMetroViewModelFactory provides viewModelFactory) {
-                NovilaApp(darkTheme = darkTheme, dynamicColor = settings.dynamicColor, onboarded = settings.onboarded)
+                NovilaApp(
+                    darkTheme = darkTheme,
+                    dynamicColor = settings.dynamicColor,
+                    onboarded = settings.onboarded,
+                    entryLayout = settings.entryLayout,
+                )
             }
         }
     }

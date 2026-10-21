@@ -15,6 +15,7 @@ import org.robolectric.RobolectricTestRunner
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.model.AppSettings
 import se.novila.model.BodyMeasurements
+import se.novila.model.EntryLayout
 import se.novila.model.MeasurementEntry
 import se.novila.model.Profile
 import se.novila.model.ThemeMode
@@ -61,6 +62,15 @@ class SettingsScreenTest {
         composeRule.onNodeWithText("Dark").performClick()
 
         assertEquals(listOf(ThemeMode.Dark), chosen)
+    }
+
+    @Test fun `choosing rows for the ways into the tabs saves it`() {
+        val chosen = mutableListOf<EntryLayout>()
+        show(SettingsActions(onEntryLayout = { chosen += it }))
+
+        scrollTo("Rows").performClick()
+
+        assertEquals(listOf(EntryLayout.Rows), chosen)
     }
 
     @Test fun `my goals open from the profile card`() {

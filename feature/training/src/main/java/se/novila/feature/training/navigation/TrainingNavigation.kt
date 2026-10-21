@@ -26,6 +26,8 @@ import se.novila.feature.training.R
 import se.novila.feature.training.SessionScreen
 import se.novila.feature.training.SessionViewModel
 import se.novila.feature.training.TrainingActions
+import se.novila.feature.training.TrainingProgramScreen
+import se.novila.feature.training.TrainingProgramViewModel
 import se.novila.feature.training.TrainingScreen
 import se.novila.feature.training.TrainingViewModel
 import se.novila.feature.training.WorkoutScreen
@@ -52,6 +54,9 @@ import java.time.DayOfWeek
 
 /** Every exercise, with search. */
 @Serializable data object ExerciseLibraryRoute : NavKey
+
+/** This week's program, day by day, and the weekly review. */
+@Serializable data object TrainingProgramRoute : NavKey
 
 /** One strength or rehab day of this week's program, before starting it ([day] is ISO, Monday is 1). */
 @Serializable
@@ -107,6 +112,7 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
                 onOpenLibrary = { navigator.navigate(ExerciseLibraryRoute) },
                 onOpenCardioLog = { navigator.navigate(CardioLogRoute) },
                 onOpenCoach = { navigator.navigate(CoachRoute) },
+                onOpenProgram = { navigator.navigate(TrainingProgramRoute) },
                 onOpenExercise = openExercise,
                 onConnectHealth = connectHealth,
                 onConnectRecovery = connectRecovery,
@@ -119,6 +125,19 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
             recovery = recovery,
             sky = NovilaSky.at(hour),
             setupIncomplete = setupIncomplete,
+        )
+    }
+    entry<TrainingProgramRoute> {
+        val viewModel = metroViewModel<TrainingProgramViewModel>()
+        LifecycleResumeEffect(viewModel) {
+            viewModel.refresh()
+            onPauseOrDispose { }
+        }
+        val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
+        TrainingProgramScreen(
+            state = state,
+            onOpenSession = { day -> navigator.navigate(SessionRoute(day)) },
+            contentPadding = contentPadding,
         )
     }
     entry<SessionRoute> { route ->
@@ -210,6 +229,7 @@ fun trainingDetailTitle(route: NavKey?): String? = when (route) {
     CoachRoute -> stringResource(R.string.coach_title)
     CardioLogRoute -> stringResource(R.string.cardio_log_title)
     ExerciseLibraryRoute -> stringResource(R.string.exercises_title)
+    TrainingProgramRoute -> stringResource(R.string.program_title)
     is SessionRoute -> sessionTitle(route.dayOfWeek)
     is WorkoutRoute -> stringResource(R.string.workout_title)
     else -> null

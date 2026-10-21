@@ -169,7 +169,7 @@ private fun DrinkLine(drink: Drink) {
 }
 
 @Composable
-private fun decilitersText(ml: Int): String = stringResource(R.string.drinks_dl, decimalText(ml / 100.0))
+internal fun decilitersText(ml: Int): String = stringResource(R.string.drinks_dl, decimalText(ml / 100.0))
 
 @Composable
 private fun litersText(ml: Int): String = stringResource(R.string.drinks_liters, decimalText(ml / 1000.0))

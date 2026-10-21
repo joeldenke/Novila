@@ -109,7 +109,7 @@ private enum class SleepTime { Bedtime, WakeTime }
  * asked for it here. After a no, only Health Connect's settings can give it.
  */
 @Composable
-private fun WatchAccess(denied: Boolean, actions: SleepActions) {
+internal fun WatchAccess(denied: Boolean, actions: SleepActions) {
     NovilaText(
         stringResource(R.string.sleep_watch_body),
         style = NovilaTheme.typography.bodyMedium,

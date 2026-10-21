@@ -26,6 +26,7 @@ import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.settings.R
 import se.novila.model.AppSettings
+import se.novila.model.EntryLayout
 import se.novila.model.MeasurementEntry
 import se.novila.model.Profile
 import se.novila.model.ThemeMode
@@ -44,6 +45,7 @@ data class SettingsActions(
     val onOpenReminders: () -> Unit = {},
     val onTheme: (ThemeMode) -> Unit = {},
     val onDynamicColor: (Boolean) -> Unit = {},
+    val onEntryLayout: (EntryLayout) -> Unit = {},
     val onChooseLanguage: () -> Unit = {},
     val onConnectHealth: () -> Unit = {},
     val onOpenHealthSettings: () -> Unit = {},
@@ -161,6 +163,23 @@ private fun AppearanceCard(
                 )
             }
         }
+        NovilaText(
+            stringResource(R.string.settings_entry_layout),
+            style = NovilaTheme.typography.labelLarge,
+            color = NovilaTheme.colors.onSurfaceVariant,
+        )
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s),
+            verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s),
+        ) {
+            EntryLayout.entries.forEach { layout ->
+                NovilaChoiceChip(
+                    label = stringResource(layout.label()),
+                    selected = settings.entryLayout == layout,
+                    onClick = { actions.onEntryLayout(layout) },
+                )
+            }
+        }
         if (canUseDynamicColor) {
             NovilaSwitchRow(
                 title = stringResource(R.string.settings_dynamic_color),
@@ -178,6 +197,11 @@ private fun AppearanceCard(
             )
         }
     }
+}
+
+private fun EntryLayout.label(): Int = when (this) {
+    EntryLayout.Grid -> R.string.settings_entry_layout_grid
+    EntryLayout.Rows -> R.string.settings_entry_layout_rows
 }
 
 private fun ThemeMode.label(): Int = when (this) {

@@ -51,7 +51,7 @@ fun SleepDetailsCard(day: DayEntry, actions: SleepActions) {
 }
 
 /** Sleep quality 1–5, from poor to rested. */
-private val QualityLevels = listOf(
+internal val QualityLevels = listOf(
     R.string.sleep_quality_1,
     R.string.sleep_quality_2,
     R.string.sleep_quality_3,

@@ -1,6 +1,8 @@
 package se.novila.feature.nutrition.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
@@ -8,18 +10,36 @@ import androidx.navigation3.runtime.NavKey
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.serialization.Serializable
 import se.novila.feature.nutrition.DrinkActions
+import se.novila.feature.nutrition.NutritionNavigation
 import se.novila.feature.nutrition.NutritionScreen
+import se.novila.feature.nutrition.NutritionTrendsScreen
+import se.novila.feature.nutrition.NutritionTrendsViewModel
 import se.novila.feature.nutrition.NutritionViewModel
+import se.novila.feature.nutrition.R
 import se.novila.feature.nutrition.RecipeActions
+import se.novila.feature.nutrition.RecipesScreen
+import se.novila.feature.nutrition.RecipesViewModel
+import se.novila.navigation.Navigator
 
 /** The Nutrition tab. */
 @Serializable data object NutritionRoute : NavKey
 
+/** Today's recipes for what is still missing. */
+@Serializable data object RecipesRoute : NavKey
+
+/** The nutrition scores over a week, four weeks or a year. */
+@Serializable data object NutritionTrendsRoute : NavKey
+
 /**
- * The Nutrition tab's entry, with its own [NutritionViewModel] scoped to the entry. [onOpenFoodPreferences] opens the
- * food preferences in Settings, which `:app` connects.
+ * The Nutrition tab and the screens opened from it. Each entry gets its own ViewModel from Metro, scoped to the entry
+ * (`metroViewModel()`). Navigation inside the tab goes through [navigator]; [onOpenFoodPreferences] opens the food
+ * preferences in Settings, which `:app` connects.
  */
-fun EntryProviderScope<NavKey>.nutritionEntry(onOpenFoodPreferences: () -> Unit, contentPadding: PaddingValues) {
+fun EntryProviderScope<NavKey>.nutritionEntries(
+    navigator: Navigator,
+    onOpenFoodPreferences: () -> Unit,
+    contentPadding: PaddingValues,
+) {
     entry<NutritionRoute> {
         val viewModel = metroViewModel<NutritionViewModel>()
         LifecycleResumeEffect(viewModel) {
@@ -40,12 +60,51 @@ fun EntryProviderScope<NavKey>.nutritionEntry(onOpenFoodPreferences: () -> Unit,
             contentPadding = contentPadding,
             today = state.today,
             onSelectDay = viewModel::selectDay,
-            onRange = viewModel::selectRange,
             recipes = state.recipes,
             foodPreferences = state.foodPreferences,
-            recipeActions = RecipeActions(onLog = viewModel::logRecipe, onOpenPreferences = onOpenFoodPreferences),
+            navigation = NutritionNavigation(
+                onOpenRecipes = { navigator.navigate(RecipesRoute) },
+                onOpenTrends = { navigator.navigate(NutritionTrendsRoute) },
+                onOpenPreferences = onOpenFoodPreferences,
+            ),
             setupIncomplete = setupIncomplete,
             onCompleteSetup = viewModel::openSetup,
         )
     }
+    entry<RecipesRoute> {
+        val viewModel = metroViewModel<RecipesViewModel>()
+        LifecycleResumeEffect(viewModel) {
+            viewModel.refresh()
+            onPauseOrDispose { }
+        }
+        val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
+        RecipesScreen(
+            recipes = state.recipes,
+            preferences = state.preferences,
+            actions = RecipeActions(onLog = viewModel::logRecipe, onOpenPreferences = onOpenFoodPreferences),
+            contentPadding = contentPadding,
+        )
+    }
+    entry<NutritionTrendsRoute> {
+        val viewModel = metroViewModel<NutritionTrendsViewModel>()
+        LifecycleResumeEffect(viewModel) {
+            viewModel.refresh()
+            onPauseOrDispose { }
+        }
+        val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
+        NutritionTrendsScreen(
+            history = state.history,
+            goals = state.goals,
+            onRange = viewModel::selectRange,
+            contentPadding = contentPadding,
+        )
+    }
+}
+
+/** The top bar title of a screen inside the Nutrition tab, or null when [route] is not one of them. */
+@Composable
+fun nutritionDetailTitle(route: NavKey?): String? = when (route) {
+    RecipesRoute -> stringResource(R.string.nutrition_entry_recipes)
+    NutritionTrendsRoute -> stringResource(R.string.nutrition_entry_trends)
+    else -> null
 }

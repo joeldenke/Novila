@@ -20,6 +20,7 @@ import se.novila.data.SettingsStore
 import se.novila.data.SleepCoachStore
 import se.novila.data.deleteLegacyPreferences
 import se.novila.model.AppSettings
+import se.novila.model.EntryLayout
 import se.novila.model.MeasurementEntry
 import se.novila.model.Profile
 import se.novila.model.ThemeMode
@@ -76,6 +77,8 @@ class SettingsViewModel(
     fun setTheme(theme: ThemeMode) = settingsStore.setTheme(theme)
 
     fun setDynamicColor(enabled: Boolean) = settingsStore.setDynamicColor(enabled)
+
+    fun setEntryLayout(layout: EntryLayout) = settingsStore.setEntryLayout(layout)
 
     /** Shows the intro from the start again. The app switches to it as soon as the flag is saved. */
     fun showIntro() = settingsStore.setOnboarded(false)

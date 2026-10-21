@@ -11,6 +11,9 @@
     <string name="settings_theme_system">Automatic</string>
     <string name="settings_theme_light">Light</string>
     <string name="settings_theme_dark">Dark</string>
+    <string name="settings_entry_layout">Ways into each tab</string>
+    <string name="settings_entry_layout_grid">Tiles</string>
+    <string name="settings_entry_layout_rows">Rows</string>
     <string name="settings_dynamic_color">Wallpaper colors</string>
     <string name="settings_dynamic_color_summary">Use colors from your wallpaper instead of Novila\'s forest and sun.</string>
     <string name="settings_language">Language</string>

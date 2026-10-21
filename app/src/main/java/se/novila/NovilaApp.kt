@@ -1,16 +1,30 @@
 package se.novila
 
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import se.novila.R
+import se.novila.designsystem.component.NovilaEntryLayout
 import se.novila.designsystem.component.NovilaIconButton
 import se.novila.designsystem.component.NovilaNavigationBar
 import se.novila.designsystem.component.NovilaNavigationBarItem
+import se.novila.designsystem.component.NovilaNavigationRail
+import se.novila.designsystem.component.NovilaNavigationRailItem
+import se.novila.designsystem.component.NovilaRailMinWidth
 import se.novila.designsystem.component.NovilaScaffold
 import se.novila.designsystem.component.NovilaTopAppBar
 import se.novila.designsystem.theme.NovilaColorRole
@@ -19,7 +33,8 @@ import se.novila.feature.breathing.navigation.BreathingRoute
 import se.novila.feature.breathing.navigation.breathingDetailTitle
 import se.novila.feature.breathing.navigation.breathingEntries
 import se.novila.feature.nutrition.navigation.NutritionRoute
-import se.novila.feature.nutrition.navigation.nutritionEntry
+import se.novila.feature.nutrition.navigation.nutritionDetailTitle
+import se.novila.feature.nutrition.navigation.nutritionEntries
 import se.novila.feature.onboarding.navigation.OnboardingRoute
 import se.novila.feature.onboarding.navigation.onboardingEntry
 import se.novila.feature.settings.navigation.FoodPreferencesRoute
@@ -30,11 +45,14 @@ import se.novila.feature.sleep.navigation.SleepCoachRoute
 import se.novila.feature.sleep.navigation.SleepRoute
 import se.novila.feature.sleep.navigation.sleepDetailTitle
 import se.novila.feature.sleep.navigation.sleepEntries
-import se.novila.feature.today.navigation.todayEntry
+import se.novila.feature.today.navigation.todayDetailTitle
+import se.novila.feature.today.navigation.todayEntries
 import se.novila.feature.training.navigation.CoachRoute
 import se.novila.feature.training.navigation.TrainingRoute
 import se.novila.feature.training.navigation.trainingDetailTitle
 import se.novila.feature.training.navigation.trainingEntries
+import se.novila.model.EntryLayout
+import se.novila.navigation.NavigationState
 import se.novila.navigation.Navigator
 import se.novila.navigation.TopLevelDestination
 import se.novila.navigation.rememberNavigationState
@@ -44,18 +62,23 @@ import se.novila.ui.R as UiR
 
 /**
  * The app shell: tabs, top bar and the navigation display. Each feature module brings its own routes and entries
- * (`todayEntry`, `trainingEntries`, ...), and each entry its own ViewModel from Metro, scoped to the entry. This only
+ * (`todayEntries`, `trainingEntries`, ...), and each entry its own ViewModel from Metro, scoped to the entry. This only
  * connects the tabs to each other; it holds no screen state.
  *
  * Settings opens from the top bar (on Today, from its header) and goes onto the current tab's back stack.
  *
  * Until the intro is done ([onboarded]), the app shows only the intro, from `:feature:onboarding`.
  *
- * @param darkTheme and [dynamicColor] come from the user's settings, read in [MainActivity], as does [onboarded]
+ * @param darkTheme and [dynamicColor] come from the user's settings, read in [MainActivity], as do [onboarded] and
+ *   [entryLayout] (tiles or rows for the ways into each tab's parts)
  */
 @Composable
-fun NovilaApp(darkTheme: Boolean, dynamicColor: Boolean, onboarded: Boolean) {
-    NovilaTheme(darkTheme = darkTheme, dynamicColor = dynamicColor) {
+fun NovilaApp(darkTheme: Boolean, dynamicColor: Boolean, onboarded: Boolean, entryLayout: EntryLayout) {
+    val layout = when (entryLayout) {
+        EntryLayout.Grid -> NovilaEntryLayout.Grid
+        EntryLayout.Rows -> NovilaEntryLayout.Rows
+    }
+    NovilaTheme(darkTheme = darkTheme, dynamicColor = dynamicColor, entryLayout = layout) {
         if (onboarded) Tabs() else Intro()
     }
 }
@@ -81,83 +104,129 @@ private fun Tabs() {
     val currentRoute = navigationState.backStacks[navigationState.topLevelRoute]?.lastOrNull()
     val openSettings = { navigator.navigate(SettingsRoute) }
 
-    NovilaScaffold(
-        // Today is a dashboard with its own greeting header instead of a title bar.
-        topBar = {
-            val detailTitle = trainingDetailTitle(currentRoute)
-                ?: sleepDetailTitle(currentRoute)
-                ?: breathingDetailTitle(currentRoute)
-                ?: settingsTitle(currentRoute)
-            when {
-                detailTitle != null -> NovilaTopAppBar(
-                    title = detailTitle,
-                    navigationIcon = painterResource(R.drawable.ic_back),
-                    navigationLabel = stringResource(R.string.navigate_back),
-                    onNavigate = navigator::goBack,
-                )
-
-                current != TopLevelDestination.Today -> NovilaTopAppBar(
-                    title = stringResource(current.label),
-                    actions = {
-                        NovilaIconButton(
-                            painter = painterResource(UiR.drawable.ic_settings),
-                            contentDescription = stringResource(UiR.string.settings_title),
-                            onClick = openSettings,
+    // A wide window (tablet, unfolded phone, landscape) has the tabs in a rail at the side instead of a bar below.
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+        val wide = maxWidth >= NovilaRailMinWidth
+        Row(Modifier.fillMaxSize()) {
+            if (wide) {
+                NovilaNavigationRail {
+                    TopLevelDestination.entries.forEach { destination ->
+                        NovilaNavigationRailItem(
+                            selected = destination == current,
+                            onClick = { navigator.navigate(destination.route) },
+                            icon = painterResource(destination.icon),
+                            label = stringResource(destination.label),
+                            role = destination.role(),
                         )
-                    },
-                )
-            }
-        },
-        bottomBar = {
-            NovilaNavigationBar {
-                TopLevelDestination.entries.forEach { destination ->
-                    NovilaNavigationBarItem(
-                        selected = destination == current,
-                        onClick = { navigator.navigate(destination.route) },
-                        icon = painterResource(destination.icon),
-                        label = stringResource(destination.label),
-                        role = destination.role(),
-                    )
+                    }
                 }
             }
-        },
-    ) { innerPadding ->
-        val entryProvider = entryProvider<NavKey> {
-            todayEntry(
-                onOpenTraining = { navigator.navigate(TrainingRoute) },
-                onOpenSleep = { navigator.navigate(SleepRoute) },
-                onOpenNutrition = { navigator.navigate(NutritionRoute) },
-                onOpenSettings = openSettings,
-                contentPadding = innerPadding,
-            )
-            trainingEntries(navigator = navigator, contentPadding = innerPadding)
-            // The breathing sessions open from Sleep's plan, alongside the sleep coach's evening routine.
-            sleepEntries(
-                navigator = navigator,
-                contentPadding = innerPadding,
-                onOpenBreathing = { navigator.navigate(BreathingRoute) },
-            )
-            breathingEntries(navigator = navigator, contentPadding = innerPadding)
-            nutritionEntry(
-                onOpenFoodPreferences = { navigator.navigate(FoodPreferencesRoute) },
-                contentPadding = innerPadding,
-            )
-            settingsEntries(
-                navigator = navigator,
-                contentPadding = innerPadding,
-                // My goals opens the coaches in place, on the tab Settings is on.
-                onOpenTrainingCoach = { navigator.navigate(CoachRoute) },
-                onOpenSleepCoach = { navigator.navigate(SleepCoachRoute) },
-                // Generated by the AboutLibraries plugin from everything the app ships.
-                licensesResId = R.raw.aboutlibraries,
-            )
+            NovilaScaffold(
+                // The rail already keeps clear of the start inset, so the content doesn't add it again.
+                modifier = Modifier
+                    .weight(1f)
+                    .then(
+                        if (wide) {
+                            Modifier.consumeWindowInsets(WindowInsets.safeDrawing.only(WindowInsetsSides.Start))
+                        } else {
+                            Modifier
+                        },
+                    ),
+                // Today is a dashboard with its own greeting header instead of a title bar.
+                topBar = {
+                    val detailTitle = todayDetailTitle(currentRoute)
+                        ?: trainingDetailTitle(currentRoute)
+                        ?: sleepDetailTitle(currentRoute)
+                        ?: breathingDetailTitle(currentRoute)
+                        ?: nutritionDetailTitle(currentRoute)
+                        ?: settingsTitle(currentRoute)
+                    when {
+                        detailTitle != null -> NovilaTopAppBar(
+                            title = detailTitle,
+                            navigationIcon = painterResource(R.drawable.ic_back),
+                            navigationLabel = stringResource(R.string.navigate_back),
+                            onNavigate = navigator::goBack,
+                        )
+
+                        current != TopLevelDestination.Today -> NovilaTopAppBar(
+                            title = stringResource(current.label),
+                            actions = {
+                                NovilaIconButton(
+                                    painter = painterResource(UiR.drawable.ic_settings),
+                                    contentDescription = stringResource(UiR.string.settings_title),
+                                    onClick = openSettings,
+                                )
+                            },
+                        )
+                    }
+                },
+                bottomBar = {
+                    if (!wide) {
+                        NovilaNavigationBar {
+                            TopLevelDestination.entries.forEach { destination ->
+                                NovilaNavigationBarItem(
+                                    selected = destination == current,
+                                    onClick = { navigator.navigate(destination.route) },
+                                    icon = painterResource(destination.icon),
+                                    label = stringResource(destination.label),
+                                    role = destination.role(),
+                                )
+                            }
+                        }
+                    }
+                },
+            ) { innerPadding ->
+                TabContent(navigator, navigationState, openSettings, innerPadding)
+            }
         }
-        NavDisplay(
-            entries = navigationState.toEntries(entryProvider),
-            // Popping an entry clears its ViewModel: leaving a session without finishing it discards it.
-            onBack = navigator::goBack,
+    }
+}
+
+/** The current tab's back stack, with every feature's entries. */
+@Composable
+private fun TabContent(
+    navigator: Navigator,
+    navigationState: NavigationState,
+    openSettings: () -> Unit,
+    innerPadding: PaddingValues,
+) {
+    val entryProvider = entryProvider<NavKey> {
+        todayEntries(
+            navigator = navigator,
+            onOpenTraining = { navigator.navigate(TrainingRoute) },
+            onOpenSleep = { navigator.navigate(SleepRoute) },
+            onOpenNutrition = { navigator.navigate(NutritionRoute) },
+            onOpenSettings = openSettings,
+            contentPadding = innerPadding,
+        )
+        trainingEntries(navigator = navigator, contentPadding = innerPadding)
+        // The breathing sessions open from Sleep's plan, alongside the sleep coach's evening routine.
+        sleepEntries(
+            navigator = navigator,
+            contentPadding = innerPadding,
+            onOpenBreathing = { navigator.navigate(BreathingRoute) },
+        )
+        breathingEntries(navigator = navigator, contentPadding = innerPadding)
+        nutritionEntries(
+            navigator = navigator,
+            onOpenFoodPreferences = { navigator.navigate(FoodPreferencesRoute) },
+            contentPadding = innerPadding,
+        )
+        settingsEntries(
+            navigator = navigator,
+            contentPadding = innerPadding,
+            // My goals opens the coaches in place, on the tab Settings is on.
+            onOpenTrainingCoach = { navigator.navigate(CoachRoute) },
+            onOpenSleepCoach = { navigator.navigate(SleepCoachRoute) },
+            // Generated by the AboutLibraries plugin from everything the app ships.
+            licensesResId = R.raw.aboutlibraries,
         )
     }
+    NavDisplay(
+        entries = navigationState.toEntries(entryProvider),
+        // Popping an entry clears its ViewModel: leaving a session without finishing it discards it.
+        onBack = navigator::goBack,
+    )
 }
 
 /** Each tab shows its part's color. Today has no part of its own and uses the brand pine. */

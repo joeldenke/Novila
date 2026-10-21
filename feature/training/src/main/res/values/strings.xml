@@ -229,8 +229,6 @@
     <string name="recovery_denied_body">Access was declined. You can allow it for Novila in Health Connect.</string>
     <!-- Training coach -->
     <string name="coach_title">Training coach</string>
-    <string name="coach_open">Open the coach</string>
-    <string name="coach_adjust">Adjust the program</string>
     <string name="coach_intro">The coach plans your week right here on your phone, from your answers, your recent workouts and the exercises in Novila. Nothing is sent anywhere.</string>
     <string name="coach_goal_title">Your goal</string>
     <string name="coach_goal_health">All-round health</string>
@@ -354,6 +352,10 @@
     <string name="overview_day_rest">%1$s: rest</string>
     <string name="overview_day_today">Today, %1$s</string>
     <string name="overview_log_other">Log a workout</string>
+    <string name="training_entry_program_summary">Sessions this week: %1$d</string>
+    <string name="training_entry_coach">Training coach</string>
+    <string name="training_entry_coach_off">A program built from your goal, days and time</string>
+    <string name="training_entry_coach_on">Your answers shape this week</string>
     <string name="cardio_log_title">Log a workout</string>
 
     <!-- The weekly review on Training -->

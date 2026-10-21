@@ -25,7 +25,7 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   (`NavKey`) och `EntryProviderScope<NavKey>.<feature>Entries(...)`, som `:app` lägger i sin `entryProvider`.
   Features beror aldrig på varandra (`ArchitectureTest`); flikbyten går via callbacks från `:app`.
 - `:feature:breathing` – Andning och avslappning: korta guidade andningsövningar (lugn andning, boxandning, 4-7-8)
-  med en visuell pacer i Skog & sol-stil, fas för fas (andas in, håll, andas ut). Öppnas från Sömnens *Din plan*,
+  med en visuell pacer i Skog & sol-stil, fas för fas (andas in, håll, andas ut). Öppnas från Sömnens ingångar,
   bredvid sömncoachen, och från sömncoachens kvällsrutin. Sessionerna är data i `:core:breathing`; spelarens
   ViewModel räknar tiden. Inget loggas.
 - `:feature:onboarding` – introduktionen vid första start: en karusell genom appens delar (målade scener i
@@ -309,8 +309,9 @@ där pluginet `firebase@firebase` inte alltid installeras.
   Förlagan är riktning D i designkanvasen *Novila designriktningar*. Idag svarar på "vad gör jag nu": hälsning,
   `NovilaHeroCard` (balansen som ringar per del, höjdkurvor och himlens sken, `NovilaTheme.hero`), *Din dag*
   (`dayChecklist` i `:core:model`: sömn, dagens pass ur `TrainingWeek.trainingOn`, kost och vatten som
-  `NovilaTaskRow`, där varje öppen rad har en knapp som gör det och den första är skärmens `NovilaAccentButton`), en
-  `NovilaStatTile` per del med veckans trend och insikter. Veckodiagrammen hör till delarnas egna flikar, och
+  `NovilaTaskRow`, där varje öppen rad har en knapp som gör det och den första är skärmens `NovilaAccentButton`;
+  coachens förslag `dailyCoach` står överst i kortet, utan det raderna redan säger) och veckans insikter med vägen
+  till *Upptäckter* (alla insikter och sambanden mellan delarna). Veckodiagrammen hör till delarnas egna flikar, och
   mående (humör, energi, stress, dagbok) togs bort för att syftet var oklart;
   lägg inte tillbaka dem på Idag utan att ägaren ber om det.
   Hero-korten har himlen efter tid på dygnet (`NovilaSky.at(hour)`): morgonsol i ljusringar 05–10, sol med strålar
@@ -319,15 +320,25 @@ där pluginet `firebase@firebase` inte alltid installeras.
   landskap i hero-korten; bakgrunden är linjer (höjdkurvor på Idag, rörelselinjer på Träning).
   Kort är vita med hårfin kant (`NovilaTheme.surfaces`). Träning börjar med veckan i överblick på samma granpanel,
   med rörelselinjer i stället för höjdkurvor (`NovilaHeroPanel`: minuter mot veckans plan, `NovilaWeekStrip` och
-  dagens enda huvudåtgärd ur `TodayPlan`), följt av snabbval (`NovilaActionChip`) som passar just nu.
-- **Flikarnas delar:** Sömn, Kost och Träning byggs av samma delar i samma ordning, med en rubrik per del
-  (`ScreenSection` och `section(...)` i `:core:ui`, `NovilaSectionHeader`): *Översikt* (läget och delens
-  huvudåtgärd), *Logga* (det användaren loggar själv eller Health Connect läser), *Din plan* (coachen, programmet,
-  receptförslagen) och *Trender* (historik och samband). Nya kort läggs i den del de hör till; en del utan kort får
-  ingen rubrik. Kan användaren gå bakåt i dagar står dagväljaren överst, före Översikt.
+  dagens enda huvudåtgärd ur `TodayPlan`).
+- **Flikarnas startsidor:** en flik är en startsida på ungefär en skärm, inga formulär och inga lösa taggar
+  (chips) direkt på den. Sömn, Kost och Träning byggs i samma ordning: dagväljaren (om man kan gå bakåt i dagar),
+  *översikten* (läget och delens huvudåtgärd), *snabbloggning* (`NovilaQuickActions`: knappar som loggar med ett tryck
+  eller öppnar ett `NovilaBottomSheet` med formuläret) och *ingångarna* (`NovilaEntries`: coachen, programmet,
+  recepten, trenderna och liknande, var och en med en rad om läget). Det en ingång öppnar är en egen skärm (rutt och
+  ViewModel i featuren) med titel i toppraden. Taggar som väljer något (orsaker, dryckessorter, intervall) hör hemma
+  i ett sheet eller på en sådan skärm. Nya kort läggs där, inte på startsidan; ett sheets innehåll får en egen
+  `@Preview` via `NovilaSheetContent`, eftersom ett sheet öppnas i ett eget fönster.
+- **Ingångarnas layout:** användaren väljer rutor eller rader under Inställningar (`AppSettings.entryLayout`).
+  `MainActivity` ger valet till `NovilaTheme(entryLayout = …)` och `NovilaEntries` följer det; skärmarna vet inget om
+  det. Lägg en `@Preview` med `NovilaEntryLayout.Rows` för nya startsidor.
+- **Adaptiv layout:** appen ska fungera på surfplattor, vikbara och i liggande läge. Från `NovilaRailMinWidth`
+  (600 dp, storleksklassen *medium*) ligger flikarna i en `NovilaNavigationRail` i stället för bottenraden, och
+  `ScreenList` centrerar innehållet på högst 720 dp. `NovilaEntries` lägger två till fyra rutor per rad efter bredden.
+  Lägg en `@Preview` med `widthDp = 900` för nya startsidor. Följ skillen `adaptive`.
 - **Mina mål:** allt appen planerar efter samlas på en skärm i Inställningar (`MyGoalsScreen`): dagliga mål,
   träningscoachen, sömncoachen och matpreferenserna, var och en med vad den står på och en rad dit den ändras. Samma
-  skärmar öppnas från *Din plan* på varje flik. Ny inställning som styr en plan läggs till här, inte som en egen rad i
+  skärmar öppnas från ingångarna på varje flik. Ny inställning som styr en plan läggs till här, inte som en egen rad i
   Inställningar, som bara har det som gäller appen.
 - **Målade scener:** introduktionens scener är målade bilder i samma nordiska stil (falröd stuga, björk, gran, sjö,
   midsommarljus), WebP i featurens `drawable-nodpi`, beskurna till 1,4:1, högst cirka 1120 px breda och helst under 200 kB. De visas bara via

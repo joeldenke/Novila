@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import se.novila.coach.DailyCoach
 import se.novila.designsystem.component.NovilaAccentButton
 import se.novila.designsystem.component.NovilaButton
 import se.novila.designsystem.component.NovilaCard
@@ -28,10 +29,11 @@ data class ChecklistActions(
 
 /**
  * The day as a short list of things to do, in the order of the day: sleep, training, food and water. Each open task has one button that does it or leads where it is done; the first open one is the screen's
- * main action, in the sun's color. Done tasks keep their place with a check, so the day reads as progress.
+ * main action, in the sun's color. Done tasks keep their place with a check, so the day reads as progress. The
+ * [coach]'s suggestion for the day leads the list, so what to do and why stand together.
  */
 @Composable
-fun DayChecklistCard(checklist: DayChecklist, actions: ChecklistActions) {
+fun DayChecklistCard(checklist: DayChecklist, actions: ChecklistActions, coach: DailyCoach? = null) {
     NovilaCard(title = stringResource(R.string.checklist_title)) {
         Column(verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.xs)) {
             NovilaText(
@@ -45,6 +47,7 @@ fun DayChecklistCard(checklist: DayChecklist, actions: ChecklistActions) {
             )
             NovilaProgressBar(progress = checklist.doneCount.toFloat() / checklist.tasks.size)
         }
+        coach?.let { CoachLine(it) }
         val next = checklist.next
         checklist.tasks.forEach { task -> TaskRow(task, isNext = task == next, actions) }
     }

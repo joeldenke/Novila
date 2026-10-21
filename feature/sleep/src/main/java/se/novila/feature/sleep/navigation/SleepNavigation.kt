@@ -15,6 +15,8 @@ import se.novila.feature.sleep.SleepActions
 import se.novila.feature.sleep.SleepCoachScreen
 import se.novila.feature.sleep.SleepCoachViewModel
 import se.novila.feature.sleep.SleepScreen
+import se.novila.feature.sleep.SleepTrendsScreen
+import se.novila.feature.sleep.SleepTrendsViewModel
 import se.novila.feature.sleep.SleepViewModel
 import se.novila.healthconnect.HealthConnectSource
 import se.novila.healthconnect.rememberHealthPermissionRequest
@@ -26,8 +28,11 @@ import se.novila.navigation.Navigator
 /** The sleep coach: bedtime and wake-up goals, the wind-down routine and what the nights suggest. */
 @Serializable data object SleepCoachRoute : NavKey
 
+/** The sleep over a week, four weeks or a year, and what the logs say about it. */
+@Serializable data object SleepTrendsRoute : NavKey
+
 /**
- * The Sleep tab and the coach opened from it. Each entry gets its own ViewModel from Metro, scoped to the entry
+ * The Sleep tab and the screens opened from it. Each entry gets its own ViewModel from Metro, scoped to the entry
  * (`metroViewModel()`), so it lives as long as the entry is on the back stack. Navigation inside the tab goes
  * through [navigator].
  */
@@ -50,7 +55,6 @@ fun EntryProviderScope<NavKey>.sleepEntries(
             day = state.day,
             history = state.history,
             goals = state.goals,
-            analysis = state.analysis,
             coach = state.coach,
             actions = SleepActions(
                 onSleep = viewModel::setSleep,
@@ -59,10 +63,10 @@ fun EntryProviderScope<NavKey>.sleepEntries(
                 onQuality = viewModel::setQuality,
                 onFactor = viewModel::setFactor,
                 onSelectDay = viewModel::selectDay,
-                onRange = viewModel::selectRange,
                 onConnectHealth = connectHealth,
                 onOpenHealthSettings = { HealthConnectSource.openSettings(context) },
                 onOpenCoach = { navigator.navigate(SleepCoachRoute) },
+                onOpenTrends = { navigator.navigate(SleepTrendsRoute) },
                 onOpenBreathing = onOpenBreathing,
             ),
             contentPadding = contentPadding,
@@ -88,11 +92,27 @@ fun EntryProviderScope<NavKey>.sleepEntries(
             contentPadding = contentPadding,
         )
     }
+    entry<SleepTrendsRoute> {
+        val viewModel = metroViewModel<SleepTrendsViewModel>()
+        LifecycleResumeEffect(viewModel) {
+            viewModel.refresh()
+            onPauseOrDispose { }
+        }
+        val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
+        SleepTrendsScreen(
+            history = state.history,
+            goals = state.goals,
+            analysis = state.analysis,
+            onRange = viewModel::selectRange,
+            contentPadding = contentPadding,
+        )
+    }
 }
 
 /** The top bar title of a screen inside the Sleep tab, or null when [route] is not one of them. */
 @Composable
 fun sleepDetailTitle(route: NavKey?): String? = when (route) {
     SleepCoachRoute -> stringResource(R.string.sleep_coach_title)
+    SleepTrendsRoute -> stringResource(R.string.sleep_entry_trends)
     else -> null
 }

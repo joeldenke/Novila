@@ -6,8 +6,7 @@ import androidx.compose.ui.res.stringResource
 import se.novila.coach.CoachAdvice
 import se.novila.coach.CoachFocus
 import se.novila.coach.DailyCoach
-import se.novila.designsystem.component.NovilaCard
-import se.novila.designsystem.component.NovilaText
+import se.novila.designsystem.component.NovilaInsight
 import se.novila.designsystem.theme.NovilaColorRole
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.today.R
@@ -18,19 +17,22 @@ import se.novila.ui.common.nextPortionText
 import se.novila.ui.R as UiR
 
 /**
- * The one coach on Today: a single suggestion that reads across the parts ([coach]), in the order the coach says it,
- * e.g. "You slept 5.5 h last night. Keep today's 30 min session light, or make it a walk. Aim to be in bed by 22:30."
- * The day's actions stay in the checklist below, so the coach speaks with one voice without repeating them.
+ * The one coach on Today, at the top of the day's checklist: a single suggestion that reads across the parts
+ * ([coach]), in the order the coach says it, e.g. "You slept 5.5 h last night. Keep today's 30 min session light, or
+ * make it a walk. Aim to be in bed by 22:30." What a task row below already says (the planned session, a rest day,
+ * the next portion) is left out, so the card never says the same thing twice; with nothing left, there is no line.
  */
 @Composable
-fun DailyCoachCard(coach: DailyCoach) {
-    val role = coach.role()
+fun CoachLine(coach: DailyCoach) {
     // The pieces are read in order, as one connected suggestion.
-    val suggestion = coach.advice.map { adviceText(it) }.joinToString(" ")
-    NovilaCard(title = stringResource(R.string.coach_title), icon = painterResource(coach.icon), role = role) {
-        NovilaText(suggestion, style = NovilaTheme.typography.bodyMedium)
-    }
+    val advice = coach.advice.filterNot { it.repeatsChecklist() }
+    if (advice.isEmpty()) return
+    NovilaInsight(painterResource(coach.icon), advice.map { adviceText(it) }.joinToString(" "), coach.role())
 }
+
+/** Advice a row of the checklist already gives. */
+private fun CoachAdvice.repeatsChecklist(): Boolean =
+    this is CoachAdvice.PlannedSession || this == CoachAdvice.RestDay || this is CoachAdvice.AddPortion
 
 /** The part the day is about, so the card carries that part's colour and icon. */
 @Composable

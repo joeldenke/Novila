@@ -59,6 +59,13 @@ class TrainingScreenTest {
         }
     }
 
+    private fun showProgram(state: TrainingUiState, onOpenSession: (DayOfWeek) -> Unit = {}) =
+        composeRule.setContent {
+            NovilaTheme {
+                TrainingProgramScreen(state, onOpenSession = onOpenSession, contentPadding = PaddingValues())
+            }
+        }
+
     /** Scrolls the tab to [text], so the lazy list composes it, and returns its node. */
     private fun scrollTo(text: String) = composeRule.run {
         onNode(hasScrollToNodeAction()).performScrollToNode(hasText(text))
@@ -81,12 +88,22 @@ class TrainingScreenTest {
         assertEquals(listOf(CardioLog(CardioType.Running, run.minutes)), logged)
     }
 
-    @Test fun `logging opens the log and the plan opens the coach`() {
+    @Test fun `logging opens the log and the entries open the program, the coach and the library`() {
         var opened = ""
-        show(state, TrainingActions(onOpenCardioLog = { opened += "log" }, onOpenCoach = { opened += "coach" }))
+        show(
+            state,
+            TrainingActions(
+                onOpenCardioLog = { opened += "log," },
+                onOpenProgram = { opened += "program," },
+                onOpenCoach = { opened += "coach," },
+                onOpenLibrary = { opened += "library" },
+            ),
+        )
         scrollTo("Log a workout").performClick()
-        scrollTo("Open the coach").performClick()
-        assertEquals("logcoach", opened)
+        scrollTo("This week's program").performClick()
+        scrollTo("Training coach").performClick()
+        scrollTo("All exercises").performClick()
+        assertEquals("log,program,coach,library", opened)
     }
 
     @Test fun `the exercise player plays once and can be dragged and played again`() {
@@ -103,22 +120,26 @@ class TrainingScreenTest {
         composeRule.onNodeWithContentDescription("Drag through the movement").assertExists()
     }
 
-    @Test fun `a strength day in the week strip and the program opens its session`() {
+    @Test fun `a strength day in the week strip and in the program opens its session`() {
         val opened = mutableListOf<DayOfWeek>()
         show(state, TrainingActions(onOpenSession = { opened += it }))
-        composeRule.onNodeWithContentDescription("Thursday: Strength, full body, 30 minutes planned").performClick()
         composeRule.onNodeWithText("Thu").performClick()
-        assertEquals(listOf(DayOfWeek.THURSDAY, DayOfWeek.THURSDAY), opened)
+        assertEquals(listOf(DayOfWeek.THURSDAY), opened)
     }
 
-    @Test fun `the next session is folded into the program, not shown twice`() {
+    @Test fun `the program opens a day's session`() {
         val opened = mutableListOf<DayOfWeek>()
-        show(state, TrainingActions(onOpenSession = { opened += it }))
-        // The week's program is the only place the sessions are listed; a day opens its session.
+        showProgram(state, onOpenSession = { opened += it })
+        composeRule.onNodeWithContentDescription("Thursday: Strength, full body, 30 minutes planned").performClick()
+        assertEquals(listOf(DayOfWeek.THURSDAY), opened)
+    }
+
+    @Test fun `the sessions are listed in the program, not on the tab`() {
+        show(state, TrainingActions())
         composeRule.onNodeWithText("This week's program").assertExists()
         composeRule.onNodeWithText("Strength on Monday").assertDoesNotExist()
-        composeRule.onNodeWithText("Mon").performClick()
-        assertEquals(listOf(DayOfWeek.MONDAY), opened)
+        composeRule.onNodeWithContentDescription("Thursday: Strength, full body, 30 minutes planned")
+            .assertDoesNotExist()
     }
 
     @Test fun `the weekly review counts the sessions done and says what next week holds`() {
@@ -129,13 +150,13 @@ class TrainingScreenTest {
         )
         val next = TrainingPreviewData.nextProgram
         val expected = "Next week: ${next.sessions.size} sessions, ${next.sessions.sumOf { it.minutes }} minutes."
-        show(reviewed, TrainingActions())
+        showProgram(reviewed)
         scrollTo("2 sessions of ${reviewed.program.sessions.size} done").assertExists()
         scrollTo(expected).assertExists()
     }
 
     @Test fun `there is no weekly review until a session is done`() {
-        show(state.copy(nextProgram = TrainingPreviewData.nextProgram), TrainingActions())
+        showProgram(state.copy(nextProgram = TrainingPreviewData.nextProgram))
         composeRule.onNodeWithText("Weekly review").assertDoesNotExist()
     }
 
@@ -177,7 +198,6 @@ class TrainingScreenTest {
             TrainingActions(onConnectRecovery = { connected = true }),
             recovery = RecoveryState.NeedsPermission(),
         )
-        // The chip and the card's button both ask to connect.
         composeRule.onAllNodesWithText("Connect recovery")[0].performClick()
         assertTrue(connected)
     }

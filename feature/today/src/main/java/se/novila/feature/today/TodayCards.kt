@@ -6,6 +6,7 @@ import androidx.compose.ui.res.stringResource
 import se.novila.designsystem.component.NovilaCard
 import se.novila.designsystem.component.NovilaInsight
 import se.novila.designsystem.component.NovilaText
+import se.novila.designsystem.component.NovilaTextButton
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.today.R
 import se.novila.model.Insight
@@ -20,10 +21,10 @@ import se.novila.ui.R as UiR
 /**
  * What the logs say, worked out on the phone: this week's change in [sleep] and what came with it, or else the
  * strongest link between the user's days and nights, then the week's [insights]. Explains how to get insights while
- * there are none.
+ * there are none. With [onOpenAll], it ends with the way to all discoveries.
  */
 @Composable
-fun InsightsCard(insights: List<Insight>, sleep: SleepAnalysis) {
+fun InsightsCard(insights: List<Insight>, sleep: SleepAnalysis, onOpenAll: (() -> Unit)? = null) {
     NovilaCard(title = stringResource(R.string.insights_title)) {
         val change = sleep.change
         val link = sleep.links.firstOrNull()
@@ -41,6 +42,9 @@ fun InsightsCard(insights: List<Insight>, sleep: SleepAnalysis) {
             )
         }
         insights.forEach { InsightRow(it) }
+        if (onOpenAll != null) {
+            NovilaTextButton(text = stringResource(R.string.discoveries_open), onClick = onOpenAll)
+        }
     }
 }
 

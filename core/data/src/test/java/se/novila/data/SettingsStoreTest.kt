@@ -9,6 +9,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import se.novila.model.AppSettings
+import se.novila.model.EntryLayout
 import se.novila.model.ThemeMode
 
 @RunWith(RobolectricTestRunner::class)
@@ -26,7 +27,8 @@ class SettingsStoreTest {
         val store = SettingsStore(context, stores.scope, stores.cipher)
         store.setTheme(ThemeMode.Dark)
         store.setDynamicColor(true)
-        val chosen = AppSettings(theme = ThemeMode.Dark, dynamicColor = true)
+        store.setEntryLayout(EntryLayout.Rows)
+        val chosen = AppSettings(theme = ThemeMode.Dark, dynamicColor = true, entryLayout = EntryLayout.Rows)
         store.settings.await { it == chosen }
 
         stores.restart()
