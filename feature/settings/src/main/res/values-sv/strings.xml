@@ -61,8 +61,8 @@
     <string name="privacy_ai_body">Har din telefon Gemini Nano kan coachen skriva en kommentar om din vecka när du ber om det. Modellen körs i telefonen, i Androids AICore, och planen den läser lämnar aldrig telefonen.</string>
     <string name="privacy_shared_title">Delas inte med någon</string>
     <string name="privacy_shared_body">Novila har ingen reklam, inga analysverktyg och ingen spårning. Din data säljs inte, delas inte med någon och används inte för reklam. Utvecklaren får aldrig del av den.</string>
-    <string name="privacy_screen_title">Notiser och widgeten</string>
-    <string name="privacy_screen_body">Påminnelser du slår på visar en kort notis, och widgeten visar, om du lägger till den, dagens balans, sömn, kost och vatten på hemskärmen. Den som ser din telefon kan se dem. Du kan när som helst stänga av påminnelserna och ta bort widgeten.</string>
+    <string name="privacy_screen_title">Notiser, widgeten och rutan</string>
+    <string name="privacy_screen_body">Påminnelser du slår på visar en kort notis, och widgeten visar, om du lägger till den, dagens balans, sömn, kost och vatten på hemskärmen. Rutan i snabbinställningarna visar, om du lägger till den, dagens glas vatten, men inte på låsskärmen. Den som ser din telefon kan se dem. Du kan när som helst stänga av påminnelserna och ta bort widgeten och rutan.</string>
     <string name="privacy_control_title">Du bestämmer</string>
     <string name="privacy_control_body">Du kan se och ändra det du har loggat i appen. Radera all data under Inställningar tar bort din hälsodata från telefonen på en gång, och avinstallerar du Novila försvinner allt. Ingen kopia finns någon annanstans, så det finns inget mer för utvecklaren att radera eller lämna ut. Data i Health Connect hanteras i Health Connect.</string>
     <string name="privacy_google_title">Google Play och Android</string>

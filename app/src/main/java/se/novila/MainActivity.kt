@@ -1,5 +1,6 @@
 package se.novila
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -9,14 +10,28 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
+import se.novila.model.withGlassOfWater
+import java.time.LocalDate
+import java.time.LocalTime
 
 class MainActivity : ComponentActivity() {
+    /** The launcher shortcut the app was opened with, until the tabs have shown where it leads. */
+    private var shortcut by mutableStateOf<AppShortcut?>(null)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val graph = (application as NovilaApplication).graph
+        // A restored activity already showed its shortcut; a new start publishes them in the current language.
+        if (savedInstanceState == null) {
+            AppShortcut.publish(this)
+            open(AppShortcut.of(intent))
+        }
         val viewModelFactory = graph.metroViewModelFactory
         val settingsStore = graph.settingsStore
         // The widget redraws when the app saves something from here on.
@@ -41,9 +56,26 @@ class MainActivity : ComponentActivity() {
                     dynamicColor = settings.dynamicColor,
                     onboarded = settings.onboarded,
                     entryLayout = settings.entryLayout,
+                    shortcut = shortcut,
+                    onShortcutShown = { shortcut = null },
                 )
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        open(AppShortcut.of(intent))
+    }
+
+    /** Does what [opened] is for: logging water logs a glass right away, and the tabs then show where it leads. */
+    private fun open(opened: AppShortcut?) {
+        if (opened == AppShortcut.LogWater) {
+            (application as NovilaApplication).graph.healthStore.update(LocalDate.now()) {
+                it.withGlassOfWater(LocalTime.now())
+            }
+        }
+        shortcut = opened
     }
 
     override fun onStop() {

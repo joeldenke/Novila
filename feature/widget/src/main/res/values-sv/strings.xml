@@ -18,4 +18,8 @@
     <string name="widget_cheer_water">Vattenmålet är nått. Snyggt.</string>
     <string name="widget_cheer_good_food">Kostpoäng %1$d i dag, i linje med kostråden.</string>
     <string name="widget_cheer_start">Logga natten och dagens mat, så visar Novila din dag.</string>
+    <!-- Snabbinställningsrutan -->
+    <string name="tile_water_name">Logga vatten</string>
+    <string name="tile_water_label">Glas vatten</string>
+    <string name="tile_water_glasses">%1$d av %2$d glas i dag</string>
 </resources>

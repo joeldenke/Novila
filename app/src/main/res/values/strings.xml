@@ -3,4 +3,9 @@
     <!-- Not translated: brand, symbols and units. -->
     <string name="app_name" translatable="false">Novila</string>
     <string name="navigate_back">Back</string>
+    <!-- Launcher shortcuts (AppShortcut): a short label of at most about 10 characters, and a longer one. -->
+    <string name="shortcut_start_session">Session</string>
+    <string name="shortcut_start_session_long">Start today\'s session</string>
+    <string name="shortcut_log_water">Water</string>
+    <string name="shortcut_log_water_long">Log a glass of water</string>
 </resources>

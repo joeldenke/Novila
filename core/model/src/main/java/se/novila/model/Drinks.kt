@@ -54,6 +54,13 @@ fun DayEntry.withDrink(drink: Drink): DayEntry {
     return copy(drinks = drinks + drink.copy(ml = drink.ml.coerceIn(MIN_DRINK_ML, MAX_DRINK_ML)))
 }
 
+/**
+ * Adds one glass of water ([DrinkKind.Water]'s usual serving) drunk at [time]: what the Nutrition tab's one-tap water,
+ * the app shortcut and the Quick Settings tile log.
+ */
+fun DayEntry.withGlassOfWater(time: LocalTime?): DayEntry =
+    withDrink(Drink(DrinkKind.Water, DrinkKind.Water.defaultMl, time))
+
 /** Takes back the last drink logged. */
 fun DayEntry.withoutLastDrink(): DayEntry = copy(drinks = drinks.dropLast(1))
 

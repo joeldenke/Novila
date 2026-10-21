@@ -17,9 +17,10 @@ CI är därför den enda sanningen om att något bygger och fungerar.
 ## Struktur
 Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, `:feature:today` → `se.novila.feature.today`):
 - `:app` – bara skalet: `NovilaApplication` (håller grafen), `MainActivity` (ger `LocalMetroViewModelFactory`),
-  `NovilaApp` (flikar, toppbar, `NavDisplay`), `TopLevelDestination` och `di/`: `AppGraph` (Metro-grafen, där källor
-  som `MovementRepository` väljs) och `NovilaViewModelFactory`. Ingen skärm, ViewModel eller logik som går att lägga
-  i en modul.
+  `NovilaApp` (flikar, toppbar, `NavDisplay`), `TopLevelDestination`, `AppShortcut` (genvägarna från appikonen,
+  dynamiska: "Starta dagens pass" öppnar passläget, "Logga ett glas vatten" loggar och visar Kost) och `di/`:
+  `AppGraph` (Metro-grafen, där källor som `MovementRepository` väljs) och `NovilaViewModelFactory`. Ingen skärm,
+  ViewModel eller logik som går att lägga i en modul.
 - `:feature:today`, `:feature:training`, `:feature:sleep`, `:feature:nutrition` – en modul per flik med skärmar, kort,
   strängar, ViewModels och `@Preview`/skärmdumpar. Varje feature äger sin navigation (`navigation/`): `@Serializable`-rutter
   (`NavKey`) och `EntryProviderScope<NavKey>.<feature>Entries(...)`, som `:app` lägger i sin `entryProvider`.
@@ -40,7 +41,10 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   balansringarna (`NovilaGlanceHero`), anpassat efter widgetens storlek (`SizeMode.Exact`). Ingen knapp och ingen
   vattenloggning; ett tryck öppnar appen. Ingen flik och ingen ViewModel: receivern skapas av systemet och når storarna
   via `WidgetGraph` (som `AppGraph` utökar, genom `NovilaApplication`). `WidgetUpdates` ritar om widgeten när appen
-  sparar. Läser aldrig Health Connect (bara i förgrunden), så balansen är sömn och kost.
+  sparar. Läser aldrig Health Connect (bara i förgrunden), så balansen är sömn och kost. Här ligger också rutan i
+  snabbinställningarna (`WaterTileService`): ett tryck loggar ett glas vatten och rutan visar dagens glas mot målet,
+  men aldrig på låsskärmen, där den ber om upplåsning först. Den är en exporterad tjänst som bara systemet får binda
+  (`BIND_QUICK_SETTINGS_TILE`), godkänd av ägaren.
 - `:wear` – Wear OS-appen (`se.novila.wear`, egen app med `novila.android.wear`): en fristående klockapp som kör ett
   styrkepass och dess vila. `StandaloneSession` i `:core:exercise` bygger dagens pass (A/B, nivå), och klockan stegar
   genom samma `Workout`-steg som telefonens passläge, med nedräkning på skärmen, håll skärmen tänd och en summering.

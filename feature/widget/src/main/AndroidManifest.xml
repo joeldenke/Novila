@@ -21,6 +21,22 @@
         </receiver>
 
         <!--
+          The Quick Settings tile that logs a glass of water. Exported, as every tile is, so the system can bind it, but
+          only for holders of BIND_QUICK_SETTINGS_TILE, which only the system UI has. It reads nothing from the
+          system but the tap, and asks to unlock first on the lock screen. It ends up in app/badging/debug-badging.txt.
+        -->
+        <service
+            android:name="se.novila.feature.widget.WaterTileService"
+            android:exported="true"
+            android:icon="@drawable/ic_water"
+            android:label="@string/tile_water_name"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+        <!--
           Glance's service for lists in widgets (LazyColumn), exported to the launcher. The widget has no lists, so the
           service is removed and the APK doesn't export what it never uses.
         -->

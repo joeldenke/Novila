@@ -47,11 +47,12 @@ the phone, in Android's AICore, and the plan it reads never leaves the phone.
 Novila has no ads, no analytics and no tracking. Your data is not sold, not shared with anyone and not used for
 advertising. The developer never receives it.
 
-### Notifications and the widget
+### Notifications, the widget and the tile
 
-Reminders you turn on show a short notification, and the widget, if you add it, shows today's balance, sleep,
-food and water on your home screen. Anyone who sees your phone can see them. You can turn reminders off and remove
-the widget at any time.
+Reminders you turn on show a short notification, and the widget, if you add it, shows today's balance, sleep, food and
+water on your home screen. The Quick Settings tile, if you add it, shows today's glasses of water, but not on the lock
+screen. Anyone who sees your phone can see them. You can turn reminders off and remove the widget and the tile at any
+time.
 
 ### You decide
 
@@ -118,11 +119,12 @@ telefonen, i Androids AICore, och planen den läser lämnar aldrig telefonen.
 Novila har ingen reklam, inga analysverktyg och ingen spårning. Din data säljs inte, delas inte med någon och
 används inte för reklam. Utvecklaren får aldrig del av den.
 
-### Notiser och widgeten
+### Notiser, widgeten och rutan
 
-Påminnelser du slår på visar en kort notis, och widgeten visar, om du lägger till den, dagens balans, sömn, kost
-och vatten på hemskärmen. Den som ser din telefon kan se dem. Du kan när som helst stänga av påminnelserna och ta
-bort widgeten.
+Påminnelser du slår på visar en kort notis, och widgeten visar, om du lägger till den, dagens balans, sömn, kost och
+vatten på hemskärmen. Rutan i snabbinställningarna visar, om du lägger till den, dagens glas vatten, men inte på
+låsskärmen. Den som ser din telefon kan se dem. Du kan när som helst stänga av påminnelserna och ta bort widgeten och
+rutan.
 
 ### Du bestämmer
 
