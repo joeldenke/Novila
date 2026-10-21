@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.novila.android.library)
     alias(libs.plugins.novila.android.compose)
     alias(libs.plugins.novila.android.unittest)
+    alias(libs.plugins.novila.android.screenshot)
 }
 
 novila {

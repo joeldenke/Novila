@@ -3,6 +3,7 @@
     <string name="widget_name">Novila i dag</string>
     <string name="widget_description">Dagens balans, sömn, kost och vatten, och något uppmuntrande om din dag.</string>
     <string name="widget_balance">Dagens balans</string>
+    <string name="widget_balance_description">Dagens balans: %1$d av 100</string>
     <string name="widget_sleep">Sömn</string>
     <string name="widget_food">Kost</string>
     <string name="widget_water">Vatten</string>

@@ -21,10 +21,15 @@ import java.time.LocalDate
 class WidgetContentTest {
     private val june = LocalDate.of(2026, 6, 10)
 
-    private fun show(day: DayEntry?, goals: Goals? = Goals(), check: Check) = runGlanceAppWidgetUnitTest {
-        setAppWidgetSize(DpSize(300.dp, 220.dp))
+    private fun show(
+        day: DayEntry?,
+        goals: Goals? = Goals(),
+        size: DpSize = DpSize(300.dp, 220.dp),
+        check: Check,
+    ) = runGlanceAppWidgetUnitTest {
+        setAppWidgetSize(size)
         setContext(RuntimeEnvironment.getApplication())
-        provideComposable { NovilaGlanceTheme { WidgetContent(day, goals) } }
+        provideComposable { NovilaGlanceTheme { WidgetContent(day, goals, hour = 12) } }
         check()
     }
 
@@ -52,6 +57,23 @@ class WidgetContentTest {
 
     @Test fun `nothing logged asks for the night and the food`() = show(DayEntry(june)) {
         onNode(hasText("Log last night")).assertExists()
+    }
+
+    @Test fun `a small widget keeps the rings without the legend and the encouragement`() = show(
+        DayEntry(june),
+        size = DpSize(180.dp, 140.dp),
+    ) {
+        onNode(hasText("Today's balance")).assertExists()
+        onNode(hasText("Sleep")).assertDoesNotExist()
+        onNode(hasText("Log last night")).assertDoesNotExist()
+    }
+
+    @Test fun `a low widget keeps the legend but leaves out the encouragement`() = show(
+        DayEntry(june),
+        size = DpSize(320.dp, 160.dp),
+    ) {
+        onNode(hasText("Sleep")).assertExists()
+        onNode(hasText("Log last night")).assertDoesNotExist()
     }
 
     @Test fun `nothing but the background before the stores are read`() = show(day = null) {

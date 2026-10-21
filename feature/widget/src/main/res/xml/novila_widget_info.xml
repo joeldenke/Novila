@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Four by three cells, resizable. Updated by the app when a day is saved (WidgetUpdates) and when its own button is
-  tapped; the hourly update only keeps "today" right after midnight.
+  Four by three cells, resizable; the layout follows the size. Updated by the app when a day is saved
+  (WidgetUpdates); the hourly update keeps "today" right after midnight and moves the sky on.
 -->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:description="@string/widget_description"

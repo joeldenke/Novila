@@ -36,7 +36,8 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   Ingen flik: öppnas med kugghjulet i toppraden (på Idag i hälsningen) och läggs på aktuell fliks back stack. `Navigator` flyttar
   den om den öppnas från en annan flik, så samma nyckel aldrig ligger i två stackar som visas samtidigt.
 - `:feature:widget` – widgeten på hemskärmen (Glance): `NovilaWidget` visar dagens balans, sömn, kost och vatten samt
-  dagens första uppmuntran (`cheers`), på ett frostat kort som släpper igenom bakgrunden. Ingen knapp och ingen
+  dagens första uppmuntran (`cheers`) som appens hero-kort: granpanelen med himlen efter timmen, höjdkurvor och
+  balansringarna (`NovilaGlanceHero`), anpassat efter widgetens storlek (`SizeMode.Exact`). Ingen knapp och ingen
   vattenloggning; ett tryck öppnar appen. Ingen flik och ingen ViewModel: receivern skapas av systemet och når storarna
   via `WidgetGraph` (som `AppGraph` utökar, genom `NovilaApplication`). `WidgetUpdates` ritar om widgeten när appen
   sparar. Läser aldrig Health Connect (bara i förgrunden), så balansen är sömn och kost.
@@ -53,7 +54,8 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   - `theme` – `NovilaTheme`: färger, typografi, former och spacing-tokens
   - `component` – `Novila*`-komponenter som wrappar Material 3
   - `glance` – `NovilaGlanceTheme` och `NovilaGlance`: samma färger, spacing, hörn och textstorlekar för widgets,
-    som inte kan använda Compose-komponenterna
+    som inte kan använda Compose-komponenterna, och `NovilaGlanceHero`, som ritar hero-kortets panel och ringar som
+    bitmappar med samma mått och höjdkurvor (`contourLines`) som `NovilaHeroCard`
 - `:core:ui` – det flera features delar: `ScreenList`, formatering (`hoursText`, `stepsText` …), `DayPicker`, historikkorten
   (`SleepHistoryCard`, `NutritionHistoryCard`: vecka, fyra veckor eller år, jämfört med perioden innan),
   flikikonerna och `PreviewData` (samma person i alla previews)
@@ -468,8 +470,11 @@ där pluginet `firebase@firebase` inte alltid installeras.
   (aldrig sparat). WorkManagers standardstart är borttagen i appens manifest (lint `RemoveWorkManagerInitializer`);
   appen ger konfigurationen.
   Nya workers skapas av en fabrik i grafen och behöver en `-keepnames`-regel i `app/proguard-rules.pro`.
-- **Widget:** Glance, färgad bara med `NovilaGlanceTheme`/`NovilaGlance` (pillars som färgroller), texter från
-  `strings.xml`. Det widgeten säger om dagen kommer från `cheers` i `:core:model` (testat i
+- **Widget:** Glance, färgad bara med `NovilaGlanceTheme`/`NovilaGlance`/`NovilaGlanceHero` (pillars som
+  färgroller), texter från `strings.xml`. Den ska se ut som Idags hero-kort: rita panelen och ringarna i
+  `NovilaGlanceHero` (RemoteViews kan inte rita), aldrig en egen, enklare variant. Skärmdumparna är
+  `WidgetScreenshotTest` (Glance komponerar RemoteViews som fångas med Roborazzi), eftersom Glance saknar
+  `@Preview` som skannern hittar. Det widgeten säger om dagen kommer från `cheers` i `:core:model` (testat i
   `DayHighlightsTest`) och påstår aldrig mer än appen vet: ingen väderdata (ingen `INTERNET`), så solen nämns bara
   via årstiden. Uppdateras när appen sparar (`WidgetUpdates`) och av systemet en gång i timmen, för midnatt; inga
   egna jobb. Nya knappar är en `ActionCallback` med en keep-regel i `app/proguard-rules.pro`.
