@@ -3,6 +3,7 @@ package se.novila.data
 import android.content.Context
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -89,6 +90,18 @@ class HealthStoreTest {
         assertEquals(7f, shown.day(today).sleepHours)
         assertEquals(2, shown.week(today).history.first().waterGlasses)
         assertEquals(7f, shown.history(HistoryRange.Week, today).days.last().sleepHours)
+        assertEquals(DayEntry(today, mood = 3), saved.day(today))
+    }
+
+    @Test fun `a snapshot decodes each day once, also for its views`() {
+        val store = HealthStore(context, stores.scope, stores.cipher)
+        store.update(today) { it.withMood(3) }
+        val saved = store.days.await { it.day(today).mood == 3 }
+        val shown = saved.showing { it.withSleep(7f) }
+
+        assertSame(saved.day(today), saved.day(today))
+        assertSame(saved.day(today), saved.showing { it }.day(today))
+        assertSame(shown.day(today), shown.week(today).today)
         assertEquals(DayEntry(today, mood = 3), saved.day(today))
     }
 

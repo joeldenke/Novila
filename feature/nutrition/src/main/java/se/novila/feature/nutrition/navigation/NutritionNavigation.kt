@@ -20,6 +20,8 @@ import se.novila.feature.nutrition.RecipeActions
 import se.novila.feature.nutrition.RecipesScreen
 import se.novila.feature.nutrition.RecipesViewModel
 import se.novila.navigation.Navigator
+import se.novila.navigation.SharedScreen
+import se.novila.navigation.sharedScreen
 
 /** The Nutrition tab. */
 @Serializable data object NutritionRoute : NavKey
@@ -71,7 +73,7 @@ fun EntryProviderScope<NavKey>.nutritionEntries(
             onCompleteSetup = viewModel::openSetup,
         )
     }
-    entry<RecipesRoute> {
+    entry<RecipesRoute>(metadata = sharedScreen(SharedScreen.Recipes)) {
         val viewModel = metroViewModel<RecipesViewModel>()
         LifecycleResumeEffect(viewModel) {
             viewModel.refresh()
@@ -85,7 +87,7 @@ fun EntryProviderScope<NavKey>.nutritionEntries(
             contentPadding = contentPadding,
         )
     }
-    entry<NutritionTrendsRoute> {
+    entry<NutritionTrendsRoute>(metadata = sharedScreen(SharedScreen.NutritionTrends)) {
         val viewModel = metroViewModel<NutritionTrendsViewModel>()
         LifecycleResumeEffect(viewModel) {
             viewModel.refresh()

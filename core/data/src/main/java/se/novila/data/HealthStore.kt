@@ -17,6 +17,7 @@ import se.novila.model.History
 import se.novila.model.HistoryRange
 import se.novila.model.historyOf
 import java.time.LocalDate
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Local storage: one encoded [DayEntry] per date in Preferences DataStore (file `health`, moved over from the
@@ -60,15 +61,32 @@ class HealthStore internal constructor(context: Context, scope: CoroutineScope, 
     /**
      * The days as saved at one moment, each shown through [shown] (as saved unless [showing] gives another view, such
      * as a watch's night filling in sleep that wasn't logged).
+     *
+     * A screen reads the same days many times over (the week, the window its insights look at, a year's history), so
+     * each day is decoded once per snapshot and kept: the snapshot never changes, and every view of it ([showing])
+     * shares the decoded days. Safe to read from several threads, like the widget's.
      */
-    class SavedDays internal constructor(
+    class SavedDays private constructor(
         private val prefs: Preferences,
-        private val shown: (DayEntry) -> DayEntry = { it },
+        private val decoded: ConcurrentHashMap<LocalDate, DayEntry>,
+        private val shown: ((DayEntry) -> DayEntry)?,
     ) {
-        fun day(date: LocalDate): DayEntry = shown(DayEntryCodec.decode(date, prefs[keyOf(date)]))
+        internal constructor(prefs: Preferences) : this(prefs, ConcurrentHashMap(), null)
+
+        /** The days as this view shows them, kept like [decoded]. */
+        private val views = ConcurrentHashMap<LocalDate, DayEntry>()
+
+        fun day(date: LocalDate): DayEntry {
+            val saved = decoded.getOrPut(date) { DayEntryCodec.decode(date, prefs[keyOf(date)]) }
+            val show = shown ?: return saved
+            return views.getOrPut(date) { show(saved) }
+        }
 
         /** The same days, each shown through [change] as well. Only for reading: saves always start from disk. */
-        fun showing(change: (DayEntry) -> DayEntry): SavedDays = SavedDays(prefs) { change(shown(it)) }
+        fun showing(change: (DayEntry) -> DayEntry): SavedDays {
+            val show = shown ?: return SavedDays(prefs, decoded, change)
+            return SavedDays(prefs, decoded) { day -> change(show(day)) }
+        }
 
         /** [count] days up to [today], newest first. */
         fun lastDays(count: Int, today: LocalDate): List<DayEntry> =

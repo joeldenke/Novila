@@ -28,6 +28,7 @@ import se.novila.model.History
 import se.novila.model.HistoryRange
 import se.novila.model.SleepFactor
 import se.novila.model.averageSleep
+import se.novila.navigation.SharedScreen
 import se.novila.sleep.SleepCoachPreferences
 import se.novila.sleep.SleepCoachWeek
 import se.novila.sleep.SleepState
@@ -181,6 +182,7 @@ private fun sleepHubEntries(history: History, coach: SleepCoachCardState, action
             icon = painterResource(UiR.drawable.ic_sleep),
             role = sleep,
             onClick = actions.onOpenCoach,
+            sharedKey = SharedScreen.SleepCoach,
             summary = sleepCoachSummary(coach),
         ),
         NovilaEntry(
@@ -188,6 +190,7 @@ private fun sleepHubEntries(history: History, coach: SleepCoachCardState, action
             icon = painterResource(R.drawable.ic_sleep_breathing),
             role = sleep,
             onClick = actions.onOpenBreathing,
+            sharedKey = SharedScreen.Breathing,
             summary = stringResource(R.string.sleep_breathing_body),
         ),
         NovilaEntry(
@@ -195,6 +198,7 @@ private fun sleepHubEntries(history: History, coach: SleepCoachCardState, action
             icon = painterResource(UiR.drawable.ic_trend),
             role = sleep,
             onClick = actions.onOpenTrends,
+            sharedKey = SharedScreen.SleepTrends,
             summary = average?.let { stringResource(R.string.sleep_entry_trends_summary, hoursText(it)) }
                 ?: stringResource(R.string.sleep_entry_trends_empty),
         ),

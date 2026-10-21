@@ -29,6 +29,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -49,7 +50,8 @@ internal val LocalNovilaEntryLayout = staticCompositionLocalOf { NovilaEntryLayo
 
 /**
  * One way into a part of a tab: a [title], what it stands at in short ([summary]) and where a tap goes ([onClick]),
- * with an [icon] in the [role] color of the part it belongs to.
+ * with an [icon] in the [role] color of the part it belongs to. With a [sharedKey], the tile grows into the screen it
+ * opens when that screen has the same key ([NovilaSharedBounds]).
  */
 @Immutable
 data class NovilaEntry(
@@ -58,6 +60,7 @@ data class NovilaEntry(
     val role: NovilaColorRole,
     val onClick: () -> Unit,
     val summary: String? = null,
+    val sharedKey: Any? = null,
 )
 
 /** A tile is at least this wide, so a phone fits two and a tablet four. */
@@ -95,10 +98,9 @@ private fun EntryGrid(entries: List<NovilaEntry>, modifier: Modifier) {
 }
 
 @Composable
-private fun EntryTile(entry: NovilaEntry, modifier: Modifier) {
+private fun EntryTile(entry: NovilaEntry, modifier: Modifier) = NovilaSharedBounds(entry.sharedKey, modifier) {
     Surface(
         onClick = entry.onClick,
-        modifier = modifier,
         shape = NovilaTheme.shapes.medium,
         color = NovilaTheme.surfaces.card,
         contentColor = NovilaTheme.colors.onSurface,
@@ -150,7 +152,7 @@ private fun EntryRows(entries: List<NovilaEntry>, modifier: Modifier) {
 }
 
 @Composable
-private fun EntryRow(entry: NovilaEntry) {
+private fun EntryRow(entry: NovilaEntry) = NovilaSharedBounds(entry.sharedKey, shape = RectangleShape) {
     Surface(
         onClick = entry.onClick,
         modifier = Modifier.fillMaxWidth(),

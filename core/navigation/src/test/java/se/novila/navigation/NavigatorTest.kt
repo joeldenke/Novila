@@ -4,6 +4,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
@@ -60,6 +62,21 @@ class NavigatorTest {
         navigator.goBack()
         assertEquals(listOf(Idag), navigator.state.backStacks[Idag]?.toList())
         assertEquals(Idag, navigator.state.topLevelRoute)
+    }
+
+    @Test fun `only a tap on another tab counts as switching tabs`() {
+        val navigator = navigator()
+        navigator.navigate(Training)
+        assertTrue(navigator.state.switchedTab)
+        navigator.navigate(Settings)
+        assertFalse(navigator.state.switchedTab)
+        navigator.navigate(Idag)
+        assertTrue(navigator.state.switchedTab)
+        navigator.navigate(Idag)
+        assertFalse(navigator.state.switchedTab)
+        navigator.navigate(Training)
+        navigator.goBack()
+        assertFalse(navigator.state.switchedTab)
     }
 
     @Test fun `stacks in use are the start tab plus the open one`() {

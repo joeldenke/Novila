@@ -21,6 +21,8 @@ import se.novila.feature.sleep.SleepViewModel
 import se.novila.healthconnect.HealthConnectSource
 import se.novila.healthconnect.rememberHealthPermissionRequest
 import se.novila.navigation.Navigator
+import se.novila.navigation.SharedScreen
+import se.novila.navigation.sharedScreen
 
 /** The Sleep tab. */
 @Serializable data object SleepRoute : NavKey
@@ -75,7 +77,7 @@ fun EntryProviderScope<NavKey>.sleepEntries(
             fromWatch = state.fromWatch,
         )
     }
-    entry<SleepCoachRoute> {
+    entry<SleepCoachRoute>(metadata = sharedScreen(SharedScreen.SleepCoach)) {
         val viewModel = metroViewModel<SleepCoachViewModel>()
         LifecycleResumeEffect(viewModel) {
             viewModel.refresh()
@@ -92,7 +94,7 @@ fun EntryProviderScope<NavKey>.sleepEntries(
             contentPadding = contentPadding,
         )
     }
-    entry<SleepTrendsRoute> {
+    entry<SleepTrendsRoute>(metadata = sharedScreen(SharedScreen.SleepTrends)) {
         val viewModel = metroViewModel<SleepTrendsViewModel>()
         LifecycleResumeEffect(viewModel) {
             viewModel.refresh()

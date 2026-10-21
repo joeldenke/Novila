@@ -60,6 +60,14 @@ class NavigationState(
 ) {
     var topLevelRoute: NavKey by topLevelRoute
 
+    /**
+     * Whether the last change was a tap on another tab, rather than a screen opened or closed within one, so the
+     * display can fade between tabs (which are peers) instead of moving deeper or back. Only read when the change is
+     * animated, so it is not state that recomposes anything.
+     */
+    var switchedTab: Boolean = false
+        internal set
+
     val stacksInUse: List<NavKey>
         get() = if (topLevelRoute == startRoute) {
             listOf(startRoute)
@@ -74,7 +82,8 @@ class NavigationState(
  * Every entry gets its own saved state and its own `ViewModelStore`, so `metroViewModel()` in an entry gives a
  * ViewModel scoped to that entry: it survives rotation and switching tabs, and is cleared when the entry is popped.
  * All stacks are decorated, not only the ones shown, so another tab's entries keep their ViewModels while that tab
- * is in the background.
+ * is in the background. Each entry is also one end of the move from the tile that opened it ([sharedScreen]), so
+ * these entries must be shown in `NavDisplay`, which gives them their enter and exit.
  */
 @Composable
 fun NavigationState.toEntries(
@@ -84,6 +93,7 @@ fun NavigationState.toEntries(
         val decorators = listOf<NavEntryDecorator<NavKey>>(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator(),
+            sharedScreenDecorator,
         )
         rememberDecoratedNavEntries(
             backStack = stack,

@@ -17,6 +17,8 @@ import se.novila.feature.breathing.BreathingSessionViewModel
 import se.novila.feature.breathing.R
 import se.novila.feature.breathing.sessionName
 import se.novila.navigation.Navigator
+import se.novila.navigation.SharedScreen
+import se.novila.navigation.sharedScreen
 
 /** Breathing and relaxation: the list of guided sessions. */
 @Serializable data object BreathingRoute : NavKey
@@ -30,7 +32,7 @@ import se.novila.navigation.Navigator
  * stack and stops when it is popped.
  */
 fun EntryProviderScope<NavKey>.breathingEntries(navigator: Navigator, contentPadding: PaddingValues) {
-    entry<BreathingRoute> {
+    entry<BreathingRoute>(metadata = sharedScreen(SharedScreen.Breathing)) {
         BreathingScreen(
             actions = BreathingActions(onOpenSession = { navigator.navigate(BreathingSessionRoute(it)) }),
             contentPadding = contentPadding,

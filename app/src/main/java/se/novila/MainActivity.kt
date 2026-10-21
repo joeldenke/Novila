@@ -46,6 +46,18 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        // Health Connect is read again when the app comes back: the user may have taken access away meanwhile. Within
+        // the app, moving between tabs reuses the last reading for a little while.
+        if (!isChangingConfigurations) {
+            val graph = (application as NovilaApplication).graph
+            graph.nights.expire()
+            graph.exercises.expire()
+            graph.recovery.expire()
+        }
+    }
+
     private companion object {
         // The scrims enableEdgeToEdge() uses by default, for three-button navigation.
         val LightScrim = Color.argb(0xe6, 0xFF, 0xFF, 0xFF)
