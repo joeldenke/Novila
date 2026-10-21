@@ -14,6 +14,7 @@ import se.novila.designsystem.component.NovilaDayMark
 import se.novila.designsystem.component.NovilaHeroPanel
 import se.novila.designsystem.component.NovilaHeroRing
 import se.novila.designsystem.component.NovilaHeroText
+import se.novila.designsystem.component.NovilaSky
 import se.novila.designsystem.component.NovilaWeekDay
 import se.novila.designsystem.component.NovilaWeekStrip
 import se.novila.designsystem.theme.NovilaTheme
@@ -29,7 +30,7 @@ import java.util.Locale
 /**
  * The week at a glance at the top of Training: minutes done against the week's plan, a check for each day trained,
  * and today's session with the one action that matters now ([plan]): start the session or log the cardio. A strength
- * day in the week opens its session ([onOpenSession]).
+ * day in the week opens its session ([onOpenSession]). The [sky] follows the time of day.
  */
 @Composable
 fun TrainingOverview(
@@ -41,11 +42,12 @@ fun TrainingOverview(
     onLogCardio: (CardioLog) -> Unit,
     modifier: Modifier = Modifier,
     onOpenSession: (DayOfWeek) -> Unit = {},
+    sky: NovilaSky = NovilaSky.Day,
 ) {
     val locale = LocalConfiguration.current.locales[0]
     val planned = program.sessions.sumOf { it.minutes }
     val done = weekDone.values.sum()
-    NovilaHeroPanel(title = stringResource(R.string.overview_title), modifier = modifier) {
+    NovilaHeroPanel(title = stringResource(R.string.overview_title), modifier = modifier, sky = sky) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.l),

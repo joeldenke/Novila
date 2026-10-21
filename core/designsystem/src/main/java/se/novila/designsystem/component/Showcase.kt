@@ -46,7 +46,7 @@ import kotlin.math.absoluteValue
 import kotlin.math.floor
 
 /**
- * The pine hero card without the score: the same dusk forest and midsummer glow as [NovilaHeroCard], around any
+ * The pine hero card without the score: the same contour lines and the sun's glow as [NovilaHeroCard], around any
  * [content]. Text inside takes the hero's light content color unless it sets its own.
  */
 @Composable
@@ -60,10 +60,7 @@ fun NovilaHeroBanner(
             .fillMaxWidth()
             .clip(NovilaTheme.shapes.large)
             .background(Brush.linearGradient(listOf(hero.start, hero.end)))
-            .drawBehind {
-                drawSunGlow(hero.sun)
-                drawForest(hero.content.copy(alpha = 0.07f))
-            }
+            .heroContours(hero, NovilaSky.Day)
             .padding(NovilaTheme.spacing.xl),
         verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.m),
     ) {

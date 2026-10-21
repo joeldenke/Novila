@@ -290,15 +290,19 @@ där pluginet `firebase@firebase` inte alltid installeras.
   kost = falurött (tertiary). Solen (`NovilaTheme.accent`) används för högst en huvudknapp per skärm.
   Hörnradie från basen 14 dp via `NovilaTheme.shapes`. Nya färgpar läggs till i `ColorContrastTest` (WCAG 2.2).
   Förlagan är riktning D i designkanvasen *Novila designriktningar*. Idag svarar på "vad gör jag nu": hälsning,
-  `NovilaHeroCard` (balansen som ringar per del, skogssiluett och solens sken, `NovilaTheme.hero`), *Din dag*
+  `NovilaHeroCard` (balansen som ringar per del, höjdkurvor och himlens sken, `NovilaTheme.hero`), *Din dag*
   (`dayChecklist` i `:core:model`: sömn, dagens pass ur `TrainingWeek.trainingOn`, kost och vatten som
   `NovilaTaskRow`, där varje öppen rad har en knapp som gör det och den första är skärmens `NovilaAccentButton`), en
   `NovilaStatTile` per del med veckans trend och insikter. Veckodiagrammen hör till delarnas egna flikar, och
   mående (humör, energi, stress, dagbok) togs bort för att syftet var oklart;
   lägg inte tillbaka dem på Idag utan att ägaren ber om det.
-  Kort är vita med hårfin kant (`NovilaTheme.surfaces`). Träning börjar med veckan i överblick på samma granpanel
-  (`NovilaHeroPanel`: minuter mot veckans plan, `NovilaWeekStrip` och dagens enda huvudåtgärd ur `TodayPlan`), följt
-  av snabbval (`NovilaActionChip`) som passar just nu.
+  Hero-korten har himlen efter tid på dygnet (`NovilaSky.at(hour)`): morgonsol i ljusringar 05–10, sol med strålar
+  10–17, solnedgång med appikonens snitt 17–22 och måne 22–05. Timmen kommer från skärmens ViewModel, aldrig från
+  klockan i en composable, så previews och skärmdumpar visar en bestämd himmel. Rita aldrig granar eller annat
+  landskap i hero-korten; bakgrunden är linjer (höjdkurvor på Idag, rörelselinjer på Träning).
+  Kort är vita med hårfin kant (`NovilaTheme.surfaces`). Träning börjar med veckan i överblick på samma granpanel,
+  med rörelselinjer i stället för höjdkurvor (`NovilaHeroPanel`: minuter mot veckans plan, `NovilaWeekStrip` och
+  dagens enda huvudåtgärd ur `TodayPlan`), följt av snabbval (`NovilaActionChip`) som passar just nu.
 - **Flikarnas delar:** Sömn, Kost och Träning byggs av samma delar i samma ordning, med en rubrik per del
   (`ScreenSection` och `section(...)` i `:core:ui`, `NovilaSectionHeader`): *Översikt* (läget och delens
   huvudåtgärd), *Logga* (det användaren loggar själv eller Health Connect läser), *Din plan* (coachen, programmet,

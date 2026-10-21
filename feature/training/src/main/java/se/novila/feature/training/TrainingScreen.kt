@@ -11,6 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import se.novila.designsystem.component.NovilaActionChip
 import se.novila.designsystem.component.NovilaReveal
+import se.novila.designsystem.component.NovilaSky
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.exercise.ExerciseState
 import se.novila.model.CardioLog
@@ -38,6 +39,7 @@ fun TrainingScreen(
     modifier: Modifier = Modifier,
     exercise: ExerciseState = ExerciseState.Unavailable,
     recovery: RecoveryState = RecoveryState.Unavailable,
+    sky: NovilaSky = NovilaSky.Day,
 ) {
     val today = state.today
     val plan = remember(state) { state.todayPlan() }
@@ -53,6 +55,7 @@ fun TrainingScreen(
                     onStartWorkout = actions.onStartWorkout,
                     onLogCardio = actions.onLogCardio,
                     onOpenSession = actions.onOpenSession,
+                    sky = sky,
                 )
             }
         }
@@ -140,6 +143,7 @@ private fun TrainingScreenContent(
     movement: MovementState = PreviewData.movement,
     exercise: ExerciseState = ExerciseState.Unavailable,
     recovery: RecoveryState = RecoveryState.Unavailable,
+    sky: NovilaSky = NovilaSky.Day,
 ) {
     NovilaTheme {
         TrainingScreen(
@@ -149,6 +153,7 @@ private fun TrainingScreenContent(
             contentPadding = PaddingValues(),
             exercise = exercise,
             recovery = recovery,
+            sky = sky,
         )
     }
 }
@@ -170,24 +175,30 @@ private fun TrainingScreenPreview() = TrainingScreenContent(
     exercise = ExerciseState.Connected(TrainingPreviewData.workouts),
 )
 
-/** Friday's run, not logged yet: one tap logs it. */
+/** Friday's run in the evening, not logged yet: one tap logs it. */
 @Preview(showBackground = true, heightDp = 1600)
 @Composable
 private fun TrainingScreenCardioPreview() = TrainingScreenContent(
     strengthDay.copy(today = DayOfWeek.FRIDAY, weekDone = strengthDay.weekDone + (DayOfWeek.THURSDAY to 30)),
     exercise = ExerciseState.NeedsPermission(),
+    sky = NovilaSky.Evening,
 )
 
+/** Saturday night, before Health Connect is connected. */
 @Preview(showBackground = true, heightDp = 1600)
 @Composable
-private fun TrainingScreenConnectPreview() =
-    TrainingScreenContent(strengthDay.copy(today = DayOfWeek.SATURDAY), MovementState.NeedsPermission())
+private fun TrainingScreenConnectPreview() = TrainingScreenContent(
+    strengthDay.copy(today = DayOfWeek.SATURDAY),
+    MovementState.NeedsPermission(),
+    sky = NovilaSky.Night,
+)
 
-/** The watch says the body is still recovering: today's session is a little lighter. */
+/** The watch says the body is still recovering in the morning: today's session is a little lighter. */
 @Preview(showBackground = true, heightDp = 1600)
 @Composable
 private fun TrainingScreenRecoveryPreview() = TrainingScreenContent(
     strengthDay.copy(recovery = RecoveryStatus.Low),
     exercise = ExerciseState.Connected(TrainingPreviewData.workouts),
     recovery = TrainingPreviewData.recovery,
+    sky = NovilaSky.Morning,
 )

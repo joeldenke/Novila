@@ -1,0 +1,139 @@
+package se.novila.designsystem.component
+
+import androidx.compose.foundation.layout.size
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.CacheDrawScope
+import androidx.compose.ui.draw.DrawResult
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import se.novila.designsystem.R
+import se.novila.designsystem.theme.NovilaHeroColors
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
+
+/**
+ * The sky over the hero card at [hour] of day: the morning sun inside rings of light, the midday sun with rays, the
+ * setting sun with the launcher icon's cuts, and the moon at night.
+ */
+enum class NovilaSky {
+    Morning,
+    Day,
+    Evening,
+    Night,
+    ;
+
+    companion object {
+        /** The sky at [hour] (0–23): morning 05–10, day 10–17, evening 17–22, otherwise night. */
+        fun at(hour: Int): NovilaSky = when (hour) {
+            in 5..9 -> Morning
+            in 10..16 -> Day
+            in 17..21 -> Evening
+            else -> Night
+        }
+    }
+}
+
+/** The [sky]'s sun or moon in the hero's top corner, rising into place as the card is [reveal]ed. */
+@Composable
+internal fun NovilaSkyIcon(sky: NovilaSky, hero: NovilaHeroColors, reveal: Float) {
+    val icon = when (sky) {
+        NovilaSky.Morning -> R.drawable.ic_novila_sun_morning
+        NovilaSky.Day -> R.drawable.ic_novila_sun
+        NovilaSky.Evening -> R.drawable.ic_novila_sun_evening
+        NovilaSky.Night -> R.drawable.ic_novila_moon
+    }
+    NovilaIcon(
+        painter = painterResource(icon),
+        contentDescription = null,
+        modifier = Modifier.size(SkyIconSize).graphicsLayer {
+            alpha = reveal
+            translationY = (1f - reveal) * SkyIconSize.toPx() / 2f
+            // Only the rays turn; the cuts and the moon stay level.
+            if (sky == NovilaSky.Day) rotationZ = (1f - reveal) * -90f
+        },
+        tint = hero.sun,
+    )
+}
+
+/**
+ * Today's background: the [sky]'s glow in the top corner and contour lines rising towards the bottom right corner,
+ * like a map of the hills around the day.
+ */
+internal fun Modifier.heroContours(hero: NovilaHeroColors, sky: NovilaSky): Modifier = drawWithCache {
+    val center = Offset(size.width - 64.dp.toPx(), size.height - 16.dp.toPx())
+    val step = 18.dp.toPx()
+    val contours = Path()
+    for (ring in 1..CONTOURS) {
+        val radius = step * ring
+        for (point in 0..CONTOUR_POINTS) {
+            val angle = 2 * PI * point / CONTOUR_POINTS
+            // Gentle waves that shift a little from ring to ring, so the lines read as terrain, not circles.
+            val wobble = 1 +
+                0.10 * sin(3 * angle + 1.49 + ring * 0.15) +
+                0.06 * sin(5 * angle + 3.42) +
+                0.04 * sin(2 * angle + 2.32 + ring * 0.3)
+            val x = center.x + (radius * wobble * cos(angle)).toFloat()
+            val y = center.y + (radius * wobble * CONTOUR_FLATTEN * sin(angle)).toFloat()
+            if (point == 0) contours.moveTo(x, y) else contours.lineTo(x, y)
+        }
+        contours.close()
+    }
+    val line = Stroke(1.dp.toPx())
+    val color = hero.content.copy(alpha = 0.09f)
+    onSky(hero, sky) { drawPath(contours, color, style = line) }
+}
+
+/**
+ * Training's background: the [sky]'s glow and parallel lines sweeping up towards it, fading out below a single
+ * line in the sun's color, like movement.
+ */
+internal fun Modifier.heroMotionLines(hero: NovilaHeroColors, sky: NovilaSky): Modifier = drawWithCache {
+    // Drawn on a 358 × 370 frame (a phone-width panel) and stretched to fit.
+    val sx = size.width / 358f
+    val sy = size.height / 370f
+    fun sweep(offset: Float) = Path().apply {
+        moveTo(-20f * sx, (372f + offset) * sy)
+        cubicTo(120f * sx, (350f + offset) * sy, 220f * sx, (250f + offset) * sy, 380f * sx, (110f + offset) * sy)
+    }
+    val lines = (0 until MOTION_LINES).map { sweep(it * 12f) }
+    val lead = sweep(-12f)
+    val thin = Stroke(1.4.dp.toPx())
+    val bold = Stroke(2.2.dp.toPx(), cap = StrokeCap.Round)
+    onSky(hero, sky) {
+        lines.forEachIndexed { i, path -> drawPath(path, hero.content.copy(alpha = 0.13f - 0.012f * i), style = thin) }
+        drawPath(lead, hero.sun.copy(alpha = 0.5f), style = bold)
+    }
+}
+
+/** Draws the [sky]'s glow behind the content, then the background's own [lines]. */
+private fun CacheDrawScope.onSky(
+    hero: NovilaHeroColors,
+    sky: NovilaSky,
+    lines: DrawScope.() -> Unit,
+): DrawResult {
+    val center = Offset(size.width - 36.dp.toPx(), 36.dp.toPx())
+    val radius = 120.dp.toPx()
+    // The moon gives a fainter light than the sun.
+    val glow = if (sky == NovilaSky.Night) 0.14f else 0.28f
+    val brush = Brush.radialGradient(listOf(hero.sun.copy(alpha = glow), hero.sun.copy(alpha = 0f)), center, radius)
+    return onDrawBehind {
+        drawCircle(brush, radius = radius, center = center)
+        lines()
+    }
+}
+
+private val SkyIconSize = 28.dp
+private const val CONTOURS = 12
+private const val CONTOUR_POINTS = 45
+private const val CONTOUR_FLATTEN = 0.8
+private const val MOTION_LINES = 8
