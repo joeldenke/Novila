@@ -37,12 +37,11 @@ import se.novila.feature.settings.GoalsActions
 import se.novila.feature.settings.GoalsScreen
 import se.novila.feature.settings.GoalsViewModel
 import se.novila.feature.settings.LicensesScreen
-import se.novila.feature.settings.MeasurementsScreen
-import se.novila.feature.settings.MeasurementsViewModel
 import se.novila.feature.settings.MyGoalsActions
 import se.novila.feature.settings.MyGoalsScreen
 import se.novila.feature.settings.MyGoalsViewModel
 import se.novila.feature.settings.PrivacyPolicyScreen
+import se.novila.feature.settings.ProfileActions
 import se.novila.feature.settings.ProfileScreen
 import se.novila.feature.settings.ProfileViewModel
 import se.novila.feature.settings.R
@@ -75,7 +74,7 @@ import se.novila.ui.R as UiR
 /** The open-source licenses of everything the app ships. */
 @Serializable data object LicensesRoute : NavKey
 
-/** The user's profile, on the phone only. */
+/** The user's profile with the body measurements and the way to My goals, on the phone only. */
 @Serializable data object ProfileRoute : NavKey
 
 /** Everything Novila plans by, in one place: daily goals, both coaches and food preferences. */
@@ -87,15 +86,12 @@ import se.novila.ui.R as UiR
 /** The diet, allergens and time that recipe suggestions on the Nutrition tab take into account. */
 @Serializable data object FoodPreferencesRoute : NavKey
 
-/** Weight, waist, neck and hips, logged per day. */
-@Serializable data object MeasurementsRoute : NavKey
-
 /** Reminders to log sleep, train and log food, each at its own time. */
 @Serializable data object RemindersRoute : NavKey
 
 /**
- * Settings and the screens opened from it. Settings, the profile, My goals, the goals, the food preferences, the
- * measurements and the reminders have their own ViewModels, scoped to their entries; the other three are static text.
+ * Settings and the screens opened from it. Settings, the profile (with the measurements), My goals, the goals, the
+ * food preferences and the reminders have their own ViewModels, scoped to their entries; the others are static text.
  * Navigation inside goes through [navigator], on whichever tab Settings was opened from. My goals leads to the training
  * and the sleep coach, which other features own, through [onOpenTrainingCoach] and [onOpenSleepCoach] from `:app`.
  */
@@ -117,22 +113,18 @@ fun EntryProviderScope<NavKey>.settingsEntries(
         // Nothing to show until the settings are read, a moment at app start.
         val settings = viewModel.settings.collectAsStateWithLifecycle().value ?: return@entry
         val profile = viewModel.profile.collectAsStateWithLifecycle().value ?: return@entry
-        val measurements = viewModel.measurements.collectAsStateWithLifecycle().value
         val movement by viewModel.movement.collectAsStateWithLifecycle()
         val context = LocalContext.current
         val connectHealth = rememberHealthPermissionRequest(viewModel::onMovementPermissionsResult)
         SettingsScreen(
             settings = settings,
             profile = profile,
-            measurements = measurements,
             movement = movement,
             version = viewModel.version,
             canUseDynamicColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
             canChooseLanguage = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU,
             actions = SettingsActions(
                 onOpenProfile = { navigator.navigate(ProfileRoute) },
-                onOpenMyGoals = { navigator.navigate(MyGoalsRoute) },
-                onOpenMeasurements = { navigator.navigate(MeasurementsRoute) },
                 onOpenReminders = { navigator.navigate(RemindersRoute) },
                 onTheme = viewModel::setTheme,
                 onDynamicColor = viewModel::setDynamicColor,
@@ -166,17 +158,7 @@ fun EntryProviderScope<NavKey>.settingsEntries(
             contentPadding = contentPadding,
         )
     }
-    entry<ProfileRoute> {
-        val viewModel = metroViewModel<ProfileViewModel>()
-        // Nothing to show until the profile is read, a moment at app start.
-        val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
-        ProfileScreen(
-            form = state.form,
-            currentYear = state.currentYear,
-            onChange = viewModel::onChange,
-            contentPadding = contentPadding,
-        )
-    }
+    entry<ProfileRoute> { ProfileEntry(navigator, contentPadding) }
     entry<GoalsRoute> {
         val viewModel = metroViewModel<GoalsViewModel>()
         // Nothing to show until the goals and the profile are read, a moment at app start.
@@ -194,7 +176,6 @@ fun EntryProviderScope<NavKey>.settingsEntries(
         val preferences = viewModel.preferences.collectAsStateWithLifecycle().value ?: return@entry
         FoodPreferencesScreen(preferences = preferences, onChange = viewModel::change, contentPadding = contentPadding)
     }
-    entry<MeasurementsRoute> { MeasurementsEntry(contentPadding) }
     entry<RemindersRoute> { RemindersEntry(contentPadding) }
     entry<HealthDataRoute> {
         val context = LocalContext.current
@@ -223,33 +204,33 @@ fun settingsTitle(route: NavKey?): String? = when (route) {
     MyGoalsRoute -> stringResource(R.string.my_goals_title)
     GoalsRoute -> stringResource(R.string.goals_title)
     FoodPreferencesRoute -> stringResource(R.string.food_preferences_title)
-    MeasurementsRoute -> stringResource(R.string.settings_measurements)
     RemindersRoute -> stringResource(R.string.settings_reminders)
     else -> null
 }
 
 /**
- * The measurements screen: today unless the user went back to fill in a forgotten day, and the fields show what that
- * day already has. "Today" is read again on every resume, so a night past midnight never keeps logging the day
- * before.
+ * The profile with the measurements: they are logged for today unless the user went back to fill in a forgotten day,
+ * and the fields show what that day already has. "Today" is read again on every resume, so a night past midnight
+ * never keeps logging the day before.
  */
 @Composable
-private fun MeasurementsEntry(contentPadding: PaddingValues) {
-    val viewModel = metroViewModel<MeasurementsViewModel>()
+private fun ProfileEntry(navigator: Navigator, contentPadding: PaddingValues) {
+    val viewModel = metroViewModel<ProfileViewModel>()
     LifecycleResumeEffect(viewModel) {
         viewModel.refresh()
         onPauseOrDispose { }
     }
-    // Nothing to show until the measurements are read, a moment at app start.
+    // Nothing to show until the profile and the measurements are read, a moment at app start.
     val state = viewModel.state.collectAsStateWithLifecycle().value ?: return
-    MeasurementsScreen(
-        form = state.form,
-        day = state.day,
-        today = state.today,
-        entries = state.entries,
-        onChange = viewModel::onChange,
-        onSelectDay = viewModel::onSelectDay,
-        onSave = viewModel::save,
+    ProfileScreen(
+        state = state,
+        actions = ProfileActions(
+            onChange = viewModel::onChange,
+            onMeasurementsChange = viewModel::onMeasurementsChange,
+            onSelectDay = viewModel::onSelectDay,
+            onSaveMeasurements = viewModel::saveMeasurements,
+            onOpenMyGoals = { navigator.navigate(MyGoalsRoute) },
+        ),
         contentPadding = contentPadding,
     )
 }

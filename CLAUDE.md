@@ -32,7 +32,7 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   `NovilaSceneImage` med parallax), namn, mål och tid för coachen, Health Connect och en sammanfattning i `NovilaHeroBanner`.
   Visas ensam (utan flikar) tills `AppSettings.onboarded` är satt; `NovilaApp` ger den en egen entry via
   `rememberStandaloneEntries`. Kan visas igen från Inställningar.
-- `:feature:settings` – Inställningar (profil, *Mina mål*, tema, påminnelser, Health Connect, ansvarsfriskrivning, radera data, integritetspolicy, licenser, introduktionen, version).
+- `:feature:settings` – Inställningar (profil med kroppsmått och vägen till *Mina mål*, tema, påminnelser, Health Connect, ansvarsfriskrivning, radera data, integritetspolicy, licenser, introduktionen, version).
   Ingen flik: öppnas med kugghjulet i toppraden (på Idag i hälsningen) och läggs på aktuell fliks back stack. `Navigator` flyttar
   den om den öppnas från en annan flik, så samma nyckel aldrig ligger i två stackar som visas samtidigt.
 - `:feature:widget` – widgeten på hemskärmen (Glance): `NovilaWidget` visar dagens balans, sömn, kost och vatten samt
@@ -311,8 +311,10 @@ där pluginet `firebase@firebase` inte alltid installeras.
   (`dayChecklist` i `:core:model`: sömn, dagens pass ur `TrainingWeek.trainingOn`, kost och vatten som
   `NovilaTaskRow`, där varje öppen rad har en knapp som gör det och den första är skärmens `NovilaAccentButton`;
   coachens förslag `dailyCoach` står överst i kortet, utan det raderna redan säger) och veckans insikter med vägen
-  till *Upptäckter* (alla insikter och sambanden mellan delarna). Veckodiagrammen hör till delarnas egna flikar, och
-  mående (humör, energi, stress, dagbok) togs bort för att syftet var oklart;
+  till *Upptäckter* (alla insikter och sambanden mellan delarna) och *Trender* (`TrendsScreen`: sömn, kost och
+  träning över samma period, med `trendFeedback` som jämför med perioden innan och väger delarna mot varandra).
+  Insiktskortet visar också vad loggarna snart låser upp (`discoveryProgress`), som staplar som fylls.
+  Veckodiagrammen hör till delarnas egna flikar, och mående (humör, energi, stress, dagbok) togs bort för att syftet var oklart;
   lägg inte tillbaka dem på Idag utan att ägaren ber om det.
   Hero-korten har himlen efter tid på dygnet (`NovilaSky.at(hour)`): morgonsol i ljusringar 05–10, sol med strålar
   10–17, solnedgång med appikonens snitt 17–22 och måne 22–05. Timmen kommer från skärmens ViewModel, aldrig från
@@ -320,12 +322,14 @@ där pluginet `firebase@firebase` inte alltid installeras.
   landskap i hero-korten; bakgrunden är linjer (höjdkurvor på Idag, rörelselinjer på Träning).
   Kort är vita med hårfin kant (`NovilaTheme.surfaces`). Träning börjar med veckan i överblick på samma granpanel,
   med rörelselinjer i stället för höjdkurvor (`NovilaHeroPanel`: minuter mot veckans plan, `NovilaWeekStrip` och
-  dagens enda huvudåtgärd ur `TodayPlan`).
+  dagens enda huvudåtgärd ur `TodayPlan`). Rörelse och återhämtning från Health Connect är ett kort
+  (`HealthDataCard`) med en statuspill (`NovilaStatus`) och streck för värden som saknas; utan anslutning ligger det
+  sist med en enda knapp.
 - **Flikarnas startsidor:** en flik är en startsida på ungefär en skärm, inga formulär och inga lösa taggar
   (chips) direkt på den. Sömn, Kost och Träning byggs i samma ordning: dagväljaren (om man kan gå bakåt i dagar),
-  *översikten* (läget och delens huvudåtgärd), *snabbloggning* (`NovilaQuickActions`: knappar som loggar med ett tryck
-  eller öppnar ett `NovilaBottomSheet` med formuläret) och *ingångarna* (`NovilaEntries`: coachen, programmet,
-  recepten, trenderna och liknande, var och en med en rad om läget). Det en ingång öppnar är en egen skärm (rutt och
+  *översikten* (läget och delens huvudåtgärd), *snabbloggning* (`NovilaQuickActions`: ett kort med rubrik och
+  knappar som loggar med ett tryck eller öppnar ett `NovilaBottomSheet` med formuläret; inga lösa knappar direkt på
+  startsidan) och *ingångarna* (`NovilaEntries`: coachen, programmet, recepten, trenderna och liknande, var och en med en rad om läget). Det en ingång öppnar är en egen skärm (rutt och
   ViewModel i featuren) med titel i toppraden. Taggar som väljer något (orsaker, dryckessorter, intervall) hör hemma
   i ett sheet eller på en sådan skärm. Nya kort läggs där, inte på startsidan; ett sheets innehåll får en egen
   `@Preview` via `NovilaSheetContent`, eftersom ett sheet öppnas i ett eget fönster.
@@ -336,10 +340,13 @@ där pluginet `firebase@firebase` inte alltid installeras.
   (600 dp, storleksklassen *medium*) ligger flikarna i en `NovilaNavigationRail` i stället för bottenraden, och
   `ScreenList` centrerar innehållet på högst 720 dp. `NovilaEntries` lägger två till fyra rutor per rad efter bredden.
   Lägg en `@Preview` med `widthDp = 900` för nya startsidor. Följ skillen `adaptive`.
-- **Mina mål:** allt appen planerar efter samlas på en skärm i Inställningar (`MyGoalsScreen`): dagliga mål,
+- **Mina mål:** allt appen planerar efter samlas på en skärm (`MyGoalsScreen`), som öppnas från profilen: dagliga mål,
   träningscoachen, sömncoachen och matpreferenserna, var och en med vad den står på och en rad dit den ändras. Samma
   skärmar öppnas från ingångarna på varje flik. Ny inställning som styr en plan läggs till här, inte som en egen rad i
   Inställningar, som bara har det som gäller appen.
+- **Profil:** `ProfileScreen` är en sida för personen: avatar (`NovilaAvatar`, initialer på granen), namn, födelseår
+  och längd, kroppsmåtten (senaste värdena, loggas per dag i ett sheet, historik med viktkurva) och raden till
+  *Mina mål*. Vikten skrivs bara via måtten; profilens vikt följer den senaste mätningen. Inställningar har en rad dit.
 - **Målade scener:** introduktionens scener är målade bilder i samma nordiska stil (falröd stuga, björk, gran, sjö,
   midsommarljus), WebP i featurens `drawable-nodpi`, beskurna till 1,4:1, högst cirka 1120 px breda och helst under 200 kB. De visas bara via
   `NovilaSceneImage`, som sköter hörn, entré och parallax. I mörkt läge blir dagscener skymning (`ColorMatrix`:

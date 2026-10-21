@@ -21,6 +21,7 @@ import se.novila.model.History
 import se.novila.model.HistoryRange
 import se.novila.model.averageNutrition
 import se.novila.model.averageSleep
+import se.novila.model.trainingMinutes
 import se.novila.ui.R
 import kotlin.math.abs
 
@@ -118,9 +119,60 @@ fun NutritionHistoryCard(history: History, goals: Goals, onRange: ((HistoryRange
     }
 }
 
+/**
+ * Training minutes logged in the app over the [history]'s range as bars: a bar per day, week or month, the minutes
+ * of strength and cardio in it. With [onRange] the user picks the range; the total is compared with the range before.
+ */
+@Composable
+fun TrainingHistoryCard(history: History, onRange: ((HistoryRange) -> Unit)? = null) {
+    val training = NovilaTheme.pillars.training
+    val total = history.days.sumOf { it.trainingMinutes }
+    val before = history.previous.sumOf { it.trainingMinutes }
+    val values = remember(history) { history.periods.map { period -> period.days.sumOf { it.trainingMinutes } } }
+    NovilaCard(
+        title = stringResource(
+            when (history.range) {
+                HistoryRange.Week -> R.string.history_training_title_week
+                HistoryRange.Month -> R.string.history_training_title_month
+                HistoryRange.Year -> R.string.history_training_title_year
+            },
+        ),
+        icon = painterResource(R.drawable.ic_training),
+        role = training,
+    ) {
+        if (onRange != null) HistoryRangePicker(history.range, onRange, training)
+        val beforeRange = historyBeforeText(history.range)
+        HistorySummary(
+            value = durationText(total),
+            caption = stringResource(R.string.history_training_caption),
+            trend = when {
+                total == 0 || before == 0 -> null
+
+                total == before -> stringResource(R.string.history_same, beforeRange)
+
+                else -> stringResource(
+                    if (total > before) R.string.history_training_more else R.string.history_training_less,
+                    durationText(abs(total - before)),
+                    beforeRange,
+                )
+            },
+        )
+        NovilaBarChart(
+            values = values.map { it.toFloat() },
+            // Room above the longest bar, and an hour at least, so a light range never looks full.
+            maxValue = maxOf(values.maxOrNull() ?: 0, MIN_TRAINING_CHART_MINUTES).toFloat(),
+            labels = historyLabels(history),
+            role = training,
+            contentDescription = stringResource(R.string.history_training_description, durationText(total)),
+        )
+    }
+}
+
+private const val MIN_TRAINING_CHART_MINUTES = 60
+
 /** Week, four weeks or a year, as chips in the [role] color of the part of the app the chart is about. */
 @Composable
-private fun HistoryRangePicker(selected: HistoryRange, onSelect: (HistoryRange) -> Unit, role: NovilaColorRole) {
+fun HistoryRangePicker(selected: HistoryRange, onSelect: (HistoryRange) -> Unit, role: NovilaColorRole) {
     Row(horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s)) {
         HistoryRange.entries.forEach { range ->
             NovilaChoiceChip(
@@ -150,7 +202,7 @@ private fun HistorySummary(value: String, caption: String, trend: String?) {
 
 /** What the range is compared with, e.g. "the week before". */
 @Composable
-private fun beforeText(range: HistoryRange): String = stringResource(
+fun historyBeforeText(range: HistoryRange): String = stringResource(
     when (range) {
         HistoryRange.Week -> R.string.history_before_week
         HistoryRange.Month -> R.string.history_before_month
@@ -160,7 +212,7 @@ private fun beforeText(range: HistoryRange): String = stringResource(
 
 @Composable
 private fun sleepTrendText(hours: Float, range: HistoryRange): String {
-    val before = beforeText(range)
+    val before = historyBeforeText(range)
     return when {
         hours > 0f -> stringResource(R.string.history_sleep_more, hoursText(hours), before)
         hours < 0f -> stringResource(R.string.history_sleep_less, hoursText(abs(hours)), before)
@@ -170,7 +222,7 @@ private fun sleepTrendText(hours: Float, range: HistoryRange): String {
 
 @Composable
 private fun nutritionTrendText(points: Int, range: HistoryRange): String {
-    val before = beforeText(range)
+    val before = historyBeforeText(range)
     return when {
         points > 0 -> pluralStringResource(R.plurals.history_nutrition_higher, points, points, before)
         points < 0 -> pluralStringResource(R.plurals.history_nutrition_lower, abs(points), abs(points), before)

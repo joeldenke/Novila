@@ -15,6 +15,8 @@ import se.novila.feature.today.DiscoveriesViewModel
 import se.novila.feature.today.R
 import se.novila.feature.today.TodayScreen
 import se.novila.feature.today.TodayViewModel
+import se.novila.feature.today.TrendsScreen
+import se.novila.feature.today.TrendsViewModel
 import se.novila.navigation.Navigator
 
 /** The Today tab: what to do today, and how the day and week look. */
@@ -23,10 +25,13 @@ import se.novila.navigation.Navigator
 /** Everything the logs say: the week's insights, what the nights say and the connections between the parts. */
 @Serializable data object DiscoveriesRoute : NavKey
 
+/** Sleep, food and training over the same range, with what the trends say together. */
+@Serializable data object TrendsRoute : NavKey
+
 /**
- * Today and the discoveries opened from it, each with its own ViewModel scoped to the entry. Navigation inside the
- * tab goes through [navigator]; the other tabs and Settings are opened through the callbacks, so this module never
- * depends on another feature.
+ * Today and the discoveries and trends opened from it, each with its own ViewModel scoped to the entry. Navigation
+ * inside the tab goes through [navigator]; the other tabs and Settings are opened through the callbacks, so this
+ * module never depends on another feature.
  */
 fun EntryProviderScope<NavKey>.todayEntries(
     navigator: Navigator,
@@ -64,6 +69,8 @@ fun EntryProviderScope<NavKey>.todayEntries(
             contentPadding = contentPadding,
             training = state.training,
             onOpenDiscoveries = { navigator.navigate(DiscoveriesRoute) },
+            onOpenTrends = { navigator.navigate(TrendsRoute) },
+            upcoming = state.upcoming,
             setupIncomplete = setupIncomplete,
             onCompleteSetup = viewModel::openSetup,
         )
@@ -82,11 +89,28 @@ fun EntryProviderScope<NavKey>.todayEntries(
             contentPadding = contentPadding,
         )
     }
+    entry<TrendsRoute> {
+        val viewModel = metroViewModel<TrendsViewModel>()
+        LifecycleResumeEffect(viewModel) {
+            viewModel.refresh()
+            onPauseOrDispose { }
+        }
+        val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
+        TrendsScreen(
+            history = state.history,
+            goals = state.goals,
+            feedback = state.feedback,
+            connections = state.connections,
+            onRange = viewModel::selectRange,
+            contentPadding = contentPadding,
+        )
+    }
 }
 
 /** The top bar title of a screen inside the Today tab, or null when [route] is not one of them. */
 @Composable
 fun todayDetailTitle(route: NavKey?): String? = when (route) {
     DiscoveriesRoute -> stringResource(R.string.discoveries_title)
+    TrendsRoute -> stringResource(R.string.trends_title)
     else -> null
 }

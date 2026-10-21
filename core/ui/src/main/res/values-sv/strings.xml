@@ -140,4 +140,11 @@
     <string name="setup_hint_title">Uppsättningen är inte klar</string>
     <string name="setup_hint_body">Du hoppade över introduktionen, så din profil, dina mål och coacherna är inte inställda ännu.</string>
     <string name="setup_hint_action">Slutför uppsättningen</string>
+    <string name="history_training_title_week">Träning i veckan</string>
+    <string name="history_training_title_month">Träning, senaste fyra veckorna</string>
+    <string name="history_training_title_year">Träning, senaste året</string>
+    <string name="history_training_caption">Styrka och kondition loggat i Novila</string>
+    <string name="history_training_more">%1$s mer än %2$s</string>
+    <string name="history_training_less">%1$s mindre än %2$s</string>
+    <string name="history_training_description">Träningsminuter under perioden, %1$s totalt.</string>
 </resources>

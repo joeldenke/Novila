@@ -147,7 +147,11 @@ internal fun FoodSheet(
 private fun LogActions(day: DayEntry, onFood: () -> Unit, onWater: () -> Unit, onDrink: () -> Unit) {
     val nutrition = NovilaTheme.pillars.nutrition
     val water = DrinkKind.Water
-    NovilaQuickActions {
+    NovilaQuickActions(
+        title = stringResource(R.string.nutrition_log_title),
+        icon = painterResource(UiR.drawable.ic_nutrition),
+        role = nutrition,
+    ) {
         NovilaButton(
             text = stringResource(R.string.nutrition_log_food),
             onClick = onFood,

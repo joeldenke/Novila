@@ -247,14 +247,23 @@ fun NovilaSheetContent(title: String, content: @Composable ColumnScope.() -> Uni
 }
 
 /**
- * The tab's quick actions below its overview, side by side: give each [NovilaButton] `Modifier.weight(1f)` and
- * `fillMaxHeight()` so they share the width equally and stay as tall as the tallest, when a label wraps.
+ * The tab's quick actions below its overview, side by side in a card under a [title], so no button stands loose on
+ * the tab: give each [NovilaButton] `Modifier.weight(1f)` and `fillMaxHeight()` so they share the width equally and
+ * stay as tall as the tallest, when a label wraps. With an [icon], the title gets a badge in the [role] color.
  */
 @Composable
-fun NovilaQuickActions(modifier: Modifier = Modifier, content: @Composable RowScope.() -> Unit) {
-    Row(
-        modifier = modifier.fillMaxWidth().height(IntrinsicSize.Min),
-        horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s),
-        content = content,
-    )
+fun NovilaQuickActions(
+    title: String,
+    modifier: Modifier = Modifier,
+    icon: Painter? = null,
+    role: NovilaColorRole = NovilaTheme.pillars.training,
+    content: @Composable RowScope.() -> Unit,
+) {
+    NovilaCard(modifier = modifier, title = title, icon = icon, role = role) {
+        Row(
+            modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min),
+            horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s),
+            content = content,
+        )
+    }
 }

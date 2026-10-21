@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import se.novila.designsystem.component.NovilaAvatar
 import se.novila.designsystem.component.NovilaButton
 import se.novila.designsystem.component.NovilaCard
 import se.novila.designsystem.component.NovilaChoiceChip
@@ -27,10 +28,8 @@ import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.settings.R
 import se.novila.model.AppSettings
 import se.novila.model.EntryLayout
-import se.novila.model.MeasurementEntry
 import se.novila.model.Profile
 import se.novila.model.ThemeMode
-import se.novila.model.latestWeightKg
 import se.novila.movement.MovementState
 import se.novila.movement.TodayMovement
 import se.novila.ui.common.ScreenList
@@ -40,8 +39,6 @@ import se.novila.ui.R as UiR
 /** What the Settings screen can do. The entry connects these to the ViewModel and to the system. */
 data class SettingsActions(
     val onOpenProfile: () -> Unit = {},
-    val onOpenMyGoals: () -> Unit = {},
-    val onOpenMeasurements: () -> Unit = {},
     val onOpenReminders: () -> Unit = {},
     val onTheme: (ThemeMode) -> Unit = {},
     val onDynamicColor: (Boolean) -> Unit = {},
@@ -59,9 +56,9 @@ data class SettingsActions(
 )
 
 /**
- * Settings: the user's profile and the way to My goals, then what is about the app itself: appearance, reminders,
- * Health Connect access, health disclaimer, the user's data and the app version. When the setup was skipped, the
- * profile card also has the row that finishes it ([SettingsActions.onShowIntro]).
+ * Settings: the user's profile (with the measurements and My goals inside it), then what is about the app itself:
+ * appearance, reminders, Health Connect access, health disclaimer, the user's data and the app version. When the
+ * setup was skipped, the profile card also has the row that finishes it ([SettingsActions.onShowIntro]).
  *
  * @param canUseDynamicColor wallpaper colors exist (Android 12+)
  * @param canChooseLanguage the phone has per-app language settings (Android 13+)
@@ -70,7 +67,6 @@ data class SettingsActions(
 fun SettingsScreen(
     settings: AppSettings,
     profile: Profile,
-    measurements: List<MeasurementEntry>?,
     movement: MovementState,
     version: AppVersion,
     canUseDynamicColor: Boolean,
@@ -80,7 +76,7 @@ fun SettingsScreen(
     modifier: Modifier = Modifier,
 ) {
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
-        item(key = "profile") { ProfileCard(settings, profile, measurements, actions) }
+        item(key = "profile") { ProfileCard(settings, profile, actions) }
         item(key = "appearance") {
             AppearanceCard(settings, canUseDynamicColor, canChooseLanguage, actions)
         }
@@ -95,16 +91,12 @@ fun SettingsScreen(
 }
 
 /**
- * Who uses the app: the name (or what it is for when empty), the way to My goals, and the measurements. When the
- * introduction was skipped, the card starts with the row that finishes the setup, which reopens the intro.
+ * Who uses the app: their avatar and name (or what the profile is for when empty), one tap from the profile with the
+ * measurements and My goals. When the introduction was skipped, the card starts with the row that finishes the setup,
+ * which reopens the intro.
  */
 @Composable
-private fun ProfileCard(
-    settings: AppSettings,
-    profile: Profile,
-    measurements: List<MeasurementEntry>?,
-    actions: SettingsActions,
-) {
+private fun ProfileCard(settings: AppSettings, profile: Profile, actions: SettingsActions) {
     NovilaCard(title = stringResource(R.string.settings_profile)) {
         if (settings.setupIncomplete) {
             NovilaListRow(
@@ -114,24 +106,21 @@ private fun ProfileCard(
                 trailing = { Chevron() },
             )
         }
+        val name = profile.name.ifEmpty { stringResource(R.string.profile_title) }
         NovilaListRow(
-            title = profile.name.ifEmpty { stringResource(R.string.profile_title) },
-            summary = if (profile.name.isEmpty()) stringResource(R.string.settings_profile_empty) else null,
+            title = name,
+            summary = stringResource(
+                if (profile.isEmpty) R.string.settings_profile_empty else R.string.settings_profile_summary,
+            ),
             onClick = actions.onOpenProfile,
-            trailing = { Chevron() },
-        )
-        NovilaListRow(
-            title = stringResource(R.string.my_goals_title),
-            summary = stringResource(R.string.settings_my_goals_summary),
-            onClick = actions.onOpenMyGoals,
-            trailing = { Chevron() },
-        )
-        NovilaListRow(
-            title = stringResource(R.string.settings_measurements),
-            summary = measurements?.latestWeightKg()
-                ?.let { stringResource(R.string.settings_measurements_summary, it) }
-                ?: stringResource(R.string.settings_measurements_empty),
-            onClick = actions.onOpenMeasurements,
+            leading = {
+                NovilaAvatar(
+                    initials = initialsOf(profile.name),
+                    placeholder = painterResource(UiR.drawable.ic_profile),
+                    contentDescription = stringResource(R.string.profile_avatar, name),
+                    compact = true,
+                )
+            },
             trailing = { Chevron() },
         )
     }
@@ -352,7 +341,7 @@ private fun Body(text: String) {
 }
 
 @Composable
-private fun Chevron() {
+internal fun Chevron() {
     // The row's title already says where it leads.
     NovilaIcon(
         painter = painterResource(R.drawable.ic_chevron),
@@ -366,14 +355,12 @@ private fun SettingsContent(
     movement: MovementState,
     settings: AppSettings = AppSettings(),
     profile: Profile = Profile(),
-    measurements: List<MeasurementEntry>? = emptyList(),
 ) {
     NovilaTheme {
         NovilaScaffold { padding ->
             SettingsScreen(
                 settings = settings,
                 profile = profile,
-                measurements = measurements,
                 movement = movement,
                 version = AppVersion(name = "0.1.42-debug", code = 42),
                 canUseDynamicColor = true,

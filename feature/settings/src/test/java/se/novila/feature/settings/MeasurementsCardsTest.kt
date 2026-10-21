@@ -1,19 +1,17 @@
 package se.novila.feature.settings
 
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsNotEnabled
-import androidx.compose.ui.test.hasScrollAction
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTextInput
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -27,47 +25,41 @@ import se.novila.model.MeasurementForm
 import java.time.LocalDate
 
 @RunWith(RobolectricTestRunner::class)
-class MeasurementsScreenTest {
+class MeasurementsCardsTest {
     @get:Rule val composeRule = createComposeRule()
 
     private val date = LocalDate.of(2026, 10, 16)
     private val logged = MeasurementEntry(date, BodyMeasurements(weightKg = 73, waistCm = 81))
 
     /**
-     * Shows the screen, holding the form as the ViewModel would, and returns what was typed. Saving does nothing;
-     * the tests that need it show their own screen and count the presses.
+     * Shows the sheet's content, holding the form as the ViewModel would, and returns what was typed and how often
+     * it was saved.
      */
-    private fun show(
+    private fun showSheet(
         initial: MeasurementForm = MeasurementForm(),
         entries: List<MeasurementEntry> = emptyList(),
-    ): () -> MeasurementForm {
+    ): Pair<() -> MeasurementForm, () -> Int> {
         var form by mutableStateOf(initial)
+        var saves = 0
         composeRule.setContent {
             NovilaTheme {
-                MeasurementsScreen(
-                    form = form,
-                    day = date,
-                    today = date,
-                    entries = entries,
-                    onChange = { form = it },
-                    onSelectDay = {},
-                    onSave = {},
-                    contentPadding = PaddingValues(),
-                )
+                Column {
+                    MeasurementsSheet(
+                        state = MeasurementsUiState(form, date, date, entries),
+                        onChange = { form = it },
+                        onSelectDay = {},
+                        onSave = { saves++ },
+                    )
+                }
             }
         }
-        return { form }
+        return Pair({ form }, { saves })
     }
 
     private fun field(label: String) = composeRule.onNode(hasSetTextAction() and hasText(label))
 
-    /** The history is below the taller controls, so the lazy list has to reach it. */
-    private fun scrollTo(text: String) {
-        composeRule.onNode(hasScrollAction()).performScrollToNode(hasText(text))
-    }
-
     @Test fun `typing a weight changes the form`() {
-        val form = show()
+        val (form, _) = showSheet()
 
         field("Weight").performTextInput("74")
 
@@ -75,58 +67,41 @@ class MeasurementsScreenTest {
     }
 
     @Test fun `a waist out of range says which range is right`() {
-        show(MeasurementForm(waist = "8"))
+        showSheet(MeasurementForm(waist = "8"))
 
         composeRule.onNodeWithText("Enter a waist between 40 and 250 cm.").assertExists()
     }
 
     @Test fun `a neck out of range says which range is right`() {
-        show(MeasurementForm(neck = "90"))
+        showSheet(MeasurementForm(neck = "90"))
 
         composeRule.onNodeWithText("Enter a neck between 20 and 80 cm.").assertExists()
     }
 
     @Test fun `nothing is saved until something is typed`() {
-        var form by mutableStateOf(MeasurementForm.of(logged.measurements))
-        var saving = 0
-        composeRule.setContent {
-            NovilaTheme {
-                MeasurementsScreen(
-                    form = form,
-                    day = date,
-                    today = date,
-                    entries = listOf(logged),
-                    onChange = { form = it },
-                    onSelectDay = {},
-                    onSave = { saving++ },
-                    contentPadding = PaddingValues(),
-                )
-            }
-        }
+        val (_, saves) = showSheet(MeasurementForm.of(logged.measurements), listOf(logged))
 
         composeRule.onNodeWithText("Save").assertIsNotEnabled()
 
         field("Weight").performTextInput("4")
         composeRule.onNodeWithText("Save").performClick()
 
-        assertEquals(1, saving)
+        assertEquals(1, saves())
     }
 
     @Test fun `a logged day shows its values, or a dash when one was not measured`() {
-        show(initial = MeasurementForm.of(logged.measurements), entries = listOf(logged))
+        composeRule.setContent { NovilaTheme { MeasurementsHistoryCard(listOf(logged)) } }
 
-        scrollTo("73 kg")
         composeRule.onNodeWithText("73 kg").assertExists()
         composeRule.onNodeWithText("81 cm").assertExists()
         // Neck and hips were not measured, so both show the dash.
         composeRule.onAllNodesWithText("–").assertCountEquals(2)
     }
 
-    @Test fun `without measurements, the history says nothing is logged`() {
-        show()
+    @Test fun `without measurements, the latest card shows dashes`() {
+        composeRule.setContent { NovilaTheme { LatestMeasurementsCard(emptyList(), onLog = {}) } }
 
-        val empty = "Nothing logged yet. What you measure shows up here over time."
-        scrollTo(empty)
-        composeRule.onNodeWithText(empty).assertExists()
+        // Weight, waist, neck and hips all wait for their first measurement.
+        composeRule.onAllNodesWithText("–").assertCountEquals(4)
     }
 }

@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.test.hasScrollToNodeAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
@@ -14,13 +15,10 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.model.AppSettings
-import se.novila.model.BodyMeasurements
 import se.novila.model.EntryLayout
-import se.novila.model.MeasurementEntry
 import se.novila.model.Profile
 import se.novila.model.ThemeMode
 import se.novila.movement.MovementState
-import java.time.LocalDate
 
 @RunWith(RobolectricTestRunner::class)
 class SettingsScreenTest {
@@ -29,15 +27,14 @@ class SettingsScreenTest {
     private fun show(
         actions: SettingsActions,
         movement: MovementState = MovementState.NeedsPermission(),
-        measurements: List<MeasurementEntry>? = emptyList(),
         settings: AppSettings = AppSettings(),
+        profile: Profile = Profile(),
     ) {
         composeRule.setContent {
             NovilaTheme {
                 SettingsScreen(
                     settings = settings,
-                    profile = Profile(),
-                    measurements = measurements,
+                    profile = profile,
                     movement = movement,
                     version = AppVersion(name = "0.1.7-debug", code = 7),
                     canUseDynamicColor = true,
@@ -73,15 +70,6 @@ class SettingsScreenTest {
         assertEquals(listOf(EntryLayout.Rows), chosen)
     }
 
-    @Test fun `my goals open from the profile card`() {
-        var opens = 0
-        show(SettingsActions(onOpenMyGoals = { opens++ }))
-
-        composeRule.onNodeWithText("My goals").performClick()
-
-        assertEquals(1, opens)
-    }
-
     @Test fun `an empty profile says what to add and opens the profile`() {
         var opens = 0
         show(SettingsActions(onOpenProfile = { opens++ }))
@@ -91,26 +79,13 @@ class SettingsScreenTest {
         assertEquals(1, opens)
     }
 
-    @Test fun `the measurements row shows the newest weight and opens the measurements`() {
+    @Test fun `the profile row shows the name and leads to measurements and goals`() {
         var opens = 0
-        show(
-            SettingsActions(onOpenMeasurements = { opens++ }),
-            measurements = listOf(
-                MeasurementEntry(LocalDate.of(2026, 10, 16), BodyMeasurements(weightKg = 74)),
-                MeasurementEntry(LocalDate.of(2026, 10, 9), BodyMeasurements(weightKg = 75)),
-            ),
-        )
+        show(SettingsActions(onOpenProfile = { opens++ }), profile = Profile(name = "Alex Lind"))
 
-        composeRule.onNodeWithText("Weight 74 kg").performClick()
-
-        assertEquals(1, opens)
-    }
-
-    @Test fun `without measurements, the row says nothing is logged`() {
-        var opens = 0
-        show(SettingsActions(onOpenMeasurements = { opens++ }), measurements = emptyList())
-
-        composeRule.onNodeWithText("Nothing logged yet").performClick()
+        composeRule.onNodeWithText("Alex Lind").assertExists()
+        composeRule.onNodeWithContentDescription("Profile picture for Alex Lind").assertExists()
+        composeRule.onNodeWithText("Profile, measurements and goals").performClick()
 
         assertEquals(1, opens)
     }

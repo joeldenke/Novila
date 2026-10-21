@@ -21,7 +21,6 @@ import se.novila.data.SleepCoachStore
 import se.novila.data.deleteLegacyPreferences
 import se.novila.model.AppSettings
 import se.novila.model.EntryLayout
-import se.novila.model.MeasurementEntry
 import se.novila.model.Profile
 import se.novila.model.ThemeMode
 import se.novila.movement.MovementRepository
@@ -30,7 +29,7 @@ import se.novila.reminders.ReminderScheduler
 import java.time.LocalDate
 
 /**
- * Settings: the profile, the way to My goals, the measurements, how the app looks, Health Connect access, the user's
+ * Settings: the profile (with the measurements and My goals), how the app looks, Health Connect access, the user's
  * data and the app version. Scoped to its entry.
  */
 @ViewModelKey
@@ -55,9 +54,6 @@ class SettingsViewModel(
 
     /** The user's profile, or null before the store's first read. */
     val profile: StateFlow<Profile?> = profileStore.profile
-
-    /** What has been measured, newest first, or null before the store's first read. */
-    val measurements: StateFlow<List<MeasurementEntry>?> = measurementsStore.entries
 
     /** Whether Health Connect is connected, and what the user can do if not. */
     val movement: StateFlow<MovementState> = movementRepository.state

@@ -2,6 +2,7 @@ package se.novila.feature.training
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -28,9 +29,10 @@ import java.time.DayOfWeek
 import se.novila.ui.R as UiR
 
 /**
- * The Training tab: the week at a glance with today's one main action, and recovery from the watch, which today's
- * session may be lighter for. Then the quick way to log another workout, the ways into the week's program (with the
- * weekly review), the coach and the exercise library, and what Health Connect recorded today. When the introduction
+ * The Training tab: the week at a glance with today's one main action, and movement and recovery from the watch
+ * (today's session may be lighter for it) right below once Health Connect is connected. Then the card that logs
+ * another workout and the ways into the week's program (with the weekly review), the coach and the exercise library.
+ * Before Health Connect is connected, the card with its numbers waits at the bottom. When the introduction
  * was skipped ([setupIncomplete]), a quiet card at the top leads to finishing the setup (actions.onCompleteSetup).
  */
 @Composable
@@ -64,17 +66,16 @@ fun TrainingScreen(
                 )
             }
         }
-        item(key = "recovery") {
-            RecoveryCard(
-                recovery = recovery,
-                status = state.recovery,
-                onConnect = actions.onConnectRecovery,
-                onOpenSettings = actions.onOpenHealthSettings,
-            )
-        }
+        val connected = movement is MovementState.Connected
+        // Connected, the watch's numbers belong with today's plan; until then the card waits at the bottom.
+        if (connected) healthData(movement, recovery, exercise, state, actions)
         item(key = "log") {
             NovilaReveal(order = 1) {
-                NovilaQuickActions {
+                NovilaQuickActions(
+                    title = stringResource(R.string.training_log_title),
+                    icon = painterResource(UiR.drawable.ic_training),
+                    role = NovilaTheme.pillars.training,
+                ) {
                     NovilaButton(
                         text = stringResource(R.string.overview_log_other),
                         onClick = actions.onOpenCardioLog,
@@ -86,15 +87,31 @@ fun TrainingScreen(
         item(key = "entries") {
             NovilaReveal(order = 2) { NovilaEntries(trainingHubEntries(state, actions)) }
         }
-        item(key = "movement") {
-            MovementCard(
-                movement,
-                actions.onConnectHealth,
-                actions.onOpenHealthSettings,
-                actions.onInstallHealth,
-                exercise,
-            )
-        }
+        if (!connected) healthData(movement, recovery, exercise, state, actions)
+    }
+}
+
+/** Movement and recovery from Health Connect, or how to connect it. */
+private fun LazyListScope.healthData(
+    movement: MovementState,
+    recovery: RecoveryState,
+    exercise: ExerciseState,
+    state: TrainingUiState,
+    actions: TrainingActions,
+) {
+    item(key = "health") {
+        HealthDataCard(
+            movement = movement,
+            recovery = recovery,
+            exercise = exercise,
+            status = state.recovery,
+            actions = HealthDataActions(
+                onConnect = actions.onConnectHealth,
+                onConnectRecovery = actions.onConnectRecovery,
+                onOpenSettings = actions.onOpenHealthSettings,
+                onInstall = actions.onInstallHealth,
+            ),
+        )
     }
 }
 
