@@ -6,6 +6,9 @@
     <string name="settings_theme_system">Automatiskt</string>
     <string name="settings_theme_light">Ljust</string>
     <string name="settings_theme_dark">Mörkt</string>
+    <string name="settings_entry_layout">Ingångar på flikarna</string>
+    <string name="settings_entry_layout_grid">Rutor</string>
+    <string name="settings_entry_layout_rows">Rader</string>
     <string name="settings_dynamic_color">Färger från bakgrundsbilden</string>
     <string name="settings_dynamic_color_summary">Använd färgerna från din bakgrundsbild i stället för Novilas skog och sol.</string>
     <string name="settings_language">Språk</string>

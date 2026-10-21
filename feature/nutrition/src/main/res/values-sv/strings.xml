@@ -11,6 +11,17 @@
     <string name="nutrition_treat_penalty">Sött och snacks: −%1$d poäng i dag. Ett per dag är fritt.</string>
     <string name="nutrition_treat_penalty_day">Sött och snacks: −%1$d poäng den dagen. Ett per dag är fritt.</string>
     <string name="nutrition_about">Viktat efter Livsmedelsverkets kostråd: grönsaker och frukt väger tyngst.</string>
+    <string name="nutrition_log_food">Logga mat</string>
+    <string name="nutrition_log_water">+%1$s vatten</string>
+    <string name="nutrition_log_drink">Annan dryck</string>
+    <string name="nutrition_sheet_food">Logga mat</string>
+    <string name="nutrition_sheet_drinks">Drycker</string>
+    <string name="nutrition_entry_recipes">Recept</string>
+    <string name="nutrition_entry_recipes_none">Inget passar dina val just nu</string>
+    <string name="nutrition_entry_trends">Trender</string>
+    <string name="nutrition_entry_trends_summary">%1$d av 100 i snitt i veckan</string>
+    <string name="nutrition_entry_trends_empty">Inget loggat i veckan</string>
+    <string name="nutrition_entry_preferences">Matpreferenser</string>
     <string name="food_log_title">Logga i dag</string>
     <string name="food_log_title_day">Ändra dagen</string>
     <string name="food_vegetables">Grönsaker &amp; frukt</string>

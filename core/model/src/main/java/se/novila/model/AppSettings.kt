@@ -15,6 +15,8 @@ data class AppSettings(
      * has it set, so their setup stays complete.
      */
     val setupSkipped: Boolean = false,
+    /** Tiles or rows for the ways into each tab's parts. */
+    val entryLayout: EntryLayout = EntryLayout.Grid,
 ) {
     /** The whole setup is done: the intro was finished, not skipped. */
     val setupComplete: Boolean get() = onboarded && !setupSkipped
@@ -40,5 +42,17 @@ enum class ThemeMode {
     companion object {
         /** The saved name, or [System] for a missing or unknown value, so an old or broken file never crashes. */
         fun fromName(name: String?): ThemeMode = entries.firstOrNull { it.name == name } ?: System
+    }
+}
+
+/** How the tabs show the ways into their parts: tiles in a grid, or rows in one card like Settings. */
+enum class EntryLayout {
+    Grid,
+    Rows,
+    ;
+
+    companion object {
+        /** The saved name, or [Grid] for a missing or unknown value, so an old or broken file never crashes. */
+        fun fromName(name: String?): EntryLayout = entries.firstOrNull { it.name == name } ?: Grid
     }
 }

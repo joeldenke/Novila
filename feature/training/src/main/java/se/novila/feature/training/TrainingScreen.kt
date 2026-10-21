@@ -1,15 +1,18 @@
 package se.novila.feature.training
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import se.novila.designsystem.component.NovilaActionChip
+import se.novila.designsystem.component.NovilaButton
+import se.novila.designsystem.component.NovilaEntries
+import se.novila.designsystem.component.NovilaEntry
+import se.novila.designsystem.component.NovilaEntryLayout
+import se.novila.designsystem.component.NovilaQuickActions
 import se.novila.designsystem.component.NovilaReveal
 import se.novila.designsystem.component.NovilaSky
 import se.novila.designsystem.theme.NovilaTheme
@@ -19,18 +22,16 @@ import se.novila.movement.MovementState
 import se.novila.recovery.RecoveryState
 import se.novila.recovery.RecoveryStatus
 import se.novila.ui.common.ScreenList
-import se.novila.ui.common.ScreenSection
-import se.novila.ui.common.section
 import se.novila.ui.common.setupHint
 import se.novila.ui.preview.PreviewData
 import java.time.DayOfWeek
+import se.novila.ui.R as UiR
 
 /**
- * The Training tab in the parts every tab has ([ScreenSection]). Overview: the week at a glance with today's one main
- * action, and recovery from the watch, which today's session may be lighter for. Log: another workout, and what
- * Health Connect recorded. Your plan: the coach, the week's program (tap a day to open its session) and the exercise
- * library. Trends: the weekly review of what's done and what next week holds. When the introduction was skipped
- * ([setupIncomplete]), a quiet card at the top leads to finishing the setup (actions.onCompleteSetup).
+ * The Training tab: the week at a glance with today's one main action, and recovery from the watch, which today's
+ * session may be lighter for. Then the quick way to log another workout, the ways into the week's program (with the
+ * weekly review), the coach and the exercise library, and what Health Connect recorded today. When the introduction
+ * was skipped ([setupIncomplete]), a quiet card at the top leads to finishing the setup (actions.onCompleteSetup).
  */
 @Composable
 fun TrainingScreen(
@@ -49,7 +50,6 @@ fun TrainingScreen(
     val plan = remember(state) { state.todayPlan() }
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
         setupHint(setupIncomplete, actions.onCompleteSetup)
-        section(ScreenSection.Overview)
         item(key = "overview") {
             NovilaReveal(order = 0) {
                 TrainingOverview(
@@ -72,9 +72,19 @@ fun TrainingScreen(
                 onOpenSettings = actions.onOpenHealthSettings,
             )
         }
-        section(ScreenSection.Log)
-        item(key = "log-actions") {
-            NovilaReveal(order = 1) { LogActions(movement, recovery, actions) }
+        item(key = "log") {
+            NovilaReveal(order = 1) {
+                NovilaQuickActions {
+                    NovilaButton(
+                        text = stringResource(R.string.overview_log_other),
+                        onClick = actions.onOpenCardioLog,
+                        modifier = Modifier.weight(1f).fillMaxHeight(),
+                    )
+                }
+            }
+        }
+        item(key = "entries") {
+            NovilaReveal(order = 2) { NovilaEntries(trainingHubEntries(state, actions)) }
         }
         item(key = "movement") {
             MovementCard(
@@ -85,46 +95,38 @@ fun TrainingScreen(
                 exercise,
             )
         }
-        section(ScreenSection.Plan)
-        item(key = "coach") {
-            NovilaActionChip(
-                stringResource(if (state.coach.active) R.string.coach_adjust else R.string.coach_open),
-                onClick = actions.onOpenCoach,
-            )
-        }
-        item(key = "program") {
-            NovilaReveal(order = 2) {
-                TrainingProgramCard(state.program, today, state.weekDone, onOpenSession = actions.onOpenSession)
-            }
-        }
-        item(key = "exercises") {
-            ExerciseLibraryCard(actions.onOpenExercise, actions.onOpenLibrary)
-        }
-        state.weeklyReview()?.let { review ->
-            section(ScreenSection.Trends)
-            item(key = "review") {
-                NovilaReveal(order = 3) { WeeklyReviewCard(review) }
-            }
-        }
     }
 }
 
-/** What can be logged by hand, and Health Connect to connect while it isn't, so workouts are logged by themselves. */
-@OptIn(ExperimentalLayoutApi::class)
+/** The week's program, the coach and the exercise library, each with where it stands. */
 @Composable
-private fun LogActions(movement: MovementState, recovery: RecoveryState, actions: TrainingActions) {
-    FlowRow(
-        horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s),
-        verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s),
-    ) {
-        NovilaActionChip(stringResource(R.string.overview_log_other), onClick = actions.onOpenCardioLog)
-        if (movement is MovementState.NeedsPermission && !movement.denied) {
-            NovilaActionChip(stringResource(R.string.movement_connect), onClick = actions.onConnectHealth)
-        }
-        if (recovery is RecoveryState.NeedsPermission && !recovery.denied) {
-            NovilaActionChip(stringResource(R.string.recovery_connect), onClick = actions.onConnectRecovery)
-        }
-    }
+private fun trainingHubEntries(state: TrainingUiState, actions: TrainingActions): List<NovilaEntry> {
+    val training = NovilaTheme.pillars.training
+    return listOf(
+        NovilaEntry(
+            title = stringResource(R.string.program_title),
+            icon = painterResource(R.drawable.ic_program),
+            role = training,
+            onClick = actions.onOpenProgram,
+            summary = stringResource(R.string.training_entry_program_summary, state.program.sessions.size),
+        ),
+        NovilaEntry(
+            title = stringResource(R.string.training_entry_coach),
+            icon = painterResource(UiR.drawable.ic_insight),
+            role = training,
+            onClick = actions.onOpenCoach,
+            summary = stringResource(
+                if (state.coach.active) R.string.training_entry_coach_on else R.string.training_entry_coach_off,
+            ),
+        ),
+        NovilaEntry(
+            title = stringResource(R.string.exercises_title),
+            icon = painterResource(UiR.drawable.ic_training),
+            role = training,
+            onClick = actions.onOpenLibrary,
+            summary = stringResource(R.string.exercises_body),
+        ),
+    )
 }
 
 /** What the Training tab can do, from the entry: navigation, Health Connect and logging. */
@@ -135,6 +137,7 @@ data class TrainingActions(
     val onLogCardio: (CardioLog) -> Unit = {},
     val onOpenCardioLog: () -> Unit = {},
     val onOpenCoach: () -> Unit = {},
+    val onOpenProgram: () -> Unit = {},
     val onOpenExercise: (String) -> Unit = {},
     val onConnectHealth: () -> Unit = {},
     val onConnectRecovery: () -> Unit = {},
@@ -151,8 +154,9 @@ private fun TrainingScreenContent(
     exercise: ExerciseState = ExerciseState.Unavailable,
     recovery: RecoveryState = RecoveryState.Unavailable,
     sky: NovilaSky = NovilaSky.Day,
+    entryLayout: NovilaEntryLayout = NovilaEntryLayout.Grid,
 ) {
-    NovilaTheme {
+    NovilaTheme(entryLayout = entryLayout) {
         TrainingScreen(
             state = state,
             movement = movement,
@@ -178,6 +182,23 @@ private val strengthDay = TrainingUiState(
 @Preview(showBackground = true, heightDp = 1600)
 @Composable
 private fun TrainingScreenPreview() = TrainingScreenContent(
+    strengthDay,
+    exercise = ExerciseState.Connected(TrainingPreviewData.workouts),
+)
+
+/** The ways in as rows, as chosen in Settings. */
+@Preview(showBackground = true, heightDp = 1600)
+@Composable
+private fun TrainingScreenRowsPreview() = TrainingScreenContent(
+    strengthDay,
+    exercise = ExerciseState.Connected(TrainingPreviewData.workouts),
+    entryLayout = NovilaEntryLayout.Rows,
+)
+
+/** A tablet: the week stays readable in the middle, and the ways in share one row. */
+@Preview(showBackground = true, widthDp = 900, heightDp = 1200)
+@Composable
+private fun TrainingScreenTabletPreview() = TrainingScreenContent(
     strengthDay,
     exercise = ExerciseState.Connected(TrainingPreviewData.workouts),
 )

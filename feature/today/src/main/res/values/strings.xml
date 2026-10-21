@@ -10,7 +10,6 @@
     <string name="balance_title">Today\'s balance</string>
 
     <!-- The one coach: a single, connected suggestion for the whole day -->
-    <string name="coach_title">Your coach</string>
     <string name="coach_short_night">You slept %1$s last night.</string>
     <string name="coach_low_recovery">Your watch shows your body is still recovering.</string>
     <string name="coach_lighter_session">Keep today\'s %1$s session light, or make it a walk.</string>
@@ -21,6 +20,8 @@
 
     <string name="pillar_movement">Movement</string>
     <string name="insights_title">Insights</string>
+    <string name="discoveries_title">Discoveries</string>
+    <string name="discoveries_open">All discoveries</string>
     <string name="insights_empty">Log sleep, food and training for a few days and Novila will show you what your days say.</string>
     <string name="insight_sleep_more">Last night you slept %1$s more than your average this week.</string>
     <string name="insight_sleep_less">Last night you slept %1$s less than your average this week.</string>

@@ -16,7 +16,6 @@ import org.robolectric.RobolectricTestRunner
 import se.novila.coach.DailyCoach
 import se.novila.coach.dailyCoach
 import se.novila.designsystem.theme.NovilaTheme
-import se.novila.model.Connection
 import se.novila.model.Goals
 import se.novila.model.TrainingAfterSleep
 import se.novila.model.TrainingToday
@@ -33,7 +32,6 @@ class TodayScreenTest {
     private fun show(
         opened: MutableList<String>,
         coach: DailyCoach = dailyCoach(PreviewData.today, Goals(), TrainingToday(plannedMinutes = 30)),
-        connections: List<Connection> = emptyList(),
         setupIncomplete: Boolean = false,
         onCompleteSetup: () -> Unit = {},
     ) {
@@ -55,7 +53,7 @@ class TodayScreenTest {
                     onOpenSettings = { opened += "settings" },
                     contentPadding = PaddingValues(0.dp),
                     training = TrainingToday(plannedMinutes = 30),
-                    connections = connections,
+                    onOpenDiscoveries = { opened += "discoveries" },
                     setupIncomplete = setupIncomplete,
                     onCompleteSetup = onCompleteSetup,
                 )
@@ -88,8 +86,8 @@ class TodayScreenTest {
             coach = dailyCoach(night, Goals(), TrainingToday(plannedMinutes = 30)),
         )
 
-        composeRule.onNodeWithText("Your coach").assertExists()
-        // One connected suggestion: the short night, the lighter session and the earlier bedtime in one voice.
+        // One connected suggestion at the top of the checklist: the short night, the lighter session and the
+        // earlier bedtime in one voice.
         composeRule
             .onNodeWithText(
                 "You slept 5.5 h last night. Keep today's 30 min session light, or make it a walk.",
@@ -99,16 +97,45 @@ class TodayScreenTest {
         composeRule.onNodeWithText("Aim to be in bed by", substring = true).assertExists()
     }
 
-    @Test fun `the connections card shows what the parts say about each other`() {
-        show(
-            opened = mutableListOf(),
-            connections = listOf(
-                TrainingAfterSleep(35.0, 10.0, 14, 9, 2.8),
-                WeekdayPattern(WeekdayMetric.TrainingMinutes, DayOfWeek.TUESDAY, 35.0, DayOfWeek.SUNDAY, 5.0, 84),
-            ),
-        )
+    @Test fun `the coach leaves out what the checklist already says`() {
+        show(mutableListOf())
 
-        // The card is the last one on the screen, so scroll it into view before reading it.
+        // The planned session is the checklist's training row, so the coach doesn't say it again.
+        composeRule.onNodeWithText("that is the day's main thing", substring = true).assertDoesNotExist()
+    }
+
+    @Test fun `the insights lead to all discoveries`() {
+        val opened = mutableListOf<String>()
+        show(opened)
+
+        composeRule.onNode(hasScrollAction()).performScrollToNode(hasText("All discoveries"))
+        composeRule.onNodeWithText("All discoveries").performClick()
+
+        assertEquals(listOf("discoveries"), opened)
+    }
+
+    @Test fun `the discoveries show what the parts say about each other`() {
+        composeRule.setContent {
+            NovilaTheme {
+                DiscoveriesScreen(
+                    insights = emptyList(),
+                    sleep = analyzeSleep(PreviewData.days()),
+                    connections = listOf(
+                        TrainingAfterSleep(35.0, 10.0, 14, 9, 2.8),
+                        WeekdayPattern(
+                            WeekdayMetric.TrainingMinutes,
+                            DayOfWeek.TUESDAY,
+                            35.0,
+                            DayOfWeek.SUNDAY,
+                            5.0,
+                            84,
+                        ),
+                    ),
+                    contentPadding = PaddingValues(0.dp),
+                )
+            }
+        }
+
         composeRule.onNode(hasScrollAction()).performScrollToNode(hasText("Connections"))
         composeRule.onNodeWithText("Connections").assertExists()
         composeRule
@@ -119,7 +146,7 @@ class TodayScreenTest {
             .assertExists()
     }
 
-    @Test fun `no connections means no connections card`() {
+    @Test fun `the connections are not on Today itself`() {
         show(mutableListOf())
 
         composeRule.onNodeWithText("Connections").assertDoesNotExist()

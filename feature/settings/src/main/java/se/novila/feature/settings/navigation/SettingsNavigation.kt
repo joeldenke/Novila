@@ -136,6 +136,7 @@ fun EntryProviderScope<NavKey>.settingsEntries(
                 onOpenReminders = { navigator.navigate(RemindersRoute) },
                 onTheme = viewModel::setTheme,
                 onDynamicColor = viewModel::setDynamicColor,
+                onEntryLayout = viewModel::setEntryLayout,
                 onChooseLanguage = { openLanguageSettings(context) },
                 onConnectHealth = connectHealth,
                 onOpenHealthSettings = { HealthConnectSource.openSettings(context) },

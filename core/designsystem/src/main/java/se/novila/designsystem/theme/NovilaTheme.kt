@@ -11,6 +11,8 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalContext
+import se.novila.designsystem.component.LocalNovilaEntryLayout
+import se.novila.designsystem.component.NovilaEntryLayout
 
 private val LocalNovilaColors = staticCompositionLocalOf { NovilaLightColors.toNovilaColors() }
 private val LocalNovilaTypography = staticCompositionLocalOf { NovilaTextStyles }
@@ -29,11 +31,13 @@ private val LocalNovilaAnatomy = staticCompositionLocalOf { NovilaLightAnatomy }
  *
  * @param dynamicColor use the wallpaper colors on Android 12+ instead of the Skog & sol palette.
  *   Off by default: only the brand palette is checked against WCAG 2.2 (ColorContrastTest).
+ * @param entryLayout how tabs show the ways into their parts (`NovilaEntries`), tiles or rows, as chosen in Settings.
  */
 @Composable
 fun NovilaTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = false,
+    entryLayout: NovilaEntryLayout = NovilaEntryLayout.Grid,
     content: @Composable () -> Unit,
 ) {
     val context = LocalContext.current
@@ -57,6 +61,7 @@ fun NovilaTheme(
         LocalNovilaHero provides if (darkTheme) NovilaDarkHero else NovilaLightHero,
         LocalNovilaSurfaces provides if (darkTheme) NovilaDarkSurfaces else NovilaLightSurfaces,
         LocalNovilaAnatomy provides if (darkTheme) NovilaDarkAnatomy else NovilaLightAnatomy,
+        LocalNovilaEntryLayout provides entryLayout,
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
@@ -113,4 +118,9 @@ object NovilaTheme {
     val spacing: NovilaSpacing
         @Composable @ReadOnlyComposable
         get() = LocalNovilaSpacing.current
+
+    /** Tiles or rows for the ways into a tab's parts, as the user chose in Settings. */
+    val entryLayout: NovilaEntryLayout
+        @Composable @ReadOnlyComposable
+        get() = LocalNovilaEntryLayout.current
 }

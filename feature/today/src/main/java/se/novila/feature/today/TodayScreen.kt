@@ -23,15 +23,11 @@ import se.novila.designsystem.component.NovilaSky
 import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.today.R
-import se.novila.model.Connection
 import se.novila.model.DayEntry
 import se.novila.model.Goals
 import se.novila.model.Greeting
 import se.novila.model.SleepAnalysis
-import se.novila.model.TrainingAfterSleep
 import se.novila.model.TrainingToday
-import se.novila.model.WeekdayMetric
-import se.novila.model.WeekdayPattern
 import se.novila.model.analyzeSleep
 import se.novila.model.balance
 import se.novila.model.dayChecklist
@@ -46,14 +42,13 @@ import se.novila.ui.common.ScreenList
 import se.novila.ui.common.longDateText
 import se.novila.ui.common.setupHint
 import se.novila.ui.preview.PreviewData
-import java.time.DayOfWeek
 import se.novila.ui.R as UiR
 
 /**
- * What to do today: greeting (by [name] when the profile has one), today's balance as rings, the one [coach]'s
- * connected suggestion for the whole day, the day's checklist (sleep, the program's [training], food and water, each
- * with the one button that does it) and an insights card. When the logs join the parts ([connections]), a
- * connections card follows it. The rings are the summary of the day; tapping a part on
+ * What to do today: greeting (by [name] when the profile has one), today's balance as rings, the day's checklist
+ * led by the one [coach]'s connected suggestion (sleep, the program's [training], food and water, each with the one
+ * button that does it) and the week's insights, with the way to all discoveries ([onOpenDiscoveries]), where the
+ * connections between the parts are. The rings are the summary of the day; tapping a part on
  * them opens that part's tab, so the balance is not repeated as a row of tiles. Everything is measured against the
  * user's [goals]; the weeks in charts are on each part's own tab. Blocks arrive one by one. When the introduction
  * was skipped ([setupIncomplete]), a quiet card under the greeting leads to finishing the setup ([onCompleteSetup]).
@@ -76,7 +71,7 @@ fun TodayScreen(
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
     training: TrainingToday = TrainingToday(),
-    connections: List<Connection> = emptyList(),
+    onOpenDiscoveries: () -> Unit = {},
     /** The introduction was skipped, so the profile and the coaches are not set up: one card offers to finish it. */
     setupIncomplete: Boolean = false,
     onCompleteSetup: () -> Unit = {},
@@ -104,12 +99,8 @@ fun TodayScreen(
                 BalanceCard(today, steps, goals, NovilaSky.at(hour), onOpenTraining, onOpenSleep, onOpenNutrition)
             }
         }
-        item(key = "coach") { NovilaReveal(order = 2) { DailyCoachCard(coach) } }
-        item(key = "checklist") { NovilaReveal(order = 3) { DayChecklistCard(checklist, actions) } }
-        item(key = "insights") { NovilaReveal(order = 4) { InsightsCard(insights, sleep) } }
-        if (connections.isNotEmpty()) {
-            item(key = "connections") { NovilaReveal(order = 5) { ConnectionsCard(connections) } }
-        }
+        item(key = "checklist") { NovilaReveal(order = 2) { DayChecklistCard(checklist, actions, coach) } }
+        item(key = "insights") { NovilaReveal(order = 3) { InsightsCard(insights, sleep, onOpenDiscoveries) } }
     }
 }
 
@@ -222,20 +213,16 @@ private fun TodayScreenContent(hour: Int = 8) {
                 onOpenSettings = {},
                 contentPadding = padding,
                 training = TrainingToday(plannedMinutes = 30),
-                connections = listOf(
-                    TrainingAfterSleep(35.0, 10.0, 14, 9, 2.8),
-                    WeekdayPattern(WeekdayMetric.TrainingMinutes, DayOfWeek.TUESDAY, 35.0, DayOfWeek.SUNDAY, 5.0, 84),
-                ),
             )
         }
     }
 }
 
-@Preview(heightDp = 2000)
+@Preview(heightDp = 1400)
 @Composable
 private fun TodayScreenPreview() = TodayScreenContent()
 
 /** Dark theme late in the evening, under the moon. */
-@Preview(heightDp = 2000, uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
+@Preview(heightDp = 1400, uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
 private fun TodayScreenDarkPreview() = TodayScreenContent(hour = 22)

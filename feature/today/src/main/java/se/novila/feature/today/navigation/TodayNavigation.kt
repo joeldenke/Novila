@@ -1,24 +1,35 @@
 package se.novila.feature.today.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.serialization.Serializable
+import se.novila.feature.today.DiscoveriesScreen
+import se.novila.feature.today.DiscoveriesViewModel
+import se.novila.feature.today.R
 import se.novila.feature.today.TodayScreen
 import se.novila.feature.today.TodayViewModel
+import se.novila.navigation.Navigator
 
 /** The Today tab: what to do today, and how the day and week look. */
 @Serializable data object TodayRoute : NavKey
 
+/** Everything the logs say: the week's insights, what the nights say and the connections between the parts. */
+@Serializable data object DiscoveriesRoute : NavKey
+
 /**
- * Today's entry, with its own [TodayViewModel] scoped to the entry. The other tabs and Settings are opened through
- * the callbacks, so this module never depends on another feature.
+ * Today and the discoveries opened from it, each with its own ViewModel scoped to the entry. Navigation inside the
+ * tab goes through [navigator]; the other tabs and Settings are opened through the callbacks, so this module never
+ * depends on another feature.
  */
-fun EntryProviderScope<NavKey>.todayEntry(
+fun EntryProviderScope<NavKey>.todayEntries(
+    navigator: Navigator,
     onOpenTraining: () -> Unit,
     onOpenSleep: () -> Unit,
     onOpenNutrition: () -> Unit,
@@ -52,9 +63,30 @@ fun EntryProviderScope<NavKey>.todayEntry(
             onOpenSettings = onOpenSettings,
             contentPadding = contentPadding,
             training = state.training,
-            connections = state.connections,
+            onOpenDiscoveries = { navigator.navigate(DiscoveriesRoute) },
             setupIncomplete = setupIncomplete,
             onCompleteSetup = viewModel::openSetup,
         )
     }
+    entry<DiscoveriesRoute> {
+        val viewModel = metroViewModel<DiscoveriesViewModel>()
+        LifecycleResumeEffect(viewModel) {
+            viewModel.refresh()
+            onPauseOrDispose { }
+        }
+        val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
+        DiscoveriesScreen(
+            insights = state.insights,
+            sleep = state.sleep,
+            connections = state.connections,
+            contentPadding = contentPadding,
+        )
+    }
+}
+
+/** The top bar title of a screen inside the Today tab, or null when [route] is not one of them. */
+@Composable
+fun todayDetailTitle(route: NavKey?): String? = when (route) {
+    DiscoveriesRoute -> stringResource(R.string.discoveries_title)
+    else -> null
 }

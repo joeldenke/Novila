@@ -3,6 +3,13 @@
     <!-- Sleep -->
     <string name="sleep_title">Sömn i natt</string>
     <string name="sleep_title_day">Sömn natten innan</string>
+    <string name="sleep_night_times">%1$s till %2$s</string>
+    <string name="sleep_log_night">Logga natten</string>
+    <string name="sleep_change_night">Ändra natten</string>
+    <string name="sleep_sheet_title">Natten</string>
+    <string name="sleep_entry_trends">Trender</string>
+    <string name="sleep_entry_trends_summary">%1$s per natt i snitt i veckan</string>
+    <string name="sleep_entry_trends_empty">Inga nätter loggade i veckan</string>
     <string name="sleep_goal">Ditt mål är %1$s per natt.</string>
     <string name="sleep_bedtime">Lade mig</string>
     <string name="sleep_wake_time">Vaknade</string>
@@ -35,8 +42,6 @@
 
     <!-- Sömncoachen -->
     <string name="sleep_coach_title">Sömncoachen</string>
-    <string name="sleep_coach_open">Ställ in sömncoachen</string>
-    <string name="sleep_coach_adjust">Anpassa sömncoachen</string>
     <string name="sleep_coach_goal_title">Mål för sömnen</string>
     <string name="sleep_coach_card_intro">En läggtid att sikta mot, en kvällsrutin och råd ur dina egna nätter.</string>
     <string name="sleep_coach_intro">Välj en läggtid att sträva mot och en vila innan läggning på kvällen. Novila tittar på dina egna nätter och föreslår vanor som brukar hjälpa sömnen. Allt stannar på telefonen.</string>
@@ -72,10 +77,8 @@
     <string name="sleep_coach_tip_late_exercise">Du har ofta tränat sent. Hård träning passar bäst minst två timmar före sängen.</string>
     <string name="sleep_coach_start">Starta sömncoachen</string>
     <string name="sleep_coach_reset">Stäng av sömncoachen</string>
-    <string name="sleep_coach_card_hint">Lägg till en kvällsrutin i coachen, så visas nästa steg här.</string>
     <string name="sleep_coach_evening_done">Kvällens steg är klara. Sov gott.</string>
     <string name="sleep_breathing_title">Andning och avslappning</string>
     <string name="sleep_breathing_body">Några lugna minuter före sänggåendet: lugn andning, boxandning eller 4-7-8.</string>
-    <string name="sleep_breathing_open">Öppna andningsövningarna</string>
     <string name="sleep_coach_breathing">Lugn andning före sänggåendet</string>
 </resources>

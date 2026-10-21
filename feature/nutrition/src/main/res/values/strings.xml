@@ -13,6 +13,17 @@
     <string name="nutrition_treat_penalty">Sweets and snacks: −%1$d points today. One a day is free.</string>
     <string name="nutrition_treat_penalty_day">Sweets and snacks: −%1$d points that day. One a day is free.</string>
     <string name="nutrition_about">Weighted after the Swedish Food Agency\'s dietary advice: vegetables and fruit count the most.</string>
+    <string name="nutrition_log_food">Log food</string>
+    <string name="nutrition_log_water">+%1$s water</string>
+    <string name="nutrition_log_drink">Other drink</string>
+    <string name="nutrition_sheet_food">Log food</string>
+    <string name="nutrition_sheet_drinks">Drinks</string>
+    <string name="nutrition_entry_recipes">Recipes</string>
+    <string name="nutrition_entry_recipes_none">None fits your preferences right now</string>
+    <string name="nutrition_entry_trends">Trends</string>
+    <string name="nutrition_entry_trends_summary">%1$d of 100 on average this week</string>
+    <string name="nutrition_entry_trends_empty">Nothing logged this week</string>
+    <string name="nutrition_entry_preferences">Food preferences</string>
     <string name="food_log_title">Log today</string>
     <string name="food_log_title_day">Change the day</string>
     <string name="food_vegetables">Vegetables &amp; fruit</string>

@@ -29,8 +29,6 @@ import se.novila.data.Week
 import se.novila.data.trainingWeek
 import se.novila.exercise.ExerciseRepository
 import se.novila.exercise.ExerciseState
-import se.novila.model.CONNECTION_WINDOW_DAYS
-import se.novila.model.Connection
 import se.novila.model.Drink
 import se.novila.model.DrinkKind
 import se.novila.model.Goals
@@ -38,7 +36,6 @@ import se.novila.model.SLEEP_WINDOW_NIGHTS
 import se.novila.model.SleepAnalysis
 import se.novila.model.TrainingToday
 import se.novila.model.analyzeSleep
-import se.novila.model.connections
 import se.novila.model.withDrink
 import se.novila.movement.MovementRepository
 import se.novila.movement.MovementState
@@ -58,8 +55,7 @@ import java.time.LocalTime
 /**
  * The dashboard: the week so far, and [hour] of day when it was read, the user's [name] for the greeting, the
  * [goals] the day is measured against, what the user's logs say about their [sleep] and today's [training] from the
- * week's program, and the [connections] between the parts. Nights a watch recorded fill in the ones the user didn't
- * log.
+ * week's program. Nights a watch recorded fill in the ones the user didn't log.
  */
 data class TodayUiState(
     val week: Week,
@@ -69,7 +65,6 @@ data class TodayUiState(
     val sleep: SleepAnalysis = SleepAnalysis(change = null, links = emptyList(), bedtimes = null, nightsLogged = 0),
     val training: TrainingToday = TrainingToday(),
     val coach: DailyCoach,
-    val connections: List<Connection> = emptyList(),
 )
 
 /** What Today reads from the stores and the watch, together. */
@@ -147,8 +142,8 @@ class TodayViewModel(
         val nights = inputs.watch.nightsByDate
         val days = inputs.days.showing { it.withNight(nights[it.date]) }
         val today = inputs.now.toLocalDate()
-        // Three months of days, oldest first, for the sleep links and the connections between the parts.
-        val window = days.lastDays(maxOf(CONNECTION_WINDOW_DAYS, SLEEP_WINDOW_NIGHTS) + 1, today).reversed()
+        // The nights in the window with the day before each, oldest first, for the sleep links.
+        val window = days.lastDays(SLEEP_WINDOW_NIGHTS + 1, today).reversed()
         val sleep = analyzeSleep(window, inputs.goals)
         // Planned the same way as the Training tab, so both say the same about today's session.
         val status = (recovery as? RecoveryState.Connected)?.let { analyzeRecovery(it.days, today) }
@@ -171,7 +166,6 @@ class TodayViewModel(
             sleep = sleep,
             training = training,
             coach = coach,
-            connections = connections(window, inputs.goals),
         )
     }
 

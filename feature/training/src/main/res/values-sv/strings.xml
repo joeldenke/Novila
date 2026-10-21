@@ -223,8 +223,6 @@
     <string name="recovery_denied_body">Åtkomsten nekades. Du kan tillåta den för Novila i Health Connect.</string>
     <!-- Träningscoach -->
     <string name="coach_title">Träningscoach</string>
-    <string name="coach_open">Öppna coachen</string>
-    <string name="coach_adjust">Anpassa programmet</string>
     <string name="coach_intro">Coachen planerar din vecka här i telefonen, utifrån dina svar, dina senaste pass och övningarna i Novila. Inget skickas någonstans.</string>
     <string name="coach_goal_title">Ditt mål</string>
     <string name="coach_goal_health">Allsidig hälsa</string>
@@ -348,6 +346,10 @@
     <string name="overview_day_rest">%1$s: vila</string>
     <string name="overview_day_today">I dag, %1$s</string>
     <string name="overview_log_other">Logga ett pass</string>
+    <string name="training_entry_program_summary">Pass i veckan: %1$d</string>
+    <string name="training_entry_coach">Träningscoach</string>
+    <string name="training_entry_coach_off">Ett program efter ditt mål, dina dagar och din tid</string>
+    <string name="training_entry_coach_on">Dina svar formar veckan</string>
     <string name="cardio_log_title">Logga ett pass</string>
 
     <!-- Veckoavstämningen på Träning -->

@@ -6,7 +6,6 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -23,10 +22,7 @@ import se.novila.model.DayEntry
 import se.novila.model.Goals
 import se.novila.model.History
 import se.novila.model.HistoryRange
-import se.novila.model.SLEEP_WINDOW_NIGHTS
-import se.novila.model.SleepAnalysis
 import se.novila.model.SleepFactor
-import se.novila.model.analyzeSleep
 import se.novila.sleep.COACH_NIGHTS
 import se.novila.sleep.SleepCoachPreferences
 import se.novila.sleep.SleepRepository
@@ -39,8 +35,8 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 /**
- * The [history] over the chosen range up to the shown day (today, or an earlier one the user went back to), [today],
- * the user's [goals] and what their logs up to today say about their sleep ([analysis]). Nights a watch recorded
+ * The [history] over a week up to the shown day (today, or an earlier one the user went back to), [today] and the
+ * user's [goals]. Nights a watch recorded
  * ([watch]) fill in the ones the user didn't log; [fromWatch] when the shown day's night is one of them. [coach] is
  * the sleep coach in short: whether it is set up, its goals, this week and tonight's next step.
  */
@@ -48,7 +44,6 @@ data class SleepUiState(
     val history: History,
     val goals: Goals,
     val today: LocalDate,
-    val analysis: SleepAnalysis,
     val coach: SleepCoachCardState,
     val watch: SleepState = SleepState.Unavailable,
     val fromWatch: Boolean = false,
@@ -68,9 +63,8 @@ class SleepViewModel(
     private val coachStore: SleepCoachStore,
 ) : ViewModel() {
     private val day = SelectedDay()
-    private val range = MutableStateFlow(HistoryRange.Week)
 
-    /** The history, the goals, the analysis and the coach, or null before the stores' first reads. */
+    /** The history, the goals and the coach, or null before the stores' first reads. */
     val state: StateFlow<SleepUiState?> =
         combine(
             combine(
@@ -78,8 +72,7 @@ class SleepViewModel(
                 goalsStore.goals.filterNotNull(),
                 day.today,
                 day.dates,
-                range,
-            ) { saved, goals, today, date, range -> Inputs(saved, goals, today, date, range) },
+            ) { saved, goals, today, date -> Inputs(saved, goals, today, date) },
             coachStore.answers.filterNotNull(),
         ) { inputs, coach -> read(inputs, coach) }
             .stateIn(viewModelScope, SharingStarted.Eagerly, initial())
@@ -93,28 +86,26 @@ class SleepViewModel(
         val goals: Goals,
         val today: LocalDate,
         val date: LocalDate,
-        val range: HistoryRange,
     )
 
     private fun initial(): SleepUiState? {
         val inputs = run {
             val saved = store.days.value ?: return null
             val goals = goalsStore.goals.value ?: return null
-            Inputs(Saved(saved, sleepRepository.state.value), goals, day.today.value, day.value, range.value)
+            Inputs(Saved(saved, sleepRepository.state.value), goals, day.today.value, day.value)
         }
         val coach = coachStore.answers.value ?: return null
         return read(inputs, coach)
     }
 
     private fun read(inputs: Inputs, coach: SavedSleepCoach): SleepUiState {
-        val (saved, goals, today, date, range) = inputs
+        val (saved, goals, today, date) = inputs
         val nights = saved.watch.nightsByDate
         val shown = saved.days.showing { it.withNight(nights[it.date]) }
         return SleepUiState(
-            history = shown.history(range, date),
+            history = shown.history(HistoryRange.Week, date),
             goals = goals,
             today = today,
-            analysis = analysis(shown, today, goals),
             coach = coachState(shown, goals, today, coach),
             watch = saved.watch,
             fromWatch = date in nights && !saved.days.day(date).hasOwnSleep,
@@ -140,10 +131,6 @@ class SleepViewModel(
         )
     }
 
-    /** Every night in the window with the day before it, oldest first, up to today whatever day is shown. */
-    private fun analysis(saved: SavedDays, today: LocalDate, goals: Goals): SleepAnalysis =
-        analyzeSleep(saved.lastDays(SLEEP_WINDOW_NIGHTS + 1, today).reversed(), goals)
-
     /**
      * Called on resume so "today" stays correct after midnight. Health Connect only allows reads while the app is in
      * the foreground, so the watch's nights are read here too.
@@ -160,11 +147,6 @@ class SleepViewModel(
 
     /** Shows and changes [date] instead, to fill in a night that was forgotten. */
     fun selectDay(date: LocalDate) = day.select(date)
-
-    /** Shows the sleep over a week, four weeks or a year. */
-    fun selectRange(range: HistoryRange) {
-        this.range.value = range
-    }
 
     /** Sets the shown day's sleep in hours, without times. */
     fun setSleep(hours: Float) = store.update(day.value) { it.withSleep(hours) }

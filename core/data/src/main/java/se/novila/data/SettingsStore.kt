@@ -9,6 +9,7 @@ import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 import se.novila.model.AppSettings
+import se.novila.model.EntryLayout
 import se.novila.model.ThemeMode
 
 /**
@@ -29,12 +30,15 @@ class SettingsStore internal constructor(context: Context, scope: CoroutineScope
             dynamicColor = it[DYNAMIC_COLOR] ?: false,
             onboarded = it[ONBOARDED] ?: false,
             setupSkipped = it[SETUP_SKIPPED] ?: false,
+            entryLayout = EntryLayout.fromName(it[ENTRY_LAYOUT]),
         )
     }
 
     fun setTheme(theme: ThemeMode) = store.edit { it[THEME] = theme.name }
 
     fun setDynamicColor(enabled: Boolean) = store.edit { it[DYNAMIC_COLOR] = enabled }
+
+    fun setEntryLayout(layout: EntryLayout) = store.edit { it[ENTRY_LAYOUT] = layout.name }
 
     /** The intro is done, and the app opens on Today; or, from Settings, not done, to show it again. */
     fun setOnboarded(done: Boolean) = store.edit { it[ONBOARDED] = done }
@@ -63,5 +67,6 @@ class SettingsStore internal constructor(context: Context, scope: CoroutineScope
         val DYNAMIC_COLOR = booleanPreferencesKey("dynamic_color")
         val ONBOARDED = booleanPreferencesKey("onboarded")
         val SETUP_SKIPPED = booleanPreferencesKey("setup_skipped")
+        val ENTRY_LAYOUT = stringPreferencesKey("entry_layout")
     }
 }

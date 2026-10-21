@@ -25,6 +25,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import se.novila.designsystem.theme.NovilaColorRole
 import se.novila.designsystem.theme.NovilaTheme
@@ -50,7 +51,8 @@ fun NovilaButton(
         ),
         modifier = modifier.semantics { if (contentDescription != null) this.contentDescription = contentDescription },
     ) {
-        Text(text, style = NovilaTheme.typography.labelLarge)
+        // Centered, so a label that wraps in a narrow button still reads as one.
+        Text(text, style = NovilaTheme.typography.labelLarge, textAlign = TextAlign.Center)
     }
 }
 

@@ -10,7 +10,6 @@
     <string name="balance_title">Dagens balans</string>
 
     <!-- Den enda coachen: ett sammanhängande förslag för hela dagen -->
-    <string name="coach_title">Din coach</string>
     <string name="coach_short_night">Du sov %1$s i natt.</string>
     <string name="coach_low_recovery">Klockan visar att kroppen fortfarande återhämtar sig.</string>
     <string name="coach_lighter_session">Håll dagens %1$s-pass lätt, eller ta en promenad i stället.</string>
@@ -21,6 +20,8 @@
 
     <string name="pillar_movement">Rörelse</string>
     <string name="insights_title">Insikter</string>
+    <string name="discoveries_title">Upptäckter</string>
+    <string name="discoveries_open">Alla upptäckter</string>
     <string name="insights_empty">Logga sömn, kost och träning några dagar så visar Novila vad dina dagar säger.</string>
     <string name="insight_sleep_more">I natt sov du %1$s mer än ditt snitt i veckan.</string>
     <string name="insight_sleep_less">I natt sov du %1$s mindre än ditt snitt i veckan.</string>

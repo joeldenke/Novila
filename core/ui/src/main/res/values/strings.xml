@@ -147,12 +147,6 @@
     <string name="food_preferences_summary" translatable="false">%1$s · %2$s · %3$s</string>
     <string name="food_check_ingredients">Always check the ingredients and the packaging yourself, especially with an allergy.</string>
 
-    <!-- The parts of each tab, see ScreenSection -->
-    <string name="section_overview">Overview</string>
-    <string name="section_log">Log</string>
-    <string name="section_plan">Your plan</string>
-    <string name="section_trends">Trends</string>
-
     <!-- The card on a tab's root when the introduction was skipped, see SetupHint -->
     <string name="setup_hint_title">Setup not finished</string>
     <string name="setup_hint_body">You skipped the introduction, so your profile, goals and coaches are not set up yet.</string>
