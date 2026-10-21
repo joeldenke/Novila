@@ -21,26 +21,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import se.novila.designsystem.R
 import se.novila.designsystem.theme.NovilaColorRole
 import se.novila.designsystem.theme.NovilaTheme
 import java.text.NumberFormat
@@ -63,7 +57,7 @@ data class NovilaHeroSegment(
  * The pine hero card at the top of the dashboard: concentric rings, one per part, around a score
  * that counts up, a legend with each part's percentage and an optional short [body]. Each part with a
  * [NovilaHeroSegment.onClick] opens its own screen, so the rings are the summary and the way in. Behind it,
- * a pine forest at dusk and the midsummer sun's glow.
+ * contour lines and the glow of the [sky]: the sun by day, the moon at night.
  */
 @Composable
 fun NovilaHeroCard(
@@ -73,6 +67,7 @@ fun NovilaHeroCard(
     segments: List<NovilaHeroSegment>,
     modifier: Modifier = Modifier,
     body: String? = null,
+    sky: NovilaSky = NovilaSky.Day,
 ) {
     val hero = NovilaTheme.hero
     val reveal by rememberReveal(durationMillis = 1600)
@@ -81,10 +76,7 @@ fun NovilaHeroCard(
             .fillMaxWidth()
             .clip(NovilaTheme.shapes.large)
             .background(Brush.linearGradient(listOf(hero.start, hero.end)))
-            .drawBehind {
-                drawSunGlow(hero.sun)
-                drawForest(hero.content.copy(alpha = 0.07f))
-            }
+            .heroContours(hero, sky)
             .padding(NovilaTheme.spacing.xl),
         verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.l),
     ) {
@@ -95,12 +87,7 @@ fun NovilaHeroCard(
                 color = hero.content,
                 modifier = Modifier.weight(1f).semantics { heading() },
             )
-            NovilaIcon(
-                painter = painterResource(R.drawable.ic_novila_sun),
-                contentDescription = null,
-                modifier = Modifier.size(SunSize).graphicsLayer { rotationZ = (1f - reveal) * -90f },
-                tint = hero.sun,
-            )
+            NovilaSkyIcon(sky, hero, reveal)
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -133,8 +120,6 @@ fun NovilaHeroCard(
         body?.let { Text(it, style = NovilaTheme.typography.bodyMedium, color = hero.content) }
     }
 }
-
-private val SunSize = 26.dp
 
 @Composable
 private fun LegendRow(segment: NovilaHeroSegment, percent: String, content: Color) {
@@ -177,43 +162,6 @@ internal fun Rings(segments: List<NovilaHeroSegment>, track: Color, reveal: Floa
                 drawArc(segment.color, -90f, angle, false, topLeft, arc, style = Stroke(stroke, cap = StrokeCap.Round))
             }
         }
-    }
-}
-
-/** The midsummer sun's glow in the top corner, behind the sun emblem. */
-internal fun DrawScope.drawSunGlow(sun: Color) {
-    val center = Offset(size.width - 36.dp.toPx(), 36.dp.toPx())
-    val radius = 120.dp.toPx()
-    drawCircle(
-        Brush.radialGradient(listOf(sun.copy(alpha = 0.28f), sun.copy(alpha = 0f)), center, radius),
-        radius = radius,
-        center = center,
-    )
-}
-
-/** A quiet row of spruces along the bottom right, like a forest edge across a lake. */
-internal fun DrawScope.drawForest(color: Color) {
-    val unit = 12.dp.toPx()
-    val base = size.height
-    // Position across the card and relative height of each tree.
-    val trees = listOf(0.58f to 1.0f, 0.66f to 1.5f, 0.73f to 1.15f, 0.8f to 1.9f, 0.88f to 1.3f, 0.95f to 1.7f)
-    trees.forEach { (position, scale) ->
-        val x = size.width * position
-        val height = unit * 3.4f * scale
-        val half = unit * 0.95f * scale
-        val tree = Path()
-        for (tier in 0 until 3) {
-            val top = base - height + tier * height * 0.2f
-            val bottom = top + height * 0.42f
-            val width = half * (0.55f + tier * 0.3f)
-            tree.moveTo(x, top)
-            tree.lineTo(x + width, bottom)
-            tree.lineTo(x - width, bottom)
-            tree.close()
-        }
-        drawPath(tree, color)
-        val trunk = unit * 0.16f * scale
-        drawRect(color, Offset(x - trunk / 2f, base - height * 0.22f), Size(trunk, height * 0.22f))
     }
 }
 

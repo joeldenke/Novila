@@ -24,15 +24,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
@@ -40,19 +37,19 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import se.novila.designsystem.R
 import se.novila.designsystem.theme.NovilaColorRole
 import se.novila.designsystem.theme.NovilaTheme
 
 /**
- * The pine hero panel, like the dashboard's hero card: the forest at dusk and the midsummer sun's glow behind a
- * [title] with the sun emblem, and whatever overview [content] goes below. A [NovilaAccentButton] on it is the
- * screen's main action.
+ * The pine hero panel for Training: lines sweeping up towards the glow of the [sky] behind a [title] with the
+ * [sky]'s sun or moon, and whatever overview [content] goes below. A [NovilaAccentButton] on it is the screen's main
+ * action.
  */
 @Composable
 fun NovilaHeroPanel(
     title: String,
     modifier: Modifier = Modifier,
+    sky: NovilaSky = NovilaSky.Day,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val hero = NovilaTheme.hero
@@ -62,10 +59,7 @@ fun NovilaHeroPanel(
             .fillMaxWidth()
             .clip(NovilaTheme.shapes.large)
             .background(Brush.linearGradient(listOf(hero.start, hero.end)))
-            .drawBehind {
-                drawSunGlow(hero.sun)
-                drawForest(hero.content.copy(alpha = 0.07f))
-            }
+            .heroMotionLines(hero, sky)
             .padding(NovilaTheme.spacing.xl),
         verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.l),
     ) {
@@ -76,12 +70,7 @@ fun NovilaHeroPanel(
                 color = hero.content,
                 modifier = Modifier.weight(1f).semantics { heading() },
             )
-            NovilaIcon(
-                painter = painterResource(R.drawable.ic_novila_sun),
-                contentDescription = null,
-                modifier = Modifier.size(26.dp).graphicsLayer { rotationZ = (1f - reveal) * -90f },
-                tint = hero.sun,
-            )
+            NovilaSkyIcon(sky, hero, reveal)
         }
         content()
     }
