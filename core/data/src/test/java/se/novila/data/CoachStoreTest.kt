@@ -13,6 +13,9 @@ import se.novila.coach.CoachGoal
 import se.novila.coach.CoachPreferences
 import se.novila.coach.CoachPreferencesCodec
 import se.novila.coach.RehabArea
+import se.novila.exercise.ExerciseLog
+import se.novila.exercise.ExerciseResult
+import java.time.LocalDate
 
 @RunWith(RobolectricTestRunner::class)
 class CoachStoreTest {
@@ -47,5 +50,23 @@ class CoachStoreTest {
 
         restarted.clear()
         restarted.answers.await { it.preferences == null }
+    }
+
+    @Test fun `exercise results survive a restart and are forgotten when cleared`() {
+        val store = CoachStore(context, stores.scope, stores.cipher)
+        val date = LocalDate.of(2026, 10, 22)
+        val results = listOf(
+            ExerciseResult("squat", date, 10, listOf(10, 9)),
+            ExerciseResult("plank", date, 30, listOf(30)),
+        )
+        store.recordSession(results)
+        store.progress.await { it == ExerciseLog(results) }
+
+        stores.restart()
+        val reopened = CoachStore(context, stores.scope, stores.cipher)
+        assertEquals(ExerciseLog(results), reopened.progress.await())
+
+        reopened.clear()
+        reopened.progress.await { it == ExerciseLog() }
     }
 }

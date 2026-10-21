@@ -95,6 +95,10 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
     ("Jag gjorde det", `DayEntry.cardio`). `ExerciseRepository` håller passen från en källa (Health Connect) i minnet, och
     `TrainingHistory` slår ihop dem med appens egna (per dag och slag räknas den sida som har mest tid, så samma
     promenad räknas en gång). Det blir generatorns historik.
+    `Progression` höjer varje övning steg för steg (dubbel progression): passläget frågar hur många repetitioner
+    varje set blev (`Workout.done`), resultaten sparas i `CoachStore` (`ExerciseLog`), och nådde alla set målet blir
+    det en repetition (eller fem sekunder) mer nästa gång, ett set klart under ger ett steg tillbaka. Det läggs på
+    styrkepassen i `trainingWeek`; rehabpassen doseras av smärtan och rörs inte.
   - `:core:sleep` – nätter från en klocka oberoende av källa: `Night`, `SleepSource`, `SleepRepository` (bara i minnet)
     och `nightsOf` (dagens längsta session på minst tre timmar, på morgonen användaren vaknade). `withNight` fyller
     i en dag utan egen sömn; användarens egen logg vinner alltid. Sömn och Idag visar dagarna så via

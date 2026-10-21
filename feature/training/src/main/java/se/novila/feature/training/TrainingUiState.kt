@@ -52,10 +52,11 @@ data class AssistantUiState(
 
 /**
  * A strength session in progress, with the seconds left of a timed step (a rest or a hold), and once it is done what
- * the user says about it.
+ * the user says about it. A [rehab] session is dosed by pain, so it neither asks for repetitions nor raises them.
  */
 data class WorkoutUiState(
     val workout: Workout,
     val secondsLeft: Int?,
     val feedback: SessionFeedbackDraft = SessionFeedbackDraft(),
+    val rehab: Boolean = false,
 )

@@ -12,6 +12,7 @@ import se.novila.data.HealthStore
 import se.novila.data.SavedCoach
 import se.novila.data.trainingWeek
 import se.novila.exercise.ExerciseKind
+import se.novila.exercise.ExerciseLog
 import se.novila.exercise.ExerciseRepository
 import se.novila.exercise.ExerciseState
 import se.novila.exercise.TrainingHistory
@@ -23,8 +24,9 @@ import java.time.LocalDate
 
 /**
  * The week's program for the Training tab's ViewModels, from the saved days, the coach's answers, the workouts
- * Health Connect recorded and the watch's recovery. Each ViewModel gets its own; the stores behind it are shared,
- * so a finished session, a logged walk or a changed answer shows up everywhere through [states].
+ * Health Connect recorded, the watch's recovery and what the user did of each exercise lately. Each ViewModel gets
+ * its own; the stores behind it are shared, so a finished session, a logged walk or a changed answer shows up
+ * everywhere through [states].
  */
 @Inject
 class TrainingRepository(
@@ -46,8 +48,8 @@ class TrainingRepository(
             coach.answers.filterNotNull(),
             exercises.state,
         ) { date, draft, days, saved, recorded -> TrainingInputs(date, draft, days, saved, recorded) }
-        return combine(inputs, recovery.state) { input, recovery ->
-            read(input.days, input.saved, input.recorded, input.date, input.draft, recovery)
+        return combine(inputs, recovery.state, coach.progress.filterNotNull()) { input, recovery, progress ->
+            read(input.days, input.saved, input.recorded, input.date, input.draft, recovery, progress)
         }
     }
 
@@ -55,7 +57,8 @@ class TrainingRepository(
     fun current(today: LocalDate, draft: CoachPreferences? = null): TrainingUiState? {
         val days = health.days.value ?: return null
         val saved = coach.answers.value ?: return null
-        return read(days, saved, exercises.state.value, today, draft, recovery.state.value)
+        val progress = coach.progress.value ?: return null
+        return read(days, saved, exercises.state.value, today, draft, recovery.state.value, progress)
     }
 
     /** The program for the week of [today], once the stores are read. */
@@ -68,11 +71,12 @@ class TrainingRepository(
         today: LocalDate,
         draft: CoachPreferences?,
         recovery: RecoveryState,
+        progress: ExerciseLog,
     ): TrainingUiState {
         val fromSource = (recorded as? ExerciseState.Connected)?.exercises.orEmpty()
         val status = (recovery as? RecoveryState.Connected)?.let { analyzeRecovery(it.days, today) }
             ?: RecoveryStatus.Unknown
-        val week = trainingWeek(saved, answers, fromSource, today, draft, status)
+        val week = trainingWeek(saved, answers, fromSource, today, draft, status, progress)
         val program = week.program
         val day = week.days.first()
         return TrainingUiState(
