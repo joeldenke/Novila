@@ -25,8 +25,7 @@ import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.OutlinedButton
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.Text
-import androidx.wear.compose.ui.tooling.preview.WearDevices
-import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
+import androidx.wear.tooling.preview.devices.WearDevices
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.exercise.Dosage
 import se.novila.exercise.PlannedExercise
@@ -406,7 +405,9 @@ private val StrengthLevel.label: Int
 // the most text, are checked on every watch shape; the timed steps and the summary on the small round watch, the
 // tightest fit. Time text is left out so the screenshots never show the clock.
 
-@WearPreviewDevices
+@Preview(device = WearDevices.LARGE_ROUND)
+@Preview(device = WearDevices.SMALL_ROUND)
+@Preview(device = WearDevices.SQUARE)
 @Composable
 private fun WearPlanPreview() = WearPreview(WearWorkoutUiState(day = DayOfWeek.MONDAY))
 
@@ -414,7 +415,9 @@ private fun WearPlanPreview() = WearPreview(WearWorkoutUiState(day = DayOfWeek.M
 @Composable
 private fun WearWarmUpPreview() = WearPreview(previewState(steps = 0))
 
-@WearPreviewDevices
+@Preview(device = WearDevices.LARGE_ROUND)
+@Preview(device = WearDevices.SMALL_ROUND)
+@Preview(device = WearDevices.SQUARE)
 @Composable
 private fun WearSetPreview() = WearPreview(previewState(steps = 1))
 

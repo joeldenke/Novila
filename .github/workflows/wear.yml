@@ -165,6 +165,10 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           screenshots=':(glob)wear/src/test/screenshots/**'
+          if [ ! -d wear/src/test/screenshots ]; then
+            echo "::warning title=Screenshots::Nothing was recorded; see the build step"
+            exit 0
+          fi
           git add -A -- "$screenshots"
           if git diff --cached --quiet; then
             echo "::notice title=Screenshots::The watch's screenshots are up to date"
