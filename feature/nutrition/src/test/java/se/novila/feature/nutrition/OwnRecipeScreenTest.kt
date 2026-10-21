@@ -13,6 +13,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performScrollToKey
 import androidx.compose.ui.test.performTextInput
 import org.junit.Assert.assertEquals
@@ -70,11 +71,11 @@ class OwnRecipeScreenTest {
         composeRule.onNodeWithText("One serving gives: Vegetables & fruit 1, Protein 1").assertExists()
 
         scrollTo("allergens")
-        composeRule.onNodeWithText("I have checked the allergens").performClick()
+        composeRule.onNodeWithText("I have checked the allergens").performScrollTo().performClick()
         scrollTo("save")
+        assertTrue(draft.checked)
         composeRule.onNodeWithText("Save recipe").assertIsEnabled().performClick()
 
-        assertTrue(draft.checked)
         assertTrue(saved)
     }
 }
