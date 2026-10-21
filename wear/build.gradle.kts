@@ -1,7 +1,8 @@
 plugins {
     alias(libs.plugins.novila.android.wear)
     alias(libs.plugins.novila.android.compose)
-    alias(libs.plugins.novila.android.unittest)
+    // Unit and Compose UI tests, and every @Preview as a Roborazzi screenshot on a round watch.
+    alias(libs.plugins.novila.android.screenshot)
 }
 
 novila {

@@ -15,20 +15,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.ScalingLazyListScope
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
+import androidx.wear.compose.material3.AppScaffold
 import androidx.wear.compose.material3.Button
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.OutlinedButton
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.Text
+import androidx.wear.compose.ui.tooling.preview.WearDevices
+import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.exercise.Dosage
 import se.novila.exercise.PlannedExercise
+import se.novila.exercise.StandaloneSession
 import se.novila.exercise.StrengthLevel
 import se.novila.exercise.Workout
 import se.novila.exercise.WorkoutStep
+import java.time.DayOfWeek
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Instant
 
 /**
  * The watch's one screen. It shows the start screen, the running step or the summary. It is state-less: the entry
@@ -168,22 +176,22 @@ private fun PlanLine(exercise: PlannedExercise) {
     )
 }
 
+/** Session A and B side by side, sharing the row's width so neither runs past the edge of a round screen. */
 @Composable
 private fun RowOfSessionChoices(second: Boolean, onSession: (Boolean) -> Unit) {
     Row(
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.xs),
     ) {
+        val choice = Modifier.weight(1f)
         val a = { onSession(false) }
         val b = { onSession(true) }
         if (second) {
-            OutlinedButton(onClick = a) { Text(stringResource(R.string.wear_session_a)) }
+            OutlinedButton(onClick = a, modifier = choice) { Text(stringResource(R.string.wear_session_a)) }
+            Button(onClick = b, modifier = choice) { Text(stringResource(R.string.wear_session_b)) }
         } else {
-            Button(onClick = a) { Text(stringResource(R.string.wear_session_a)) }
-        }
-        if (second) {
-            Button(onClick = b) { Text(stringResource(R.string.wear_session_b)) }
-        } else {
-            OutlinedButton(onClick = b) { Text(stringResource(R.string.wear_session_b)) }
+            Button(onClick = a, modifier = choice) { Text(stringResource(R.string.wear_session_a)) }
+            OutlinedButton(onClick = b, modifier = choice) { Text(stringResource(R.string.wear_session_b)) }
         }
     }
 }
@@ -393,3 +401,58 @@ private val StrengthLevel.label: Int
         StrengthLevel.Intermediate -> R.string.wear_level_intermediate
         StrengthLevel.Advanced -> R.string.wear_level_advanced
     }
+
+// Every preview is a screenshot test (Roborazzi) on the watch it names. The start screen and a set, the screens with
+// the most text, are checked on every watch shape; the timed steps and the summary on the small round watch, the
+// tightest fit. Time text is left out so the screenshots never show the clock.
+
+@WearPreviewDevices
+@Composable
+private fun WearPlanPreview() = WearPreview(WearWorkoutUiState(day = DayOfWeek.MONDAY))
+
+@Preview(device = WearDevices.SMALL_ROUND)
+@Composable
+private fun WearWarmUpPreview() = WearPreview(previewState(steps = 0))
+
+@WearPreviewDevices
+@Composable
+private fun WearSetPreview() = WearPreview(previewState(steps = 1))
+
+@Preview(device = WearDevices.SMALL_ROUND)
+@Composable
+private fun WearRestPreview() = WearPreview(previewState(steps = 2))
+
+@Preview(device = WearDevices.SMALL_ROUND)
+@Composable
+private fun WearFinishedPreview() = WearPreview(previewState(steps = Int.MAX_VALUE))
+
+@Composable
+private fun WearPreview(state: WearWorkoutUiState) {
+    NovilaWearTheme {
+        AppScaffold(timeText = {}) {
+            WearWorkoutScreen(
+                state = state,
+                onLevel = {},
+                onSession = {},
+                onStart = {},
+                onNext = {},
+                onNewSession = {},
+            )
+        }
+    }
+}
+
+/** Monday's session at the default level, [steps] steps in, on a fixed clock so every screenshot is the same. */
+private fun previewState(steps: Int): WearWorkoutUiState {
+    val start = Instant.fromEpochSeconds(0)
+    var workout = StandaloneSession.start(DayOfWeek.MONDAY, StrengthLevel.Intermediate, start)
+    var taken = 0
+    while (taken < steps && !workout.isFinished) {
+        taken++
+        workout = workout.next(start + PREVIEW_STEP * taken)
+    }
+    val now = start + PREVIEW_STEP * taken
+    return WearWorkoutUiState(day = DayOfWeek.MONDAY, workout = workout, secondsLeft = workout.secondsLeft(now))
+}
+
+private val PREVIEW_STEP = 1.minutes

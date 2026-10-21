@@ -45,7 +45,9 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   genom samma `Workout`-steg som telefonens passläge, med nedräkning på skärmen, håll skärmen tänd och en summering.
   Den är medvetet fristående: ingen Wearable Data Layer, ingen delning med telefonen, inget sparat och ingen
   Health Connect på klockan. Temat är `NovilaTheme` mappat till Compose for Wear OS Material 3 (`NovilaWearTheme`),
-  så klockan ser ut som appen. Egen Metro-graf (`WearGraph`). Se *Wear OS* under Regler.
+  så klockan ser ut som appen, alltid i mörkt läge. Egen Metro-graf (`WearGraph`). Se *Wear OS* under Regler.
+  Ingår bara i bygget med `-Pnovila.wear=true` (`settings.gradle.kts`), så telefonens CI aldrig konfigurerar,
+  testar eller bygger den; workflowen `Wear OS` (`wear.yml`) kontrollerar den, se *Arbetsflöde*.
 - `:core:designsystem` – `se.novila.designsystem`, enda modulen som använder Material 3 direkt
   - `theme` – `NovilaTheme`: färger, typografi, former och spacing-tokens
   - `component` – `Novila*`-komponenter som wrappar Material 3
@@ -143,6 +145,12 @@ Strängar och ikoner ligger i modulen som använder dem; det flera moduler anvä
   CI-flaggorna för de publika runnerna (4 kärnor, 16 GB) ligger i `.github/ci-gradle.properties`. Bygg aldrig egen cachelogik.
   Release-bygget (R8) körs inte på PR:er. Ändrar du `proguard-rules.pro` eller R8-känslig kod,
   säg det i PR-beskrivningen. Fel syns då först vid merge.
+- `Wear OS` (`wear.yml`) kontrollerar klockappen isolerat från telefonens CI, bara när `wear/`, det den bygger på
+  (`:core:exercise`, `:core:recovery`, `:core:designsystem`) eller bygget ändras: lint, tester, skärmdumpar på runda
+  och fyrkantiga klockor och debug-APK:n, med `-Pnovila.wear=true`. Den kollar också i APK:n att klockappen aldrig
+  kan ersätta telefonappen (paketet `se.novila.wear.debug`, kräver `android.hardware.type.watch`, inga egna
+  behörigheter). Lägg aldrig `:wear`-tasks i `ci.yml`. Den är ingen obligatorisk kontroll, så titta på den i PR:er
+  som rör klockan. `/record-screenshots` fungerar likadant där, och `Record references` spelar in klockans bilder också.
 - Kan din miljö inte nå Google Maven: pusha och följ körningen (`gh pr checks`, `gh run view --log-failed`)
   och rätta tills den är grön. Säg aldrig att något fungerar utan grönt CI.
 - `Dependency submission` skickar bibliotekens beroendegraf till GitHub vid varje push till `main`, så Dependabot larmar
@@ -437,7 +445,10 @@ där pluginet `firebase@firebase` inte alltid installeras.
   eller sparade data. Den får bara köra ett pass ur `StandaloneSession` och visa `Workout`-stegen; ingen Wearable Data
   Layer, ingen Health Connect och ingen lagring på klockan, eftersom det skulle ändra integritets- och Play-deklarationen.
   Delning med telefonen (Wearable Data Layer eller Health Connect) kräver ägarens ok. `NovilaWearTheme` mappar
-  `NovilaTheme` till Compose for Wear OS Material 3; klockan får inte importera `androidx.compose.material3` själv.
+  `NovilaTheme` till Compose for Wear OS Material 3, alltid mörkt (Wear OS har inget ljust tema); klockan får inte
+  importera `androidx.compose.material3` själv. Skärmen ligger i `AppScaffold` och `ScreenScaffold` och listan tar
+  scaffoldens `contentPadding`, så inget hamnar under klockan eller utanför en rund skärm. Rader med flera knappar
+  delar bredden (`weight`). Varje `@Preview` blir en skärmdump, på alla klockformer för skärmar med mycket text.
 - Hälsodata stannar på enheten. Inga nätverksanrop, analysverktyg eller Firebase-SDK:er i appen utan att ägaren ber om det.
   Appen har ingen `INTERNET`-behörighet: ML Kit drar in Googles telemetri (`datatransport`), som ber om den för att
   skicka användningsstatistik, så den tas bort i appens manifest (`tools:node="remove"`). Lägg aldrig tillbaka den

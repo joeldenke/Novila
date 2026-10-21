@@ -1,0 +1,120 @@
+# The Wear OS app (:wear), checked on its own so the phone's CI never configures, tests or builds it. :wear only
+# joins the Gradle build with -Pnovila.wear=true (settings.gradle.kts). Runs when the watch or something it builds on
+# changes: :wear, :core:exercise (StandaloneSession, Workout) and what it uses, :core:designsystem (NovilaWearTheme),
+# and the build itself. Spotless and ArchitectureTest already cover wear/ in ci.yml, since they only read files.
+#   - Android lint of :wear
+#   - unit and Compose UI tests, and every @Preview as a screenshot on a round watch (Roborazzi), against the
+#     references in wear/src/test/screenshots. /record-screenshots in the PR description records changed ones and
+#     pushes them, like ci.yml.
+#   - the debug APK
+# One job and one Gradle invocation: the module is small, and three jobs would set up Gradle three times.
+# Not a required check (a path-filtered workflow never reports on PRs it skips), so look at it on PRs that touch it.
+name: Wear OS
+
+on:
+  pull_request:
+    branches: [main]
+    paths: &paths
+      - "wear/**"
+      - "core/exercise/**"
+      - "core/recovery/**"
+      - "core/designsystem/**"
+      - "build-logic/**"
+      - "gradle/**"
+      - "*.gradle.kts"
+      - "gradle.properties"
+      - "lint.xml"
+      - ".github/workflows/wear.yml"
+      - ".github/actions/**"
+      - ".github/ci-gradle.properties"
+  # Runs on main save the Gradle cache that PR runs restore (PR runs may only read it).
+  push:
+    branches: [main]
+    paths: *paths
+  # Lets a recorded-screenshots push start it on the new commit (pushes by GITHUB_TOKEN trigger nothing).
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wear-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  wear:
+    name: Wear OS
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write # push recorded screenshots to the PR branch
+      pull-requests: write # say so on the PR
+      actions: write # start CI on the pushed commit
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-gradle-build
+        with:
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+      - name: Lint, tests, screenshots and debug build
+        run: |
+          set -o pipefail
+          ./gradlew -Pnovila.wear=true :wear:lintDebug :wear:test :wear:verifyAndRecordRoborazziDebug \
+            :wear:assembleDebug --continue --console=plain 2>&1 | tee build.log
+      # The watch app must never replace or collide with the phone app: its own package (se.novila.wear.debug, never
+      # se.novila or se.novila.debug), watch only (a phone can't install it) and no permissions besides AndroidX's
+      # own. Read from the built APK, so a build-logic change that breaks it fails here.
+      - name: Separate from the phone app
+        run: |
+          aapt2=$(ls "$ANDROID_HOME"/build-tools/*/aapt2 | sort -V | tail -1)
+          apk=wear/build/outputs/apk/debug/wear-debug.apk
+          badging=$("$aapt2" dump badging "$apk")
+          package=$(sed -n "s/^package: name='\([^']*\)'.*/\1/p" <<<"$badging")
+          if [ "$package" != "se.novila.wear.debug" ]; then
+            echo "::error title=Wear package::The watch APK is '$package', expected se.novila.wear.debug"
+            exit 1
+          fi
+          if ! grep -q "uses-feature: name='android.hardware.type.watch'" <<<"$badging"; then
+            echo "::error title=Wear feature::The watch APK no longer requires android.hardware.type.watch"
+            exit 1
+          fi
+          # AndroidX's own DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION is named after the package, so it never clashes.
+          permissions=$(grep "^uses-permission" <<<"$badging" | grep -v "name='$package.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'" || true)
+          if [ -n "$permissions" ]; then
+            echo "::error title=Wear permissions::The watch APK asks for permissions:%0A$(sed -z 's/\n/%0A/g' <<<"$permissions")"
+            exit 1
+          fi
+          echo "::notice title=Wear package::$package, watch only, no permissions of its own"
+      - name: Annotate failures
+        if: failure()
+        uses: ./.github/actions/annotate-gradle-failures
+
+      # Both workflows run again on the pushed commit: ci.yml holds the required check.
+      - name: Push recorded screenshots
+        if: >-
+          failure() && github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository &&
+          contains(github.event.pull_request.body, '/record-screenshots')
+        uses: ./.github/actions/push-recorded-screenshots
+        with:
+          token: ${{ github.token }}
+          workflows: ci.yml wear.yml
+
+      - name: Upload reports on failure
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: wear-reports
+          path: |
+            wear/build/reports/
+            wear/build/test-results/
+            wear/build/outputs/roborazzi/
+          retention-days: 7
+      - name: Upload debug APK
+        if: success()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: wear-debug-apk
+          path: wear/build/outputs/apk/debug/*.apk
+          retention-days: 7

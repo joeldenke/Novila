@@ -1,6 +1,5 @@
 package se.novila.wear
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.TextStyle
 import se.novila.designsystem.theme.HankenGrotesk
@@ -14,13 +13,12 @@ import androidx.wear.compose.material3.Typography as WearTypography
  * The watch's theme: Novila's colors, Hanken Grotesk and corner radii, mapped onto Compose for Wear OS Material 3.
  * [NovilaTheme] stays the single source of the tokens, so the watch looks like the phone app rather than the Wear
  * default palette; the Wear roles the watch shows (buttons, countdown numerals, body text) are mapped below.
+ * Always Novila's dark palette: Wear OS has no light theme, and a light screen on an OLED watch is glaring and costs
+ * battery. Many watches report the light ui mode, so following the system would show the phone's white cards.
  */
 @Composable
-fun NovilaWearTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit,
-) {
-    NovilaTheme(darkTheme = darkTheme) {
+fun NovilaWearTheme(content: @Composable () -> Unit) {
+    NovilaTheme(darkTheme = true) {
         val colors = NovilaTheme.colors
         val typography = NovilaTheme.typography
         val shapes = NovilaTheme.shapes

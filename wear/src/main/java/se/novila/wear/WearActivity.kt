@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.wear.compose.material3.AppScaffold
 import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 
@@ -19,16 +20,19 @@ class WearActivity : ComponentActivity() {
         setContent {
             CompositionLocalProvider(LocalMetroViewModelFactory provides viewModelFactory) {
                 NovilaWearTheme {
-                    val viewModel = metroViewModel<WearWorkoutViewModel>()
-                    val state by viewModel.state.collectAsStateWithLifecycle()
-                    WearWorkoutScreen(
-                        state = state,
-                        onLevel = viewModel::setLevel,
-                        onSession = viewModel::setSecond,
-                        onStart = viewModel::start,
-                        onNext = viewModel::next,
-                        onNewSession = viewModel::reset,
-                    )
+                    // The app's frame on the watch: the theme's background and the time at the top.
+                    AppScaffold {
+                        val viewModel = metroViewModel<WearWorkoutViewModel>()
+                        val state by viewModel.state.collectAsStateWithLifecycle()
+                        WearWorkoutScreen(
+                            state = state,
+                            onLevel = viewModel::setLevel,
+                            onSession = viewModel::setSecond,
+                            onStart = viewModel::start,
+                            onNext = viewModel::next,
+                            onNewSession = viewModel::reset,
+                        )
+                    }
                 }
             }
         }
