@@ -120,26 +120,25 @@ class TrainingScreenTest {
         composeRule.onNodeWithContentDescription("Drag through the movement").assertExists()
     }
 
-    @Test fun `a strength day in the week strip and in the program opens its session`() {
+    @Test fun `a strength day in the week strip opens its session`() {
         val opened = mutableListOf<DayOfWeek>()
         show(state, TrainingActions(onOpenSession = { opened += it }))
-        composeRule.onNodeWithText("Thu").performClick()
+        composeRule.onNodeWithContentDescription("Thursday: Strength, full body, 30 minutes planned").performClick()
         assertEquals(listOf(DayOfWeek.THURSDAY), opened)
     }
 
     @Test fun `the program opens a day's session`() {
         val opened = mutableListOf<DayOfWeek>()
         showProgram(state, onOpenSession = { opened += it })
-        composeRule.onNodeWithContentDescription("Thursday: Strength, full body, 30 minutes planned").performClick()
+        composeRule.onNodeWithText("Thu").performClick()
         assertEquals(listOf(DayOfWeek.THURSDAY), opened)
     }
 
     @Test fun `the sessions are listed in the program, not on the tab`() {
         show(state, TrainingActions())
         composeRule.onNodeWithText("This week's program").assertExists()
-        composeRule.onNodeWithText("Strength on Monday").assertDoesNotExist()
-        composeRule.onNodeWithContentDescription("Thursday: Strength, full body, 30 minutes planned")
-            .assertDoesNotExist()
+        // The program card, day by day, is on its own screen.
+        composeRule.onNodeWithText("Based on the WHO's activity guidelines", substring = true).assertDoesNotExist()
     }
 
     @Test fun `the weekly review counts the sessions done and says what next week holds`() {
