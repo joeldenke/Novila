@@ -39,4 +39,6 @@ dependencies {
     implementation(projects.core.ui)
 
     implementation(libs.androidx.navigation3.ui)
+    // The launcher shortcuts (AppShortcut), through ShortcutManagerCompat.
+    implementation(libs.androidx.core.ktx)
 }

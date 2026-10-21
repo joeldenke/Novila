@@ -30,6 +30,12 @@ class DrinksTest {
         assertEquals(full, full.withDrink(Drink(DrinkKind.Tea, 250)))
     }
 
+    @Test fun `a glass of water is the usual serving at the time it is drunk, and counts as a glass`() {
+        val day = DayEntry(date).withGlassOfWater(LocalTime.of(9, 30))
+        assertEquals(listOf(Drink(DrinkKind.Water, Goals.GLASS_ML, LocalTime.of(9, 30))), day.drinks)
+        assertEquals(1, day.waterGlasses)
+    }
+
     @Test fun `the last drink can be taken back`() {
         val day = DayEntry(date).withDrink(Drink(DrinkKind.Water, 500)).withDrink(Drink(DrinkKind.Coffee, 150))
         assertEquals(listOf(Drink(DrinkKind.Water, 500)), day.withoutLastDrink().drinks)

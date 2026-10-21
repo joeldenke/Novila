@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="navigate_back">Tillbaka</string>
+    <!-- Genvägar från appikonen (AppShortcut): en kort etikett på högst cirka 10 tecken, och en längre. -->
+    <string name="shortcut_start_session">Passet</string>
+    <string name="shortcut_start_session_long">Starta dagens pass</string>
+    <string name="shortcut_log_water">Vatten</string>
+    <string name="shortcut_log_water_long">Logga ett glas vatten</string>
 </resources>

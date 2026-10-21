@@ -111,7 +111,10 @@ Nano for more than the comment, or data that leaves the app.
 ### 7. Platform
 - [x] **Home screen widget** (Glance): the day's balance, sleep, nutrition and water, and encouragement
   based on what you have done (`cheers`), on a frosted card. More quick logging (servings) remains.
-- [ ] **Quick Settings tile and shortcuts:** "Start the session", "Log water"
+- [x] **Quick Settings tile and shortcuts:** "Start the session", "Log water". Two app shortcuts (`AppShortcut`,
+  dynamic so they follow the build and the language) and a tile that logs a glass of water and shows today's glasses
+  (`WaterTileService`, not on the lock screen). Logging servings from the widget remains: the widget has no buttons
+  by design (see *Widget* in `CLAUDE.md`), so that needs the owner's decision.
 - [x] **Wear OS:** workout mode and the rest timer on the watch. A standalone app in `:wear` runs a strength
   session and its rests; it does not share the session with the phone yet (see *Wear OS* in `CLAUDE.md`).
 - [x] **Tablets and foldables** (the `adaptive` skill): a navigation rail from 600 dp, content centred at most
@@ -165,6 +168,7 @@ Next, first what needs no approval and is used every day, then what needs the ow
     strengthens the app's strongest part, and `CoachFeedback` already reads effort and pain. ← done
 16. Shortcuts and a Quick Settings tile: "Start the session" and "Log water", plus logging servings from the widget.
     App shortcuts first; the tile is an exported service, so it needs a new badging line and the owner's approval.
+    ← done (shortcuts and the tile, approved by the owner; servings from the widget remain)
 17. More exercises and equipment: variations, dumbbells, resistance bands and gym, via the `add-exercise` skill.
     Makes progression worth more and gives the coach more to choose from. ← done
 18. Achievements and streaks: restrained, built on what the user already logs, and never rewarding overtraining

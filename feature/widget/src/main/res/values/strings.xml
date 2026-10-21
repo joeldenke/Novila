@@ -21,4 +21,8 @@
     <string name="widget_cheer_water">Water goal reached. Well done.</string>
     <string name="widget_cheer_good_food">Food score %1$d today, in line with the dietary guidelines.</string>
     <string name="widget_cheer_start">Log last night and today\'s food, and Novila shows your day.</string>
+    <!-- Quick Settings tile -->
+    <string name="tile_water_name">Log water</string>
+    <string name="tile_water_label">Glass of water</string>
+    <string name="tile_water_glasses">%1$d of %2$d glasses today</string>
 </resources>

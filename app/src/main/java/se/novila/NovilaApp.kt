@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -54,6 +55,7 @@ import se.novila.feature.today.navigation.todayDetailTitle
 import se.novila.feature.today.navigation.todayEntries
 import se.novila.feature.training.navigation.CoachRoute
 import se.novila.feature.training.navigation.TrainingRoute
+import se.novila.feature.training.navigation.WorkoutRoute
 import se.novila.feature.training.navigation.trainingDetailTitle
 import se.novila.feature.training.navigation.trainingEntries
 import se.novila.model.EntryLayout
@@ -63,6 +65,7 @@ import se.novila.navigation.TopLevelDestination
 import se.novila.navigation.rememberNavigationState
 import se.novila.navigation.rememberStandaloneEntries
 import se.novila.navigation.toEntries
+import java.time.LocalDate
 import se.novila.ui.R as UiR
 
 /**
@@ -78,13 +81,26 @@ import se.novila.ui.R as UiR
  *   [entryLayout] (tiles or rows for the ways into each tab's parts)
  */
 @Composable
-fun NovilaApp(darkTheme: Boolean, dynamicColor: Boolean, onboarded: Boolean, entryLayout: EntryLayout) {
+fun NovilaApp(
+    darkTheme: Boolean,
+    dynamicColor: Boolean,
+    onboarded: Boolean,
+    entryLayout: EntryLayout,
+    shortcut: AppShortcut? = null,
+    onShortcutShown: () -> Unit = {},
+) {
     val layout = when (entryLayout) {
         EntryLayout.Grid -> NovilaEntryLayout.Grid
         EntryLayout.Rows -> NovilaEntryLayout.Rows
     }
     NovilaTheme(darkTheme = darkTheme, dynamicColor = dynamicColor, entryLayout = layout) {
-        if (onboarded) Tabs() else Intro()
+        if (onboarded) {
+            Tabs(shortcut, onShortcutShown)
+        } else {
+            // The intro comes first; a shortcut tapped before it is done leads nowhere afterwards.
+            LaunchedEffect(shortcut) { if (shortcut != null) onShortcutShown() }
+            Intro()
+        }
     }
 }
 
@@ -99,12 +115,27 @@ private fun Intro() {
 }
 
 @Composable
-private fun Tabs() {
+private fun Tabs(shortcut: AppShortcut?, onShortcutShown: () -> Unit) {
     val navigationState = rememberNavigationState(
         startRoute = TopLevelDestination.start.route,
         topLevelRoutes = TopLevelDestination.routes,
     )
     val navigator = remember(navigationState) { Navigator(navigationState) }
+    // A launcher shortcut opens where it leads: today's session in session mode, or Nutrition with the glass logged.
+    LaunchedEffect(shortcut) {
+        when (shortcut) {
+            AppShortcut.StartSession -> {
+                navigator.navigate(TrainingRoute)
+                val workout = WorkoutRoute(LocalDate.now().dayOfWeek)
+                if (navigationState.backStacks[TrainingRoute]?.contains(workout) != true) navigator.navigate(workout)
+            }
+
+            AppShortcut.LogWater -> navigator.navigate(NutritionRoute)
+
+            null -> return@LaunchedEffect
+        }
+        onShortcutShown()
+    }
     val current = TopLevelDestination.of(navigationState.topLevelRoute)
     val currentRoute = navigationState.backStacks[navigationState.topLevelRoute]?.lastOrNull()
     val openSettings = { navigator.navigate(SettingsRoute) }
