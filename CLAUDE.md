@@ -146,17 +146,19 @@ Strängar och ikoner ligger i modulen som använder dem; det flera moduler anvä
   CI-flaggorna för de publika runnerna (4 kärnor, 16 GB) ligger i `.github/ci-gradle.properties`. Bygg aldrig egen cachelogik.
   Release-bygget (R8) körs inte på PR:er. Ändrar du `proguard-rules.pro` eller R8-känslig kod,
   säg det i PR-beskrivningen. Fel syns då först vid merge.
-- `Wear OS` (`wear.yml`) är klockappens egen workflow och den enda som rör `:wear`. Inga andra workflows (`ci.yml`,
-  `screenshots.yml`, `distribute.yml`, `dependency-submission.yml`) bygger, testar, formaterar eller spelar in klockan,
-  och `wear.yml` använder inget i `.github/actions/`. Lägg aldrig in klockan i de andra flödena eller tvärtom.
-  Den körs bara när `wear/`, det klockan bygger på (`:core:exercise`, `:core:recovery`, `:core:designsystem`) eller
-  bygget ändras, med `-Pnovila.wear=true`: Spotless på `wear/`, lint, tester, skärmdumpar och debug-APK:n. Den kollar
-  också i APK:n att klockappen aldrig kan ersätta telefonappen (paketet `se.novila.wear.debug`, kräver
-  `android.hardware.type.watch`, inga egna behörigheter) och att klockan inte importerar telefonens Material 3.
-  Klockans skärmdumpar spelas in med `/record-wear-screenshots` i PR-beskrivningen, eller genom att köra workflowen
-  med *record* från Actions-fliken; telefonens `/record-screenshots` rör dem aldrig. Efter en sådan push startar den
-  sig själv och `CI` på den nya commiten (en push med GITHUB_TOKEN startar inget, och den krävda kontrollen måste
-  finnas). Den är ingen obligatorisk kontroll, så titta på den i PR:er som rör klockan.
+- `Wear OS` (`wear.yml`) är klockappens egen workflow och den enda som rör `:wear`. Inga andra workflows bygger,
+  testar, formaterar eller spelar in klockan, och `wear.yml` använder inget i `.github/actions/`. Lägg aldrig in
+  klockan i de andra flödena eller tvärtom. **En push kör en pipeline, aldrig båda:** på en PR körs `wear.yml` bara
+  när `wear/` eller `wear.yml` ändras, och `CI`:s jobb *Changes* hoppar över lint, tester och bygge när inget annat
+  ändrats (den krävda kontrollen blir ändå grön; vid osäkerhet körs allt). `distribute.yml` ignorerar sådana merges.
+  Det klockan bygger på (`:core:exercise`, `:core:recovery`, `:core:designsystem`, bygget) kontrolleras av `CI` på
+  PR:en och av `wear.yml` efter merge till `main`. `wear.yml` kör med `-Pnovila.wear=true`: Spotless på `wear/`,
+  lint, tester, skärmdumpar och debug-APK:n, och kollar i APK:n att klockappen aldrig kan ersätta telefonappen
+  (paketet `se.novila.wear.debug`, kräver `android.hardware.type.watch`, inga egna behörigheter) och att klockan inte
+  importerar telefonens Material 3. Klockans skärmdumpar spelas in med `/record-wear-screenshots` i PR-beskrivningen,
+  eller genom att köra workflowen med *record* från Actions-fliken; telefonens `/record-screenshots` rör dem aldrig.
+  Efter en sådan push startar den sig själv och `CI` (som på en ren klock-branch bara rapporterar). `wear.yml` är
+  ingen obligatorisk kontroll, så titta på den i PR:er som rör klockan.
 - Kan din miljö inte nå Google Maven: pusha och följ körningen (`gh pr checks`, `gh run view --log-failed`)
   och rätta tills den är grön. Säg aldrig att något fungerar utan grönt CI.
 - `Dependency submission` skickar bibliotekens beroendegraf till GitHub vid varje push till `main`, så Dependabot larmar
