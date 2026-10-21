@@ -18,8 +18,8 @@
 
     <!-- Health Connect -->
     <string name="settings_health_connect">Health Connect</string>
-    <string name="settings_health_connected">Connected. Novila reads today\'s steps and active calories, the last five weeks\' workouts and your nights while the app is open.</string>
-    <string name="settings_health_not_connected">Not connected. Connect to see today\'s steps and active calories, count your watch\'s workouts in the program and fill in your sleep from it.</string>
+    <string name="settings_health_connected">Connected. While the app is open, Novila reads today\'s steps and active calories, the last five weeks\' workouts, your nights, and your resting heart rate and HRV.</string>
+    <string name="settings_health_not_connected">Not connected. Connect to see today\'s steps and active calories, count your watch\'s workouts in the program, fill in your sleep from it and let your resting heart rate and HRV lighten a session while you recover.</string>
     <string name="settings_health_denied">Access was declined. You can allow it for Novila in Health Connect.</string>
     <string name="settings_health_needs_install">Health Connect needs to be installed or updated before Novila can read your steps.</string>
     <string name="settings_health_unavailable">Health Connect is not available on this phone.</string>
@@ -37,7 +37,7 @@
     <string name="settings_data_body">Everything you log is saved on this phone only. Novila has no account and no cloud, so nothing can be restored once deleted.</string>
     <string name="settings_delete_data">Delete all data</string>
     <string name="settings_delete_data_title">Delete all data?</string>
-    <string name="settings_delete_data_body">Your profile and goals, your measurements, your logged sleep, food, mood and workouts and the coach\'s answers are deleted from this phone. Your reminders are turned off. This cannot be undone. Data in Health Connect is not affected.</string>
+    <string name="settings_delete_data_body">Your profile and goals, your measurements, your logged sleep, food, drinks and workouts, your food preferences and both coaches\' answers are deleted from this phone. Your reminders are turned off. This cannot be undone. Data in Health Connect is not affected.</string>
     <string name="settings_delete_data_confirm">Delete</string>
     <string name="settings_cancel">Cancel</string>
     <string name="settings_data_deleted">All data is deleted.</string>
@@ -45,10 +45,35 @@
     <!-- About -->
     <string name="settings_about">About Novila</string>
     <string name="settings_version">Version</string>
-    <string name="settings_privacy">Privacy</string>
+    <string name="settings_privacy">Privacy policy</string>
     <string name="settings_privacy_summary">No ads, no analytics and no network calls. Your health data stays on the phone.</string>
     <string name="settings_licenses">Open source licenses</string>
     <string name="settings_licenses_summary">The libraries Novila is built on, with their licenses.</string>
+
+    <!-- Privacy policy, also docs/privacy-policy.md: change both, and the date -->
+    <string name="privacy_title">Privacy policy</string>
+    <string name="privacy_intro">Novila is built so that your health data stays with you. This policy says what the app handles, where it is kept, who can see it and what you can do about it.</string>
+    <string name="privacy_what_title">What Novila handles</string>
+    <string name="privacy_what_body">What you enter yourself: your name, birth year, height, weight and body measurements; your sleep, food, drinks and workouts, with effort and pain after a session; your answers to the training and sleep coaches; your food preferences, including allergies; and your goals, reminders and settings. If you allow it, also what Novila reads from Health Connect, below. Everything is optional, and Novila works without a name or an account.</string>
+    <string name="privacy_where_title">Where it is kept</string>
+    <string name="privacy_where_body">Only on this phone, encrypted with a key from the phone\'s Android Keystore. Novila has no account and no server, and the app has no access to the internet, so nothing you log can be sent anywhere. Novila\'s data is left out of Android\'s backup and of transfers to a new phone.</string>
+    <string name="privacy_health_connect_title">Health Connect</string>
+    <string name="privacy_health_connect_body">If you allow it, Novila reads today\'s steps and active calories, your workouts from the last five weeks, your sleep up to two years back, and your resting heart rate and heart rate variability from the last two weeks. The data is read only while the app is open, used only to show your day and plan your training, and kept only in memory: Novila never saves it, never writes to Health Connect and never shares it. Novila\'s use of data from Health Connect follows the Health Connect permissions policy, including its Limited Use requirements. You can turn off access at any time in Health Connect.</string>
+    <string name="privacy_ai_title">The coach\'s AI comment</string>
+    <string name="privacy_ai_body">If your phone has Gemini Nano, the coach can write a comment on your week when you ask for one. The model runs on the phone, in Android\'s AICore, and the plan it reads never leaves the phone.</string>
+    <string name="privacy_shared_title">Shared with no one</string>
+    <string name="privacy_shared_body">Novila has no ads, no analytics and no tracking. Your data is not sold, not shared with anyone and not used for advertising. The developer never receives it.</string>
+    <string name="privacy_screen_title">Notifications and the widget</string>
+    <string name="privacy_screen_body">Reminders you turn on show a short notification, and the widget, if you add it, shows today\'s balance, sleep, food and water on your home screen. Anyone who sees your phone can see them. You can turn reminders off and remove the widget at any time.</string>
+    <string name="privacy_control_title">You decide</string>
+    <string name="privacy_control_body">You can see and change what you have logged in the app. Delete all data under Settings removes your health data from the phone at once, and uninstalling Novila removes all of it. No copy exists anywhere else, so there is nothing more for the developer to delete or hand over. Data in Health Connect is managed in Health Connect.</string>
+    <string name="privacy_google_title">Google Play and Android</string>
+    <string name="privacy_google_body">Novila is installed through Google Play, and Health Connect, AICore and Gemini Nano are parts of Android made by Google. They follow Google\'s privacy policy. If you share usage and diagnostics with Google, Google Play may give the developer crash reports, which do not contain what you log in Novila.</string>
+    <string name="privacy_adults_title">For adults</string>
+    <string name="privacy_adults_body">Novila is made for adults and is not directed at children.</string>
+    <string name="privacy_contact_title">Questions and changes</string>
+    <string name="privacy_contact_body">Questions about privacy go to the developer\'s contact address on Novila\'s page in Google Play. You can also complain to the Swedish Authority for Privacy Protection (IMY). If this policy changes, the new version comes with an app update, with its date below.</string>
+    <string name="privacy_updated">Updated 20 October 2026</string>
 
     <!-- Licenses -->
     <string name="licenses_title">Open source licenses</string>

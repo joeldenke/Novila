@@ -24,6 +24,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -130,6 +131,9 @@ fun OnboardingScreen(
     }
 }
 
+/** From this font scale the controls stack instead of sharing a line. */
+private const val LARGE_TEXT_SCALE = 1.5f
+
 /** Each page in its part's color: sleep is lake blue, food falu red, everything else pine. */
 @Composable
 private fun OnboardingPage.role(): NovilaColorRole = when (this) {
@@ -165,22 +169,31 @@ private fun Controls(
             role = page.role(),
             offset = offset,
         )
-        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            when {
-                page < OnboardingPage.You -> NovilaTextButton(stringResource(R.string.onboarding_skip), onSkip)
-                else -> NovilaTextButton(stringResource(R.string.onboarding_back), onBack)
+        val nextLabel = stringResource(
+            when (page) {
+                OnboardingPage.Welcome -> R.string.onboarding_begin
+                OnboardingPage.Ready -> R.string.onboarding_finish
+                else -> R.string.onboarding_next
+            },
+        )
+        if (LocalDensity.current.fontScale >= LARGE_TEXT_SCALE) {
+            // At the largest text sizes the two buttons no longer fit on one line.
+            Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s)) {
+                when {
+                    page < OnboardingPage.You -> NovilaTextButton(stringResource(R.string.onboarding_skip), onSkip)
+                    else -> NovilaTextButton(stringResource(R.string.onboarding_back), onBack)
+                }
+                NovilaAccentButton(text = nextLabel, onClick = onNext, modifier = Modifier.fillMaxWidth())
             }
-            Spacer(Modifier.weight(1f))
-            NovilaAccentButton(
-                text = stringResource(
-                    when (page) {
-                        OnboardingPage.Welcome -> R.string.onboarding_begin
-                        OnboardingPage.Ready -> R.string.onboarding_finish
-                        else -> R.string.onboarding_next
-                    },
-                ),
-                onClick = onNext,
-            )
+        } else {
+            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                when {
+                    page < OnboardingPage.You -> NovilaTextButton(stringResource(R.string.onboarding_skip), onSkip)
+                    else -> NovilaTextButton(stringResource(R.string.onboarding_back), onBack)
+                }
+                Spacer(Modifier.weight(1f))
+                NovilaAccentButton(text = nextLabel, onClick = onNext)
+            }
         }
     }
 }

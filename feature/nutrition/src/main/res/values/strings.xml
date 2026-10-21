@@ -40,6 +40,34 @@
     <string name="meal_log_add">Add the meal</string>
     <string name="meal_summary_separator" translatable="false">" · "</string>
 
+    <!-- Drinks -->
+    <string name="drinks_title">Drinks today</string>
+    <string name="drinks_title_day">Drinks</string>
+    <string name="drinks_water_goal">Towards your water goal</string>
+    <string name="drinks_progress">%1$s of %2$s</string>
+    <string name="drinks_total">All drinks: %1$s</string>
+    <string name="drinks_amount">Amount</string>
+    <string name="drinks_amount_hint">Pick a size or set any amount, 0.5 dl at a time.</string>
+    <string name="drinks_less">Less</string>
+    <string name="drinks_more">More</string>
+    <string name="drinks_add">Add %1$s %2$s</string>
+    <string name="drinks_line">%1$s · %2$s</string>
+    <string name="drinks_line_time">%1$s  %2$s</string>
+    <string name="drinks_more_logged">and %1$d more earlier</string>
+    <string name="drinks_undo">Remove the last drink</string>
+    <string name="drinks_late_caffeine">Caffeine after 2 pm can make it harder to fall asleep for some people. The Sleep tab shows whether it seems to affect you.</string>
+    <string name="drinks_about">Water, coffee, tea and milk count towards the water goal. Juice, soft drinks and energy drinks are logged but don\'t count.</string>
+    <string name="drinks_dl" translatable="false">%1$s dl</string>
+    <string name="drinks_liters" translatable="false">%1$s l</string>
+    <string name="drink_water">Water</string>
+    <string name="drink_coffee">Coffee</string>
+    <string name="drink_tea">Tea</string>
+    <string name="drink_herbal_tea">Herbal tea</string>
+    <string name="drink_milk">Milk</string>
+    <string name="drink_juice">Juice</string>
+    <string name="drink_soft_drink">Soft drink</string>
+    <string name="drink_energy_drink">Energy drink</string>
+
     <!-- Recipe suggestions -->
     <string name="recipes_title">Recipes for what is missing</string>
     <string name="recipes_breakfast">A breakfast that fills what today is still missing.</string>
@@ -57,6 +85,10 @@
     <string name="recipe_steps">How to</string>
     <string name="recipe_ingredient" translatable="false">• %1$s</string>
     <string name="recipe_step" translatable="false">%1$d. %2$s</string>
+    <string name="recipe_expand">Show recipe</string>
+    <string name="recipe_collapse">Hide recipe</string>
+    <string name="recipe_expanded">Expanded</string>
+    <string name="recipe_collapsed">Collapsed</string>
     <string name="recipe_log">I ate this</string>
 
     <!-- Recipes: one serving each, see se.novila.recipes.Recipe -->

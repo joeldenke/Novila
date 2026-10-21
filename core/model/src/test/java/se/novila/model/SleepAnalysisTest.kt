@@ -23,7 +23,7 @@ class SleepAnalysisTest {
         // Every other day eaten well; the night after is an hour longer.
         val days = days(40) { i, date ->
             val ateWellBefore = (i - 1) % 2 == 0
-            DayEntry(date, waterGlasses = 8, food = if (i % 2 == 0) good else poor)
+            DayEntry(date, drinks = glassesOfWater(8), food = if (i % 2 == 0) good else poor)
                 .copy(sleepHours = (if (ateWellBefore) 8f else 7f) + wobble(i))
         }
         val analysis = analyzeSleep(days)
@@ -37,7 +37,7 @@ class SleepAnalysisTest {
         // Ten minutes longer after eating well, and noise on top: nothing worth telling.
         val days = days(40) { i, date ->
             val ateWellBefore = (i - 1) % 2 == 0
-            DayEntry(date, waterGlasses = 8, food = if (i % 2 == 0) good else poor)
+            DayEntry(date, drinks = glassesOfWater(8), food = if (i % 2 == 0) good else poor)
                 .copy(sleepHours = 7f + (if (ateWellBefore) 1f / 6 else 0f) + wobble(i) * 2)
         }
         assertTrue(analyzeSleep(days).links.none { it.driver == SleepDriver.AteWell })
@@ -46,7 +46,7 @@ class SleepAnalysisTest {
     @Test fun `too few nights on one side say nothing`() {
         val days = days(20) { i, date ->
             // Only two days eaten well.
-            DayEntry(date, waterGlasses = 8, food = if (i == 3 || i == 9) good else poor)
+            DayEntry(date, drinks = glassesOfWater(8), food = if (i == 3 || i == 9) good else poor)
                 .copy(sleepHours = if (i == 4 || i == 10) 9f else 7f)
         }
         assertTrue(analyzeSleep(days).links.none { it.driver == SleepDriver.AteWell })
@@ -80,6 +80,19 @@ class SleepAnalysisTest {
         assertTrue(caffeine.difference < 0)
     }
 
+    @Test fun `coffee logged late the day before counts as late caffeine without the factor`() {
+        // Every other day a coffee at four in the afternoon, the others at eight in the morning; the night after a
+        // late one is an hour shorter. No night has details, so only the drinks tell.
+        val days = days(30) { i, date ->
+            val late = i % 2 == 0
+            DayEntry(date)
+                .withDrink(Drink(DrinkKind.Coffee, 150, LocalTime.of(if (late) 16 else 8, 0)))
+                .copy(sleepHours = (if (i % 2 == 1) 6.5f else 7.5f) + wobble(i))
+        }
+        val caffeine = analyzeSleep(days, limit = 10).links.single { it.driver == SleepDriver.LateCaffeine }
+        assertTrue(caffeine.difference < 0)
+    }
+
     @Test fun `a better week comes with what changed in it, and is confirmed by the longer history`() {
         // Eight weeks: eating well gives an hour more sleep. The last week has five good days, the one before one.
         val days = days(56) { i, date ->
@@ -89,7 +102,7 @@ class SleepAnalysisTest {
                 7 -> i % 7 < 5
                 else -> i % 2 == 0
             }
-            DayEntry(date, waterGlasses = 8, food = if (ateWell) good else poor)
+            DayEntry(date, drinks = glassesOfWater(8), food = if (ateWell) good else poor)
         }.let { plain ->
             // The night after a good day is an hour longer.
             plain.mapIndexed { i, day ->

@@ -39,7 +39,7 @@
     <string name="onboarding_name">Vad ska vi kalla dig?</string>
     <string name="onboarding_name_summary">Valfritt. Idag hälsar dig med namn.</string>
     <string name="onboarding_goal_title">Ditt mål</string>
-    <string name="onboarding_goal_health">Allmän hälsa</string>
+    <string name="onboarding_goal_health">Allsidig hälsa</string>
     <string name="onboarding_goal_health_body">Lite av allt: kondition och styrka för en frisk vardag.</string>
     <string name="onboarding_goal_strength">Bli starkare</string>
     <string name="onboarding_goal_strength_body">Fler set och längre vila, så att musklerna växer.</string>
@@ -60,7 +60,7 @@
 
     <string name="onboarding_movement_eyebrow">Rörelse</string>
     <string name="onboarding_movement_title">Varje steg räknas</string>
-    <string name="onboarding_movement_body">Koppla Health Connect, så visar Novila dagens steg och aktiva kalorier från din klocka eller telefon, programmet räknar med klockans träningspass och nätterna den har registrerat fyller i Sömn. Novila läser dem bara, medan appen är öppen.</string>
+    <string name="onboarding_movement_body">Koppla Health Connect, så visar Novila dagens steg och aktiva kalorier från din klocka eller telefon, programmet räknar med klockans träningspass, nätterna den har registrerat fyller i Sömn och din vilopuls och HRV kan göra ett pass lättare medan du återhämtar dig. Novila läser dem bara, medan appen är öppen.</string>
     <string name="onboarding_movement_connect">Koppla Health Connect</string>
     <string name="onboarding_movement_connected">Kopplat. %1$s steg hittills i dag.</string>
     <string name="onboarding_movement_denied">Åtkomsten nekades. Du kan tillåta den i Health Connect när du vill.</string>

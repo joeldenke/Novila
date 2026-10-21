@@ -87,7 +87,11 @@ fun NovilaCard(
                     if (icon != null) {
                         IconBadge(icon, role, size = 36.dp, iconSize = 20.dp)
                     }
-                    NovilaText(title, style = NovilaTheme.typography.titleMedium)
+                    NovilaText(
+                        title,
+                        style = NovilaTheme.typography.titleMedium,
+                        modifier = Modifier.semantics { heading() },
+                    )
                 }
             }
             content()

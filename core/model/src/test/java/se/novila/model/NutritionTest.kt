@@ -17,7 +17,8 @@ class NutritionTest {
     }
 
     @Test fun `every group at its goal scores 100`() {
-        val day = DayEntry(date, waterGlasses = WATER_GOAL, food = FoodLog(5, meals = 3, protein = 3, wholeGrain = 3))
+        val food = FoodLog(5, meals = 3, protein = 3, wholeGrain = 3)
+        val day = DayEntry(date, drinks = glassesOfWater(WATER_GOAL), food = food)
         assertEquals(100, day.nutritionScore()?.total)
     }
 

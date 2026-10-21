@@ -36,6 +36,32 @@
     <string name="meal_log_unknown">Kände inte igen: %1$s</string>
     <string name="meal_log_add">Lägg till måltiden</string>
 
+    <!-- Drycker -->
+    <string name="drinks_title">Dagens drycker</string>
+    <string name="drinks_title_day">Drycker</string>
+    <string name="drinks_water_goal">Mot vattenmålet</string>
+    <string name="drinks_progress">%1$s av %2$s</string>
+    <string name="drinks_total">Alla drycker: %1$s</string>
+    <string name="drinks_amount">Mängd</string>
+    <string name="drinks_amount_hint">Välj en storlek eller ställ in valfri mängd, 0,5 dl i taget.</string>
+    <string name="drinks_less">Mindre</string>
+    <string name="drinks_more">Mer</string>
+    <string name="drinks_add">Lägg till %1$s %2$s</string>
+    <string name="drinks_line">%1$s · %2$s</string>
+    <string name="drinks_line_time">%1$s  %2$s</string>
+    <string name="drinks_more_logged">och %1$d till tidigare</string>
+    <string name="drinks_undo">Ta bort senaste drycken</string>
+    <string name="drinks_late_caffeine">Koffein efter kl. 14 kan göra det svårare att somna för en del. Sömnfliken visar om det verkar påverka dig.</string>
+    <string name="drinks_about">Vatten, kaffe, te och mjölk räknas mot vattenmålet. Juice, läsk och energidryck loggas men räknas inte.</string>
+    <string name="drink_water">Vatten</string>
+    <string name="drink_coffee">Kaffe</string>
+    <string name="drink_tea">Te</string>
+    <string name="drink_herbal_tea">Örtte</string>
+    <string name="drink_milk">Mjölk</string>
+    <string name="drink_juice">Juice</string>
+    <string name="drink_soft_drink">Läsk</string>
+    <string name="drink_energy_drink">Energidryck</string>
+
     <!-- Receptförslag -->
     <string name="recipes_title">Recept för det som saknas</string>
     <string name="recipes_breakfast">En frukost som fyller det som fortfarande saknas i dag.</string>
@@ -49,6 +75,10 @@
     <string name="recipe_contains_none">Inget av de allergener som måste märkas ut.</string>
     <string name="recipe_ingredients">Ingredienser, en portion</string>
     <string name="recipe_steps">Gör så här</string>
+    <string name="recipe_expand">Visa recept</string>
+    <string name="recipe_collapse">Dölj recept</string>
+    <string name="recipe_expanded">Utfälld</string>
+    <string name="recipe_collapsed">Ihopfälld</string>
     <string name="recipe_log">Jag åt det här</string>
 
     <!-- Recept: en portion vardera, se se.novila.recipes.Recipe -->

@@ -26,10 +26,11 @@ enum class SleepFactor { LateCaffeine, Screens, Alcohol, Stress, LateMeal, LateE
 const val MAX_SLEEP_QUALITY = 5
 
 /**
- * Health data for one day. mood: 0 = not set, 1–5 = bad → great, energy: 0 = not set, 1–5 = exhausted → full of
- * energy, and stress: 0 = not set, 1–5 = calm → very stressed. [diary] is a free line about the day, at most
- * [MAX_DIARY_LENGTH] characters. [strengthMinutes] is the time spent in strength sessions done in Novila's session
- * mode and [cardio] the cardio logged by hand; together they are the history the training program builds on.
+ * Health data for one day. [drinks] is everything drunk, in the order it was logged ([Drink]). mood: 0 = not set, 1–5 =
+ * bad → great, energy: 0 = not set, 1–5 = exhausted → full of energy, and stress: 0 = not set, 1–5 = calm → very
+ * stressed. [diary] is a free line about the day, at most [MAX_DIARY_LENGTH] characters. [strengthMinutes] is the time
+ * spent in strength sessions done in Novila's session mode and [cardio] the cardio logged by hand; together they are
+ * the history the training program builds on.
  *
  * After a strength session the user can say how hard it was ([effort], RPE 1–10, 0 = not given) and how much it hurt
  * ([pain], 0–10, null = not given). [rehabPhase] is the rehab phase the session was done in, 0 for other sessions,
@@ -41,7 +42,7 @@ const val MAX_SLEEP_QUALITY = 5
  */
 data class DayEntry(
     val date: LocalDate,
-    val waterGlasses: Int = 0,
+    val drinks: List<Drink> = emptyList(),
     val sleepHours: Float = 0f,
     val mood: Int = 0,
     val energy: Int = 0,
@@ -59,6 +60,9 @@ data class DayEntry(
     val sleepFactors: Set<SleepFactor> = emptySet(),
 ) {
     val cardioMinutes: Int get() = cardio.sumOf { it.minutes }
+
+    /** Glasses ([Goals.GLASS_ML]) towards the water goal, whole ones: what [waterMl] adds up to. */
+    val waterGlasses: Int get() = waterMl / Goals.GLASS_ML
 
     /** Rounds to the nearest half hour within 0–12 h. The times no longer match the hours, so they are cleared. */
     fun withSleep(hours: Float) = copy(
@@ -141,22 +145,24 @@ private fun diaryLine(text: String): String =
 
 /**
  * Simple versioned text format without Android dependencies, so it can be unit tested and migrated.
- * v6: "v6;water;sleep;mood;vegetables;meals;protein;wholeGrain;treats;strengthMinutes;cardio;effort;pain;rehabPhase;
- * bedtime;wakeTime;sleepQuality;sleepFactors;energy;stress;diary", where cardio is comma-separated
+ * v7: "v7;water;sleep;mood;vegetables;meals;protein;wholeGrain;treats;strengthMinutes;cardio;effort;pain;rehabPhase;
+ * bedtime;wakeTime;sleepQuality;sleepFactors;energy;stress;diary;drinks", where cardio is comma-separated
  * "type:minutes" (empty when none), pain is empty when not given, the times are minutes after midnight (empty when
  * not given) and the factors are comma-separated names. Every version only appends fields, so older versions decode
  * with the same indices and the newer fields default; v6 appends energy (0 = not set, 1–5), stress (0 = not set,
- * 1–5) and the diary line, which encode keeps free of semicolons so it never breaks the format.
- * Older versions are still read: v5 (before energy, stress and the diary line), v4 (before bedtimes, sleep quality
- * and factors), v3 (before cardio logging and feedback after a session), v2 (before session mode) with no strength
- * sessions either, and v1 (before food logging) with nothing eaten logged either.
+ * 1–5) and the diary line, which encode keeps free of semicolons so it never breaks the format. v7 appends drinks,
+ * comma-separated "kind:ml:time" with the time in minutes after midnight (empty when not known). From v7 the water
+ * field is empty: water is a drink. Before v7 it was glasses of water, read as that many glasses without a time.
+ * Older versions are still read: v6 (before drinks), v5 (before energy, stress and the diary line), v4 (before
+ * bedtimes, sleep quality and factors), v3 (before cardio logging and feedback after a session), v2 (before session
+ * mode) with no strength sessions either, and v1 (before food logging) with nothing eaten logged either.
  */
 object DayEntryCodec {
-    private const val VERSION = "v6"
-    private val FIELDS = mapOf("v1" to 4, "v2" to 9, "v3" to 10, "v4" to 14, "v5" to 18, VERSION to 21)
+    private const val VERSION = "v7"
+    private val FIELDS = mapOf("v1" to 4, "v2" to 9, "v3" to 10, "v4" to 14, "v5" to 18, "v6" to 21, VERSION to 22)
 
     fun encode(entry: DayEntry): String {
-        val day = listOf(VERSION, entry.waterGlasses, entry.sleepHours, entry.mood)
+        val day = listOf(VERSION, "", entry.sleepHours, entry.mood)
         val food = with(entry.food) { listOf(vegetables, meals, protein, wholeGrain, treats) }
         val cardio = entry.cardio.joinToString(",") { "${it.type.name}:${it.minutes}" }
         val training = listOf(entry.strengthMinutes, cardio, entry.effort, entry.pain ?: "", entry.rehabPhase)
@@ -167,7 +173,8 @@ object DayEntryCodec {
             entry.sleepFactors.sorted().joinToString(",") { it.name },
         )
         val moment = listOf(entry.energy, entry.stress, diaryLine(entry.diary))
-        return (day + food + training + night + moment).joinToString(";")
+        val drinks = entry.drinks.joinToString(",") { "${it.kind.name}:${it.ml}:${it.time?.let(::minutes) ?: ""}" }
+        return (day + food + training + night + moment + drinks).joinToString(";")
     }
 
     private fun minutes(time: LocalTime) = time.hour * 60 + time.minute
@@ -181,7 +188,7 @@ object DayEntryCodec {
         fun int(index: Int) = parts.getOrNull(index)?.toIntOrNull() ?: 0
         return DayEntry(
             date = date,
-            waterGlasses = int(1),
+            drinks = if (parts[0] == VERSION) drinks(parts[21]) else glassesOfWater(int(1)),
             sleepHours = parts[2].toFloatOrNull() ?: 0f,
             mood = int(3),
             food = FoodLog(vegetables = int(4), meals = int(5), protein = int(6), wholeGrain = int(7), treats = int(8)),
@@ -199,6 +206,14 @@ object DayEntryCodec {
             diary = diaryLine(parts.getOrNull(20).orEmpty()),
         )
     }
+
+    /** Unknown kinds (from a later version) and unreadable amounts are skipped. */
+    private fun drinks(raw: String): List<Drink> = raw.split(',').mapNotNull { part ->
+        val fields = part.split(':')
+        val kind = DrinkKind.entries.firstOrNull { it.name == fields[0] }
+        val ml = fields.getOrNull(1)?.toIntOrNull()?.takeIf { it > 0 }?.coerceAtMost(MAX_DRINK_ML)
+        if (kind != null && ml != null) Drink(kind, ml, time(fields.getOrNull(2))) else null
+    }.take(MAX_DRINKS)
 
     /** Unknown factors (from a later version) are skipped. */
     private fun factors(raw: String?): Set<SleepFactor> =

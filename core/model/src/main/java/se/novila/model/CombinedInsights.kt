@@ -125,7 +125,7 @@ fun connections(days: List<DayEntry>, goals: Goals = Goals(), limit: Int = 2): L
  * alone is not enough: a logged night doesn't say anything was trained. Mirrors the sleep analysis's idea of a day.
  */
 private fun DayEntry.engaged() =
-    food != FoodLog() || waterGlasses > 0 || mood > 0 || energy > 0 ||
+    food != FoodLog() || drinks.isNotEmpty() || mood > 0 || energy > 0 ||
         strengthMinutes > 0 || cardio.isNotEmpty()
 
 private fun DayEntry.trainingMinutes() = strengthMinutes + cardioMinutes

@@ -7,8 +7,8 @@
     <string name="widget_food">Kost</string>
     <string name="widget_water">Vatten</string>
 
-    <string name="widget_cheer_outdoors_summer">Ute och rörde dig i %1$d minuter. Solen mitt på dagen bildar D-vitamin.</string>
-    <string name="widget_cheer_outdoors_daylight">Ute och rörde dig i %1$d minuter. Dagsljuset hjälper sömnen i kväll.</string>
+    <string name="widget_cheer_outdoors_summer">Ute och rörde dig i %1$d minuter. Under sommarhalvåret ger dagsljus på huden D-vitamin.</string>
+    <string name="widget_cheer_outdoors_daylight">Ute och rörde dig i %1$d minuter. Dagsljus på dagen kan göra det lättare att somna i kväll.</string>
     <string name="widget_cheer_swim">%1$d minuters simning: hela kroppen, skonsamt för lederna.</string>
     <string name="widget_cheer_strength">Styrkepasset är klart. Musklerna växer när du vilar.</string>
     <string name="widget_cheer_rested">Du sov %1$s. En utvilad kropp orkar mer i dag.</string>

@@ -37,11 +37,11 @@ data class RecipeActions(
 
 /**
  * The Nutrition tab in the parts every tab has ([ScreenSection]): the shown [day]'s nutrition score with its
- * breakdown, a meal typed in the user's own words ([onLogMeal]), logging per food group, and the scores in the
- * [history] up to it, over a week, four weeks or a year ([onRange]), water against [goals]. [today] is the day it
- * really is: the user can go back to an earlier day ([onSelectDay]) and fill in what was forgotten. On today, the plan
- * is [recipes] for what is still missing, chosen for [foodPreferences]; [expandedRecipe] is the one shown open at
- * first.
+ * breakdown, a meal typed in the user's own words ([onLogMeal]), logging per food group and drinks
+ * ([drinkActions]), and the scores in the [history] up to it, over a week, four weeks or a year ([onRange]), water
+ * against [goals]. [today] is the day it really is: the user can go back to an earlier day ([onSelectDay]) and fill
+ * in what was forgotten. On today, the plan is [recipes] for what is still missing, chosen for [foodPreferences];
+ * [expandedRecipe] is the one shown open at first.
  */
 @Composable
 fun NutritionScreen(
@@ -53,6 +53,7 @@ fun NutritionScreen(
     onLogMeal: (String) -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
+    drinkActions: DrinkActions = DrinkActions(),
     today: LocalDate = day.date,
     onSelectDay: (LocalDate) -> Unit = {},
     onRange: (HistoryRange) -> Unit = {},
@@ -69,7 +70,8 @@ fun NutritionScreen(
         item(key = "score") { NovilaReveal(order = 0) { NutritionScoreCard(day, goals, isToday) } }
         section(ScreenSection.Log)
         item(key = "meal") { NovilaReveal(order = 1) { MealLogCard(onLogMeal) } }
-        item(key = "log") { NovilaReveal(order = 2) { FoodLogCard(day, goals, onPortions, onTreats, isToday) } }
+        item(key = "log") { NovilaReveal(order = 2) { FoodLogCard(day, onPortions, onTreats, isToday) } }
+        item(key = "drinks") { NovilaReveal(order = 2) { DrinksCard(day, goals, drinkActions, isToday) } }
         if (isToday && recipes != null) {
             section(ScreenSection.Plan)
             item(key = "recipes") {

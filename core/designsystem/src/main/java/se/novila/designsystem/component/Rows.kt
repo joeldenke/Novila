@@ -20,6 +20,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
 import se.novila.designsystem.theme.NovilaColorRole
 import se.novila.designsystem.theme.NovilaTheme
@@ -42,7 +44,8 @@ fun NovilaIconButton(
 
 /**
  * A row in a list of settings: a [title], an optional [summary] below it and something at the end, like a value or
- * a chevron. The whole row is the touch target when [onClick] is set.
+ * a chevron. The whole row is the touch target when [onClick] is set; [onClickLabel] says what a tap does and
+ * [stateDescription] says whether the thing it opens is expanded.
  */
 @Composable
 fun NovilaListRow(
@@ -50,10 +53,16 @@ fun NovilaListRow(
     modifier: Modifier = Modifier,
     summary: String? = null,
     onClick: (() -> Unit)? = null,
+    onClickLabel: String? = null,
+    stateDescription: String? = null,
     trailing: @Composable (() -> Unit)? = null,
 ) {
-    val clickable = if (onClick != null) Modifier.clickable(role = Role.Button, onClick = onClick) else Modifier
-    RowLayout(title, summary, modifier.then(clickable), trailing)
+    val clickable = if (onClick != null) {
+        Modifier.clickable(role = Role.Button, onClickLabel = onClickLabel, onClick = onClick)
+    } else {
+        Modifier
+    }
+    RowLayout(title, summary, modifier.then(clickable), stateDescription, trailing)
 }
 
 /** A setting that is on or off. The whole row toggles, and screen readers announce it as a switch. */
@@ -76,6 +85,7 @@ fun NovilaSwitchRow(
             role = Role.Switch,
             onValueChange = onCheckedChange,
         ),
+        stateDescription = null,
     ) {
         // The row handles the toggle, so the switch itself is only the picture of it.
         Switch(
@@ -100,6 +110,7 @@ fun NovilaTaskRow(
     done: Boolean,
     modifier: Modifier = Modifier,
     summary: String? = null,
+    stateDescription: String? = null,
     role: NovilaColorRole = NovilaTheme.pillars.training,
     action: @Composable (() -> Unit)? = null,
 ) {
@@ -107,7 +118,10 @@ fun NovilaTaskRow(
         modifier = modifier
             .fillMaxWidth()
             .heightIn(min = MinRowHeight)
-            .padding(vertical = NovilaTheme.spacing.xs),
+            .padding(vertical = NovilaTheme.spacing.xs)
+            .semantics(mergeDescendants = true) {
+                if (stateDescription != null) this.stateDescription = stateDescription
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.m),
     ) {
@@ -138,13 +152,17 @@ private fun RowLayout(
     title: String,
     summary: String?,
     modifier: Modifier,
+    stateDescription: String?,
     trailing: @Composable (() -> Unit)?,
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .heightIn(min = MinRowHeight)
-            .padding(vertical = NovilaTheme.spacing.s),
+            .padding(vertical = NovilaTheme.spacing.s)
+            .semantics(mergeDescendants = true) {
+                if (stateDescription != null) this.stateDescription = stateDescription
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.m),
     ) {

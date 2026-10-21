@@ -127,6 +127,9 @@ private fun Task(
         title = title,
         done = task.done,
         summary = summary,
+        stateDescription = stringResource(
+            if (task.done) R.string.checklist_task_done else R.string.checklist_task_todo,
+        ),
         role = role,
         action = if (task.done) {
             null

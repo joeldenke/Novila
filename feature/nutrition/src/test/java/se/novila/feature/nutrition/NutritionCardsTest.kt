@@ -1,30 +1,44 @@
 package se.novila.feature.nutrition
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.model.DayEntry
+import se.novila.model.Drink
+import se.novila.model.DrinkKind
 import se.novila.model.Goals
+import se.novila.model.withDrink
 import java.time.LocalDate
+import java.time.LocalTime
 
 @RunWith(RobolectricTestRunner::class)
 class NutritionCardsTest {
     @get:Rule val composeRule = createComposeRule()
 
     private fun show(content: @Composable () -> Unit) {
-        composeRule.setContent { NovilaTheme { content() } }
+        composeRule.setContent {
+            NovilaTheme { Column(Modifier.verticalScroll(rememberScrollState())) { content() } }
+        }
     }
 
     @Test fun `the log card explains what a serving is for each food group`() {
         show {
             FoodLogCard(
                 today = DayEntry(LocalDate.of(2026, 10, 19)),
-                goals = Goals(),
                 onPortions = { _, _ -> },
                 onTreats = {},
             )
@@ -37,6 +51,36 @@ class NutritionCardsTest {
         ).assertExists()
         composeRule.onNodeWithText("One serving is a slice of whole grain bread or a portion of pasta, rice or oats.")
             .assertExists()
-        composeRule.onNodeWithText("One serving is a glass, about 2 dl.").assertExists()
+        composeRule.onNodeWithText("Water").assertDoesNotExist()
+    }
+
+    @Test fun `a drink of any kind and amount is added, counted towards the water goal and can be taken back`() {
+        val added = mutableListOf<Pair<DrinkKind, Int>>()
+        var undone = false
+        val day = DayEntry(LocalDate.of(2026, 10, 19))
+            .withDrink(Drink(DrinkKind.Water, 500, LocalTime.of(9, 0)))
+            .withDrink(Drink(DrinkKind.Juice, 200, LocalTime.of(9, 5)))
+        show {
+            val actions = DrinkActions(onAdd = { kind, ml -> added += kind to ml }, onUndo = { undone = true })
+            DrinksCard(day, Goals(), actions)
+        }
+
+        composeRule.onNodeWithText("0.5 l of 1.6 l").assertExists()
+        composeRule.onNodeWithText("All drinks: 0.7 l").assertExists()
+        composeRule.onNodeWithText("Coffee").performScrollTo().performClick()
+        composeRule.onNodeWithText("5 dl").performScrollTo().performClick()
+        composeRule.onNodeWithContentDescription("More").performScrollTo().performClick()
+        composeRule.onNodeWithText("Add 5.5 dl coffee").performScrollTo().performClick()
+        composeRule.onNodeWithText("Remove the last drink").performScrollTo().performClick()
+
+        assertEquals(listOf(DrinkKind.Coffee to 550), added)
+        assertTrue(undone)
+    }
+
+    @Test fun `late caffeine today comes with a word on sleep`() {
+        val day = DayEntry(LocalDate.of(2026, 10, 19)).withDrink(Drink(DrinkKind.Coffee, 150, LocalTime.of(15, 30)))
+        show { DrinksCard(day, Goals(), DrinkActions()) }
+
+        composeRule.onNodeWithText("Caffeine after 2 pm", substring = true).assertExists()
     }
 }

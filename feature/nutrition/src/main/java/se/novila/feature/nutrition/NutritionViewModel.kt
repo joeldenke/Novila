@@ -17,14 +17,18 @@ import se.novila.data.GoalsStore
 import se.novila.data.HealthStore
 import se.novila.data.SelectedDay
 import se.novila.model.DayEntry
+import se.novila.model.Drink
+import se.novila.model.DrinkKind
 import se.novila.model.FoodGroup
 import se.novila.model.Goals
 import se.novila.model.History
 import se.novila.model.HistoryRange
 import se.novila.model.parseMeal
+import se.novila.model.withDrink
 import se.novila.model.withMeal
 import se.novila.model.withPortions
 import se.novila.model.withTreats
+import se.novila.model.withoutLastDrink
 import se.novila.recipes.FoodPreferences
 import se.novila.recipes.Recipe
 import se.novila.recipes.RecipeSuggestions
@@ -99,6 +103,17 @@ class NutritionViewModel(
     fun changePortions(group: FoodGroup, delta: Int) = store.update(day.value) { it.withPortions(group, delta) }
 
     fun changeTreats(delta: Int) = store.update(day.value) { it.withTreats(delta) }
+
+    /**
+     * Logs [ml] of [kind] on the shown day, at the time it is now on today. On an earlier day the time isn't known,
+     * so the drink says nothing about late caffeine.
+     */
+    fun addDrink(kind: DrinkKind, ml: Int) {
+        val time = LocalTime.now().takeIf { day.value == day.today.value }
+        store.update(day.value) { it.withDrink(Drink(kind, ml, time)) }
+    }
+
+    fun removeLastDrink() = store.update(day.value) { it.withoutLastDrink() }
 
     /** Logs one serving of [recipe]: its portions in each food group, and a meal unless it is a snack. */
     fun logRecipe(recipe: Recipe) = store.update(day.value) { it.withRecipe(recipe) }

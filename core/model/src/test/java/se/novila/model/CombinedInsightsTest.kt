@@ -41,7 +41,11 @@ class CombinedInsightsTest {
     @Test fun `the weekday with the most training stands out, with enough weeks behind it`() {
         // Three weeks, engaged with every day; only Mondays train.
         val days = days(21) { _, date ->
-            DayEntry(date, waterGlasses = 5, strengthMinutes = if (date.dayOfWeek == DayOfWeek.MONDAY) 50 else 0)
+            DayEntry(
+                date,
+                drinks = glassesOfWater(5),
+                strengthMinutes = if (date.dayOfWeek == DayOfWeek.MONDAY) 50 else 0,
+            )
         }
         val pattern = connections(days).filterIsInstance<WeekdayPattern>().single()
         assertEquals(WeekdayMetric.TrainingMinutes, pattern.metric)
@@ -53,7 +57,11 @@ class CombinedInsightsTest {
     @Test fun `a weekday needs enough days before it says anything`() {
         // Only two Mondays: not enough to compare with the other days.
         val days = days(16) { _, date ->
-            DayEntry(date, waterGlasses = 5, strengthMinutes = if (date.dayOfWeek == DayOfWeek.MONDAY) 50 else 0)
+            DayEntry(
+                date,
+                drinks = glassesOfWater(5),
+                strengthMinutes = if (date.dayOfWeek == DayOfWeek.MONDAY) 50 else 0,
+            )
         }
         assertTrue(connections(days).filterIsInstance<WeekdayPattern>().isEmpty())
     }
@@ -73,7 +81,7 @@ class CombinedInsightsTest {
     @Test fun `training shows in the mood the user logged`() {
         val days = days(40) { i, date ->
             val trained = i % 2 == 0
-            DayEntry(date, waterGlasses = 5, mood = if (trained) 4 else 2)
+            DayEntry(date, drinks = glassesOfWater(5), mood = if (trained) 4 else 2)
                 .copy(strengthMinutes = if (trained) 30 else 0)
         }
         val connection = connections(days, limit = 4).filterIsInstance<WellbeingConnection>()

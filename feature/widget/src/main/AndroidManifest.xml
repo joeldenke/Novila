@@ -2,7 +2,7 @@
 <!--
   The home-screen widget. The receiver ends up in app/badging/debug-badging.txt: it must be exported, since the
   launcher (through the system) sends it the widget's updates. It reads nothing from the intent but the widget ids, and
-  only shows and logs what the app already saves on the phone.
+  only shows what the app already saves on the phone.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
