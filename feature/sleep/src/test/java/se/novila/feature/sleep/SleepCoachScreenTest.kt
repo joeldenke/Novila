@@ -32,6 +32,7 @@ class SleepCoachScreenTest {
         onChange: (SleepCoachPreferences) -> Unit = {},
         onStart: () -> Unit = {},
         onReset: () -> Unit = {},
+        onOpenBreathing: () -> Unit = {},
     ) {
         composeRule.setContent {
             NovilaTheme {
@@ -44,6 +45,7 @@ class SleepCoachScreenTest {
                     onChange = onChange,
                     onStart = onStart,
                     onReset = onReset,
+                    onOpenBreathing = onOpenBreathing,
                     contentPadding = PaddingValues(),
                 )
             }

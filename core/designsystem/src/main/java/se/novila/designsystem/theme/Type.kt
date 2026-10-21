@@ -1,6 +1,7 @@
 package se.novila.designsystem.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -33,12 +34,32 @@ private fun style(
     letterSpacing = letterSpacing.sp,
 )
 
+/** Novila's type scale, read through [NovilaTheme.typography]. The theme hands the same styles to Material. */
+@Immutable
+data class NovilaTypography(
+    val displayLarge: TextStyle,
+    val displayMedium: TextStyle,
+    val displaySmall: TextStyle,
+    val headlineLarge: TextStyle,
+    val headlineMedium: TextStyle,
+    val headlineSmall: TextStyle,
+    val titleLarge: TextStyle,
+    val titleMedium: TextStyle,
+    val titleSmall: TextStyle,
+    val bodyLarge: TextStyle,
+    val bodyMedium: TextStyle,
+    val bodySmall: TextStyle,
+    val labelLarge: TextStyle,
+    val labelMedium: TextStyle,
+    val labelSmall: TextStyle,
+)
+
 /**
- * All 15 Material 3 type roles in Hanken Grotesk, tuned for Nordic calm: Material's sizes, lighter
+ * All 15 type roles in Hanken Grotesk, tuned for Nordic calm: Material's sizes, lighter
  * headings (SemiBold, never ExtraBold) with slightly tighter tracking, regular body text and
  * SemiBold labels so buttons and chips read clearly.
  */
-internal val NovilaTypography = Typography(
+internal val NovilaTextStyles = NovilaTypography(
     displayLarge = style(size = 57, lineHeight = 64, weight = FontWeight.SemiBold, letterSpacing = -0.5),
     displayMedium = style(size = 45, lineHeight = 52, weight = FontWeight.SemiBold, letterSpacing = -0.25),
     displaySmall = style(size = 36, lineHeight = 44, weight = FontWeight.SemiBold, letterSpacing = -0.25),
@@ -54,4 +75,22 @@ internal val NovilaTypography = Typography(
     labelLarge = style(size = 14, lineHeight = 20, weight = FontWeight.SemiBold, letterSpacing = 0.1),
     labelMedium = style(size = 12, lineHeight = 16, weight = FontWeight.Medium, letterSpacing = 0.4),
     labelSmall = style(size = 11, lineHeight = 16, weight = FontWeight.Medium, letterSpacing = 0.5),
+)
+
+internal fun NovilaTypography.toMaterial() = Typography(
+    displayLarge = displayLarge,
+    displayMedium = displayMedium,
+    displaySmall = displaySmall,
+    headlineLarge = headlineLarge,
+    headlineMedium = headlineMedium,
+    headlineSmall = headlineSmall,
+    titleLarge = titleLarge,
+    titleMedium = titleMedium,
+    titleSmall = titleSmall,
+    bodyLarge = bodyLarge,
+    bodyMedium = bodyMedium,
+    bodySmall = bodySmall,
+    labelLarge = labelLarge,
+    labelMedium = labelMedium,
+    labelSmall = labelSmall,
 )

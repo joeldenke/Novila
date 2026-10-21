@@ -9,7 +9,7 @@ CI är därför den enda sanningen om att något bygger och fungerar.
 - Jetpack Compose med eget designsystem ovanpå Material 3 1.5 (beta), compileSdk/targetSdk 37, minSdk 26
 - Navigation 3 (`androidx.navigation3`) med en back stack per flik: Idag, Träning, Sömn, Kost
 - Alla versioner i `gradle/libs.versions.toml`. Hårdkoda aldrig versioner i byggfiler.
-- Data lokalt i Preferences DataStore via `HealthStore`, kodat av `DayEntryCodec` (versionerat format, v5 sedan läggtid, uppvakning, sömnkvalitet och orsaker)
+- Data lokalt i Preferences DataStore via `HealthStore`, kodat av `DayEntryCodec` (versionerat format, v7 sedan drycker)
 - DI med [Metro](https://zacsweers.github.io/metro/) (`dev.zacsweers.metro`, Kotlin-kompilatorplugin, ingen KSP).
   Varje skärm har en egen ViewModel (`StateFlow`) i sin feature, skapad av Metro och scopad till sin Navigation 3-entry.
   Ingen delad ViewModel. Skärmarna i `feature/*` är tillståndslösa.
@@ -24,11 +24,15 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   strängar, ViewModels och `@Preview`/skärmdumpar. Varje feature äger sin navigation (`navigation/`): `@Serializable`-rutter
   (`NavKey`) och `EntryProviderScope<NavKey>.<feature>Entries(...)`, som `:app` lägger i sin `entryProvider`.
   Features beror aldrig på varandra (`ArchitectureTest`); flikbyten går via callbacks från `:app`.
+- `:feature:breathing` – Andning och avslappning: korta guidade andningsövningar (lugn andning, boxandning, 4-7-8)
+  med en visuell pacer i Skog & sol-stil, fas för fas (andas in, håll, andas ut). Öppnas från Sömnens *Din plan*,
+  bredvid sömncoachen, och från sömncoachens kvällsrutin. Sessionerna är data i `:core:breathing`; spelarens
+  ViewModel räknar tiden. Inget loggas.
 - `:feature:onboarding` – introduktionen vid första start: en karusell genom appens delar (målade scener i
   `NovilaSceneImage` med parallax), namn, mål och tid för coachen, Health Connect och en sammanfattning i `NovilaHeroBanner`.
   Visas ensam (utan flikar) tills `AppSettings.onboarded` är satt; `NovilaApp` ger den en egen entry via
   `rememberStandaloneEntries`. Kan visas igen från Inställningar.
-- `:feature:settings` – Inställningar (profil, *Mina mål*, tema, påminnelser, Health Connect, ansvarsfriskrivning, radera data, introduktionen, version).
+- `:feature:settings` – Inställningar (profil, *Mina mål*, tema, påminnelser, Health Connect, ansvarsfriskrivning, radera data, integritetspolicy, licenser, introduktionen, version).
   Ingen flik: öppnas med kugghjulet i toppraden (på Idag i hälsningen) och läggs på aktuell fliks back stack. `Navigator` flyttar
   den om den öppnas från en annan flik, så samma nyckel aldrig ligger i två stackar som visas samtidigt.
 - `:feature:widget` – widgeten på hemskärmen (Glance): `NovilaWidget` visar dagens balans, sömn, kost och vatten samt
@@ -68,7 +72,7 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   (`HealthConnectExerciseSource`, träningspass) och `SleepSource` (`HealthConnectSleepSource`, nätter), behörigheterna i modulens manifest (`HEALTH_PERMISSIONS`, frågas i en
   dialog via `rememberHealthPermissionRequest`) och integritetsskärmen (`HealthDataInfoActivity`)
 - Ren Kotlin, utan Android (`novila.jvm.library`, testas på sekunder):
-  - `:core:model` – `DayEntry` (`DayEntryCodec`), kost, dagens balans, insikter, dagens sista logg (`LatestLog`) och uppmuntran (`cheers`), `analyzeSleep` (se *Sömnens samband*
+  - `:core:model` – `DayEntry` (`DayEntryCodec`), kost, drycker (`Drink`, se *Drycker* under Regler), dagens balans, insikter, dagens sista logg (`LatestLog`) och uppmuntran (`cheers`), `analyzeSleep` (se *Sömnens samband*
     under Regler), `History` (dagarna över en
     `HistoryRange` i perioder, plus lika många dagar före att jämföra med; Sömn och Kost läser den via `HealthStore`), `Profile`, `Goals` (egna mål för
     steg, sömn och vatten; balans, insikter och kostpoäng mäts mot dem) och `AppSettings` (`ThemeMode`)
@@ -104,16 +108,21 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
     färdiga planen (`CoachPrompt` bygger prompten och tvättar svaret), aldrig själva planen. Dagens gemensamma förslag
     för sömn, träning och kost är `dailyCoach` (`DailyCoach`, `CoachAdvice`), som väger delarna mot varandra och är
     deterministisk och enhetstestad. Se *Gemini Nano* under Regler.
+  - `:core:breathing` – de guidade andningsövningarna som data: `BreathingSession` (faser med längd i sekunder och
+    antal rundor), `BreathingCatalog` (lugn andning, boxandning, 4-7-8) och `momentAt`, som deterministiskt räknar ut
+    runda, fas, sekunder kvar och hur långt in i fasen man är vid en förfluten tid. `breathScale` ger cirkelns storlek.
+    Ren Kotlin och enhetstestad; spelarens timer i `:feature:breathing` ritar bara det modellen säger.
   - `:core:anatomy` – kroppsagnostiska övningsillustrationer: `Pose`/`Movement` (ledvinklar per keyframe), `Skeleton`
     (framåtkinematik, `BodyShape`), `MuscleMap`, `SceneBuilder` (ortografisk `Camera`, siluetter och de muskelband som
     syns), `ViewSelector` (varje övnings bästa vy), `ExerciseLibrary` och `RepetitionCounter` (räknar repetitioner,
     djup och tempo ur observerade ledvinklar; ingen kamera inkopplad än). `AnatomyFigure` i `:feature:training` ritar
     i Compose. Se `docs/anatomy.md`. `tools/anatomy/anatomy.sh` testar, renderar och löser vinklar utan Gradle.
   - `:core:recipes` – receptförslag på Kost: `Recipe` (Novilas egna recept, en portion: portioner per livsmedelsgrupp,
-    `Diet`, de 14 märkningspliktiga `Allergen` och tid), `FoodPreferences` (kosthållning, allergener och tid, sparas
-    i `FoodPreferencesStore`) och `suggestRecipes`, som väljer recepten som höjer dagens kostpoäng mest för
-    måltiden just nu (`MealSlot`). Namn, ingredienser och steg ligger i `:feature:nutrition`s strängar. Se *Recept*
-    under Regler.
+    `Diet`, de 14 märkningspliktiga `Allergen`, tid, `RecipeTime` och `FoodKind` för ingrediensfamiljerna),
+    `FoodPreferences` (kosthållning, allergener och tid, sparas i `FoodPreferencesStore`) och `suggestRecipes`, som
+    väljer recepten som höjer dagens kostpoäng mest för måltiden just nu (`MealSlot`) och roterar lika bra recept
+    mellan dagar. Namn, ingredienser och steg ligger i `:feature:nutrition`s strängar. `RecipeDataTest` kräver minst
+    40 recept och minst fem per måltid och kosthållning. Se `docs/recipes.md` och *Recept* under Regler.
   - `:core:googlehealth` – Google Health API (REST v4) som `ExerciseSource`: läser
     `users/me/dataTypes/exercise/dataPoints`. Ännu inte inkopplad i `:app`, se *Google Health API* under Regler.
 - `build-logic` – inkluderat bygge med convention plugins (`novila.*`) och `novila { }`, se `build-logic/README.md`
@@ -136,6 +145,8 @@ Strängar och ikoner ligger i modulen som använder dem; det flera moduler anvä
   säg det i PR-beskrivningen. Fel syns då först vid merge.
 - Kan din miljö inte nå Google Maven: pusha och följ körningen (`gh pr checks`, `gh run view --log-failed`)
   och rätta tills den är grön. Säg aldrig att något fungerar utan grönt CI.
+- `Dependency submission` skickar bibliotekens beroendegraf till GitHub vid varje push till `main`, så Dependabot larmar
+  om sårbara bibliotek (fliken Security). Testklassvägar räknas inte. Kör bara upplösning, ingen kompilering.
 - När PR:en mergas skickar `Distribute to testers` debug-APK:n (`se.novila.debug`) via Firebase App Distribution.
   Samma körning bygger även release (R8), signerad bara om release-nyckeln finns i GitHub-hemligheterna.
 
@@ -269,6 +280,10 @@ där pluginet `firebase@firebase` inte alltid installeras.
 - **Designsystem:** feature-kod använder bara `se.novila.designsystem` och aldrig `androidx.compose.material3`
   direkt. Saknas en komponent, lägg till en `Novila*`-wrapper i `:core:designsystem` (`component/`).
   Använd `NovilaTheme.colors/typography/spacing/shapes`, aldrig hårdkodade färger eller dp-värden i features.
+  Tokens är Novilas egna typer (`NovilaColors`, `NovilaTypography`, `NovilaShapes`), aldrig Material-typer, och
+  `material3` är ett `implementation`-beroende i `:core:designsystem`. Wrappers exponerar inga Material-typer i
+  sitt API (inga `ButtonColors`, `SheetState` o.d.). Behöver en skärm en färgroll som saknas, lägg till den i
+  `NovilaColors` och `toNovilaColors()`.
 - **Designspråk "Skog & sol":** nordiskt lugn. Typsnittet är Hanken Grotesk (Google Font, inbakad i
   `:core:designsystem`, licens i `assets/licenses`). Ladda aldrig ner typsnitt i runtime.
   Varje del har sin färg via `NovilaTheme.pillars`: träning = gran (primary), sömn = sjö (secondary),
@@ -302,6 +317,11 @@ där pluginet `firebase@firebase` inte alltid installeras.
   I texter, butikssidan och Gemini Nano-prompten heter målet `Rehab` *skonsam träning* och dess faser *nivåer*;
   skriv aldrig rehab, rehabilitering, behandling, terapi eller att appen läker, lindrar eller hjälper mot en
   sjukdom eller besvär (sömnlöshet, skada). Råden om när man ska söka vård behålls. Koden får heta `Rehab`.
+- **Appikonen:** ett vitt N på granplattan, med solen i skåran och solnedgången som tre snitt genom N:ets nedre del
+  (snitten blir tjockare nedåt). Vektorerna i `app/src/main/res/drawable/ic_launcher_*` är källan och
+  `mipmap-anydpi` den adaptiva ikonen. Ändras de: kör `python3 tools/icon/render_icon.py`, som ritar WebP-reserverna
+  i `mipmap-*dpi` (Firebase App Distribution kan inte visa en adaptiv ikon) och Play-ikonen `docs/play-icon.png`.
+  Rita aldrig om dem för hand.
 - **Inga emojis i UI:t.** Novila ska kännas som en professionell hälsoapp: använd vektorikoner och ritade komponenter
   (t.ex. `NovilaLevelPicker` för nivåer), aldrig emoji-tecken.
 - **Övningsillustrationer:** en övning är data (keyframes med ledvinklar i `ExerciseLibrary`), aldrig video eller
@@ -326,13 +346,20 @@ där pluginet `firebase@firebase` inte alltid installeras.
   med den, och säger om de tidigare nätterna bekräftar det. Ändra trösklarna bara medvetet: `SleepAnalysisTest`.
 - **Kostpoäng:** `nutritionScore()` (0–100) viktar livsmedelsgrupper efter Livsmedelsverkets kostråd (`FoodGroup`) med
   avdrag för sött och snacks. Ändra vikterna bara medvetet: `NutritionTest` och dagens balans bygger på dem.
+- **Drycker:** vätska loggas som `Drink` (slag, ml, klockslag) i `DayEntry.drinks`, per glas, flaska eller valfri mängd
+  (`DrinksCard` på Kost). Vatten, kaffe, te och mjölk räknas mot vattenmålet (`DrinkKind.hydrates`, `waterGlasses` är
+  hela glas à `Goals.GLASS_ML`); juice, läsk och energidryck loggas men räknas inte. Koffein från kl. 14 räknas som sent
+  koffein i `analyzeSleep` (`DayEntry.lateCaffeine`), med samma trösklar som andra samband. Appen räknar aldrig ut
+  koffein i mg, näringsämnen eller kosttillskott: det kräver en livsmedelsdatabas och närmar sig hälsopåståenden
+  (förordning 1924/2006). Lägg inte till det utan att ägaren ber om det.
 - **Recept:** förslagen väljs alltid deterministiskt ur `Recipe` (testat i `RecipeSuggestionsTest`), aldrig
   genererade av Gemini Nano eller någon annan modell: ett påhittat recept kan innehålla något användaren är allergisk
   mot. Ett recept som innehåller en av användarens allergener föreslås aldrig, och kortet ber alltid användaren
   kontrollera ingredienserna själv. Nytt recept: ange portioner (grönsaker cirka 100 g per portion, potatis räknas
-  inte), diet, alla allergener i ingredienserna och tid, plus namn, ingredienser och steg på båda språken. Inga
-  recept "för" en sjukdom eller ett besvär (se *Inga medicinska påståenden*). Matpreferenserna är hälsodata och
-  raderas med resten.
+  inte), diet, alla allergener i ingredienserna, tid och ingrediensfamiljer (`FoodKind`), plus namn, ingredienser och
+  steg på båda språken i `Recipe`-enumen, `RecipeText.kt` och strängarna. Följ `docs/recipes.md`. Inga recept "för"
+  en sjukdom eller ett besvär (se *Inga medicinska påståenden*). Matpreferenserna är hälsodata och raderas med
+  resten.
 - **Inga hårdkodade texter:** all text som visas eller läses upp ska komma från `strings.xml`.
   Engelska i `values/`, svenska i `values-sv/`. Symboler och enheter markeras `translatable="false"`.
 - `ArchitectureTest` (i `:app`, läser alla moduler) bevakar båda reglerna i CI, och att features inte beror på varandra.
@@ -397,6 +424,11 @@ där pluginet `firebase@firebase` inte alltid installeras.
   `DayHighlightsTest`) och påstår aldrig mer än appen vet: ingen väderdata (ingen `INTERNET`), så solen nämns bara
   via årstiden. Uppdateras när appen sparar (`WidgetUpdates`) och av systemet en gång i timmen, för midnatt; inga
   egna jobb. Nya knappar är en `ActionCallback` med en keep-regel i `app/proguard-rules.pro`.
+- **Integritetspolicy och Play:** policyn finns i appen (`PrivacyPolicyScreen`, strängarna `privacy_*`) och som
+  publik text i `docs/privacy-policy.md`; ändra båda och datumet. `docs/play-console.md` håller svaren för Data
+  safety, Health apps declaration och Health Connect-behörigheterna. Ändras vad appen läser, sparar eller skickar,
+  eller tillkommer en behörighet, uppdatera policyn, `HealthDataInfoActivity`s text och `docs/play-console.md` i
+  samma PR. Text före en Health Connect-dialog ska nämna alla typer dialogen frågar om.
 - **Wear OS:** `:wear` är en egen app (`se.novila.wear`, minSdk 30) med samma designspråk men utan flikar, navigation
   eller sparade data. Den får bara köra ett pass ur `StandaloneSession` och visa `Workout`-stegen; ingen Wearable Data
   Layer, ingen Health Connect och ingen lagring på klockan, eftersom det skulle ändra integritets- och Play-deklarationen.

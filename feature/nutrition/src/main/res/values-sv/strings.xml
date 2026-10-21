@@ -29,6 +29,32 @@
     <string name="food_add">Lägg till %1$s</string>
     <string name="food_remove">Ta bort %1$s</string>
 
+    <!-- Drycker -->
+    <string name="drinks_title">Dagens drycker</string>
+    <string name="drinks_title_day">Drycker</string>
+    <string name="drinks_water_goal">Mot vattenmålet</string>
+    <string name="drinks_progress">%1$s av %2$s</string>
+    <string name="drinks_total">Alla drycker: %1$s</string>
+    <string name="drinks_amount">Mängd</string>
+    <string name="drinks_amount_hint">Välj en storlek eller ställ in valfri mängd, 0,5 dl i taget.</string>
+    <string name="drinks_less">Mindre</string>
+    <string name="drinks_more">Mer</string>
+    <string name="drinks_add">Lägg till %1$s %2$s</string>
+    <string name="drinks_line">%1$s · %2$s</string>
+    <string name="drinks_line_time">%1$s  %2$s</string>
+    <string name="drinks_more_logged">och %1$d till tidigare</string>
+    <string name="drinks_undo">Ta bort senaste drycken</string>
+    <string name="drinks_late_caffeine">Koffein efter kl. 14 kan göra det svårare att somna för en del. Sömnfliken visar om det verkar påverka dig.</string>
+    <string name="drinks_about">Vatten, kaffe, te och mjölk räknas mot vattenmålet. Juice, läsk och energidryck loggas men räknas inte.</string>
+    <string name="drink_water">Vatten</string>
+    <string name="drink_coffee">Kaffe</string>
+    <string name="drink_tea">Te</string>
+    <string name="drink_herbal_tea">Örtte</string>
+    <string name="drink_milk">Mjölk</string>
+    <string name="drink_juice">Juice</string>
+    <string name="drink_soft_drink">Läsk</string>
+    <string name="drink_energy_drink">Energidryck</string>
+
     <!-- Receptförslag -->
     <string name="recipes_title">Recept för det som saknas</string>
     <string name="recipes_breakfast">En frukost som fyller det som fortfarande saknas i dag.</string>
@@ -42,6 +68,10 @@
     <string name="recipe_contains_none">Inget av de allergener som måste märkas ut.</string>
     <string name="recipe_ingredients">Ingredienser, en portion</string>
     <string name="recipe_steps">Gör så här</string>
+    <string name="recipe_expand">Visa recept</string>
+    <string name="recipe_collapse">Dölj recept</string>
+    <string name="recipe_expanded">Utfälld</string>
+    <string name="recipe_collapsed">Ihopfälld</string>
     <string name="recipe_log">Jag åt det här</string>
 
     <!-- Recept: en portion vardera, se se.novila.recipes.Recipe -->
@@ -240,5 +270,491 @@
     </string-array>
     <string-array name="recipe_yogurt_with_berries_steps">
         <item>Häll yoghurten i en skål och toppa med bär och havregryn.</item>
+    </string-array>
+    <string name="recipe_rye_porridge_with_lingonberries">Råggröt med lingon</string>
+    <string-array name="recipe_rye_porridge_with_lingonberries_ingredients">
+        <item>1 dl rågflingor</item>
+        <item>2 dl havredryck</item>
+        <item>½ dl lingon</item>
+        <item>1 tsk lönnsirap</item>
+        <item>En nypa salt</item>
+    </string-array>
+    <string-array name="recipe_rye_porridge_with_lingonberries_steps">
+        <item>Koka rågflingor och havredryck i 5–7 minuter under omrörning.</item>
+        <item>Toppa med lingon och lönnsirap.</item>
+    </string-array>
+    <string name="recipe_avocado_toast">Avokadotoast med tomat</string>
+    <string-array name="recipe_avocado_toast_ingredients">
+        <item>1 skiva fullkornsbröd</item>
+        <item>½ avokado</item>
+        <item>1 tomat</item>
+        <item>½ citron</item>
+        <item>Salt, peppar och chiliflakes</item>
+    </string-array>
+    <string-array name="recipe_avocado_toast_steps">
+        <item>Rosta brödet.</item>
+        <item>Mosa avokadon med citron, salt och peppar.</item>
+        <item>Bred ut den på brödet och lägg tomatskivor ovanpå.</item>
+    </string-array>
+    <string name="recipe_scrambled_eggs_with_spinach">Äggröra med spenat</string>
+    <string-array name="recipe_scrambled_eggs_with_spinach_ingredients">
+        <item>2 ägg</item>
+        <item>2 nävar spenat</item>
+        <item>1 tsk smör</item>
+        <item>1 msk mjölk</item>
+        <item>Salt och peppar</item>
+    </string-array>
+    <string-array name="recipe_scrambled_eggs_with_spinach_steps">
+        <item>Låt spenaten falla ihop i smöret.</item>
+        <item>Vispa äggen med mjölken och häll i dem.</item>
+        <item>Rör försiktigt tills äggröran är krämig och smaka av.</item>
+    </string-array>
+    <string name="recipe_skyr_with_muesli">Skyr med müsli och blåbär</string>
+    <string-array name="recipe_skyr_with_muesli_ingredients">
+        <item>1½ dl skyr eller naturell yoghurt</item>
+        <item>½ dl müsli</item>
+        <item>1 dl blåbär</item>
+        <item>1 tsk pumpakärnor</item>
+    </string-array>
+    <string-array name="recipe_skyr_with_muesli_steps">
+        <item>Lägg skyr i en skål.</item>
+        <item>Toppa med müsli, blåbär och pumpakärnor.</item>
+    </string-array>
+    <string name="recipe_smoked_salmon_rye">Rågbröd med gravad lax och gurka</string>
+    <string-array name="recipe_smoked_salmon_rye_ingredients">
+        <item>2 skivor rågbröd</item>
+        <item>50 g gravad lax</item>
+        <item>5 cm gurka</item>
+        <item>Några dillkvistar</item>
+        <item>½ citron</item>
+    </string-array>
+    <string-array name="recipe_smoked_salmon_rye_steps">
+        <item>Lägg lax, skivad gurka och dill på brödet.</item>
+        <item>Pressa citronen över innan du äter.</item>
+    </string-array>
+    <string name="recipe_banana_oat_pancakes">Banan- och havrepannkakor</string>
+    <string-array name="recipe_banana_oat_pancakes_ingredients">
+        <item>1 banan</item>
+        <item>1 dl havregryn</item>
+        <item>1 dl havredryck</item>
+        <item>1 tsk rapsolja</item>
+        <item>½ tsk bakpulver</item>
+    </string-array>
+    <string-array name="recipe_banana_oat_pancakes_steps">
+        <item>Mosa bananen och blanda med havregryn, havredryck och bakpulver.</item>
+        <item>Stek små pannkakor i oljan på medelvärme.</item>
+    </string-array>
+    <string name="recipe_mango_smoothie_bowl">Mangosmoothie bowl med havre</string>
+    <string-array name="recipe_mango_smoothie_bowl_ingredients">
+        <item>1 dl fryst mango</item>
+        <item>1 banan</item>
+        <item>2 nävar spenat</item>
+        <item>1 dl havredryck</item>
+        <item>½ dl havregryn</item>
+        <item>1 msk pumpakärnor</item>
+    </string-array>
+    <string-array name="recipe_mango_smoothie_bowl_steps">
+        <item>Mixa mango, banan, spenat och havredryck slätt.</item>
+        <item>Häll upp i en skål och toppa med havregryn och pumpakärnor.</item>
+    </string-array>
+    <string name="recipe_tofu_scramble_on_rye">Tofuröra på rågbröd</string>
+    <string-array name="recipe_tofu_scramble_on_rye_ingredients">
+        <item>100 g fast tofu</item>
+        <item>1 skiva rågbröd</item>
+        <item>½ röd paprika</item>
+        <item>2 msk havredryck</item>
+        <item>1 tsk gurkmeja</item>
+        <item>1 tsk olja, salt och peppar</item>
+    </string-array>
+    <string-array name="recipe_tofu_scramble_on_rye_steps">
+        <item>Smula tofun.</item>
+        <item>Fräs paprikan i oljan, tillsätt tofu, gurkmeja och havredryck och stek i 5 minuter.</item>
+        <item>Servera på brödet.</item>
+    </string-array>
+    <string name="recipe_breakfast_burrito">Frukostburrito med ägg och grönsaker</string>
+    <string-array name="recipe_breakfast_burrito_ingredients">
+        <item>1 fullkornstortilla</item>
+        <item>1 ägg</item>
+        <item>½ tomat</item>
+        <item>¼ avokado</item>
+        <item>2 msk riven ost</item>
+        <item>Några salladsblad</item>
+    </string-array>
+    <string-array name="recipe_breakfast_burrito_steps">
+        <item>Vispa och rör ägget.</item>
+        <item>Värm tortillan.</item>
+        <item>Fyll med ägg, tomat, avokado, ost och sallad och rulla ihop.</item>
+    </string-array>
+    <string name="recipe_swedish_meatballs">Köttbullar med blomkålsmos och lingon</string>
+    <string-array name="recipe_swedish_meatballs_ingredients">
+        <item>125 g blandfärs</item>
+        <item>1 msk ströbröd</item>
+        <item>2 msk mjölk</item>
+        <item>½ ägg</item>
+        <item>½ lök</item>
+        <item>200 g blomkål</item>
+        <item>1 potatis</item>
+        <item>1 msk smör</item>
+        <item>2 msk lingon</item>
+        <item>Salt och peppar</item>
+    </string-array>
+    <string-array name="recipe_swedish_meatballs_steps">
+        <item>Blanda färsen med ströbröd, mjölk, ägg och riven lök.</item>
+        <item>Rulla små bollar och stek dem i smöret.</item>
+        <item>Koka blomkål och potatis och mosa med lite smör.</item>
+        <item>Servera köttbullarna med moset och lingonen.</item>
+    </string-array>
+    <string name="recipe_falafel_with_couscous">Falafel med couscous och tomatsallad</string>
+    <string-array name="recipe_falafel_with_couscous_ingredients">
+        <item>150 g kokta kikärter</item>
+        <item>½ lök</item>
+        <item>1 vitlöksklyfta</item>
+        <item>1 msk mjöl</item>
+        <item>1 tsk spiskummin</item>
+        <item>1 msk tahini</item>
+        <item>¾ dl couscous</item>
+        <item>1 tomat</item>
+        <item>10 cm gurka</item>
+        <item>½ citron</item>
+        <item>1 tsk olivolja, salt och peppar</item>
+    </string-array>
+    <string-array name="recipe_falafel_with_couscous_steps">
+        <item>Mosa kikärterna med lök, vitlök, mjöl och spiskummin.</item>
+        <item>Forma små biffar och stek dem i oljan.</item>
+        <item>Häll kokande vatten över couscousen och låt den svälla.</item>
+        <item>Blanda tomat, gurka, tahini och citron och servera till falafeln.</item>
+    </string-array>
+    <string name="recipe_salmon_soup">Krämig laxsoppa med potatis och purjolök</string>
+    <string-array name="recipe_salmon_soup_ingredients">
+        <item>125 g lax</item>
+        <item>2 potatisar</item>
+        <item>½ purjolök</item>
+        <item>1 morot</item>
+        <item>2 dl grönsaksbuljong</item>
+        <item>1 dl grädde</item>
+        <item>1 tsk smör</item>
+        <item>Dill, salt och peppar</item>
+    </string-array>
+    <string-array name="recipe_salmon_soup_steps">
+        <item>Fräs purjolök och morot i smöret.</item>
+        <item>Tillsätt potatis och buljong och låt sjuda i 10 minuter.</item>
+        <item>Lägg i lax och grädde och sjud i 5 minuter.</item>
+        <item>Smaka av med dill, salt och peppar.</item>
+    </string-array>
+    <string name="recipe_shrimp_pasta">Pasta med räkor och tomat</string>
+    <string-array name="recipe_shrimp_pasta_ingredients">
+        <item>75 g fullkornspasta</item>
+        <item>100 g räkor</item>
+        <item>200 g krossade tomater</item>
+        <item>1 vitlöksklyfta</item>
+        <item>½ röd paprika</item>
+        <item>1 tsk olivolja</item>
+        <item>Basilika, salt och peppar</item>
+    </string-array>
+    <string-array name="recipe_shrimp_pasta_steps">
+        <item>Koka pastan enligt förpackningen.</item>
+        <item>Fräs vitlök och paprika i oljan, tillsätt tomaterna och låt sjuda i 5 minuter.</item>
+        <item>Lägg i räkorna i 2 minuter och blanda med pastan.</item>
+        <item>Toppa med basilika.</item>
+    </string-array>
+    <string name="recipe_tofu_vegetable_curry">Tofu- och grönsaksgryta med fullkornsris</string>
+    <string-array name="recipe_tofu_vegetable_curry_ingredients">
+        <item>100 g fast tofu</item>
+        <item>¾ dl fullkornsris</item>
+        <item>1 dl kokosmjölk</item>
+        <item>½ röd paprika</item>
+        <item>1 morot</item>
+        <item>2 nävar spenat</item>
+        <item>½ lök</item>
+        <item>1 tsk currypulver och 1 tsk olja</item>
+    </string-array>
+    <string-array name="recipe_tofu_vegetable_curry_steps">
+        <item>Koka riset enligt förpackningen.</item>
+        <item>Stek tofutärningarna i oljan och lägg dem åt sidan.</item>
+        <item>Fräs lök, paprika och morot med currypulvret, tillsätt kokosmjölken och låt sjuda.</item>
+        <item>Lägg tillbaka tofun, rör ner spenaten och servera med riset.</item>
+    </string-array>
+    <string name="recipe_swedish_pea_soup">Ärtsoppa med rågbröd</string>
+    <string-array name="recipe_swedish_pea_soup_ingredients">
+        <item>1 dl torkade gula ärtor</item>
+        <item>50 g fläsk</item>
+        <item>½ lök</item>
+        <item>1 morot</item>
+        <item>5 dl vatten</item>
+        <item>1 tsk mejram</item>
+        <item>1 skiva rågbröd</item>
+        <item>1 tsk senap</item>
+    </string-array>
+    <string-array name="recipe_swedish_pea_soup_steps">
+        <item>Blötlägg ärtorna över natten.</item>
+        <item>Låt ärtor, fläsk, lök och morot sjuda i 30–40 minuter.</item>
+        <item>Smaka av med mejram och servera med rågbröd och senap.</item>
+    </string-array>
+    <string name="recipe_root_vegetable_lentil_soup">Rotfrukts- och linssoppa med rågbröd</string>
+    <string-array name="recipe_root_vegetable_lentil_soup_ingredients">
+        <item>½ dl röda linser</item>
+        <item>1 morot</item>
+        <item>1 palsternacka</item>
+        <item>1 potatis</item>
+        <item>½ lök</item>
+        <item>1 vitlöksklyfta</item>
+        <item>5 dl grönsaksbuljong</item>
+        <item>1 tsk olja</item>
+        <item>1 skiva rågbröd, salt och peppar</item>
+    </string-array>
+    <string-array name="recipe_root_vegetable_lentil_soup_steps">
+        <item>Fräs lök, vitlök, morot och palsternacka i oljan.</item>
+        <item>Tillsätt linser, potatis och buljong och låt sjuda i 20 minuter.</item>
+        <item>Smaka av och servera med brödet.</item>
+    </string-array>
+    <string name="recipe_chicken_tikka_with_rice">Chicken tikka med ris och yoghurt</string>
+    <string-array name="recipe_chicken_tikka_with_rice_ingredients">
+        <item>125 g kycklingfilé</item>
+        <item>½ dl naturell yoghurt</item>
+        <item>1 tsk currypulver</item>
+        <item>½ dl fullkornsris</item>
+        <item>100 g krossade tomater</item>
+        <item>½ lök</item>
+        <item>2 nävar spenat</item>
+        <item>1 tsk olja och salt</item>
+    </string-array>
+    <string-array name="recipe_chicken_tikka_with_rice_steps">
+        <item>Marinera kycklingen i yoghurt och currypulver i 10 minuter.</item>
+        <item>Koka riset enligt förpackningen.</item>
+        <item>Fräs lök och kyckling, tillsätt tomaterna och låt sjuda.</item>
+        <item>Rör ner spenaten och servera med riset.</item>
+    </string-array>
+    <string name="recipe_cod_with_dill">Torsk med dill och färskpotatis</string>
+    <string-array name="recipe_cod_with_dill_ingredients">
+        <item>125 g torsk</item>
+        <item>3 färskpotatisar</item>
+        <item>100 g gröna ärtor</item>
+        <item>1 msk smör</item>
+        <item>1 msk hackad dill</item>
+        <item>½ citron, salt och peppar</item>
+    </string-array>
+    <string-array name="recipe_cod_with_dill_steps">
+        <item>Koka potatis och ärtor.</item>
+        <item>Stek torsken i smöret i 3–4 minuter per sida.</item>
+        <item>Servera med ärtor, dill och citron.</item>
+    </string-array>
+    <string name="recipe_halloumi_skewers">Halloumispett med grönsaker och flatbröd</string>
+    <string-array name="recipe_halloumi_skewers_ingredients">
+        <item>75 g halloumi</item>
+        <item>½ zucchini</item>
+        <item>½ röd paprika</item>
+        <item>½ rödlök</item>
+        <item>1 tsk olivolja</item>
+        <item>1 fullkornsflatbröd</item>
+        <item>2 msk naturell yoghurt</item>
+        <item>1 tsk citronsaft</item>
+    </string-array>
+    <string-array name="recipe_halloumi_skewers_steps">
+        <item>Trä halloumi och grönsaker på spett och pensla med oljan.</item>
+        <item>Grilla eller stek i 8–10 minuter.</item>
+        <item>Värm flatbrödet och blanda yoghurt med citronsaft. Servera till.</item>
+    </string-array>
+    <string name="recipe_jacket_potato_with_beans">Bakad potatis med bönor och ost</string>
+    <string-array name="recipe_jacket_potato_with_beans_ingredients">
+        <item>1 stor potatis</item>
+        <item>150 g vita bönor i tomatsås</item>
+        <item>2 msk riven ost</item>
+        <item>1 näve sallad</item>
+        <item>1 tsk smör, salt och peppar</item>
+    </string-array>
+    <string-array name="recipe_jacket_potato_with_beans_steps">
+        <item>Baka eller mikra potatisen tills den är mjuk.</item>
+        <item>Värm bönorna.</item>
+        <item>Dela potatisen och fyll med smör, bönor, ost och sallad.</item>
+    </string-array>
+    <string name="recipe_buckwheat_salad">Bovetesallad med rostade grönsaker och kikärter</string>
+    <string-array name="recipe_buckwheat_salad_ingredients">
+        <item>¾ dl bovete</item>
+        <item>½ zucchini</item>
+        <item>½ röd paprika</item>
+        <item>100 g kokta kikärter</item>
+        <item>1 msk olivolja</item>
+        <item>½ citron</item>
+        <item>1 näve persilja, salt och peppar</item>
+    </string-array>
+    <string-array name="recipe_buckwheat_salad_steps">
+        <item>Koka bovetet enligt förpackningen.</item>
+        <item>Rosta zucchini och paprika med oljan i 15 minuter.</item>
+        <item>Blanda med kikärter, bovete, citron och persilja.</item>
+    </string-array>
+    <string name="recipe_fish_cakes_with_potatoes">Fiskkakor med potatis och ärtor</string>
+    <string-array name="recipe_fish_cakes_with_potatoes_ingredients">
+        <item>125 g vit fisk</item>
+        <item>1 potatis</item>
+        <item>1 msk ströbröd</item>
+        <item>½ ägg</item>
+        <item>1 msk mjölk</item>
+        <item>1 msk smör</item>
+        <item>100 g ärtor</item>
+        <item>½ citron, salt och peppar</item>
+    </string-array>
+    <string-array name="recipe_fish_cakes_with_potatoes_steps">
+        <item>Koka och mosa potatisen.</item>
+        <item>Blanda fisken med potatis, ströbröd, ägg och mjölk och forma kakor.</item>
+        <item>Stek i smöret i 3 minuter per sida.</item>
+        <item>Koka ärtorna och servera med citron.</item>
+    </string-array>
+    <string name="recipe_spinach_ricotta_lasagna">Lasagne med spenat och ricotta</string>
+    <string-array name="recipe_spinach_ricotta_lasagna_ingredients">
+        <item>4 lasagneplattor</item>
+        <item>150 g ricotta</item>
+        <item>2 nävar spenat</item>
+        <item>200 g krossade tomater</item>
+        <item>½ lök</item>
+        <item>1 vitlöksklyfta</item>
+        <item>2 msk riven ost</item>
+        <item>1 tsk olja, salt och peppar</item>
+    </string-array>
+    <string-array name="recipe_spinach_ricotta_lasagna_steps">
+        <item>Fräs lök och vitlök i oljan och tillsätt tomaterna. Låt sjuda och rör ner spenaten.</item>
+        <item>Varva plattor med tomatsås, spenat och ricotta.</item>
+        <item>Toppa med ost och grädda i 200 °C i 25–30 minuter.</item>
+    </string-array>
+    <string name="recipe_beef_and_root_vegetable_stew">Köttgryta med rotfrukter</string>
+    <string-array name="recipe_beef_and_root_vegetable_stew_ingredients">
+        <item>125 g nötkött</item>
+        <item>2 potatisar</item>
+        <item>1 morot</item>
+        <item>1 palsternacka</item>
+        <item>½ lök</item>
+        <item>1 stjälk selleri</item>
+        <item>3 dl köttbuljong</item>
+        <item>1 tsk olja, salt och peppar</item>
+    </string-array>
+    <string-array name="recipe_beef_and_root_vegetable_stew_steps">
+        <item>Bryn köttet i oljan.</item>
+        <item>Tillsätt hackade grönsaker och buljong och låt sjuda under lock i 30 minuter.</item>
+        <item>Smaka av.</item>
+    </string-array>
+    <string name="recipe_minute_steak_with_tomato_salad">Minutbiff med tomatsallad</string>
+    <string-array name="recipe_minute_steak_with_tomato_salad_ingredients">
+        <item>125 g minutbiff</item>
+        <item>2 tomater</item>
+        <item>½ rödlök</item>
+        <item>1 näve ruccola</item>
+        <item>1 tsk olivolja</item>
+        <item>½ citron, salt och peppar</item>
+    </string-array>
+    <string-array name="recipe_minute_steak_with_tomato_salad_steps">
+        <item>Krydda biffen och stek 1–2 minuter per sida. Låt vila.</item>
+        <item>Blanda tomater, lök, ruccola, olja och citron och servera till.</item>
+    </string-array>
+    <string name="recipe_rice_noodles_with_prawns">Risnudlar med räkor och grönsaker</string>
+    <string-array name="recipe_rice_noodles_with_prawns_ingredients">
+        <item>75 g risnudlar</item>
+        <item>100 g räkor</item>
+        <item>1 morot</item>
+        <item>½ röd paprika</item>
+        <item>2 nävar vitkål</item>
+        <item>1 msk sojasås</item>
+        <item>1 tsk olja</item>
+        <item>1 vitlöksklyfta och 1 tsk riven ingefära</item>
+    </string-array>
+    <string-array name="recipe_rice_noodles_with_prawns_steps">
+        <item>Blötlägg nudlarna enligt förpackningen.</item>
+        <item>Fräs vitlök, ingefära och grönsaker i oljan.</item>
+        <item>Lägg i räkorna i 2 minuter, tillsätt nudlar och sojasås och blanda.</item>
+    </string-array>
+    <string name="recipe_chana_masala">Chana masala med ris</string>
+    <string-array name="recipe_chana_masala_ingredients">
+        <item>150 g kokta kikärter</item>
+        <item>¾ dl fullkornsris</item>
+        <item>200 g krossade tomater</item>
+        <item>½ lök</item>
+        <item>1 vitlöksklyfta</item>
+        <item>1 tsk garam masala</item>
+        <item>½ tsk gurkmeja</item>
+        <item>1 tsk olja och salt</item>
+    </string-array>
+    <string-array name="recipe_chana_masala_steps">
+        <item>Koka riset enligt förpackningen.</item>
+        <item>Fräs lök och vitlök i oljan och tillsätt kryddorna.</item>
+        <item>Lägg i tomater och kikärter och låt sjuda i 15 minuter.</item>
+        <item>Servera med riset.</item>
+    </string-array>
+    <string name="recipe_banana_with_peanut_butter">Banan med jordnötssmör</string>
+    <string-array name="recipe_banana_with_peanut_butter_ingredients">
+        <item>1 banan</item>
+        <item>1 msk jordnötssmör</item>
+    </string-array>
+    <string-array name="recipe_banana_with_peanut_butter_steps">
+        <item>Skiva bananen och bred eller doppa i jordnötssmöret.</item>
+    </string-array>
+    <string name="recipe_edamame">Edamame med havssalt</string>
+    <string-array name="recipe_edamame_ingredients">
+        <item>150 g frysta edamamebönor</item>
+        <item>En nypa havssalt</item>
+    </string-array>
+    <string-array name="recipe_edamame_steps">
+        <item>Koka edamamen i 4–5 minuter.</item>
+        <item>Häll av och strö över salt.</item>
+    </string-array>
+    <string name="recipe_roasted_chickpeas">Rostade kikärter</string>
+    <string-array name="recipe_roasted_chickpeas_ingredients">
+        <item>150 g kokta kikärter</item>
+        <item>1 tsk olivolja</item>
+        <item>½ tsk paprikapulver</item>
+        <item>¼ tsk salt</item>
+    </string-array>
+    <string-array name="recipe_roasted_chickpeas_steps">
+        <item>Sätt ugnen på 200 °C.</item>
+        <item>Torka kikärterna och blanda med olja och kryddor.</item>
+        <item>Rosta i 15–20 minuter tills de är krispiga.</item>
+    </string-array>
+    <string name="recipe_cottage_cheese_with_tomato">Keso med tomat och paprika</string>
+    <string-array name="recipe_cottage_cheese_with_tomato_ingredients">
+        <item>1 dl keso</item>
+        <item>1 tomat</item>
+        <item>½ röd paprika</item>
+        <item>Salt och peppar</item>
+    </string-array>
+    <string-array name="recipe_cottage_cheese_with_tomato_steps">
+        <item>Tärna tomat och paprika och blanda med keson.</item>
+        <item>Smaka av.</item>
+    </string-array>
+    <string name="recipe_boiled_egg_with_crispbread">Kokt ägg med rågknäcke</string>
+    <string-array name="recipe_boiled_egg_with_crispbread_ingredients">
+        <item>1 ägg</item>
+        <item>2 rågknäcken</item>
+        <item>5 cm gurka</item>
+        <item>Salt</item>
+    </string-array>
+    <string-array name="recipe_boiled_egg_with_crispbread_steps">
+        <item>Koka ägget i 8 minuter och kyl det.</item>
+        <item>Skala och skiva det och lägg på knäcket med gurka.</item>
+        <item>Strö över salt.</item>
+    </string-array>
+    <string name="recipe_tuna_rye_crispbread">Tonfisk på rågknäcke</string>
+    <string-array name="recipe_tuna_rye_crispbread_ingredients">
+        <item>1 burk tonfisk i vatten, cirka 60 g</item>
+        <item>2 rågknäcken</item>
+        <item>2 msk naturell yoghurt</item>
+        <item>5 cm gurka</item>
+        <item>Dill och peppar</item>
+    </string-array>
+    <string-array name="recipe_tuna_rye_crispbread_steps">
+        <item>Häll av tonfisken.</item>
+        <item>Blanda yoghurt med dill och peppar och bred på knäcket.</item>
+        <item>Toppa med tonfisk och gurka.</item>
+    </string-array>
+    <string name="recipe_quick_bean_wrap">Snabb bön- och avokadowrap</string>
+    <string-array name="recipe_quick_bean_wrap_ingredients">
+        <item>1 fullkornstortilla</item>
+        <item>150 g kokta svarta bönor</item>
+        <item>½ avokado</item>
+        <item>1 tomat</item>
+        <item>Några salladsblad</item>
+        <item>½ lime</item>
+        <item>½ tsk spiskummin, salt och peppar</item>
+    </string-array>
+    <string-array name="recipe_quick_bean_wrap_steps">
+        <item>Mosa bönorna med lime, spiskummin, salt och peppar.</item>
+        <item>Värm tortillan och bred bönorna på den.</item>
+        <item>Toppa med avokado, tomat och sallad och rulla ihop.</item>
     </string-array>
 </resources>

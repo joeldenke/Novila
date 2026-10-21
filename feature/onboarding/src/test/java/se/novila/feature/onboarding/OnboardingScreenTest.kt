@@ -44,7 +44,7 @@ class OnboardingScreenTest {
 
         composeRule.onNodeWithText("Show me").performClick()
 
-        composeRule.onNodeWithText("Cardio and strength along WHO's activity guidelines").assertExists()
+        composeRule.onNodeWithText("Cardio and strength along the WHO's activity guidelines").assertExists()
     }
 
     @Test fun `skip jumps past the tour to the questions`() {

@@ -12,7 +12,7 @@
     <string name="sleep_cancel">Avbryt</string>
     <string name="sleep_hours_hint">Eller dra för att ange timmarna</string>
     <string name="sleep_from_watch">Från klockan, via Health Connect. Ändra den för att logga natten själv.</string>
-    <string name="sleep_watch_body">Novila kan fylla i dina nätter från en klocka eller en annan app via Health Connect. Det du loggar själv gäller alltid först.</string>
+    <string name="sleep_watch_body">Novila kan fylla i dina nätter från en klocka eller en annan app via Health Connect. Samma åtkomst gäller även dagens steg och aktiva kalorier, dina träningspass och din vilopuls och HRV för Träning. Det du loggar själv gäller alltid först.</string>
     <string name="sleep_watch_connect">Läs sömn från Health Connect</string>
     <string name="sleep_quality_title">Hur sov du?</string>
     <string name="sleep_quality_hint">Välj hur utvilad du känner dig</string>
@@ -74,4 +74,8 @@
     <string name="sleep_coach_reset">Stäng av sömncoachen</string>
     <string name="sleep_coach_card_hint">Lägg till en kvällsrutin i coachen, så visas nästa steg här.</string>
     <string name="sleep_coach_evening_done">Kvällens steg är klara. Sov gott.</string>
+    <string name="sleep_breathing_title">Andning och avslappning</string>
+    <string name="sleep_breathing_body">Några lugna minuter före sänggåendet: lugn andning, boxandning eller 4-7-8.</string>
+    <string name="sleep_breathing_open">Öppna andningsövningarna</string>
+    <string name="sleep_coach_breathing">Lugn andning före sänggåendet</string>
 </resources>

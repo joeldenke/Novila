@@ -191,7 +191,7 @@ private fun ChartLabels(labels: List<String>) {
                 style = if (today) style.copy(fontWeight = FontWeight.Bold) else style,
                 color = if (today) NovilaTheme.colors.onSurface else NovilaTheme.colors.onSurfaceVariant,
                 textAlign = TextAlign.Center,
-                maxLines = 1,
+                maxLines = 2,
             )
         }
     }

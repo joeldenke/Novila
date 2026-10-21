@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.novila.android.application)
     alias(libs.plugins.novila.android.compose)
     alias(libs.plugins.novila.android.unittest)
+    // Writes the licenses of everything the app ships into res/raw, from the full runtime classpath.
+    alias(libs.plugins.aboutlibraries.android)
 }
 
 novila {
@@ -16,6 +18,7 @@ novila {
 dependencies {
     implementation(projects.feature.today)
     implementation(projects.feature.training)
+    implementation(projects.feature.breathing)
     implementation(projects.feature.sleep)
     implementation(projects.feature.nutrition)
     implementation(projects.feature.onboarding)

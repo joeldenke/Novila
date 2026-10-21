@@ -66,8 +66,10 @@ Nano for more than the comment, or data that leaves the app.
 - [x] **Diet profile:** diet (everything, pescetarian, vegetarian, vegan), the 14 labelled allergens and time in the
   kitchen, in *My goals*
 - [x] **Recipe suggestions:** Novila's own recipes that fill what today is missing, chosen deterministically and never
-  with an allergen the user avoids; "I ate this" logs a serving. More recipes remain.
-- [ ] **Fluids beyond water**, and a caffeine cut-off time linked to sleep
+  with an allergen the user avoids; "I ate this" logs a serving. The library covers every ingredient family and diet
+  across quick, medium and longer dishes; see `docs/recipes.md`.
+- [x] **Fluids beyond water**, and a caffeine cut-off time linked to sleep: drinks by kind and amount, water, coffee,
+  tea and milk count towards the water goal, and caffeine from 14:00 counts as late caffeine in the sleep links
 
 ### 5. Body and mood
 - [x] **Weight and measurements over time** (the profile only has one value)

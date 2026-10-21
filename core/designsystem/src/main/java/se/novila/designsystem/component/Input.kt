@@ -102,7 +102,7 @@ private fun RoundButton(
         enabled = enabled,
         shape = CircleShape,
         color = if (enabled) container else container.copy(alpha = 0.4f),
-        modifier = Modifier.size(40.dp).semantics { contentDescription = description },
+        modifier = Modifier.size(48.dp).semantics { contentDescription = description },
     ) {
         // Drawn rather than typed, so the symbol is optically centered and crisp at any density.
         Canvas(Modifier.fillMaxWidth().fillMaxHeight()) {
@@ -160,7 +160,7 @@ private fun ArrowButton(
         enabled = enabled,
         shape = CircleShape,
         color = if (enabled) role.container else role.container.copy(alpha = 0.4f),
-        modifier = Modifier.size(40.dp).semantics { contentDescription = description },
+        modifier = Modifier.size(48.dp).semantics { contentDescription = description },
     ) {
         // Drawn like the stepper's symbols: a chevron, optically centered on its point.
         Canvas(Modifier.fillMaxWidth().fillMaxHeight()) {
@@ -191,7 +191,7 @@ fun NovilaLevelPicker(
 ) {
     Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s)) {
         Row(
-            modifier = Modifier.fillMaxWidth().height(44.dp).selectableGroup(),
+            modifier = Modifier.fillMaxWidth().height(48.dp).selectableGroup(),
             horizontalArrangement = Arrangement.spacedBy(6.dp),
         ) {
             levels.forEachIndexed { index, label ->
@@ -240,7 +240,9 @@ fun NovilaTextField(
     BasicTextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .semantics { contentDescription = hint },
         textStyle = NovilaTheme.typography.bodyLarge.copy(color = NovilaTheme.colors.onSurface),
         cursorBrush = SolidColor(role.color),
         singleLine = true,

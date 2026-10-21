@@ -22,7 +22,7 @@ enum class FoodGroup(val goal: Int, val points: Int) {
     /** Whole grain bread, pasta, rice, oats. */
     WholeGrain(goal = 3, points = 15),
 
-    /** Glasses of water. */
+    /** Glasses of water, about 2 dl: the drinks that count towards the water goal ([DrinkKind.hydrates]). */
     Water(goal = WATER_GOAL, points = 15),
 }
 
@@ -34,7 +34,7 @@ const val MAX_TREAT_PENALTY = 20
 /** A nutrition score from this many points counts as a good day. */
 const val GOOD_NUTRITION_SCORE = 70
 
-/** Portions logged per day. Water is logged as [DayEntry.waterGlasses]. */
+/** Portions logged per day. Water is logged as drinks ([DayEntry.drinks]). */
 data class FoodLog(
     val vegetables: Int = 0,
     val meals: Int = 0,
@@ -54,6 +54,10 @@ fun DayEntry.portions(group: FoodGroup): Int = when (group) {
     FoodGroup.Water -> waterGlasses
 }
 
+/**
+ * [delta] portions more or fewer of [group], never below zero. For water, more is glasses of water and fewer takes back
+ * the last glasses of water logged.
+ */
 fun DayEntry.withPortions(group: FoodGroup, delta: Int): DayEntry {
     val count = (portions(group) + delta).coerceAtLeast(0)
     return when (group) {
@@ -61,8 +65,14 @@ fun DayEntry.withPortions(group: FoodGroup, delta: Int): DayEntry {
         FoodGroup.Meals -> copy(food = food.copy(meals = count))
         FoodGroup.Protein -> copy(food = food.copy(protein = count))
         FoodGroup.WholeGrain -> copy(food = food.copy(wholeGrain = count))
-        FoodGroup.Water -> copy(waterGlasses = count)
+        FoodGroup.Water -> withWater(delta)
     }
+}
+
+private fun DayEntry.withWater(delta: Int): DayEntry {
+    if (delta >= 0) return glassesOfWater(delta).fold(this) { day, glass -> day.withDrink(glass) }
+    val glasses = drinks.withIndex().filter { it.value.kind == DrinkKind.Water }.takeLast(-delta).map { it.index }
+    return copy(drinks = drinks.filterIndexed { index, _ -> index !in glasses })
 }
 
 fun DayEntry.withTreats(delta: Int): DayEntry = copy(food = food.copy(treats = (food.treats + delta).coerceAtLeast(0)))

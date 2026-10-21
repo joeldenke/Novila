@@ -1,0 +1,45 @@
+# Sends the libraries the app is built with to GitHub's dependency graph on every push to main, so Dependabot can
+# raise security alerts for vulnerable ones (Security → Dependabot alerts) and Insights → Dependency graph lists them.
+# Dependabot can't read the version catalog and the convention plugins on its own; Gradle resolves the real graph here.
+# Free for public repositories. Only resolves dependencies: nothing is compiled or tested.
+#
+# Test classpaths are left out: they never ship to users, and their alerts would only be noise.
+name: Dependency submission
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dependency-submission
+  cancel-in-progress: true
+
+jobs:
+  submit:
+    name: Submit dependency graph
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write # the dependency submission API needs it
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: 21
+
+      # The dependency graph plugin is an init script that reads every project, which Isolated Projects (and with it
+      # the configuration cache) doesn't allow, so both are off for this run only. Reads the cache CI saved on main
+      # and writes none of its own.
+      - uses: gradle/actions/dependency-submission@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
+        with:
+          cache-read-only: true
+          additional-arguments: --no-configuration-cache -Dorg.gradle.isolated-projects=false
+          dependency-graph-exclude-configurations: '.*[Tt]est.*'

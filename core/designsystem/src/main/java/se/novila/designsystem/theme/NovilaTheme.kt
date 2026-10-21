@@ -2,10 +2,7 @@ package se.novila.designsystem.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Shapes
-import androidx.compose.material3.Typography
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
@@ -15,6 +12,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalContext
 
+private val LocalNovilaColors = staticCompositionLocalOf { NovilaLightColors.toNovilaColors() }
+private val LocalNovilaTypography = staticCompositionLocalOf { NovilaTextStyles }
+private val LocalNovilaShapes = staticCompositionLocalOf { NovilaCorners }
 private val LocalNovilaPillars = staticCompositionLocalOf { NovilaLightColors.pillars() }
 private val LocalNovilaAccent = staticCompositionLocalOf { NovilaLightAccent }
 private val LocalNovilaHero = staticCompositionLocalOf { NovilaLightHero }
@@ -22,8 +22,10 @@ private val LocalNovilaSurfaces = staticCompositionLocalOf { NovilaLightSurfaces
 private val LocalNovilaAnatomy = staticCompositionLocalOf { NovilaLightAnatomy }
 
 /**
- * Root theme for the app. Wraps [MaterialTheme] so Material 3 components pick up Novila
- * tokens, and adds tokens Material doesn't have (pillar colors, the sun accent, spacing).
+ * Root theme for the app. Provides Novila's own tokens (colors, type, shapes, pillars, the sun accent, spacing) and
+ * wraps [MaterialTheme] with the same values, so the Material 3 components inside :core:designsystem pick them up.
+ * Material 3 is an implementation detail of this module: no public type is a Material type, so it can be replaced
+ * component by component.
  *
  * @param dynamicColor use the wallpaper colors on Android 12+ instead of the Skog & sol palette.
  *   Off by default: only the brand palette is checked against WCAG 2.2 (ColorContrastTest).
@@ -43,8 +45,12 @@ fun NovilaTheme(
 
         else -> NovilaLightColors
     }
+    val colors = remember(colorScheme) { colorScheme.toNovilaColors() }
     val pillars = remember(colorScheme) { colorScheme.pillars() }
     CompositionLocalProvider(
+        LocalNovilaColors provides colors,
+        LocalNovilaTypography provides NovilaTextStyles,
+        LocalNovilaShapes provides NovilaCorners,
         LocalNovilaSpacing provides NovilaSpacing(),
         LocalNovilaPillars provides pillars,
         LocalNovilaAccent provides if (darkTheme) NovilaDarkAccent else NovilaLightAccent,
@@ -54,18 +60,22 @@ fun NovilaTheme(
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
-            typography = NovilaTypography,
-            shapes = NovilaShapes,
+            typography = MaterialTypography,
+            shapes = MaterialShapes,
             content = content,
         )
     }
 }
 
+private val MaterialTypography = NovilaTextStyles.toMaterial()
+private val MaterialShapes = NovilaCorners.toMaterial()
+
 /** Single entry point for design tokens in feature code. */
 object NovilaTheme {
-    val colors: ColorScheme
+    /** Text, surfaces, outline and error. */
+    val colors: NovilaColors
         @Composable @ReadOnlyComposable
-        get() = MaterialTheme.colorScheme
+        get() = LocalNovilaColors.current
 
     /** Training (pine), sleep (lake blue) and nutrition (falu red), each a full color role. */
     val pillars: NovilaPillarColors
@@ -92,13 +102,13 @@ object NovilaTheme {
         @Composable @ReadOnlyComposable
         get() = LocalNovilaAnatomy.current
 
-    val typography: Typography
+    val typography: NovilaTypography
         @Composable @ReadOnlyComposable
-        get() = MaterialTheme.typography
+        get() = LocalNovilaTypography.current
 
-    val shapes: Shapes
+    val shapes: NovilaShapes
         @Composable @ReadOnlyComposable
-        get() = MaterialTheme.shapes
+        get() = LocalNovilaShapes.current
 
     val spacing: NovilaSpacing
         @Composable @ReadOnlyComposable

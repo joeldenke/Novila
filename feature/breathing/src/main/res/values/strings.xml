@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Breathing and relaxation -->
+    <string name="breathing_title">Breathing and relaxation</string>
+    <string name="breathing_intro">Short guided breathing to settle, or to wind down before bed. Follow the circle: it grows as you breathe in and shrinks as you breathe out.</string>
+    <string name="breathing_session_calm">Calm breathing</string>
+    <string name="breathing_session_calm_body">A slightly longer out-breath, to settle in a minute.</string>
+    <string name="breathing_session_box">Box breathing</string>
+    <string name="breathing_session_box_body">Four equal parts: in, hold, out, hold. Steady and even.</string>
+    <string name="breathing_session_four_seven_eight">4-7-8 breathing</string>
+    <string name="breathing_session_four_seven_eight_body">A long, slow out-breath. A calm choice for the evening.</string>
+    <string name="breathing_time" translatable="false">%1$d:%2$02d</string>
+    <string name="breathing_duration_about">About %1$s</string>
+    <string name="breathing_duration_minutes">%1$d min</string>
+    <string name="breathing_duration_seconds">%1$d s</string>
+    <string name="breathing_duration_minutes_seconds">%1$d min %2$d s</string>
+    <string name="breathing_start">Start</string>
+    <string name="breathing_start_session">Start %1$s</string>
+    <string name="breathing_round">Round %1$d of %2$d</string>
+    <string name="breathing_remaining">%1$s left</string>
+    <string name="breathing_phase_inhale">Breathe in</string>
+    <string name="breathing_phase_hold_in">Hold</string>
+    <string name="breathing_phase_exhale">Breathe out</string>
+    <string name="breathing_phase_hold_out">Hold</string>
+    <string name="breathing_pause">Pause</string>
+    <string name="breathing_resume">Continue</string>
+    <string name="breathing_restart">Start again</string>
+    <string name="breathing_done_title">Session complete</string>
+    <string name="breathing_done_body">Take a moment to notice how you feel.</string>
+    <string name="breathing_note">Breathe comfortably at your own pace. The count is a guide, not a target. If you feel dizzy or short of breath, stop and breathe normally.</string>
+    <string name="breathing_footer">Novila doesn\'t save your sessions. They are moments for you, not a score.</string>
+</resources>

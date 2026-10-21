@@ -1,33 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Themed (monochrome) launcher icon, Android 13 and higher: the spruce and the sun on the water. -->
+<!-- Themed (monochrome) launcher icon, Android 13 and higher: the same N, sunset and sun as ic_launcher_foreground. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <path
-        android:fillAlpha="0.7"
-        android:fillColor="#FF000000"
-        android:pathData="M47.98,61.14A12.9,12.9 0,0 1 73.78,61.14Z" />
-    <path
-        android:pathData="M50.56,65.01H71.2"
-        android:strokeAlpha="0.9"
-        android:strokeColor="#FF000000"
-        android:strokeLineCap="round"
-        android:strokeWidth="2.06" />
-    <path
-        android:pathData="M54,68.88H67.76"
-        android:strokeAlpha="0.6"
-        android:strokeColor="#FF000000"
-        android:strokeLineCap="round"
-        android:strokeWidth="2.06" />
-    <path
-        android:pathData="M57.44,72.75H64.32"
-        android:strokeAlpha="0.35"
-        android:strokeColor="#FF000000"
-        android:strokeLineCap="round"
-        android:strokeWidth="2.06" />
+    <!--
+      The N: the left pillar (its top-left corner rounded), the diagonal and the right pillar, each cut by the
+      three sunset stripes. The cuts grow thicker toward the bottom (0.9, 1.9 and 2.8 dp) and the slices between
+      them thinner. The parts only touch, never overlap.
+    -->
     <path
         android:fillColor="#FF000000"
-        android:pathData="M44.54,28.46C45.92,32.33 47.46,34.91 50.13,37.49L46.95,37.49C48.67,41.02 51.08,43.6 54.43,46.09L50.22,46.09C52.45,49.79 55.38,52.37 58.73,54.69L53.83,54.69C56.06,57.7 58.64,59.76 61.74,61.14L27.34,61.14C30.44,59.76 33.02,57.7 35.25,54.69L30.35,54.69C33.7,52.37 36.63,49.79 38.86,46.09L34.65,46.09C38,43.6 40.41,41.02 42.13,37.49L38.95,37.49C41.62,34.91 43.16,32.33 44.54,28.46Z" />
+        android:pathData="M36,56V44A9,9 0,0 1 45,35V56Z
+            M36,62.18L36,56.9L45,56.9L45,62.18Z
+            M36,67.85L36,64.03L45,64.03L45,67.85Z
+            M36,73L36,70.65L45,70.65L45,73Z
+            M45,35L62.37,56L48.94,56L45,51.24Z
+            M63,56.9L63,62.18L54.05,62.18L49.68,56.9Z
+            M63,64.03L63,67.85L58.74,67.85L55.58,64.03Z
+            M63,70.65L63,73L61.06,70.65Z
+            M63,56L63,35L72,35L72,56Z
+            M63,62.18L63,56.9L72,56.9L72,62.18Z
+            M63,67.85L63,64.03L72,64.03L72,67.85Z
+            M63,70.65L72,70.65L72,73L63,73Z" />
+    <!-- The sun, in the notch between the diagonal and the right pillar. -->
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M54.2,38.2A3.2,3.2 0,1 1 60.6,38.2A3.2,3.2 0,1 1 54.2,38.2Z" />
 </vector>

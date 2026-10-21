@@ -6,12 +6,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.hasScrollAction
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTextInput
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -58,6 +60,11 @@ class MeasurementsScreenTest {
     }
 
     private fun field(label: String) = composeRule.onNode(hasSetTextAction() and hasText(label))
+
+    /** The history is below the taller controls, so the lazy list has to reach it. */
+    private fun scrollTo(text: String) {
+        composeRule.onNode(hasScrollAction()).performScrollToNode(hasText(text))
+    }
 
     @Test fun `typing a weight changes the form`() {
         val form = show()
@@ -108,6 +115,7 @@ class MeasurementsScreenTest {
     @Test fun `a logged day shows its values, or a dash when one was not measured`() {
         show(initial = MeasurementForm.of(logged.measurements), entries = listOf(logged))
 
+        scrollTo("73 kg")
         composeRule.onNodeWithText("73 kg").assertExists()
         composeRule.onNodeWithText("81 cm").assertExists()
         // Neck and hips were not measured, so both show the dash.
@@ -117,6 +125,8 @@ class MeasurementsScreenTest {
     @Test fun `without measurements, the history says nothing is logged`() {
         show()
 
-        composeRule.onNodeWithText("Nothing logged yet. What you measure shows up here over time.").assertExists()
+        val empty = "Nothing logged yet. What you measure shows up here over time."
+        scrollTo(empty)
+        composeRule.onNodeWithText(empty).assertExists()
     }
 }

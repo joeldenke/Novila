@@ -10,8 +10,8 @@
     <string name="widget_food_value" translatable="false">%1$d/100</string>
     <string name="widget_water_value" translatable="false">%1$d/%2$d</string>
 
-    <string name="widget_cheer_outdoors_summer">Out and moving for %1$d minutes. The midday sun makes vitamin D.</string>
-    <string name="widget_cheer_outdoors_daylight">Out and moving for %1$d minutes. Daylight helps you sleep tonight.</string>
+    <string name="widget_cheer_outdoors_summer">Out and moving for %1$d minutes. In the summer half of the year, daylight on the skin gives vitamin D.</string>
+    <string name="widget_cheer_outdoors_daylight">Out and moving for %1$d minutes. Daylight during the day can make it easier to fall asleep tonight.</string>
     <string name="widget_cheer_swim">%1$d minutes of swimming: the whole body, gently on the joints.</string>
     <string name="widget_cheer_strength">Strength session done. Muscles grow while you rest.</string>
     <string name="widget_cheer_rested">You slept %1$s. A rested body manages more today.</string>

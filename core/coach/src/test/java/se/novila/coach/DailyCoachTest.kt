@@ -6,6 +6,7 @@ import se.novila.model.DayEntry
 import se.novila.model.FoodLog
 import se.novila.model.Goals
 import se.novila.model.TrainingToday
+import se.novila.model.glassesOfWater
 import se.novila.recovery.RecoveryStatus
 import se.novila.sleep.SleepCoachPreferences
 import java.time.LocalDate
@@ -17,7 +18,7 @@ class DailyCoachTest {
 
     /** A day with only the sleep logged, so the coach still has something to say about training and food. */
     private fun day(sleep: Float = 7.5f, water: Int = 0, food: FoodLog = FoodLog()) =
-        DayEntry(date, sleepHours = sleep, waterGlasses = water, food = food)
+        DayEntry(date, sleepHours = sleep, drinks = glassesOfWater(water), food = food)
 
     /** A day whose food and water are all at their goals, so nutrition asks for nothing. */
     private val fullDay = day(

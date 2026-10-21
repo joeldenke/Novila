@@ -6,7 +6,8 @@
 
 Novila är en hälsoapp för Android som samlar träning, sömn och kost på ett lugnt, nordiskt ställe. Den planerar din
 träningsvecka, följer hur du sover och äter och visar hur delarna balanserar varandra varje dag. Allt stannar på
-telefonen: inget konto, inget moln, inga analysverktyg. Appen finns på svenska och engelska.
+telefonen: inget konto, inget moln, inga analysverktyg, och Androids säkerhetskopiering lämnar appens data utanför.
+Appen finns på svenska och engelska.
 
 ## Vad appen gör
 
@@ -15,7 +16,7 @@ telefonen: inget konto, inget moln, inga analysverktyg. Appen finns på svenska 
 | **Idag** | Vad du gör nu: hälsning med namn, dagens balans som en ring per del (tryck på en del för att öppna den), *Din dag* (sömn, dagens pass, kost och vatten, var och en med knappen som gör det), och insikter |
 | **Träning** | Veckoprogram efter WHO:s råd (150–300 min kondition, styrka två dagar i veckan, högst +10 % kondition per vecka). En coach på enheten som bygger veckan ur ditt mål, dina dagar, tid per pass, fokus och hänsyn, med skonsam träning för knä, ländrygg, axel, nacke och höft i tre nivåer. 15 illustrerade övningar och ett passläge med set, vila och nedräkning. Konditionspass loggas med "Jag gjorde det" eller läses från Health Connect, och efter passet ändrar ansträngning (RPE) och smärta dosen och ger förslag på nästa nivå |
 | **Sömn** | Läggtid och uppvakning (eller bara timmar, eller natten klockan registrerade, från Health Connect), hur natten kändes och vad som kan ha påverkat den, och vad som påverkar din sömn: samband mellan dagen före (kost, vatten, träning, sött), kvällen och natten, prövade på dina egna loggar och visade med nätterna bakom. En graf över veckan, fyra veckor eller ett år jämförd med perioden innan |
-| **Kost** | Portioner per livsmedelsgrupp, vatten och sött, poäng 0–100 efter Livsmedelsverkets kostråd, ett förslag på nästa steg, recept för det som saknas i dag (efter din kosthållning, allergier och tid), och poängen över veckan, fyra veckor eller ett år jämförd med perioden innan |
+| **Kost** | Portioner per livsmedelsgrupp, drycker (vatten, kaffe, te med mera, per glas, flaska eller valfri mängd; sent koffein ingår i sömnens samband) och sött, poäng 0–100 efter Livsmedelsverkets kostråd, ett förslag på nästa steg, recept för det som saknas i dag (efter din kosthållning, allergier och tid), och poängen över veckan, fyra veckor eller ett år jämförd med perioden innan |
 | **Rörelse** | Dagens steg och aktiva kalorier, de senaste fem veckornas träningspass och dina nätter, från Health Connect, bara medan appen är öppen |
 | **Påminnelser** | Logga sömnen, träna och logga kosten, var och en på egen tid och bara om det inte redan är loggat. Ett WorkManager-jobb per påminnelse och dag, inget annat i bakgrunden |
 | **Widget** | I dag på hemskärmen, på ett frostat kort som släpper igenom bakgrunden: dagens balans, sömn, kostpoäng och vatten, och något uppmuntrande om det du gjort (en sommarpromenad nämner D-vitamin, ett styrkepass nattens sömn). Ett tryck öppnar appen |
@@ -26,8 +27,10 @@ finns från dag ett. Vad som kommer härnäst står i [roadmapen](docs/roadmap.m
 
 ## Integritet från grunden
 
-- **Datan stannar på enheten.** Dagar, coachens svar och inställningar ligger i Preferences DataStore. Appen gör
-  inga nätverksanrop och har inga analysverktyg eller Firebase-SDK:er.
+- **Datan stannar på enheten.** Dagar, coachens svar och inställningar ligger i Preferences DataStore, förseglade med
+  en nyckel från Android Keystore. Appen gör inga nätverksanrop och har inga analysverktyg eller Firebase-SDK:er.
+  Androids säkerhetskopiering är tillåten men utesluter varje domän för appens data, så inget kopieras till ett
+  Google-konto eller till en ny enhet vid byte. Se `docs/backup.md`.
 - **Health Connect läses minimalt och bara läses:** dagens steg och aktiva kalorier (`READ_STEPS`,
   `READ_ACTIVE_CALORIES_BURNED`), de senaste fem veckornas träningspass (`READ_EXERCISE`: typ, dag och längd, för
   träningsprogrammet), nätterna (`READ_SLEEP`: läggtid, uppvakning och tid i sömn, som fyller i Sömn när du inte
@@ -79,7 +82,7 @@ varandra, vilket ett test kontrollerar.
 :feature:today           Vad du gör nu: balans, Din dag, insikter
 :feature:training        Veckoprogram, coach, övningar, passläge
 :feature:sleep           Sömnlogg och historik
-:feature:nutrition       Livsmedelsgrupper, vatten, poäng
+:feature:nutrition       Livsmedelsgrupper, drycker, poäng
 :feature:onboarding      Introduktionen vid första start
 :feature:settings        Inställningar
 :feature:widget          Widgeten på hemskärmen (Glance)

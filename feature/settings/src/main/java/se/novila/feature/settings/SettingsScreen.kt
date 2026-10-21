@@ -2,8 +2,9 @@ package se.novila.feature.settings
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,6 +50,8 @@ data class SettingsActions(
     val onInstallHealth: () -> Unit = {},
     val onOpenHealthInfo: () -> Unit = {},
     val onOpenDisclaimer: () -> Unit = {},
+    val onOpenPrivacy: () -> Unit = {},
+    val onOpenLicenses: () -> Unit = {},
     val onDeleteData: () -> Unit = {},
     val onShowIntro: () -> Unit = {},
 )
@@ -82,7 +85,9 @@ fun SettingsScreen(
         item(key = "health-connect") { HealthConnectCard(movement, actions) }
         item(key = "disclaimer") { DisclaimerCard(actions.onOpenDisclaimer) }
         item(key = "data") { DataCard(actions.onDeleteData) }
-        item(key = "about") { AboutCard(version, actions.onShowIntro) }
+        item(key = "about") {
+            AboutCard(version = version, actions = actions)
+        }
     }
 }
 
@@ -113,6 +118,7 @@ private fun ProfileCard(profile: Profile, measurements: List<MeasurementEntry>?,
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun AppearanceCard(
     settings: AppSettings,
@@ -126,13 +132,15 @@ private fun AppearanceCard(
             style = NovilaTheme.typography.labelLarge,
             color = NovilaTheme.colors.onSurfaceVariant,
         )
-        Row(horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s)) {
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s),
+            verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s),
+        ) {
             ThemeMode.entries.forEach { theme ->
                 NovilaChoiceChip(
                     label = stringResource(theme.label()),
                     selected = settings.theme == theme,
                     onClick = { actions.onTheme(theme) },
-                    modifier = Modifier.weight(1f),
                 )
             }
         }
@@ -270,12 +278,12 @@ private fun DataCard(onDeleteData: () -> Unit) {
 }
 
 @Composable
-private fun AboutCard(version: AppVersion, onShowIntro: () -> Unit) {
+private fun AboutCard(version: AppVersion, actions: SettingsActions) {
     NovilaCard(title = stringResource(R.string.settings_about)) {
         NovilaListRow(
             title = stringResource(R.string.settings_intro),
             summary = stringResource(R.string.settings_intro_summary),
-            onClick = onShowIntro,
+            onClick = actions.onShowIntro,
             trailing = { Chevron() },
         )
         NovilaListRow(
@@ -285,10 +293,14 @@ private fun AboutCard(version: AppVersion, onShowIntro: () -> Unit) {
         NovilaListRow(
             title = stringResource(R.string.settings_privacy),
             summary = stringResource(R.string.settings_privacy_summary),
+            onClick = actions.onOpenPrivacy,
+            trailing = { Chevron() },
         )
         NovilaListRow(
             title = stringResource(R.string.settings_licenses),
             summary = stringResource(R.string.settings_licenses_summary),
+            onClick = actions.onOpenLicenses,
+            trailing = { Chevron() },
         )
     }
 }

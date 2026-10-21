@@ -14,7 +14,7 @@ navigation3 = "1.2.0"
 datastore = "1.3.0-rc01"
 # Tink, the encryption library DataStore's serializer builds on. Pinned to the version datastore-tink
 # 1.3.0-rc01 depends on, so the API used here and the transitive one cannot drift apart.
-tink = "1.20.0"
+tink = "1.24.0"
 # Metro: compile-time dependency injection (Kotlin compiler plugin). Must support the Kotlin version above,
 # see https://zacsweers.github.io/metro/latest/compatibility/.
 metro = "1.4.5"
@@ -28,6 +28,9 @@ glance = "1.2.0"
 wearCompose = "1.7.1"
 # Compose previews of Wear screens in Android Studio.
 wearToolingPreview = "1.0.0"
+# Open-source licenses: the plugin collects every shipped dependency into the app's raw resources,
+# and the Compose screen in Settings shows them. See LicensesScreen.
+aboutLibraries = "15.3.0"
 kotlinxSerialization = "1.11.0"
 kotlinxCoroutines = "1.11.0"
 # Gemini Nano on the device through AICore, for the coach's message. See GeminiNanoCoachModel.
@@ -80,6 +83,8 @@ androidx-glance-appwidget-testing = { module = "androidx.glance:glance-appwidget
 androidx-wear-compose-material3 = { module = "androidx.wear.compose:compose-material3", version.ref = "wearCompose" }
 androidx-wear-compose-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "wearCompose" }
 androidx-wear-tooling-preview = { module = "androidx.wear:wear-tooling-preview", version.ref = "wearToolingPreview" }
+# The licenses list in Settings, in the app's own Material 3 theme (NovilaTheme wraps MaterialTheme).
+aboutlibraries-compose-m3 = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutLibraries" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerialization" }
@@ -92,6 +97,7 @@ androidx-test-backup = { module = "androidx.test.backup:backup", version.ref = "
 
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 compose-ui = { module = "androidx.compose.ui:ui" }
+compose-foundation = { module = "androidx.compose.foundation:foundation" }
 compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
@@ -124,6 +130,8 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
+# The Android variant writes aboutlibraries.json into the app's raw resources from its full runtime classpath.
+aboutlibraries-android = { id = "com.mikepenz.aboutlibraries.plugin.android", version.ref = "aboutLibraries" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 # Convention plugins from build-logic (no version: they come from the included build).
