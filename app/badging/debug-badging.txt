@@ -45,6 +45,7 @@ exported-activity: name='se.novila.healthconnect.HealthDataInfoActivity' permiss
 exported-activity: name='androidx.compose.ui.tooling.PreviewActivity' permission='none'
 exported-activity: name='androidx.activity.ComponentActivity' permission='none'
 exported-activity-alias: name='se.novila.ViewPermissionUsageActivity' permission='android.permission.START_VIEW_PERMISSION_USAGE'
+exported-service: name='se.novila.feature.widget.WaterTileService' permission='android.permission.BIND_QUICK_SETTINGS_TILE'
 exported-service: name='androidx.work.impl.background.systemjob.SystemJobService' permission='android.permission.BIND_JOB_SERVICE'
 exported-service: name='androidx.health.platform.client.impl.sdkservice.HealthDataSdkService' permission='none'
 exported-receiver: name='se.novila.feature.widget.NovilaWidgetReceiver' permission='none'
