@@ -16,9 +16,13 @@ import org.robolectric.RobolectricTestRunner
 import se.novila.coach.DailyCoach
 import se.novila.coach.dailyCoach
 import se.novila.designsystem.theme.NovilaTheme
+import se.novila.model.Discovery
+import se.novila.model.DiscoveryProgress
 import se.novila.model.Goals
+import se.novila.model.HistoryRange
 import se.novila.model.TrainingAfterSleep
 import se.novila.model.TrainingToday
+import se.novila.model.TrendFeedback
 import se.novila.model.WeekdayMetric
 import se.novila.model.WeekdayPattern
 import se.novila.model.analyzeSleep
@@ -34,6 +38,7 @@ class TodayScreenTest {
         coach: DailyCoach = dailyCoach(PreviewData.today, Goals(), TrainingToday(plannedMinutes = 30)),
         setupIncomplete: Boolean = false,
         onCompleteSetup: () -> Unit = {},
+        upcoming: List<DiscoveryProgress> = emptyList(),
     ) {
         composeRule.setContent {
             NovilaTheme {
@@ -54,6 +59,8 @@ class TodayScreenTest {
                     contentPadding = PaddingValues(0.dp),
                     training = TrainingToday(plannedMinutes = 30),
                     onOpenDiscoveries = { opened += "discoveries" },
+                    onOpenTrends = { opened += "trends" },
+                    upcoming = upcoming,
                     setupIncomplete = setupIncomplete,
                     onCompleteSetup = onCompleteSetup,
                 )
@@ -112,6 +119,55 @@ class TodayScreenTest {
         composeRule.onNodeWithText("All discoveries").performClick()
 
         assertEquals(listOf("discoveries"), opened)
+    }
+
+    @Test fun `the insights lead to the trends of all parts`() {
+        val opened = mutableListOf<String>()
+        show(opened)
+
+        composeRule.onNode(hasScrollAction()).performScrollToNode(hasText("Trends and history"))
+        composeRule.onNodeWithText("Trends and history").performClick()
+
+        assertEquals(listOf("trends"), opened)
+    }
+
+    @Test fun `the insights show what the logs will unlock, until it is there`() {
+        show(
+            mutableListOf(),
+            upcoming = listOf(
+                DiscoveryProgress(Discovery.SleepLinks, logged = 3, needed = 8),
+                DiscoveryProgress(Discovery.Weekdays, logged = 21, needed = 21),
+            ),
+        )
+
+        composeRule.onNode(hasScrollAction()).performScrollToNode(hasText("Unlocks as you log"))
+        composeRule.onNodeWithText("What affects your sleep").assertExists()
+        composeRule.onNodeWithText("3 of 8 nights").assertExists()
+        // Already unlocked, so it is not a promise any more.
+        composeRule.onNodeWithText("The weekday that stands out").assertDoesNotExist()
+    }
+
+    @Test fun `the trends put the parts side by side and say what changed`() {
+        val ranges = mutableListOf<HistoryRange>()
+        composeRule.setContent {
+            NovilaTheme {
+                TrendsScreen(
+                    history = PreviewData.history(HistoryRange.Week),
+                    goals = Goals(),
+                    feedback = listOf(TrendFeedback.Sleep(hours = 0.5f)),
+                    connections = emptyList(),
+                    onRange = { ranges += it },
+                    contentPadding = PaddingValues(0.dp),
+                )
+            }
+        }
+
+        composeRule.onNodeWithText("What your trends say").assertExists()
+        composeRule.onNodeWithText("You slept", substring = true).assertExists()
+        composeRule.onNodeWithText("Month").performClick()
+        assertEquals(listOf(HistoryRange.Month), ranges)
+        composeRule.onNode(hasScrollAction()).performScrollToNode(hasText("Training this week"))
+        composeRule.onNodeWithText("Training this week").assertExists()
     }
 
     @Test fun `the discoveries show what the parts say about each other`() {

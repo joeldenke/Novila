@@ -128,8 +128,6 @@ private fun DayEntry.engaged() =
     food != FoodLog() || drinks.isNotEmpty() || mood > 0 || energy > 0 ||
         strengthMinutes > 0 || cardio.isNotEmpty()
 
-private fun DayEntry.trainingMinutes() = strengthMinutes + cardioMinutes
-
 /**
  * The nights against the training the same day: a full night (at or above the goal) against a shorter one, among
  * days the user engaged with. Grouped by whether the night reached the goal, so it answers "do I train more on days
@@ -141,7 +139,7 @@ private fun trainingAfterSleep(days: List<DayEntry>, goals: Goals): TrainingAfte
     days.takeLast(CONNECTION_WINDOW_DAYS).forEach { day ->
         val night = day.sleepHours.takeIf { it > 0f } ?: return@forEach
         if (!day.engaged()) return@forEach
-        (if (night >= goals.sleepHours) with else without) += day.trainingMinutes().toDouble()
+        (if (night >= goals.sleepHours) with else without) += day.trainingMinutes.toDouble()
     }
     return link(TRAINING_NOTICEABLE, with, without) { a, b, t ->
         TrainingAfterSleep(a, b, with.size, without.size, t)
@@ -167,7 +165,7 @@ private fun wellbeing(
         } ?: return@forEach
         val had = when (driver) {
             WellbeingDriver.Nutrition -> day.nutritionScore(goals)?.total?.let { it >= GOOD_NUTRITION_SCORE }
-            WellbeingDriver.Training -> if (day.engaged()) day.trainingMinutes() >= TRAINED_MINUTES else null
+            WellbeingDriver.Training -> if (day.engaged()) day.trainingMinutes >= TRAINED_MINUTES else null
         } ?: return@forEach
         (if (had) with else without) += value
     }
@@ -205,7 +203,7 @@ private fun weekdayCandidate(days: List<DayEntry>, metric: WeekdayMetric, goals:
 }
 
 private fun WeekdayMetric.value(day: DayEntry, goals: Goals): Double? = when (this) {
-    WeekdayMetric.TrainingMinutes -> if (day.engaged()) day.trainingMinutes().toDouble() else null
+    WeekdayMetric.TrainingMinutes -> if (day.engaged()) day.trainingMinutes.toDouble() else null
     WeekdayMetric.SleepHours -> day.sleepHours.takeIf { it > 0f }?.toDouble()
     WeekdayMetric.NutritionScore -> day.nutritionScore(goals)?.total?.toDouble()
 }

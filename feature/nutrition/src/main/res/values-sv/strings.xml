@@ -775,4 +775,5 @@
         <item>Värm tortillan och bred bönorna på den.</item>
         <item>Toppa med avokado, tomat och sallad och rulla ihop.</item>
     </string-array>
+    <string name="nutrition_log_title">Logga mat och dryck</string>
 </resources>

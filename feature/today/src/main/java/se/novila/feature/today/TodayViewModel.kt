@@ -29,6 +29,7 @@ import se.novila.data.Week
 import se.novila.data.trainingWeek
 import se.novila.exercise.ExerciseRepository
 import se.novila.exercise.ExerciseState
+import se.novila.model.DiscoveryProgress
 import se.novila.model.Drink
 import se.novila.model.DrinkKind
 import se.novila.model.Goals
@@ -36,6 +37,7 @@ import se.novila.model.SLEEP_WINDOW_NIGHTS
 import se.novila.model.SleepAnalysis
 import se.novila.model.TrainingToday
 import se.novila.model.analyzeSleep
+import se.novila.model.discoveryProgress
 import se.novila.model.withDrink
 import se.novila.movement.MovementRepository
 import se.novila.movement.MovementState
@@ -55,7 +57,8 @@ import java.time.LocalTime
 /**
  * The dashboard: the week so far, and [hour] of day when it was read, the user's [name] for the greeting, the
  * [goals] the day is measured against, what the user's logs say about their [sleep] and today's [training] from the
- * week's program. Nights a watch recorded fill in the ones the user didn't log.
+ * week's program, and how far the logs are from what the insights will unlock ([upcoming]). Nights a watch recorded
+ * fill in the ones the user didn't log.
  */
 data class TodayUiState(
     val week: Week,
@@ -65,6 +68,7 @@ data class TodayUiState(
     val sleep: SleepAnalysis = SleepAnalysis(change = null, links = emptyList(), bedtimes = null, nightsLogged = 0),
     val training: TrainingToday = TrainingToday(),
     val coach: DailyCoach,
+    val upcoming: List<DiscoveryProgress> = emptyList(),
 )
 
 /** What Today reads from the stores and the watch, together. */
@@ -166,6 +170,7 @@ class TodayViewModel(
             sleep = sleep,
             training = training,
             coach = coach,
+            upcoming = discoveryProgress(window),
         )
     }
 

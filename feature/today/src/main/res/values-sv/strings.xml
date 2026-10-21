@@ -59,4 +59,25 @@
     <string name="checklist_water">Vatten</string>
     <string name="checklist_water_summary">%1$d av %2$d glas</string>
     <string name="checklist_water_action">+1 glas</string>
+    <string name="insights_upcoming">Låses upp när du loggar</string>
+    <string name="discovery_sleep_links">Vad som påverkar din sömn</string>
+    <string name="discovery_training_after_sleep">Hur nätterna syns i träningen</string>
+    <string name="discovery_weekdays">Veckodagen som sticker ut</string>
+    <string name="discovery_nights">%1$d av %2$d nätter</string>
+    <string name="discovery_days">%1$d av %2$d dagar</string>
+    <string name="trends_open">Trender och historik</string>
+    <string name="trends_title">Trender</string>
+    <string name="trends_feedback_title">Vad dina trender säger</string>
+    <string name="trends_feedback_empty">Logga sömn, mat och träning några dagar så ser du hur de förändras tillsammans.</string>
+    <string name="trends_footer">Från dina egna loggar, i din telefon. En trend eller ett samband är inte bevis.</string>
+    <string name="trends_both_improving">Både sömn och kost går åt rätt håll: %1$s mer sömn per natt och %2$d poäng högre kostpoäng än %3$s.</string>
+    <string name="trends_training_less_sleep">Du tränade %1$s mer än %2$s men sov %3$s mindre per natt. Vila är också en del av träningen.</string>
+    <string name="trends_sleep_more">Du sov %1$s mer per natt än %2$s.</string>
+    <string name="trends_sleep_less">Du sov %1$s mindre per natt än %2$s.</string>
+    <string name="trends_nutrition_up">Din kostpoäng är %1$d poäng högre än %2$s.</string>
+    <string name="trends_nutrition_down">Din kostpoäng är %1$d poäng lägre än %2$s.</string>
+    <string name="trends_training_more">Du tränade %1$s mer än %2$s.</string>
+    <string name="trends_training_less">Du tränade %1$s mindre än %2$s.</string>
+    <string name="trends_sleep_goal">%1$d av %2$d nätter nådde ditt sömnmål på %3$s.</string>
+    <string name="trends_water_goal">%1$d av %2$d dagar nådde ditt vattenmål på %3$d glas.</string>
 </resources>

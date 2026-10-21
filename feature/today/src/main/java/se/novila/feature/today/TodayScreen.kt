@@ -24,6 +24,7 @@ import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.today.R
 import se.novila.model.DayEntry
+import se.novila.model.DiscoveryProgress
 import se.novila.model.Goals
 import se.novila.model.Greeting
 import se.novila.model.SleepAnalysis
@@ -31,6 +32,7 @@ import se.novila.model.TrainingToday
 import se.novila.model.analyzeSleep
 import se.novila.model.balance
 import se.novila.model.dayChecklist
+import se.novila.model.discoveryProgress
 import se.novila.model.greetingFor
 import se.novila.model.nutritionScore
 import se.novila.model.sleepProgress
@@ -47,7 +49,8 @@ import se.novila.ui.R as UiR
 /**
  * What to do today: greeting (by [name] when the profile has one), today's balance as rings, the day's checklist
  * led by the one [coach]'s connected suggestion (sleep, the program's [training], food and water, each with the one
- * button that does it) and the week's insights, with the way to all discoveries ([onOpenDiscoveries]), where the
+ * button that does it) and the week's insights with what the logs will unlock ([upcoming]), the way to the trends of
+ * sleep, food and training together ([onOpenTrends]) and to all discoveries ([onOpenDiscoveries]), where the
  * connections between the parts are. The rings are the summary of the day; tapping a part on
  * them opens that part's tab, so the balance is not repeated as a row of tiles. Everything is measured against the
  * user's [goals]; the weeks in charts are on each part's own tab. Blocks arrive one by one. When the introduction
@@ -72,6 +75,9 @@ fun TodayScreen(
     modifier: Modifier = Modifier,
     training: TrainingToday = TrainingToday(),
     onOpenDiscoveries: () -> Unit = {},
+    onOpenTrends: () -> Unit = {},
+    /** What the logs will unlock, shown in the insights until it is there. */
+    upcoming: List<DiscoveryProgress> = emptyList(),
     /** The introduction was skipped, so the profile and the coaches are not set up: one card offers to finish it. */
     setupIncomplete: Boolean = false,
     onCompleteSetup: () -> Unit = {},
@@ -100,7 +106,9 @@ fun TodayScreen(
             }
         }
         item(key = "checklist") { NovilaReveal(order = 2) { DayChecklistCard(checklist, actions, coach) } }
-        item(key = "insights") { NovilaReveal(order = 3) { InsightsCard(insights, sleep, onOpenDiscoveries) } }
+        item(key = "insights") {
+            NovilaReveal(order = 3) { InsightsCard(insights, sleep, upcoming, onOpenTrends, onOpenDiscoveries) }
+        }
     }
 }
 
@@ -213,6 +221,8 @@ private fun TodayScreenContent(hour: Int = 8) {
                 onOpenSettings = {},
                 contentPadding = padding,
                 training = TrainingToday(plannedMinutes = 30),
+                // Two weeks in: the weekday pattern is still on its way.
+                upcoming = discoveryProgress(PreviewData.days(count = 14)),
             )
         }
     }

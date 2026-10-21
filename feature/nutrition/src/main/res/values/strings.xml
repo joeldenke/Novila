@@ -785,4 +785,5 @@
         <item>Warm the tortilla and spread the beans on it.</item>
         <item>Top with avocado, tomato and lettuce and roll it up.</item>
     </string-array>
+    <string name="nutrition_log_title">Log food and drinks</string>
 </resources>

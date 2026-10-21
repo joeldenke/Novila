@@ -106,10 +106,8 @@
     <string name="profile_about_you">Om dig</string>
     <string name="profile_name">Namn</string>
     <string name="profile_name_summary">Idag hälsar på dig med namn.</string>
-    <string name="profile_body">Kropp</string>
     <string name="profile_birth_year">Födelseår</string>
     <string name="profile_height">Längd</string>
-    <string name="profile_weight">Vikt</string>
     <string name="profile_birth_year_error">Ange ett år mellan %1$d och %2$d.</string>
     <string name="profile_height_error">Ange en längd mellan %1$d och %2$d cm.</string>
     <string name="profile_weight_error">Ange en vikt mellan %1$d och %2$d kg.</string>
@@ -156,8 +154,6 @@
 
     <!-- Mått -->
     <string name="settings_measurements">Mått</string>
-    <string name="settings_measurements_summary">Vikt %1$d kg</string>
-    <string name="settings_measurements_empty">Inget loggat ännu</string>
     <string name="measure_log">Logga mått</string>
     <string name="measure_history">Över tid</string>
     <string name="measure_history_empty">Inget loggat ännu. Det du mäter visas här över tiden.</string>
@@ -190,4 +186,11 @@
     <string name="reminders_time">Tid</string>
     <string name="reminders_time_title">Välj tid</string>
     <string name="reminders_save">Spara</string>
+    <string name="settings_profile_summary">Profil, mått och mål</string>
+    <string name="profile_avatar">Profilbild för %1$s</string>
+    <plurals name="profile_age">
+        <item quantity="one">%1$d år</item>
+        <item quantity="other">%1$d år</item>
+    </plurals>
+    <string name="measure_latest">Senast mätt %1$s</string>
 </resources>

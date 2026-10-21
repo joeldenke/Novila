@@ -111,10 +111,8 @@
     <string name="profile_about_you">About you</string>
     <string name="profile_name">Name</string>
     <string name="profile_name_summary">Today greets you by name.</string>
-    <string name="profile_body">Body</string>
     <string name="profile_birth_year">Birth year</string>
     <string name="profile_height">Height</string>
-    <string name="profile_weight">Weight</string>
     <string name="profile_birth_year_error">Enter a year between %1$d and %2$d.</string>
     <string name="profile_height_error">Enter a height between %1$d and %2$d cm.</string>
     <string name="profile_weight_error">Enter a weight between %1$d and %2$d kg.</string>
@@ -161,8 +159,6 @@
 
     <!-- Measurements -->
     <string name="settings_measurements">Measurements</string>
-    <string name="settings_measurements_summary">Weight %1$d kg</string>
-    <string name="settings_measurements_empty">Nothing logged yet</string>
     <string name="measure_log">Log measurements</string>
     <string name="measure_history">Over time</string>
     <string name="measure_history_empty">Nothing logged yet. What you measure shows up here over time.</string>
@@ -196,4 +192,12 @@
     <string name="reminders_time">Time</string>
     <string name="reminders_time_title">Choose a time</string>
     <string name="reminders_save">Save</string>
+    <string name="settings_profile_summary">Profile, measurements and goals</string>
+    <string name="profile_avatar">Profile picture for %1$s</string>
+    <string name="profile_separator" translatable="false">" · "</string>
+    <plurals name="profile_age">
+        <item quantity="one">%1$d year</item>
+        <item quantity="other">%1$d years</item>
+    </plurals>
+    <string name="measure_latest">Last measured %1$s</string>
 </resources>

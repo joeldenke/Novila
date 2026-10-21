@@ -203,7 +203,6 @@
     <string name="muscle_hamstrings">hamstrings</string>
     <string name="muscle_calves">calves</string>
     <string name="list_separator" translatable="false">", "</string>
-    <string name="movement_title">Today\'s movement</string>
     <string name="movement_active_calories">Active calories</string>
     <string name="movement_source">From Health Connect. Novila only reads it and stores nothing.</string>
     <string name="movement_connect_body">Connect Health Connect to see today\'s steps and active calories from your watch or phone, let the week\'s program count the workouts your watch recorded, fill in your sleep from it, and let your resting heart rate and HRV lighten a session while you recover. Novila only reads the data and it stays on your phone.</string>
@@ -215,9 +214,7 @@
     <string name="movement_workouts_connect">Read workouts</string>
     <string name="movement_install">Get Health Connect</string>
     <!-- Recovery from the watch -->
-    <string name="recovery_title">Recovery</string>
     <string name="recovery_resting_heart_rate">Resting heart rate</string>
-    <string name="recovery_hrv">Heart rate variability (HRV)</string>
     <string name="recovery_bpm" translatable="false">%1$d bpm</string>
     <string name="recovery_millis" translatable="false">%1$d ms</string>
     <string name="recovery_normal">Your resting heart rate and HRV are where they usually are. Today\'s session is as planned.</string>
@@ -378,4 +375,10 @@
     <string name="library_all">All</string>
     <string name="library_empty">No exercise matches \"%1$s\".</string>
     <string name="library_count">%1$d exercises</string>
+    <string name="training_log_title">Log training</string>
+    <string name="health_data_title">Movement and recovery</string>
+    <string name="health_data_connected">Connected to Health Connect</string>
+    <string name="health_data_not_connected">Not connected</string>
+    <string name="health_data_missing">Health Connect is missing</string>
+    <string name="health_data_hrv">HRV</string>
 </resources>

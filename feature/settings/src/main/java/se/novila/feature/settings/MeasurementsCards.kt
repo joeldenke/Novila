@@ -1,20 +1,20 @@
 package se.novila.feature.settings
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import se.novila.designsystem.component.NovilaAccentButton
 import se.novila.designsystem.component.NovilaCard
 import se.novila.designsystem.component.NovilaLineChart
-import se.novila.designsystem.component.NovilaScaffold
+import se.novila.designsystem.component.NovilaMetric
+import se.novila.designsystem.component.NovilaSheetContent
 import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.component.NovilaTextField
 import se.novila.designsystem.theme.NovilaTheme
@@ -25,7 +25,6 @@ import se.novila.model.NumberInput
 import se.novila.model.Profile
 import se.novila.model.on
 import se.novila.ui.common.DayPicker
-import se.novila.ui.common.ScreenList
 import se.novila.ui.common.longDateText
 import se.novila.ui.common.shortDateLabels
 import se.novila.ui.preview.PreviewData
@@ -33,47 +32,91 @@ import java.time.LocalDate
 import se.novila.ui.R as UiR
 
 /**
- * Weight, waist, neck and hips, logged per day: the day to log ([onSelectDay] goes back within the editable days)
- * and the fields for it, and everything measured so far as a weight curve and one row per day. The profile's
- * current weight follows the newest measurement, so the goal suggestions stay on the same number. Everything is
- * saved on the phone only.
+ * The newest of each measurement and when it was taken, as the profile shows them, with the button that opens the
+ * sheet to log a day ([onLog]). Before anything is measured, the dashes show what will be there.
  */
 @Composable
-fun MeasurementsScreen(
-    form: MeasurementForm,
-    day: LocalDate,
-    today: LocalDate,
-    entries: List<MeasurementEntry>,
-    onChange: (MeasurementForm) -> Unit,
-    onSelectDay: (LocalDate) -> Unit,
-    onSave: () -> Unit,
-    contentPadding: PaddingValues,
-    modifier: Modifier = Modifier,
-) {
-    ScreenList(contentPadding = contentPadding, modifier = modifier) {
-        item(key = "day") { DayPicker(day, today, onSelectDay, NovilaTheme.pillars.training) }
-        item(key = "log") { LogCard(form, saved = entries.on(day), onChange, onSave) }
-        item(key = "history") { HistoryCard(entries) }
-        item(key = "privacy") {
+internal fun LatestMeasurementsCard(entries: List<MeasurementEntry>, onLog: () -> Unit) {
+    val missing = stringResource(UiR.string.value_missing)
+    val kg = stringResource(R.string.profile_unit_kg)
+    val cm = stringResource(R.string.profile_unit_cm)
+
+    // Newest first, so the first day with a value is the newest one.
+    fun latest(value: (BodyMeasurements) -> Int?) = entries.firstNotNullOfOrNull { value(it.measurements) }
+    NovilaCard(
+        title = stringResource(R.string.settings_measurements),
+        icon = painterResource(UiR.drawable.ic_trend),
+        role = NovilaTheme.pillars.training,
+    ) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s)) {
+            NovilaMetric(
+                latest { it.weightKg }?.let { stringResource(R.string.measure_value, it, kg) },
+                stringResource(R.string.measure_weight),
+                missing,
+                Modifier.weight(1f),
+            )
+            NovilaMetric(
+                latest { it.waistCm }?.let { stringResource(R.string.measure_value, it, cm) },
+                stringResource(R.string.measure_waist),
+                missing,
+                Modifier.weight(1f),
+            )
+        }
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s)) {
+            NovilaMetric(
+                latest { it.neckCm }?.let { stringResource(R.string.measure_value, it, cm) },
+                stringResource(R.string.measure_neck),
+                missing,
+                Modifier.weight(1f),
+            )
+            NovilaMetric(
+                latest { it.hipsCm }?.let { stringResource(R.string.measure_value, it, cm) },
+                stringResource(R.string.measure_hips),
+                missing,
+                Modifier.weight(1f),
+            )
+        }
+        entries.firstOrNull()?.let { newest ->
             NovilaText(
-                stringResource(R.string.measure_privacy),
-                style = NovilaTheme.typography.bodyMedium,
+                stringResource(R.string.measure_latest, longDateText(newest.date)),
+                style = NovilaTheme.typography.bodySmall,
                 color = NovilaTheme.colors.onSurfaceVariant,
             )
         }
+        NovilaAccentButton(text = stringResource(R.string.measure_log), onClick = onLog)
     }
+}
+
+/**
+ * The sheet that logs a day's measurements: the day ([onSelectDay] goes back within the editable days) and the four
+ * fields for it, with the button that saves them.
+ */
+@Composable
+internal fun MeasurementsSheet(
+    state: MeasurementsUiState,
+    onChange: (MeasurementForm) -> Unit,
+    onSelectDay: (LocalDate) -> Unit,
+    onSave: () -> Unit,
+) {
+    DayPicker(state.day, state.today, onSelectDay, NovilaTheme.pillars.training)
+    LogFields(state.form, saved = state.entries.on(state.day), onChange, onSave)
+    NovilaText(
+        stringResource(R.string.measure_privacy),
+        style = NovilaTheme.typography.bodySmall,
+        color = NovilaTheme.colors.onSurfaceVariant,
+    )
 }
 
 /** The four measurements of the chosen day. Saving offers nothing new until something was typed or cleared. */
 @Composable
-private fun LogCard(
+private fun LogFields(
     form: MeasurementForm,
     saved: BodyMeasurements,
     onChange: (MeasurementForm) -> Unit,
     onSave: () -> Unit,
 ) {
     val centimetres = stringResource(R.string.profile_unit_cm)
-    NovilaCard(title = stringResource(R.string.measure_log)) {
+    Column(verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s)) {
         NovilaTextField(
             value = form.weight,
             onValueChange = { onChange(form.copy(weight = it)) },
@@ -137,7 +180,7 @@ private fun LogCard(
 
 /** What has been measured, newest first: the weight over the logged days, and one row per day with all four. */
 @Composable
-private fun HistoryCard(entries: List<MeasurementEntry>) {
+internal fun MeasurementsHistoryCard(entries: List<MeasurementEntry>) {
     NovilaCard(title = stringResource(R.string.measure_history)) {
         val weights = remember(entries) {
             entries.mapNotNull { entry -> entry.measurements.weightKg?.let { entry.date to it } }.sortedBy { it.first }
@@ -229,26 +272,8 @@ private fun MeasurementValue(label: String, value: Int?, unit: String, modifier:
 private fun NumberInput.errorOrNull(message: @Composable () -> String): String? =
     if (this == NumberInput.Invalid) message() else null
 
-@Composable
-private fun MeasurementsContent(form: MeasurementForm, entries: List<MeasurementEntry>) {
-    NovilaTheme {
-        NovilaScaffold { padding ->
-            MeasurementsScreen(
-                form = form,
-                day = PreviewData.date,
-                today = PreviewData.date,
-                entries = entries,
-                onChange = {},
-                onSelectDay = {},
-                onSave = {},
-                contentPadding = padding,
-            )
-        }
-    }
-}
-
 /** A few weeks of measurements: the weight falls a little, the waist with it. */
-private val sampleEntries = listOf(
+internal val sampleMeasurements = listOf(
     MeasurementEntry(PreviewData.date, BodyMeasurements(weightKg = 73, waistCm = 81, neckCm = 37, hipsCm = 97)),
     MeasurementEntry(
         PreviewData.date.minusDays(7),
@@ -264,18 +289,23 @@ private val sampleEntries = listOf(
     ),
 )
 
-@Preview(showBackground = true, heightDp = 1400)
+/** The sheet as it slides up: the day and its four measurements. A waist still being typed shows its error. */
+@Preview(showBackground = true, heightDp = 900)
 @Composable
-private fun MeasurementsPreview() = MeasurementsContent(MeasurementForm(), sampleEntries)
-
-// A waist still being typed, to show how a wrong number looks.
-@Preview(heightDp = 1400, uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
-@Composable
-private fun MeasurementsDarkPreview() = MeasurementsContent(MeasurementForm(waist = "8"), sampleEntries)
-
-@Preview(showBackground = true, heightDp = 700)
-@Composable
-private fun MeasurementsEmptyPreview() = MeasurementsContent(
-    form = MeasurementForm(weight = PreviewData.profile.weightKg?.toString().orEmpty()),
-    entries = emptyList(),
-)
+private fun MeasurementsSheetPreview() {
+    NovilaTheme {
+        NovilaSheetContent(stringResource(R.string.measure_log)) {
+            MeasurementsSheet(
+                state = MeasurementsUiState(
+                    form = MeasurementForm(weight = "73", waist = "8"),
+                    day = PreviewData.date,
+                    today = PreviewData.date,
+                    entries = sampleMeasurements,
+                ),
+                onChange = {},
+                onSelectDay = {},
+                onSave = {},
+            )
+        }
+    }
+}

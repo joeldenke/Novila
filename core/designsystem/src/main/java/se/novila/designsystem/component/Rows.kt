@@ -43,9 +43,9 @@ fun NovilaIconButton(
 }
 
 /**
- * A row in a list of settings: a [title], an optional [summary] below it and something at the end, like a value or
- * a chevron. The whole row is the touch target when [onClick] is set; [onClickLabel] says what a tap does and
- * [stateDescription] says whether the thing it opens is expanded.
+ * A row in a list of settings: a [title], an optional [summary] below it, something at the start ([leading], like an
+ * avatar) and at the end, like a value or a chevron. The whole row is the touch target when [onClick] is set;
+ * [onClickLabel] says what a tap does and [stateDescription] says whether the thing it opens is expanded.
  */
 @Composable
 fun NovilaListRow(
@@ -55,6 +55,7 @@ fun NovilaListRow(
     onClick: (() -> Unit)? = null,
     onClickLabel: String? = null,
     stateDescription: String? = null,
+    leading: @Composable (() -> Unit)? = null,
     trailing: @Composable (() -> Unit)? = null,
 ) {
     val clickable = if (onClick != null) {
@@ -62,7 +63,7 @@ fun NovilaListRow(
     } else {
         Modifier
     }
-    RowLayout(title, summary, modifier.then(clickable), stateDescription, trailing)
+    RowLayout(title, summary, modifier.then(clickable), stateDescription, leading, trailing)
 }
 
 /** A setting that is on or off. The whole row toggles, and screen readers announce it as a switch. */
@@ -153,6 +154,7 @@ private fun RowLayout(
     summary: String?,
     modifier: Modifier,
     stateDescription: String?,
+    leading: @Composable (() -> Unit)? = null,
     trailing: @Composable (() -> Unit)?,
 ) {
     Row(
@@ -166,6 +168,7 @@ private fun RowLayout(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.m),
     ) {
+        leading?.invoke()
         Column(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.xxs),

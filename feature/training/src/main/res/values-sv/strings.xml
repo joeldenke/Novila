@@ -199,7 +199,6 @@
     <string name="muscle_calves">vader</string>
 
     <!-- Health Connect -->
-    <string name="movement_title">Dagens rörelse</string>
     <string name="movement_active_calories">Aktiva kalorier</string>
     <string name="movement_source">Från Health Connect. Novila läser bara och sparar ingenting.</string>
     <string name="movement_connect_body">Anslut Health Connect för att se dagens steg och aktiva kalorier från din klocka eller telefon, låta veckans program räkna med passen klockan har registrerat, fylla i sömnen från den och låta vilopuls och HRV göra ett pass lättare medan du återhämtar dig. Novila läser bara datan och den stannar i telefonen.</string>
@@ -211,9 +210,7 @@
     <string name="movement_workouts_connect">Läs träningspass</string>
     <string name="movement_install">Hämta Health Connect</string>
     <!-- Återhämtning från klockan -->
-    <string name="recovery_title">Återhämtning</string>
     <string name="recovery_resting_heart_rate">Vilopuls</string>
-    <string name="recovery_hrv">Hjärtfrekvensvariabilitet (HRV)</string>
     <string name="recovery_normal">Din vilopuls och HRV är som vanligt. Dagens pass är som planerat.</string>
     <string name="recovery_low">Din vilopuls är högre, eller din HRV lägre, än den brukar. Dagens pass blir lite lättare.</string>
     <string name="recovery_unknown">Inte tillräckligt många mätningar än för att säga hur du återhämtar dig.</string>
@@ -372,4 +369,10 @@
     <string name="library_all">Alla</string>
     <string name="library_empty">Ingen övning matchar \"%1$s\".</string>
     <string name="library_count">%1$d övningar</string>
+    <string name="training_log_title">Logga träning</string>
+    <string name="health_data_title">Rörelse och återhämtning</string>
+    <string name="health_data_connected">Ansluten till Health Connect</string>
+    <string name="health_data_not_connected">Inte ansluten</string>
+    <string name="health_data_missing">Health Connect saknas</string>
+    <string name="health_data_hrv">HRV</string>
 </resources>

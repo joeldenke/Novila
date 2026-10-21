@@ -23,6 +23,7 @@ import se.novila.anatomy.ExerciseLibrary
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.model.CardioLog
 import se.novila.model.CardioType
+import se.novila.movement.MovementState
 import se.novila.recovery.RecoveryState
 import se.novila.recovery.RecoveryStatus
 import se.novila.ui.preview.PreviewData
@@ -46,11 +47,12 @@ class TrainingScreenTest {
         actions: TrainingActions,
         recovery: RecoveryState = RecoveryState.Unavailable,
         setupIncomplete: Boolean = false,
+        movement: MovementState = PreviewData.movement,
     ) = composeRule.setContent {
         NovilaTheme {
             TrainingScreen(
                 state,
-                PreviewData.movement,
+                movement,
                 actions,
                 contentPadding = PaddingValues(),
                 recovery = recovery,
@@ -179,7 +181,8 @@ class TrainingScreenTest {
             TrainingActions(),
             recovery = TrainingPreviewData.recovery,
         )
-        composeRule.onNodeWithText("Recovery").assertExists()
+        composeRule.onNodeWithText("Movement and recovery").assertExists()
+        composeRule.onNodeWithText("Connected to Health Connect").assertExists()
         composeRule.onNodeWithText("56 bpm").assertExists()
         composeRule.onNodeWithText("38 ms").assertExists()
         composeRule
@@ -199,6 +202,28 @@ class TrainingScreenTest {
         )
         composeRule.onAllNodesWithText("Connect recovery")[0].performClick()
         assertTrue(connected)
+    }
+
+    @Test fun `before Health Connect is connected, one card says so and asks once`() {
+        var connected = 0
+        show(
+            state,
+            TrainingActions(onConnectHealth = { connected++ }),
+            recovery = RecoveryState.NeedsPermission(),
+            movement = MovementState.NeedsPermission(),
+        )
+        scrollTo("Not connected").assertExists()
+        composeRule.onNodeWithText("Connect recovery").assertDoesNotExist()
+        scrollTo("Connect Health Connect").performClick()
+        assertEquals(1, connected)
+    }
+
+    @Test fun `without Health Connect installed, the card offers to get it`() {
+        var installs = 0
+        show(state, TrainingActions(onInstallHealth = { installs++ }), movement = MovementState.NeedsInstall)
+        scrollTo("Health Connect is missing").assertExists()
+        scrollTo("Get Health Connect").performClick()
+        assertEquals(1, installs)
     }
 
     @Test fun `a skipped setup offers to finish it`() {
