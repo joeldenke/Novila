@@ -37,10 +37,11 @@ data class RecipeActions(
 
 /**
  * The Nutrition tab in the parts every tab has ([ScreenSection]): the shown [day]'s nutrition score with its
- * breakdown, logging per food group and drinks ([drinkActions]), and the scores in the [history] up to it, over a week, four weeks or a year
- * ([onRange]), water against [goals]. [today] is the day it really is: the user can go back to an earlier day
- * ([onSelectDay]) and fill in what was forgotten. On today, the plan is [recipes] for what is still missing, chosen
- * for [foodPreferences]; [expandedRecipe] is the one shown open at first.
+ * breakdown, a meal typed in the user's own words ([onLogMeal]), logging per food group and drinks
+ * ([drinkActions]), and the scores in the [history] up to it, over a week, four weeks or a year ([onRange]), water
+ * against [goals]. [today] is the day it really is: the user can go back to an earlier day ([onSelectDay]) and fill
+ * in what was forgotten. On today, the plan is [recipes] for what is still missing, chosen for [foodPreferences];
+ * [expandedRecipe] is the one shown open at first.
  */
 @Composable
 fun NutritionScreen(
@@ -49,6 +50,7 @@ fun NutritionScreen(
     goals: Goals,
     onPortions: (FoodGroup, Int) -> Unit,
     onTreats: (Int) -> Unit,
+    onLogMeal: (String) -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
     drinkActions: DrinkActions = DrinkActions(),
@@ -67,12 +69,13 @@ fun NutritionScreen(
         section(ScreenSection.Overview)
         item(key = "score") { NovilaReveal(order = 0) { NutritionScoreCard(day, goals, isToday) } }
         section(ScreenSection.Log)
-        item(key = "log") { NovilaReveal(order = 1) { FoodLogCard(day, onPortions, onTreats, isToday) } }
-        item(key = "drinks") { NovilaReveal(order = 1) { DrinksCard(day, goals, drinkActions, isToday) } }
+        item(key = "meal") { NovilaReveal(order = 1) { MealLogCard(onLogMeal) } }
+        item(key = "log") { NovilaReveal(order = 2) { FoodLogCard(day, onPortions, onTreats, isToday) } }
+        item(key = "drinks") { NovilaReveal(order = 2) { DrinksCard(day, goals, drinkActions, isToday) } }
         if (isToday && recipes != null) {
             section(ScreenSection.Plan)
             item(key = "recipes") {
-                NovilaReveal(order = 2) {
+                NovilaReveal(order = 3) {
                     RecipeCard(
                         suggestions = recipes,
                         preferences = foodPreferences,
@@ -88,7 +91,7 @@ fun NutritionScreen(
             }
         }
         section(ScreenSection.Trends)
-        item(key = "history") { NovilaReveal(order = 3) { NutritionHistoryCard(history, goals, onRange) } }
+        item(key = "history") { NovilaReveal(order = 4) { NutritionHistoryCard(history, goals, onRange) } }
     }
 }
 
@@ -102,6 +105,7 @@ private fun NutritionScreenPreview() {
             Goals(),
             onPortions = { _, _ -> },
             onTreats = {},
+            onLogMeal = {},
             contentPadding = PaddingValues(),
             recipes = suggestRecipes(PreviewData.today, hour = 12, preferences = FoodPreferences()),
         )
@@ -121,6 +125,7 @@ private fun NutritionScreenRecipePreview() {
             Goals(),
             onPortions = { _, _ -> },
             onTreats = {},
+            onLogMeal = {},
             contentPadding = PaddingValues(),
             recipes = recipes,
             foodPreferences = preferences,
@@ -140,6 +145,7 @@ private fun NutritionScreenYesterdayPreview() {
             goals = Goals(),
             onPortions = { _, _ -> },
             onTreats = {},
+            onLogMeal = {},
             contentPadding = PaddingValues(),
             today = PreviewData.date,
         )
@@ -157,6 +163,7 @@ private fun NutritionScreenMonthPreview() {
             Goals(),
             onPortions = { _, _ -> },
             onTreats = {},
+            onLogMeal = {},
             contentPadding = PaddingValues(),
         )
     }
