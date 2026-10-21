@@ -101,6 +101,16 @@ abstract class NovilaExtension @Inject constructor(private val project: Project)
 
     /** The Health Connect client. See *Health Connect* in CLAUDE.md before using it anywhere new. */
     fun healthConnect() = implementation("androidx-health-connect-client")
+
+    /**
+     * Compose for Wear OS: Material 3 components and the scaling layouts a round watch needs, plus the preview
+     * annotations. Only `:wear` takes it, on the same Compose BOM as the phone.
+     */
+    fun wear() {
+        implementation("androidx-wear-compose-material3")
+        implementation("androidx-wear-compose-foundation")
+        implementation("androidx-wear-tooling-preview")
+    }
 }
 
 /** Registers `novila { }` once, whichever Novila plugins the module applies. */

@@ -49,6 +49,10 @@ gradlePlugin {
             id = libs.plugins.novila.android.feature.get().pluginId
             implementationClass = "se.novila.buildlogic.AndroidFeatureConventionPlugin"
         }
+        register("androidWear") {
+            id = libs.plugins.novila.android.wear.get().pluginId
+            implementationClass = "se.novila.buildlogic.AndroidWearConventionPlugin"
+        }
         register("androidCompose") {
             id = libs.plugins.novila.android.compose.get().pluginId
             implementationClass = "se.novila.buildlogic.AndroidComposeConventionPlugin"

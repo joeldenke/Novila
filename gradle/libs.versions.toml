@@ -24,6 +24,10 @@ work = "2.10.1"
 healthConnect = "1.1.0"
 # Home-screen widget (Glance), see NovilaWidget.
 glance = "1.2.0"
+# Compose for Wear OS: the watch app's Material 3 components, on the same Compose BOM as the phone.
+wearCompose = "1.7.1"
+# Compose previews of Wear screens in Android Studio.
+wearToolingPreview = "1.0.0"
 # Open-source licenses: the plugin collects every shipped dependency into the app's raw resources,
 # and the Compose screen in Settings shows them. See LicensesScreen.
 aboutLibraries = "15.3.0"
@@ -75,9 +79,14 @@ androidx-glance-appwidget = { module = "androidx.glance:glance-appwidget", versi
 # Novila's color schemes as the widget's colors, in :core:designsystem only (NovilaGlanceTheme).
 androidx-glance-material3 = { module = "androidx.glance:glance-material3", version.ref = "glance" }
 androidx-glance-appwidget-testing = { module = "androidx.glance:glance-appwidget-testing", version.ref = "glance" }
+# Compose for Wear OS, in :wear only: Material 3 and lazy scaling layouts sized for a round watch.
+androidx-wear-compose-material3 = { module = "androidx.wear.compose:compose-material3", version.ref = "wearCompose" }
+androidx-wear-compose-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "wearCompose" }
+androidx-wear-tooling-preview = { module = "androidx.wear:wear-tooling-preview", version.ref = "wearToolingPreview" }
 # The licenses list in Settings, in the app's own Material 3 theme (NovilaTheme wraps MaterialTheme).
 aboutlibraries-compose-m3 = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutLibraries" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerialization" }
 # Google Health API responses (JSON), see GoogleHealthJson.
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
@@ -129,6 +138,7 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 novila-android-application = { id = "novila.android.application" }
 novila-android-library = { id = "novila.android.library" }
 novila-android-feature = { id = "novila.android.feature" }
+novila-android-wear = { id = "novila.android.wear" }
 novila-android-compose = { id = "novila.android.compose" }
 novila-android-unittest = { id = "novila.android.unittest" }
 novila-android-screenshot = { id = "novila.android.screenshot" }

@@ -1,0 +1,219 @@
+# The Wear OS app (:wear), entirely on its own: no other workflow (ci.yml, screenshots.yml, distribute.yml,
+# dependency-submission.yml) builds, tests, formats or records it, and this file uses none of .github/actions, so a
+# change to the phone's pipeline never touches the watch and the other way round. The only thing CI and distribute.yml
+# know about the watch is to stay idle when nothing but wear/ and this file changed. :wear only joins the Gradle build
+# with -Pnovila.wear=true (settings.gradle.kts), and Spotless then checks only wear/ (build.gradle.kts).
+#
+# On a PR it runs only when the watch itself changes (wear/ or this file), and CI skips its jobs when nothing else
+# changed, so a push runs one pipeline, never both. The watch also builds on :core:exercise (StandaloneSession,
+# Workout), :core:recovery and :core:designsystem (NovilaWearTheme): a change there is checked by CI on the PR and by
+# this workflow after the merge to main, so a break shows up on main without a second pipeline on every PR push.
+# One job, one Gradle invocation:
+#   - Spotless (ktlint) on wear/ and Android lint of :wear
+#   - unit and Compose UI tests, and every @Preview as a Roborazzi screenshot on a watch, against the references in
+#     wear/src/test/screenshots
+#   - the debug APK, and a check that it can never replace the phone app
+#
+# Screenshots: /record-wear-screenshots in the PR description records changed ones and pushes them to the PR branch,
+# or run this workflow from the Actions tab on a branch with "record" ticked. A branch with no references at all
+# records them on its first run. The phone's /record-screenshots never touches the watch. A push by GITHUB_TOKEN
+# starts no workflows, so after it this workflow starts itself and CI (the phone's required check has to report on
+# the new commit, or the PR can't be merged). On a watch-only branch CI only reports and runs nothing.
+#
+# Not a required check (a path-filtered workflow never reports on PRs it skips), so look at it on PRs that touch it.
+name: Wear OS
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "wear/**"
+      - ".github/workflows/wear.yml"
+  # After the merge also when what the watch builds on changes. Runs on main save the Gradle cache PR runs restore.
+  push:
+    branches: [main]
+    paths:
+      - "wear/**"
+      - ".github/workflows/wear.yml"
+      - "core/exercise/**"
+      - "core/recovery/**"
+      - "core/designsystem/**"
+      - "build-logic/**"
+      - "gradle/**"
+      - "*.gradle.kts"
+      - "gradle.properties"
+      - "lint.xml"
+  workflow_dispatch:
+    inputs:
+      record:
+        description: Record the watch's screenshots and push them to this branch
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wear-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  wear:
+    name: Wear OS
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write # push recorded screenshots to the branch
+      pull-requests: write # say so on the PR
+      actions: write # start the workflows on the pushed commit
+    env:
+      RECORD: >-
+        ${{ (github.event_name == 'workflow_dispatch' && inputs.record) ||
+            (github.event_name == 'pull_request' &&
+             github.event.pull_request.head.repo.full_name == github.repository &&
+             contains(github.event.pull_request.body, '/record-wear-screenshots')) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: 21
+      # Its own cache entries (keyed by this job), saved only from main.
+      - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
+        with:
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+      # The same runner (4 cores, 16 GB), so the same Gradle flags as CI; read from the file, not shared logic.
+      - name: Gradle properties
+        run: cat .github/ci-gradle.properties >> ~/.gradle/gradle.properties
+
+      # The first run on a branch without any references (wear/src/test/screenshots missing) records them instead of
+      # failing on every preview; they are pushed to the branch for review like any recording. Never on main.
+      - name: First references
+        if: >-
+          env.RECORD != 'true' && github.ref_name != github.event.repository.default_branch &&
+          (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+        run: |
+          if [ ! -d wear/src/test/screenshots ]; then
+            echo "RECORD=true" >> "$GITHUB_ENV"
+            echo "::notice title=Screenshots::No watch references yet, recording them"
+          fi
+
+      # verifyAndRecord fails on a changed or missing screenshot and writes the new one; record only writes.
+      - name: Format, lint, tests, screenshots and debug build
+        run: |
+          set -o pipefail
+          screenshots=":wear:verifyAndRecordRoborazziDebug"
+          [ "$RECORD" = true ] && screenshots=":wear:recordRoborazziDebug"
+          ./gradlew -Pnovila.wear=true spotlessCheck :wear:lintDebug :wear:test "$screenshots" :wear:assembleDebug \
+            --continue --console=plain 2>&1 | tee build.log
+
+      # The watch app must never replace or collide with the phone app: its own package (se.novila.wear.debug, never
+      # se.novila or se.novila.debug), watch only (a phone can't install it) and no permissions besides AndroidX's
+      # own. Read from the built APK, so a build-logic change that breaks it fails here.
+      - name: Separate from the phone app
+        run: |
+          aapt2=$(ls "$ANDROID_HOME"/build-tools/*/aapt2 | sort -V | tail -1)
+          badging=$("$aapt2" dump badging wear/build/outputs/apk/debug/wear-debug.apk)
+          package=$(sed -n "s/^package: name='\([^']*\)'.*/\1/p" <<<"$badging")
+          if [ "$package" != "se.novila.wear.debug" ]; then
+            echo "::error title=Wear package::The watch APK is '$package', expected se.novila.wear.debug"
+            exit 1
+          fi
+          if ! grep -q "uses-feature: name='android.hardware.type.watch'" <<<"$badging"; then
+            echo "::error title=Wear feature::The watch APK no longer requires android.hardware.type.watch"
+            exit 1
+          fi
+          # AndroidX's own DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION is named after the package, so it never clashes.
+          permissions=$(grep "^uses-permission" <<<"$badging" \
+            | grep -v "name='$package.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'" || true)
+          if [ -n "$permissions" ]; then
+            echo "::error title=Wear permissions::The watch APK asks for permissions:%0A$(sed -z 's/\n/%0A/g' <<<"$permissions")"
+            exit 1
+          fi
+          echo "::notice title=Wear package::$package, watch only, no permissions of its own"
+
+      # The watch uses Compose for Wear OS through NovilaWearTheme, never the phone's Material 3 (CLAUDE.md, Wear OS).
+      - name: No phone Material 3 on the watch
+        run: |
+          if grep -rn --include='*.kt' 'import androidx.compose.material3' wear/src; then
+            echo "::error title=Wear Material 3::The watch imports androidx.compose.material3; use Wear's Material 3"
+            exit 1
+          fi
+
+      - name: Annotate failures
+        if: failure()
+        run: |
+          { grep -E '^e: ' build.log; grep -A3 '^\* What went wrong' build.log | grep -vE '^\* What went wrong|^--$|^\s*$'; } \
+            | grep -v '^> Task ' | awk '!seen[$0]++' | head -10 \
+            | while IFS= read -r line; do echo "::error title=Gradle::${line}"; done || true
+          find wear/build/reports -name 'lint-results-*.txt' 2>/dev/null | while IFS= read -r f; do
+            grep -E ': Error: ' "$f" | head -20 | while IFS= read -r l; do echo "::error title=Lint::${l}"; done
+          done || true
+          find wear/build/test-results -name '*.xml' 2>/dev/null | xargs -r grep -l '<failure' \
+            | while IFS= read -r f; do echo "::error title=Test failed::$(basename "$f" .xml)"; done || true
+
+      # Commits the recorded screenshots to the PR branch (or the dispatched branch), where they show up in the diff.
+      # The PR job checked out the PR merged into main, so the images move over to the branch's newest commit.
+      - name: Push recorded screenshots
+        if: always() && env.RECORD == 'true' && github.ref_name != github.event.repository.default_branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ github.event.pull_request.head.ref || github.ref_name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          screenshots=':(glob)wear/src/test/screenshots/**'
+          if [ ! -d wear/src/test/screenshots ]; then
+            echo "::warning title=Screenshots::Nothing was recorded; see the build step"
+            exit 0
+          fi
+          git add -A -- "$screenshots"
+          if git diff --cached --quiet; then
+            echo "::notice title=Screenshots::The watch's screenshots are up to date"
+            exit 0
+          fi
+          git diff --cached --name-only -z --diff-filter=AM | tar --null -T - -cf "$RUNNER_TEMP/screenshots.tar"
+          git reset -q --hard
+
+          auth="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
+          git -c "http.https://github.com/.extraheader=$auth" fetch -q --no-tags origin "refs/heads/$BRANCH"
+          git checkout -q --force --detach FETCH_HEAD
+          tar -xf "$RUNNER_TEMP/screenshots.tar"
+          git add -A -- "$screenshots"
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          changed=$(git diff --cached --name-only | wc -l)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -q -m "Record Wear OS screenshot references" -m "$(git diff --cached --name-only | sed 's/^/- /')"
+          git -c "http.https://github.com/.extraheader=$auth" push -q origin "HEAD:refs/heads/$BRANCH"
+          # Pushes by GITHUB_TOKEN start nothing: run this workflow (to verify) and CI (the required check) again.
+          gh workflow run wear.yml --ref "$BRANCH"
+          gh workflow run ci.yml --ref "$BRANCH"
+          if [ -n "$PR_NUMBER" ]; then
+            run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            body="Recorded $changed Wear OS screenshot(s) and pushed them to this branch. Check them in the diff. ([run]($run_url))"
+            gh api "repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" -f body="$body" > /dev/null
+          fi
+          echo "::notice title=Screenshots recorded::Pushed $changed watch screenshot(s) to $BRANCH"
+
+      - name: Upload reports on failure
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: wear-reports
+          path: |
+            wear/build/reports/
+            wear/build/test-results/
+            wear/build/outputs/roborazzi/
+          retention-days: 7
+      - name: Upload debug APK
+        if: success()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: wear-debug-apk
+          path: wear/build/outputs/apk/debug/*.apk
+          retention-days: 7

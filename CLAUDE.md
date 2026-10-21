@@ -40,6 +40,15 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   vattenloggning; ett tryck öppnar appen. Ingen flik och ingen ViewModel: receivern skapas av systemet och når storarna
   via `WidgetGraph` (som `AppGraph` utökar, genom `NovilaApplication`). `WidgetUpdates` ritar om widgeten när appen
   sparar. Läser aldrig Health Connect (bara i förgrunden), så balansen är sömn och kost.
+- `:wear` – Wear OS-appen (`se.novila.wear`, egen app med `novila.android.wear`): en fristående klockapp som kör ett
+  styrkepass och dess vila. `StandaloneSession` i `:core:exercise` bygger dagens pass (A/B, nivå), och klockan stegar
+  genom samma `Workout`-steg som telefonens passläge, med nedräkning på skärmen, håll skärmen tänd och en summering.
+  Den är medvetet fristående: ingen Wearable Data Layer, ingen delning med telefonen, inget sparat och ingen
+  Health Connect på klockan. Temat är `NovilaTheme` mappat till Compose for Wear OS Material 3 (`NovilaWearTheme`),
+  så klockan ser ut som appen, alltid i mörkt läge. Egen Metro-graf (`WearGraph`). Se *Wear OS* under Regler.
+  Ingår bara i bygget med `-Pnovila.wear=true` (`settings.gradle.kts`; Spotless kontrollerar då bara `wear/`, annars
+  allt utom `wear/`), så telefonens flöden aldrig ser den; bara workflowen `Wear OS` (`wear.yml`) gör det, se
+  *Arbetsflöde*. `ArchitectureTest` läser inte `wear/`.
 - `:core:designsystem` – `se.novila.designsystem`, enda modulen som använder Material 3 direkt
   - `theme` – `NovilaTheme`: färger, typografi, former och spacing-tokens
   - `component` – `Novila*`-komponenter som wrappar Material 3
@@ -137,6 +146,20 @@ Strängar och ikoner ligger i modulen som använder dem; det flera moduler anvä
   CI-flaggorna för de publika runnerna (4 kärnor, 16 GB) ligger i `.github/ci-gradle.properties`. Bygg aldrig egen cachelogik.
   Release-bygget (R8) körs inte på PR:er. Ändrar du `proguard-rules.pro` eller R8-känslig kod,
   säg det i PR-beskrivningen. Fel syns då först vid merge.
+- `Wear OS` (`wear.yml`) är klockappens egen workflow och den enda som rör `:wear`. Inga andra workflows bygger,
+  testar, formaterar eller spelar in klockan, och `wear.yml` använder inget i `.github/actions/`. Lägg aldrig in
+  klockan i de andra flödena eller tvärtom. **En push kör en pipeline, aldrig båda:** på en PR körs `wear.yml` bara
+  när `wear/` eller `wear.yml` ändras, och `CI`:s jobb *Changes* hoppar över lint, tester och bygge när inget annat
+  ändrats (den krävda kontrollen blir ändå grön; vid osäkerhet körs allt). `distribute.yml` ignorerar sådana merges.
+  Det klockan bygger på (`:core:exercise`, `:core:recovery`, `:core:designsystem`, bygget) kontrolleras av `CI` på
+  PR:en och av `wear.yml` efter merge till `main`. `wear.yml` kör med `-Pnovila.wear=true`: Spotless på `wear/`,
+  lint, tester, skärmdumpar och debug-APK:n, och kollar i APK:n att klockappen aldrig kan ersätta telefonappen
+  (paketet `se.novila.wear.debug`, kräver `android.hardware.type.watch`, inga egna behörigheter) och att klockan inte
+  importerar telefonens Material 3. Klockans skärmdumpar spelas in med `/record-wear-screenshots` i PR-beskrivningen,
+  eller genom att köra workflowen med *record* från Actions-fliken; saknas referenserna helt spelas de in vid första
+  körningen. Telefonens `/record-screenshots` rör dem aldrig.
+  Efter en sådan push startar den sig själv och `CI` (som på en ren klock-branch bara rapporterar). `wear.yml` är
+  ingen obligatorisk kontroll, så titta på den i PR:er som rör klockan.
 - Kan din miljö inte nå Google Maven: pusha och följ körningen (`gh pr checks`, `gh run view --log-failed`)
   och rätta tills den är grön. Säg aldrig att något fungerar utan grönt CI.
 - `Dependency submission` skickar bibliotekens beroendegraf till GitHub vid varje push till `main`, så Dependabot larmar
@@ -427,6 +450,14 @@ där pluginet `firebase@firebase` inte alltid installeras.
   safety, Health apps declaration och Health Connect-behörigheterna. Ändras vad appen läser, sparar eller skickar,
   eller tillkommer en behörighet, uppdatera policyn, `HealthDataInfoActivity`s text och `docs/play-console.md` i
   samma PR. Text före en Health Connect-dialog ska nämna alla typer dialogen frågar om.
+- **Wear OS:** `:wear` är en egen app (`se.novila.wear`, minSdk 30) med samma designspråk men utan flikar, navigation
+  eller sparade data. Den får bara köra ett pass ur `StandaloneSession` och visa `Workout`-stegen; ingen Wearable Data
+  Layer, ingen Health Connect och ingen lagring på klockan, eftersom det skulle ändra integritets- och Play-deklarationen.
+  Delning med telefonen (Wearable Data Layer eller Health Connect) kräver ägarens ok. `NovilaWearTheme` mappar
+  `NovilaTheme` till Compose for Wear OS Material 3, alltid mörkt (Wear OS har inget ljust tema); klockan får inte
+  importera `androidx.compose.material3` själv. Skärmen ligger i `AppScaffold` och `ScreenScaffold` och listan tar
+  scaffoldens `contentPadding`, så inget hamnar under klockan eller utanför en rund skärm. Rader med flera knappar
+  delar bredden (`weight`). Varje `@Preview` blir en skärmdump, på alla klockformer för skärmar med mycket text.
 - Hälsodata stannar på enheten. Inga nätverksanrop, analysverktyg eller Firebase-SDK:er i appen utan att ägaren ber om det.
   Appen har ingen `INTERNET`-behörighet: ML Kit drar in Googles telemetri (`datatransport`), som ber om den för att
   skicka användningsstatistik, så den tas bort i appens manifest (`tools:node="remove"`). Lägg aldrig tillbaka den

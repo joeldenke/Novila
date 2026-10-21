@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Novila</string>
+
+    <string name="wear_plan_title">Strength session</string>
+    <string name="wear_plan_summary">%1$s · %2$d exercises · about %3$d min</string>
+    <string name="wear_plan_note">The watch runs the session on its own. The phone app does not see it yet, so log the session there too.</string>
+    <string name="wear_session_a">Pass A</string>
+    <string name="wear_session_b">Pass B</string>
+    <string name="wear_session_switch">Session</string>
+    <string name="wear_level_title">Level</string>
+    <string name="wear_level_beginner">Beginner</string>
+    <string name="wear_level_intermediate">Intermediate</string>
+    <string name="wear_level_advanced">Advanced</string>
+    <string name="wear_start">Start the session</string>
+
+    <string name="wear_exercise_reps">%1$s · %2$d sets × %3$d reps</string>
+    <string name="wear_exercise_hold">%1$s · %2$d sets × %3$d s</string>
+    <string name="wear_exercise_other">Exercise</string>
+
+    <string name="wear_progress">Exercise %1$d of %2$d · set %3$d of %4$d</string>
+    <string name="wear_set_note">Rest between the sets; the watch counts it down.</string>
+    <string name="wear_set_done">Set done</string>
+
+    <string name="wear_warmup_title">Warm up</string>
+    <string name="wear_warmup_body">Walk on the spot, circle your arms and do a few slow squats. Start the first set when you feel ready.</string>
+    <string name="wear_warmup_done">Start the first set</string>
+
+    <string name="wear_rest_title">Rest</string>
+    <string name="wear_rest_next">Next: %1$s, set %2$d of %3$d</string>
+    <string name="wear_skip_rest">Skip the rest</string>
+
+    <string name="wear_cooldown_title">Cool down</string>
+    <string name="wear_cooldown_body">Walk slowly and stretch gently. Let your breathing settle.</string>
+    <string name="wear_cooldown_done">Finish the session</string>
+
+    <string name="wear_finished_title">Well done!</string>
+    <string name="wear_finished_summary">%1$d exercises and %2$d sets in %3$d min.</string>
+    <string name="wear_finished_note">The watch doesn\'t share the session with the phone yet. Log it there too, or it won\'t count in next week\'s program.</string>
+    <string name="wear_new_session">New session</string>
+
+    <string name="wear_reps">%1$d repetitions</string>
+    <string name="wear_reps_side">%1$d repetitions per side</string>
+    <string name="wear_hold">Hold for %1$d seconds</string>
+
+    <string name="wear_countdown" translatable="false">%1$d:%2$02d</string>
+
+    <string name="move_squat">Squat</string>
+    <string name="move_push_up">Push-up</string>
+    <string name="move_glute_bridge">Glute bridge</string>
+    <string name="move_plank">Plank</string>
+    <string name="move_superman">Superman</string>
+    <string name="move_mountain_climber">Mountain climber</string>
+    <string name="move_reverse_lunge">Reverse lunge</string>
+    <string name="move_good_morning">Good morning</string>
+    <string name="move_crunch">Crunch</string>
+    <string name="move_bird_dog">Bird dog</string>
+    <string name="move_jumping_jack">Jumping jack</string>
+    <string name="move_split_squat">Split squat</string>
+</resources>

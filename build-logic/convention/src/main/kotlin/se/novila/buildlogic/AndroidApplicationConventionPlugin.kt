@@ -32,7 +32,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                     this.versionCode = versionCode
                     versionName = "$VERSION_NAME_PREFIX.$versionCode"
                 }
-                configureSigning(this)
+                configureSigning(this, file("debug.keystore"))
                 buildTypes {
                     getByName("debug") {
                         applicationIdSuffix = ".debug"
@@ -74,35 +74,6 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 inputs.files(modules.map { it.dir("src/main") } + modules.map { it.file("build.gradle.kts") })
                     .withPropertyName("architectureSources")
                     .withPathSensitivity(PathSensitivity.RELATIVE)
-            }
-        }
-    }
-
-    /**
-     * Debug builds use the key checked into the repo (same pattern as Google's Now in Android) so every debug build
-     * is signed identically; it is not secret and never used for releases. The release key comes only from the
-     * environment (CI secrets); without it the release build is unsigned, which is fine locally.
-     */
-    private fun Project.configureSigning(android: ApplicationExtension) {
-        val env = { name: String -> providers.environmentVariable(name).orNull?.takeIf { it.isNotBlank() } }
-        val keystore = env("NOVILA_RELEASE_KEYSTORE")
-        val storePassword = env("NOVILA_RELEASE_STORE_PASSWORD")
-        val keyAlias = env("NOVILA_RELEASE_KEY_ALIAS")
-        val keyPassword = env("NOVILA_RELEASE_KEY_PASSWORD")
-        android.signingConfigs {
-            getByName("debug") {
-                storeFile = file("debug.keystore")
-                this.storePassword = "android"
-                this.keyAlias = "androiddebugkey"
-                this.keyPassword = "android"
-            }
-            if (keystore != null && storePassword != null && keyAlias != null && keyPassword != null) {
-                create("release") {
-                    storeFile = file(keystore)
-                    this.storePassword = storePassword
-                    this.keyAlias = keyAlias
-                    this.keyPassword = keyPassword
-                }
             }
         }
     }

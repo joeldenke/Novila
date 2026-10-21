@@ -20,6 +20,10 @@ name: Distribute to testers
 on:
   push:
     branches: [main]
+    # A merge that only changes the Wear OS app (wear.yml checks it) sends testers nothing new.
+    paths-ignore:
+      - "wear/**"
+      - ".github/workflows/wear.yml"
   workflow_dispatch:
 
 permissions:

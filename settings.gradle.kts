@@ -35,6 +35,12 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 include(":app")
 
+// The Wear OS app: workout mode and the rest timer on the watch. Only part of the build with -Pnovila.wear=true, so
+// the phone's CI, tests and caches never configure or build it; .github/workflows/wear.yml checks it on its own.
+if (providers.gradleProperty("novila.wear").orNull == "true") {
+    include(":wear")
+}
+
 include(":core:anatomy")
 include(":core:breathing")
 include(":core:coach")

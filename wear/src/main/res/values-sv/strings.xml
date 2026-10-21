@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wear_plan_title">Styrkepass</string>
+    <string name="wear_plan_summary">%1$s · %2$d övningar · cirka %3$d min</string>
+    <string name="wear_plan_note">Klockan kör passet själv. Telefonappen ser det inte än, så logga passet där också.</string>
+    <string name="wear_session_a">Pass A</string>
+    <string name="wear_session_b">Pass B</string>
+    <string name="wear_session_switch">Pass</string>
+    <string name="wear_level_title">Nivå</string>
+    <string name="wear_level_beginner">Nybörjare</string>
+    <string name="wear_level_intermediate">Van</string>
+    <string name="wear_level_advanced">Avancerad</string>
+    <string name="wear_start">Starta passet</string>
+
+    <string name="wear_exercise_reps">%1$s · %2$d set × %3$d reps</string>
+    <string name="wear_exercise_hold">%1$s · %2$d set × %3$d s</string>
+    <string name="wear_exercise_other">Övning</string>
+
+    <string name="wear_progress">Övning %1$d av %2$d · set %3$d av %4$d</string>
+    <string name="wear_set_note">Vila mellan seten; klockan räknar ner.</string>
+    <string name="wear_set_done">Setet klart</string>
+
+    <string name="wear_warmup_title">Värm upp</string>
+    <string name="wear_warmup_body">Gå på stället, cirkla armarna och gör några långsamma knäböj. Starta första setet när du känner dig redo.</string>
+    <string name="wear_warmup_done">Starta första setet</string>
+
+    <string name="wear_rest_title">Vila</string>
+    <string name="wear_rest_next">Nästa: %1$s, set %2$d av %3$d</string>
+    <string name="wear_skip_rest">Hoppa över vilan</string>
+
+    <string name="wear_cooldown_title">Varv ner</string>
+    <string name="wear_cooldown_body">Gå långsamt och stretch försiktigt. Låt andningen lugna sig.</string>
+    <string name="wear_cooldown_done">Avsluta passet</string>
+
+    <string name="wear_finished_title">Bra jobbat!</string>
+    <string name="wear_finished_summary">%1$d övningar och %2$d set på %3$d min.</string>
+    <string name="wear_finished_note">Klockan delar inte passet med telefonen än. Logga det där också, annars räknas det inte i nästa veckas program.</string>
+    <string name="wear_new_session">Nytt pass</string>
+
+    <string name="wear_reps">%1$d repetitioner</string>
+    <string name="wear_reps_side">%1$d repetitioner per sida</string>
+    <string name="wear_hold">Håll i %1$d sekunder</string>
+
+    <string name="move_squat">Knäböj</string>
+    <string name="move_push_up">Armhävning</string>
+    <string name="move_glute_bridge">Sätesbrygga</string>
+    <string name="move_plank">Plankan</string>
+    <string name="move_superman">Superman</string>
+    <string name="move_mountain_climber">Mountain climber</string>
+    <string name="move_reverse_lunge">Bakåtutfall</string>
+    <string name="move_good_morning">Good morning</string>
+    <string name="move_crunch">Crunch</string>
+    <string name="move_bird_dog">Bird dog</string>
+    <string name="move_jumping_jack">Jumping jack</string>
+    <string name="move_split_squat">Split squat</string>
+</resources>
