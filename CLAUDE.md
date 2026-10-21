@@ -156,7 +156,8 @@ Strängar och ikoner ligger i modulen som använder dem; det flera moduler anvä
   lint, tester, skärmdumpar och debug-APK:n, och kollar i APK:n att klockappen aldrig kan ersätta telefonappen
   (paketet `se.novila.wear.debug`, kräver `android.hardware.type.watch`, inga egna behörigheter) och att klockan inte
   importerar telefonens Material 3. Klockans skärmdumpar spelas in med `/record-wear-screenshots` i PR-beskrivningen,
-  eller genom att köra workflowen med *record* från Actions-fliken; telefonens `/record-screenshots` rör dem aldrig.
+  eller genom att köra workflowen med *record* från Actions-fliken; saknas referenserna helt spelas de in vid första
+  körningen. Telefonens `/record-screenshots` rör dem aldrig.
   Efter en sådan push startar den sig själv och `CI` (som på en ren klock-branch bara rapporterar). `wear.yml` är
   ingen obligatorisk kontroll, så titta på den i PR:er som rör klockan.
 - Kan din miljö inte nå Google Maven: pusha och följ körningen (`gh pr checks`, `gh run view --log-failed`)

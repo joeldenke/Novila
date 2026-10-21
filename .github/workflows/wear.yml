@@ -15,10 +15,10 @@
 #   - the debug APK, and a check that it can never replace the phone app
 #
 # Screenshots: /record-wear-screenshots in the PR description records changed ones and pushes them to the PR branch,
-# or run this workflow from the Actions tab on a branch with "record" ticked. The phone's /record-screenshots never
-# touches the watch. A push by GITHUB_TOKEN starts no workflows, so after it this workflow starts itself and CI (the
-# phone's required check has to report on the new commit, or the PR can't be merged). On a watch-only branch CI
-# only reports and runs nothing.
+# or run this workflow from the Actions tab on a branch with "record" ticked. A branch with no references at all
+# records them on its first run. The phone's /record-screenshots never touches the watch. A push by GITHUB_TOKEN
+# starts no workflows, so after it this workflow starts itself and CI (the phone's required check has to report on
+# the new commit, or the PR can't be merged). On a watch-only branch CI only reports and runs nothing.
 #
 # Not a required check (a path-filtered workflow never reports on PRs it skips), so look at it on PRs that touch it.
 name: Wear OS
@@ -88,6 +88,18 @@ jobs:
       # The same runner (4 cores, 16 GB), so the same Gradle flags as CI; read from the file, not shared logic.
       - name: Gradle properties
         run: cat .github/ci-gradle.properties >> ~/.gradle/gradle.properties
+
+      # The first run on a branch without any references (wear/src/test/screenshots missing) records them instead of
+      # failing on every preview; they are pushed to the branch for review like any recording. Never on main.
+      - name: First references
+        if: >-
+          env.RECORD != 'true' && github.ref_name != github.event.repository.default_branch &&
+          (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+        run: |
+          if [ ! -d wear/src/test/screenshots ]; then
+            echo "RECORD=true" >> "$GITHUB_ENV"
+            echo "::notice title=Screenshots::No watch references yet, recording them"
+          fi
 
       # verifyAndRecord fails on a changed or missing screenshot and writes the new one; record only writes.
       - name: Format, lint, tests, screenshots and debug build
