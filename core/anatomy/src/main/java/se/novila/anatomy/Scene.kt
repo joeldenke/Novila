@@ -45,6 +45,9 @@ sealed interface Layer {
     data class Part(override val outline: List<Point2>, val part: BodyPart, val shade: Float) : Layer
 
     data class Muscle(override val outline: List<Point2>, val group: MuscleGroup, val emphasis: Emphasis) : Layer
+
+    /** A piece of gear: a handle, a weight plate or a band. */
+    data class Gear(override val outline: List<Point2>, val kind: PropKind) : Layer
 }
 
 /** A soft shadow on the floor, as an ellipse. */
@@ -91,6 +94,7 @@ class Scene(val layers: List<Layer>, val shadow: FloorShadow?) {
  * Turns a posed body into flat shapes: each part's silhouette, sorted back to front, followed by the
  * visible part of each highlighted muscle on it. Muscles are curved patches on the parts' oval
  * cross-sections, so they follow the movement and turn away out of sight like real muscles do.
+ * Gear ([Prop]) is sorted in among the parts, so a dumbbell on the far side hides behind the body.
  */
 object SceneBuilder {
     private const val CAP_POINTS = 10
@@ -106,15 +110,22 @@ object SceneBuilder {
         highlights: Map<MuscleGroup, Emphasis>,
         contacts: Set<Landmark> = emptySet(),
         shadowUnder: Set<Landmark> = contacts,
+        props: List<Prop> = emptyList(),
     ): Scene {
-        val depths = body.segments.associateWith { segment ->
-            (camera.view(segment.start).z + camera.view(segment.end).z) / 2f
-        }
+        fun depth(start: Vec3, end: Vec3) = (camera.view(start).z + camera.view(end).z) / 2f
+        val depths = body.segments.associateWith { depth(it.start, it.end) }
         val nearest = depths.values.max()
-        val layers = body.segments.sortedBy { depths.getValue(it) }.flatMap { segment ->
-            val shade = ((nearest - depths.getValue(segment)) / SHADE_DEPTH).coerceIn(0f, 1f)
-            listOf(Layer.Part(silhouette(segment, camera), segment.part, shade)) + muscles(segment, camera, highlights)
+        val parts = body.segments.map { segment ->
+            depths.getValue(segment) to {
+                val shade = ((nearest - depths.getValue(segment)) / SHADE_DEPTH).coerceIn(0f, 1f)
+                listOf(Layer.Part(silhouette(segment, camera), segment.part, shade)) +
+                    muscles(segment, camera, highlights)
+            }
         }
+        val gear = props.map { prop ->
+            depth(prop.start, prop.end) to { listOf(Layer.Gear(propOutline(prop, camera), prop.kind)) }
+        }
+        val layers = (parts + gear).sortedBy { it.first }.flatMap { it.second() }
         return Scene(layers, shadow(body, camera, contacts, shadowUnder))
     }
 

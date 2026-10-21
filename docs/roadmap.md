@@ -17,7 +17,7 @@ fallback for people without a watch.
 | Part | Features | Assessment |
 |---|---|---|
 | Today | Greeting by name, the day's balance (rings), *Your day*: a checklist of sleep, today's training, food and water with the one button that does each, a tile per part and insights | Says what to do now |
-| Training | Weekly program (WHO), coach with goal, days, focus and considerations, rehab (knee, lower back, shoulder, neck, hip, phases 1–3), 15 illustrated exercises, workout mode with timer, cardio sessions (logged and from Health Connect), RPE and pain after the session, recovery from the watch that can lighten today's session, Gemini Nano comment, weekly review | The app's strongest part |
+| Training | Weekly program (WHO), coach with goal, days, focus, considerations and equipment, rehab (knee, lower back, shoulder, neck, hip, phases 1–3), 30 illustrated exercises (bodyweight, dumbbells, resistance band and barbell), workout mode with timer, cardio sessions (logged and from Health Connect), RPE and pain after the session, recovery from the watch that can lighten today's session, Gemini Nano comment, weekly review | The app's strongest part |
 | Sleep | Bedtime and wake-up (or the watch's night from Health Connect), quality and causes, what affects your sleep, chart over a week, four weeks or a year, sleep coach with bedtime goal, evening routine and advice from your own nights, guided breathing (calm, box, 4-7-8) | Good |
 | Nutrition | Servings per food group, water against your own goal, sweets, score 0–100, "next step", the score over a week, four weeks or a year, recipe suggestions for what is missing (diet, allergens, time) | Good and simple |
 | Movement | Today's steps and active calories, five weeks of workouts, the nights and recovery (resting heart rate, HRV), from Health Connect, in the foreground | Steps only for today |
@@ -45,7 +45,11 @@ Nano for more than the comment, or data that leaves the app.
 - [ ] **Progression per exercise:** save sets and reps, and increase step by step
 - [ ] **Count reps automatically:** `RepetitionCounter` counts reps, depth and tempo from joint angles (done);
   the camera and an on-device pose model in workout mode remain **(ok)**
-- [ ] **More exercises and equipment:** variations, dumbbells, resistance bands, gym
+- [x] **More exercises and equipment:** bodyweight variations (knee push-up, single-leg bridge, dead bug, high
+  knees), dumbbells (goblet squat, row, shoulder press, biceps curl, Romanian deadlift), resistance band (row,
+  pulldown, chest press) and barbell for the gym (front squat, Romanian deadlift, row). The figure draws the
+  equipment in the hands; the user says in the coach what they have, and the coach only picks what they can do,
+  preferring equipment for the same muscles. Barbell exercises wait until the user already trains strength.
 - [x] **More rehab areas:** shoulder, neck, hip
 - [x] **Warm-up and cool-down** in workout mode, and the rest timer as a notification
 - [x] **Weekly review:** "3 of 4 sessions, next week …"
@@ -158,7 +162,7 @@ Next, first what needs no approval and is used every day, then what needs the ow
 16. Shortcuts and a Quick Settings tile: "Start the session" and "Log water", plus logging servings from the widget.
     App shortcuts first; the tile is an exported service, so it needs a new badging line and the owner's approval.
 17. More exercises and equipment: variations, dumbbells, resistance bands and gym, via the `add-exercise` skill.
-    Makes progression worth more and gives the coach more to choose from.
+    Makes progression worth more and gives the coach more to choose from. ← done
 18. Achievements and streaks: restrained, built on what the user already logs, and never rewarding overtraining
     (recovery and rest days count).
 19. Export and import as a local file **(ok)**: a backup without the cloud before users have much data to lose.

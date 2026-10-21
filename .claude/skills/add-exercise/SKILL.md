@@ -11,10 +11,13 @@ först. Allt nedan går att verifiera utan Gradle med `tools/anatomy/anatomy.sh`
 ## 0. Passar övningen riggen?
 - Riggen kan böja och lyfta lemmar framåt, bakåt och åt sidan, böja bålen och nacken, luta hela kroppen
   fram och bak (stående, liggande på mage eller rygg, fyrfota) och ställa fötter och händer mot golvet.
-- Den kan **inte** rulla kroppen åt sidan (sidoplanka, sidoliggande), vrida lemmar eller bålen, eller
-  rita redskap (hantlar, stol, gummiband). Behövs det, säg det till ägaren och föreslå en utbyggnad av
-  `Pose` och `Skeleton` i en egen PR i stället för att fuska med vinklarna.
-- Välj övningar som fungerar hemma med kroppsvikt, i linje med resten av biblioteket.
+- Den ritar redskap i händerna (`gear`, se *Redskap* i `docs/anatomy.md`): hantlar (`Gear.Dumbbells`,
+  `Gear.Goblet`), gummiband till en fast punkt (`Gear.Band`) och skivstång (`Gear.Barbell`).
+- Den kan **inte** rulla kroppen åt sidan (sidoplanka, sidoliggande), vrida lemmar eller bålen (stången på
+  ryggen, sidolyft), eller rita möbler och maskiner (bänk, stol, kabelmaskin). Behövs det, säg det till ägaren och
+  föreslå en utbyggnad av `Pose`, `Skeleton` eller `Gear` i en egen PR i stället för att fuska med vinklarna.
+- Kroppsvikt är grunden. En övning med redskap ska ha en motsvarighet utan redskap för samma rörelsemönster, så
+  passen fungerar för den som inte har några.
 
 ## 1. Skriv rörelsen i `ExerciseLibrary.kt` (`core/anatomy`)
 - Lägg till en `val` i `ExerciseLibrary` och i listan `all`. `id` skrivs i snake_case och ändras aldrig efteråt,
@@ -103,7 +106,8 @@ tools/anatomy/anatomy.sh render /path/to/ark.png mitt_id
 - `StrengthSessionsTest` kräver att lår, säte, bröst och mage tränas båda styrkedagarna på varje nivå, och att
   pass B skiljer sig från pass A.
 - **Alltid:** lägg till övningen i `CoachCatalog.kt` (`:core:coach`) med rörelsemönster (`MovementPattern`), `Dosage`, `perSide`,
-  lägsta nivå och om den belastar knän, rygg eller är ett hopp. Coachen väljer bara bland övningar i katalogen, och
+  lägsta nivå och om den belastar knän, rygg eller är ett hopp. Redskapet läses från biblioteket (`gear`), så
+  coachen väljer den bara när användaren har det; skivstång får lägst nivån `Intermediate`. Coachen väljer bara bland övningar i katalogen, och
   `CoachPlannerTest` kräver att varje övning i biblioteket finns där.
 
 ## 7. Verifiera och skicka

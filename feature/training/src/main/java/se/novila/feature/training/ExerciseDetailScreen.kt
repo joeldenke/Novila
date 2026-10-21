@@ -62,6 +62,13 @@ fun ExerciseDetailScreen(
                 } else {
                     AnatomyPlayer(motion, description, repetitions = REPETITIONS, aspectRatio = DETAIL_ASPECT_RATIO)
                 }
+                motion.equipment?.let { equipment ->
+                    NovilaText(
+                        stringResource(R.string.exercise_equipment, stringResource(equipment.label)),
+                        style = NovilaTheme.typography.bodyMedium,
+                        color = NovilaTheme.colors.onSurfaceVariant,
+                    )
+                }
                 if (planned != null) {
                     NovilaText(
                         stringResource(

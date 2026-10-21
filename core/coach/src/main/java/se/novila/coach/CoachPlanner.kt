@@ -1,5 +1,6 @@
 package se.novila.coach
 
+import se.novila.anatomy.Equipment
 import se.novila.anatomy.ExerciseLibrary
 import se.novila.anatomy.MuscleGroup
 import se.novila.exercise.Dosage
@@ -30,6 +31,9 @@ sealed interface CoachNote {
     data object RestBetweenStrengthDays : CoachNote
     data class Focus(val areas: Set<BodyArea>) : CoachNote
     data class Considered(val consideration: Consideration) : CoachNote
+
+    /** The sessions use the user's own equipment, and pick it over bodyweight when it trains the same muscles. */
+    data class UsesEquipment(val equipment: Set<Equipment>) : CoachNote
 
     /** The week's cardio is below WHO's 150 minutes: everyday walks make up for it. */
     data class CardioBelowGuideline(val minutes: Int) : CoachNote
@@ -68,7 +72,8 @@ data class CoachPlan(val program: TrainingProgram, val notes: List<CoachNote>, v
  * - Cardio follows TrainingProgramGenerator: at most a tenth more a week than the recent average.
  * - Each strength session first gets a lower-body exercise, a push and a trunk exercise, then fills the
  *   time with the exercises that best train the muscles still lacking, weighted towards the focus areas,
- *   varied between the week's sessions. Exercises that don't suit the considerations are never used.
+ *   varied between the week's sessions. Exercises that don't suit the considerations, or need equipment the
+ *   user doesn't have, are never used; equipment they have is preferred, since it can be made heavier.
  * - Sets, repetitions and rest follow the strength level and the goal; the time estimate includes the warm-up
  *   and the cool-down that [Workout] runs around the sets.
  * - The user's feedback after the latest sessions adjusts the dose, and suggests the next rehab phase
@@ -269,6 +274,7 @@ object CoachPlanner {
     ): List<PlannedExercise> {
         val candidates = CoachCatalog.exercises.filter {
             it.suits(preferences.considerations) &&
+                it.canDoWith(preferences.equipment) &&
                 it.level <= level &&
                 !it.rehabOnly &&
                 ExerciseLibrary.byId(it.id) != null
@@ -287,6 +293,7 @@ object CoachPlanner {
             return motion.primary.sumOf { need.getValue(it) } +
                 SECONDARY_SHARE * motion.secondary.sumOf { need.getValue(it) } +
                 goalBonus(preferences.goal, exercise.pattern) +
+                (if (exercise.equipment != null) EQUIPMENT_BONUS else 0.0) +
                 jitter.getValue(exercise.id) -
                 (if (chosen.any { it.pattern == exercise.pattern }) SAME_PATTERN_PENALTY else 0.0) -
                 (if (exercise.id in previous) REPEAT_PENALTY else 0.0)
@@ -399,6 +406,7 @@ object CoachPlanner {
         if (strengthDays > 1) add(CoachNote.RestBetweenStrengthDays)
         if (preferences.focus.isNotEmpty()) add(CoachNote.Focus(preferences.focus))
         Consideration.entries.filter { it in preferences.considerations }.forEach { add(CoachNote.Considered(it)) }
+        if (preferences.equipment.isNotEmpty()) add(CoachNote.UsesEquipment(preferences.equipment))
         if (weeklyCardio < TrainingProgramGenerator.GUIDELINE_CARDIO_MINUTES) {
             add(CoachNote.CardioBelowGuideline(weeklyCardio))
         }
@@ -460,4 +468,7 @@ object CoachPlanner {
     private const val SECONDARY_DONE = 0.6
     private const val SAME_PATTERN_PENALTY = 1.5
     private const val REPEAT_PENALTY = 0.8
+
+    /** Enough to pick a loaded exercise over a bodyweight one for the same muscles, never over a missing muscle. */
+    private const val EQUIPMENT_BONUS = 0.4
 }

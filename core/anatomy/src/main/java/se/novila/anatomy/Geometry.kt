@@ -17,7 +17,11 @@ data class Vec3(val x: Float, val y: Float, val z: Float) {
 
     infix fun dot(other: Vec3): Float = x * other.x + y * other.y + z * other.z
 
+    infix fun cross(other: Vec3) = Vec3(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x)
+
     val length: Float get() = sqrt(this dot this)
+
+    fun normalized(): Vec3 = this * (1f / length)
 
     companion object {
         val ZERO = Vec3(0f, 0f, 0f)

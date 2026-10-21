@@ -5,6 +5,7 @@ import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import se.novila.anatomy.Equipment
 import se.novila.anatomy.ExerciseLibrary
 import se.novila.anatomy.MuscleGroup
 import se.novila.exercise.Dosage
@@ -118,6 +119,46 @@ class CoachPlannerTest {
         val knees = plan(CoachPreferences(considerations = setOf(Consideration.Knees)), strengthTwiceAWeek())
         assertTrue(knees.program.strength.flatMap { it.ids() }.none { it == "jumping_jack" || it == "reverse_lunge" })
         assertTrue(knees.notes.contains(CoachNote.Considered(Consideration.Knees)))
+    }
+
+    @Test fun `without equipment every session is bodyweight`() {
+        everyAnswer.forEach { preferences ->
+            plan(preferences, strengthTwiceAWeek()).program.strength.flatMap { it.ids() }.forEach { id ->
+                assertEquals("$preferences: $id", null, CoachCatalog.byId(id)!!.equipment)
+            }
+        }
+    }
+
+    @Test fun `the coach uses only the equipment the user has, and prefers it to bodyweight`() {
+        Equipment.entries.forEach { equipment ->
+            val preferences = CoachPreferences(CoachGoal.Strength, 4, 45, equipment = setOf(equipment))
+            val plan = plan(preferences, strengthTwiceAWeek())
+            val used = plan.program.strength.flatMap { it.ids() }
+            used.forEach { id ->
+                val needs = CoachCatalog.byId(id)!!.equipment
+                assertTrue("$equipment: $id", needs == null || needs == equipment)
+            }
+            assertTrue("$equipment: $used", used.any { CoachCatalog.byId(it)!!.equipment == equipment })
+            assertTrue(plan.notes.contains(CoachNote.UsesEquipment(setOf(equipment))))
+        }
+    }
+
+    @Test fun `equipment never takes the place of a balanced base`() {
+        val all = Equipment.entries.toSet()
+        (CoachGoal.entries - CoachGoal.Rehab).forEach { goal ->
+            plan(CoachPreferences(goal, 4, 30, equipment = all), strengthTwiceAWeek()).program.strength.forEach {
+                val patterns = it.ids().map { id -> CoachCatalog.byId(id)!!.pattern }
+                val lower = patterns.any { p -> p == MovementPattern.Legs || p == MovementPattern.Hinge }
+                assertTrue("$goal: ${it.ids()}", lower)
+                assertTrue("$goal: ${it.ids()}", MovementPattern.Push in patterns)
+            }
+        }
+    }
+
+    @Test fun `barbell exercises wait until the user already trains strength`() {
+        val beginner = plan(CoachPreferences(equipment = setOf(Equipment.Barbell))).program.strength
+            .flatMap { it.ids() }
+        assertTrue(beginner.none { CoachCatalog.byId(it)!!.equipment == Equipment.Barbell })
     }
 
     @Test fun `a beginner gets no exercises above their level`() {

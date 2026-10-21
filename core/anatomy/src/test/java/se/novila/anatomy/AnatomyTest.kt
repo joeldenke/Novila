@@ -72,6 +72,43 @@ class AnatomyTest {
         }
     }
 
+    @Test fun `gear is drawn in the hands of exercises that need it`() {
+        ExerciseLibrary.all.forEach { motion ->
+            val gear = motion.sceneAt(motion.peak).layers.filterIsInstance<Layer.Gear>()
+            assertEquals(motion.id, motion.gear != null, gear.isNotEmpty())
+        }
+        Equipment.entries.forEach { equipment ->
+            assertTrue("$equipment", ExerciseLibrary.all.any { it.equipment == equipment })
+        }
+        val curl = ExerciseLibrary.byId("biceps_curl")!!
+        samples.forEach { progress ->
+            val body = curl.bodyAt(progress)
+            val hands = listOf(Landmark.LeftHand, Landmark.RightHand).map { body.landmarks.getValue(it) }
+            curl.gear!!.props(body).filter { it.kind == PropKind.Bar }.forEach { handle ->
+                val middle = (handle.start + handle.end) * 0.5f
+                assertTrue("handle in a hand at $progress", hands.any { (it - middle).length < 0.06f })
+            }
+        }
+    }
+
+    @Test fun `a band stays tied to its anchor`() {
+        ExerciseLibrary.all.forEach { motion ->
+            val band = motion.gear as? Gear.Band ?: return@forEach
+            samples.forEach { progress ->
+                val ends = band.props(motion.bodyAt(progress)).map { it.end }
+                assertEquals(motion.id, Side.entries.map { band.anchorFor(it) }, ends)
+            }
+        }
+    }
+
+    @Test fun `a weight plate seen face-on is round and edge-on is thin`() {
+        val plate = Prop(PropKind.Weight, Vec3(-0.01f, 0f, 0f), Vec3(0.01f, 0f, 0f), 0.06f)
+        val faceOn = Bounds.of(propOutline(plate, Camera(90f, pitch = 0f)))
+        assertEquals(faceOn.width, faceOn.height, 0.005f)
+        val edgeOn = Bounds.of(propOutline(plate, Camera(0f, pitch = 0f)))
+        assertTrue(edgeOn.width < edgeOn.height / 2f)
+    }
+
     @Test fun `every muscle group has a place on the body`() {
         val mapped = MuscleMap.regions.map { it.group }.toSet()
         assertEquals(MuscleGroup.entries.toSet(), mapped)

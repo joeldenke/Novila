@@ -1,5 +1,6 @@
 package se.novila.feature.training
 
+import se.novila.anatomy.Equipment
 import se.novila.coach.AssistantAvailability
 import se.novila.coach.BodyArea
 import se.novila.coach.CoachGoal
@@ -58,6 +59,7 @@ internal object TrainingPreviewData {
             sessionMinutes = 30,
             focus = setOf(BodyArea.Legs),
             considerations = setOf(Consideration.Knees),
+            equipment = setOf(Equipment.Dumbbells),
         ),
         active = true,
         // The last two sessions felt 6 and 7 of 10: the dose stays.

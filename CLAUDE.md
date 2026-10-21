@@ -102,7 +102,8 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
     användarens egen baslinje (medianen av de senaste dagarna) och ger `RecoveryStatus`. Träning och coachen sänker
     dagens pass när läget är lågt.
   - `:core:coach` – coachen, helt på enheten: `CoachPreferences` (mål, dagar, tid per pass, fokus, hänsyn,
-    rehabområde och fas), `CoachCatalog` (rörelsemönster, dosering och belastning per övning) och `CoachPlanner`, som
+    redskap användaren har, rehabområde och fas; utan redskap blir passen kroppsvikt), `CoachCatalog`
+    (rörelsemönster, dosering och belastning per övning) och `CoachPlanner`, som
     bygger veckans program ur svaren, senaste passen och övningsbiblioteket och förklarar valen (`CoachNote`). Målet
     `Rehab` ger ett handvalt, fasindelat program (knä, ländrygg, axel, nacke eller höft, fas 1–3) med smärtgräns och vårdråd.
     `CoachFeedback` läser svaren efter passen: ansträngning och smärta ändrar dosen (ett set mindre eller två
@@ -119,8 +120,9 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
     Ren Kotlin och enhetstestad; spelarens timer i `:feature:breathing` ritar bara det modellen säger.
   - `:core:anatomy` – kroppsagnostiska övningsillustrationer: `Pose`/`Movement` (ledvinklar per keyframe), `Skeleton`
     (framåtkinematik, `BodyShape`), `MuscleMap`, `SceneBuilder` (ortografisk `Camera`, siluetter och de muskelband som
-    syns), `ViewSelector` (varje övnings bästa vy), `ExerciseLibrary` och `RepetitionCounter` (räknar repetitioner,
-    djup och tempo ur observerade ledvinklar; ingen kamera inkopplad än). `AnatomyFigure` i `:feature:training` ritar
+    syns), `ViewSelector` (varje övnings bästa vy), `Gear` (hantlar, gummiband och skivstång, ritade ur händerna),
+    `ExerciseLibrary` och `RepetitionCounter` (räknar repetitioner, djup och tempo ur observerade ledvinklar; ingen
+    kamera inkopplad än). `AnatomyFigure` i `:feature:training` ritar
     i Compose. Se `docs/anatomy.md`. `tools/anatomy/anatomy.sh` testar, renderar och löser vinklar utan Gradle.
   - `:core:recipes` – receptförslag på Kost: `Recipe` (Novilas egna recept, en portion: portioner per livsmedelsgrupp,
     `Diet`, de 14 märkningspliktiga `Allergen`, tid, `RecipeTime` och `FoodKind` för ingrediensfamiljerna),

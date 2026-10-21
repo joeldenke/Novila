@@ -100,6 +100,68 @@ internal fun moveText(id: String): MoveText? = when (id) {
 
     "neck_nod" -> MoveText(R.string.move_neck_nod, R.array.move_neck_nod_steps, R.string.move_neck_nod_tip)
 
+    "knee_push_up" -> MoveText(
+        R.string.move_knee_push_up,
+        R.array.move_knee_push_up_steps,
+        R.string.move_knee_push_up_tip,
+    )
+
+    "single_leg_bridge" -> MoveText(
+        R.string.move_single_leg_bridge,
+        R.array.move_single_leg_bridge_steps,
+        R.string.move_single_leg_bridge_tip,
+    )
+
+    "dead_bug" -> MoveText(R.string.move_dead_bug, R.array.move_dead_bug_steps, R.string.move_dead_bug_tip)
+
+    "high_knees" -> MoveText(R.string.move_high_knees, R.array.move_high_knees_steps, R.string.move_high_knees_tip)
+
+    "goblet_squat" -> MoveText(
+        R.string.move_goblet_squat,
+        R.array.move_goblet_squat_steps,
+        R.string.move_goblet_squat_tip,
+    )
+
+    "dumbbell_row" -> MoveText(
+        R.string.move_dumbbell_row,
+        R.array.move_dumbbell_row_steps,
+        R.string.move_dumbbell_row_tip,
+    )
+
+    "dumbbell_press" -> MoveText(
+        R.string.move_dumbbell_press,
+        R.array.move_dumbbell_press_steps,
+        R.string.move_dumbbell_press_tip,
+    )
+
+    "biceps_curl" -> MoveText(R.string.move_biceps_curl, R.array.move_biceps_curl_steps, R.string.move_biceps_curl_tip)
+
+    "dumbbell_deadlift" -> MoveText(
+        R.string.move_dumbbell_deadlift,
+        R.array.move_dumbbell_deadlift_steps,
+        R.string.move_dumbbell_deadlift_tip,
+    )
+
+    "band_row" -> MoveText(R.string.move_band_row, R.array.move_band_row_steps, R.string.move_band_row_tip)
+
+    "band_pulldown" -> MoveText(
+        R.string.move_band_pulldown,
+        R.array.move_band_pulldown_steps,
+        R.string.move_band_pulldown_tip,
+    )
+
+    "band_chest_press" -> MoveText(
+        R.string.move_band_chest_press,
+        R.array.move_band_chest_press_steps,
+        R.string.move_band_chest_press_tip,
+    )
+
+    "front_squat" -> MoveText(R.string.move_front_squat, R.array.move_front_squat_steps, R.string.move_front_squat_tip)
+
+    "deadlift" -> MoveText(R.string.move_deadlift, R.array.move_deadlift_steps, R.string.move_deadlift_tip)
+
+    "barbell_row" -> MoveText(R.string.move_barbell_row, R.array.move_barbell_row_steps, R.string.move_barbell_row_tip)
+
     else -> null
 }
 

@@ -3,6 +3,7 @@ package se.novila.feature.training
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import se.novila.anatomy.Equipment
 import se.novila.coach.BodyArea
 import se.novila.coach.CoachFeedback
 import se.novila.coach.CoachGoal
@@ -51,6 +52,11 @@ fun coachNoteText(note: CoachNote): String = when (note) {
             Consideration.Back -> R.string.coach_note_back
             Consideration.Quiet -> R.string.coach_note_quiet
         },
+    )
+
+    is CoachNote.UsesEquipment -> stringResource(
+        R.string.coach_note_equipment,
+        equipmentList(note.equipment),
     )
 
     is CoachNote.CardioBelowGuideline -> stringResource(R.string.coach_note_cardio_low, note.minutes)
@@ -142,6 +148,21 @@ val BodyArea.label: Int
         BodyArea.Core -> R.string.coach_area_core
         BodyArea.UpperBody -> R.string.coach_area_upper_body
     }
+
+@get:StringRes
+val Equipment.label: Int
+    get() = when (this) {
+        Equipment.Dumbbells -> R.string.equipment_dumbbells
+        Equipment.Band -> R.string.equipment_band
+        Equipment.Barbell -> R.string.equipment_barbell
+    }
+
+/** The equipment as a readable list, in a fixed order. */
+@Composable
+fun equipmentList(equipment: Set<Equipment>): String {
+    val separator = stringResource(R.string.list_separator)
+    return Equipment.entries.filter { it in equipment }.map { stringResource(it.label) }.joinToString(separator)
+}
 
 @get:StringRes
 val Consideration.label: Int
