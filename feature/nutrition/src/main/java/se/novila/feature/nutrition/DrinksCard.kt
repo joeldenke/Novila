@@ -51,10 +51,17 @@ private const val SHOWN_DRINKS = 5
  * What the user drank on [day]: millilitres towards the water goal in [goals], any kind of drink in any amount (a
  * glass, a cup, a bottle or anything in between), and the latest drinks with a way to take the last one back. When
  * caffeine was logged late today, a word on what it can do to sleep; the Sleep tab says whether it does for the user.
+ * The [recent] drinks, the ones drunk most often lately, are logged again with one tap.
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun DrinksCard(day: DayEntry, goals: Goals, actions: DrinkActions, isToday: Boolean = true) {
+fun DrinksCard(
+    day: DayEntry,
+    goals: Goals,
+    actions: DrinkActions,
+    isToday: Boolean = true,
+    recent: List<Drink> = emptyList(),
+) {
     val nutrition = NovilaTheme.pillars.nutrition
     var kind by rememberSaveable { mutableStateOf(DrinkKind.Water) }
     var ml by rememberSaveable { mutableIntStateOf(DrinkKind.Water.defaultMl) }
@@ -75,6 +82,27 @@ fun DrinksCard(day: DayEntry, goals: Goals, actions: DrinkActions, isToday: Bool
                 style = NovilaTheme.typography.bodySmall,
                 color = NovilaTheme.colors.onSurfaceVariant,
             )
+        }
+        if (recent.isNotEmpty()) {
+            NovilaText(stringResource(R.string.drinks_recent), style = NovilaTheme.typography.labelLarge)
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s),
+                verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s),
+            ) {
+                recent.forEach { drink ->
+                    NovilaButton(
+                        text = stringResource(R.string.drinks_line, drinkName(drink.kind), decilitersText(drink.ml)),
+                        onClick = { actions.onAdd(drink.kind, drink.ml) },
+                        enabled = day.drinks.size < MAX_DRINKS,
+                        role = nutrition,
+                        contentDescription = stringResource(
+                            R.string.drinks_add,
+                            decilitersText(drink.ml),
+                            drinkName(drink.kind).lowercase(),
+                        ),
+                    )
+                }
+            }
         }
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s),
@@ -206,4 +234,12 @@ private fun DrinksCardPreview() {
 @Composable
 private fun DrinksCardEmptyPreview() {
     NovilaTheme { DrinksCard(DayEntry(PreviewData.date), Goals(), DrinkActions()) }
+}
+
+/** Coffee and a bottle of water drunk often lately, to log again with one tap. */
+@Preview(showBackground = true)
+@Composable
+private fun DrinksCardRecentPreview() {
+    val recent = listOf(Drink(DrinkKind.Coffee, 150), Drink(DrinkKind.Water, 500), Drink(DrinkKind.Tea, 250))
+    NovilaTheme { DrinksCard(DayEntry(PreviewData.date), Goals(), DrinkActions(), recent = recent) }
 }

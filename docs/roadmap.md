@@ -62,7 +62,9 @@ Nano for more than the comment, or data that leaves the app.
 
 ### 4. Nutrition
 - [x] **Meal logging** ("Breakfast: porridge, berries") that fills in the groups
-- [ ] **Quick picks and favorites**
+- [x] **Quick picks and favorites:** the food sheet offers the meals written in the user's own words, the starred ones
+  first and then the ones logged most often in the last 30 days, each logged again with one tap; the drinks sheet
+  offers the kinds and amounts drunk most often. Remembered in the `food` store and deleted with the rest
 - [x] **Diet profile:** diet (everything, pescetarian, vegetarian, vegan), the 14 labelled allergens and time in the
   kitchen, in *My goals*
 - [x] **Recipe suggestions:** Novila's own recipes that fill what today is missing, chosen deterministically and never
@@ -142,7 +144,7 @@ now, and every tab has the same parts in the same order.
 Next, first what needs no approval and is used every day, then what needs the owner's approval:
 
 13. Quick picks and favorites on Nutrition: the most common meals and drinks with one tap, from what the user has
-    already logged. The fastest way to make daily logging easier.
+    already logged. The fastest way to make daily logging easier. ← done
 14. Progression per exercise: save sets and reps per exercise, and let the coach increase step by step. It
     strengthens the app's strongest part, and `CoachFeedback` already reads effort and pain.
 15. Shortcuts and a Quick Settings tile: "Start the session" and "Log water", plus logging servings from the widget.

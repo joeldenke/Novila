@@ -9,17 +9,18 @@ Se `docs/play-console.md` för hur adressen publiceras.
 
 ## English
 
-*Updated 20 October 2026*
+*Updated 21 October 2026*
 
 Novila is built so that your health data stays with you. This policy says what the app handles, where it is
 kept, who can see it and what you can do about it.
 
 ### What Novila handles
 
-What you enter yourself: your name, birth year, height, weight and body measurements; your sleep, food, drinks
-and workouts, with effort and pain after a session; your answers to the training and sleep coaches; your food
-preferences, including allergies; and your goals, reminders and settings. If you allow it, also what Novila reads
-from Health Connect, below. Everything is optional, and Novila works without a name or an account.
+What you enter yourself: your name, birth year, height, weight and body measurements; your sleep, food (with the
+meals you write in your own words and star, for quick logging), drinks and workouts, with effort and pain after a
+session; your answers to the training and sleep coaches; your food preferences, including allergies; and your goals,
+reminders and settings. If you allow it, also what Novila reads from Health Connect, below. Everything is optional,
+and Novila works without a name or an account.
 
 ### Where it is kept
 
@@ -79,17 +80,18 @@ new version comes with an app update, with its date above.
 
 ## Svenska
 
-*Uppdaterad 20 oktober 2026*
+*Uppdaterad 21 oktober 2026*
 
 Novila är byggd så att din hälsodata stannar hos dig. Den här policyn säger vad appen hanterar, var det sparas,
 vem som kan se det och vad du kan göra åt det.
 
 ### Vad Novila hanterar
 
-Det du själv fyller i: ditt namn, födelseår, längd, vikt och kroppsmått, din sömn, kost, dryck och dina pass, med
-ansträngning och smärta efter ett pass, dina svar till tränings- och sömncoachen, dina matpreferenser, även
-allergier, och dina mål, påminnelser och inställningar. Om du tillåter det även det Novila läser från Health
-Connect, se nedan. Allt är frivilligt, och Novila fungerar utan namn och utan konto.
+Det du själv fyller i: ditt namn, födelseår, längd, vikt och kroppsmått, din sömn, kost (med måltiderna du skriver
+med egna ord och stjärnmärker, för snabbloggning), dryck och dina pass, med ansträngning och smärta efter ett pass,
+dina svar till tränings- och sömncoachen, dina matpreferenser, även allergier, och dina mål, påminnelser och
+inställningar. Om du tillåter det även det Novila läser från Health Connect, se nedan. Allt är frivilligt, och
+Novila fungerar utan namn och utan konto.
 
 ### Var det sparas
 

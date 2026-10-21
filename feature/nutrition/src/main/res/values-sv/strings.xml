@@ -46,6 +46,12 @@
     <string name="meal_log_preview">Lägger till %1$s</string>
     <string name="meal_log_unknown">Kände inte igen: %1$s</string>
     <string name="meal_log_add">Lägg till måltiden</string>
+    <string name="quick_picks_title">Dina vanliga</string>
+    <string name="quick_picks_hint">Tryck på en måltid för att logga den igen. Stjärnmärk dem du äter ofta så ligger de först.</string>
+    <string name="quick_picks_log">Logga %1$s</string>
+    <string name="quick_picks_favorite">Stjärnmärk %1$s</string>
+    <string name="quick_picks_unfavorite">Ta bort stjärnan från %1$s</string>
+    <string name="drinks_recent">Igen</string>
 
     <!-- Drycker -->
     <string name="drinks_title">Dagens drycker</string>
