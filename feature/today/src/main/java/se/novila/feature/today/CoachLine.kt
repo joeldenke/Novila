@@ -75,9 +75,11 @@ private fun reasonsText(reasons: List<ReadinessSignal>): String =
 @Composable
 private fun reasonText(signal: ReadinessSignal): String = when (signal) {
     is ReadinessSignal.Night -> stringResource(R.string.readiness_night, hoursText(signal.hours))
+
     is ReadinessSignal.Recovery -> stringResource(
         if (signal.low) R.string.readiness_recovery_low else R.string.readiness_recovery_normal,
     )
+
     is ReadinessSignal.Load -> stringResource(
         when {
             signal.comparison == LoadComparison.Heavier -> R.string.readiness_load_heavier
@@ -85,5 +87,6 @@ private fun reasonText(signal: ReadinessSignal): String = when (signal) {
             else -> R.string.readiness_load_lighter
         },
     )
+
     ReadinessSignal.CycleSymptoms -> stringResource(R.string.readiness_cycle_symptoms)
 }
