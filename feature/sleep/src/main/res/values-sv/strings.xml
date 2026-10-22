@@ -35,6 +35,7 @@
     <string name="sleep_factor_stress">Stress</string>
     <string name="sleep_factor_late_meal">Sen måltid</string>
     <string name="sleep_factor_late_exercise">Sen träning</string>
+    <string name="sleep_factor_period">Mens</string>
     <string name="sleep_findings_title">Vad påverkar din sömn</string>
     <string name="sleep_findings_empty">Logga nätter och dagar ett par veckor, så hittar Novila vad som påverkar din sömn. %1$d av %2$d nätter loggade.</string>
     <string name="sleep_findings_none">Inget sticker ut i dina loggar än. Novila visar bara ett samband när dina nätter tydligt skiljer sig.</string>

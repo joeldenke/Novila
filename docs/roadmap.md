@@ -103,8 +103,9 @@ language model in the app, or data that leaves the app.
   Never predict ovulation or fertile days (contraception and fertility apps are medical devices under MDR, see *No
   medical claims* in `CLAUDE.md`), and no promises of training "optimized" by phase. Cycle data is special category
   health data (GDPR article 9); say plainly next to the choice that it never leaves the phone. In three steps:
-  - [ ] **Period as a sleep cause** (`SleepFactor`), so the sleep links test it like the other causes. No new
-    permission and no gender; a new `DayEntryCodec` version.
+  - [x] **Period as a sleep cause** (`SleepFactor.Period`), so the sleep links test it like the other causes. No new
+    permission and no gender. The sleep coach never turns it into a tip, since it is not a habit. The factors are
+    stored by name, so it needed no new `DayEntryCodec` version: an older app skips names it doesn't know.
   - [ ] **"Follow your cycle"** in *My goals*, off by default: log period days and symptoms in a sheet. On a symptom
     day the coach offers a lighter session but never switches by itself. Recovery compares with the same phase of the
     last cycle instead of the last days: in the luteal phase the resting heart rate normally rises a few beats and HRV
@@ -204,6 +205,7 @@ Next, first what needs no approval and is used every day, then what needs the ow
     Makes progression worth more and gives the coach more to choose from. ← done
 18. Period as a sleep cause, and "Follow your cycle" with recovery that knows the cycle: it corrects something the
     app gets wrong today for many users. Period days from Health Connect follow **(ok)**.
+    ← period as a sleep cause done
 19. Training load and sleep regularity: both build on data the app already logs, and make the readiness that sums it
     up possible.
 20. Achievements and streaks: restrained, built on what the user already logs, and never rewarding overtraining

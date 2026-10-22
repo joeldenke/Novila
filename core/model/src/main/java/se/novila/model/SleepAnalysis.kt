@@ -29,6 +29,9 @@ enum class SleepDriver(val expected: Int) {
     Stress(-1),
     LateMeal(-1),
     LateExercise(-1),
+
+    /** A period that night, said when logging it. */
+    Period(-1),
 }
 
 /** What a night is measured by: how long it was, or how rested the user felt (1–5). */
@@ -160,6 +163,7 @@ private fun Night.has(driver: SleepDriver, goals: Goals): Boolean? {
         SleepDriver.Stress -> factor(SleepFactor.Stress, detailed)
         SleepDriver.LateMeal -> factor(SleepFactor.LateMeal, detailed)
         SleepDriver.LateExercise -> factor(SleepFactor.LateExercise, detailed)
+        SleepDriver.Period -> factor(SleepFactor.Period, detailed)
     }
 }
 

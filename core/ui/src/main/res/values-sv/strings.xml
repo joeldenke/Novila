@@ -30,6 +30,7 @@
     <string name="sleep_driver_stress">Efter stressiga kvällar</string>
     <string name="sleep_driver_late_meal">Efter en sen måltid</string>
     <string name="sleep_driver_late_exercise">Efter sen träning</string>
+    <string name="sleep_driver_period">Under mens</string>
     <string name="sleep_link_sentence">%1$s %2$s.</string>
     <string name="sleep_link_longer">sov du %1$s längre</string>
     <string name="sleep_link_shorter">sov du %1$s kortare</string>
@@ -52,6 +53,7 @@
     <string name="sleep_changed_stress">var kvällen stressig %1$d av 7 gånger (%2$d veckan innan)</string>
     <string name="sleep_changed_late_meal">åt du sent %1$d av 7 kvällar (%2$d veckan innan)</string>
     <string name="sleep_changed_late_exercise">tränade du sent %1$d av 7 kvällar (%2$d veckan innan)</string>
+    <string name="sleep_changed_period">hade du mens %1$d av 7 nätter (%2$d veckan innan)</string>
     <string name="sleep_change_confirmed">Dina tidigare nätter visar samma samband.</string>
     <string name="sleep_change_unconfirmed">En vecka kan vara slump. Fortsätt logga så ser du om det håller.</string>
     <string name="sleep_bedtime_spread">Din läggtid varierar med ungefär %1$s från natt till natt. En jämn läggtid, även på helger, hjälper sömnen.</string>

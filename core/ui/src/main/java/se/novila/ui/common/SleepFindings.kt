@@ -84,6 +84,7 @@ private val SleepDriver.after: Int
         SleepDriver.Stress -> R.string.sleep_driver_stress
         SleepDriver.LateMeal -> R.string.sleep_driver_late_meal
         SleepDriver.LateExercise -> R.string.sleep_driver_late_exercise
+        SleepDriver.Period -> R.string.sleep_driver_period
     }
 
 private val SleepDriver.changed: Int
@@ -98,4 +99,5 @@ private val SleepDriver.changed: Int
         SleepDriver.Stress -> R.string.sleep_changed_stress
         SleepDriver.LateMeal -> R.string.sleep_changed_late_meal
         SleepDriver.LateExercise -> R.string.sleep_changed_late_exercise
+        SleepDriver.Period -> R.string.sleep_changed_period
     }

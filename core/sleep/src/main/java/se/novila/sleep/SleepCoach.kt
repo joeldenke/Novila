@@ -174,11 +174,14 @@ private fun efficiencyTip(nights: List<DayEntry>): SleepCoachTip? {
     return SleepCoachTip.OutOfBed.takeIf { efficiency < MIN_SLEEP_EFFICIENCY }
 }
 
-/** The most often logged factor, when it was logged before three or more nights. */
+/**
+ * The most often logged habit, when it was logged before three or more nights. A period is not a habit to change, so
+ * it never becomes a tip.
+ */
 private fun factorTips(nights: List<DayEntry>): List<SleepCoachTip> {
     val detailed = nights.filter { it.sleepQuality > 0 || it.sleepFactors.isNotEmpty() }
     if (detailed.size < MIN_TIP_NIGHTS) return emptyList()
-    return detailed.flatMap { it.sleepFactors }
+    return detailed.flatMap { it.sleepFactors - SleepFactor.Period }
         .groupingBy { it }.eachCount()
         .filterValues { it >= FACTOR_NIGHTS }
         .entries

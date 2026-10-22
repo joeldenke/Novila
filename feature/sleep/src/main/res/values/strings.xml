@@ -35,6 +35,7 @@
     <string name="sleep_factor_stress">Stress</string>
     <string name="sleep_factor_late_meal">Late meal</string>
     <string name="sleep_factor_late_exercise">Late exercise</string>
+    <string name="sleep_factor_period">Period</string>
     <string name="sleep_findings_title">What affects your sleep</string>
     <string name="sleep_findings_empty">Log your nights and days for a couple of weeks, and Novila finds what affects your sleep. %1$d of %2$d nights logged.</string>
     <string name="sleep_findings_none">Nothing stands out in your logs yet. Novila only shows a link when your nights clearly differ.</string>

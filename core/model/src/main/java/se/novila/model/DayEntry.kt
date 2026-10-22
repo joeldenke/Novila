@@ -17,10 +17,12 @@ enum class CardioType { Walking, Running, Cycling, Swimming }
 data class CardioLog(val type: CardioType, val minutes: Int)
 
 /**
- * What may have affected a night, logged with it the morning after. Each is about the evening before: caffeine late
- * in the day, screens in bed, alcohol, stress, a late meal or hard exercise late.
+ * What may have affected a night, logged with it the morning after. Most are about the evening before: caffeine late
+ * in the day, screens in bed, alcohol, stress, a late meal or hard exercise late. [Period] is about the night itself:
+ * cramps and poorer sleep around a period are common, and it is not a habit, so the sleep coach never gives a tip
+ * about it. It asks nothing about gender: anyone who has a period can mark it.
  */
-enum class SleepFactor { LateCaffeine, Screens, Alcohol, Stress, LateMeal, LateExercise }
+enum class SleepFactor { LateCaffeine, Screens, Alcohol, Stress, LateMeal, LateExercise, Period }
 
 /** How rested the user felt, 1 (poor) to 5 (great). */
 const val MAX_SLEEP_QUALITY = 5
@@ -148,7 +150,8 @@ private fun diaryLine(text: String): String =
  * v7: "v7;water;sleep;mood;vegetables;meals;protein;wholeGrain;treats;strengthMinutes;cardio;effort;pain;rehabPhase;
  * bedtime;wakeTime;sleepQuality;sleepFactors;energy;stress;diary;drinks", where cardio is comma-separated
  * "type:minutes" (empty when none), pain is empty when not given, the times are minutes after midnight (empty when
- * not given) and the factors are comma-separated names. Every version only appends fields, so older versions decode
+ * not given) and the factors are comma-separated names (a new factor needs no new version: an older app skips names
+ * it doesn't know). Every version only appends fields, so older versions decode
  * with the same indices and the newer fields default; v6 appends energy (0 = not set, 1–5), stress (0 = not set,
  * 1–5) and the diary line, which encode keeps free of semicolons so it never breaks the format. v7 appends drinks,
  * comma-separated "kind:ml:time" with the time in minutes after midnight (empty when not known). From v7 the water

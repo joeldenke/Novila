@@ -87,6 +87,15 @@ class SleepCoachTest {
         assertEquals(SleepCoachTip.LateCaffeine, plan(days).tips.first())
     }
 
+    @Test fun `a period is never a tip, however often it is marked`() {
+        val days = (0 until 6).map {
+            night(it.toLong(), factors = if (it < 2) setOf(SleepFactor.Screens) else setOf(SleepFactor.Period))
+        }.plus(night(7))
+        assertEquals(emptyList<SleepCoachTip>(), plan(days).tips)
+        val screens = days.map { it.copy(sleepFactors = it.sleepFactors + SleepFactor.Screens) }
+        assertEquals(listOf(SleepCoachTip.Screens), plan(screens).tips)
+    }
+
     @Test fun `nights shorter than the goal suggest keeping the wake time and going to bed sleepy`() {
         val days = (0 until 7).map { night(it.toLong(), hours = 6f) }
         assertTrue(SleepCoachTip.ShortNights in plan(days).tips)

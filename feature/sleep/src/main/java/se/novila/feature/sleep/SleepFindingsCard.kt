@@ -77,7 +77,7 @@ private fun SleepDriver.look(): Pair<Painter, NovilaColorRole> {
 
         SleepDriver.Trained, SleepDriver.LateExercise -> painterResource(UiR.drawable.ic_training) to pillars.training
 
-        SleepDriver.LateCaffeine, SleepDriver.Screens, SleepDriver.Alcohol, SleepDriver.Stress ->
+        SleepDriver.LateCaffeine, SleepDriver.Screens, SleepDriver.Alcohol, SleepDriver.Stress, SleepDriver.Period ->
             painterResource(UiR.drawable.ic_sleep) to pillars.sleep
     }
 }

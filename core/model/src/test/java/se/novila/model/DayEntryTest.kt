@@ -49,6 +49,12 @@ class DayEntryTest {
         )
     }
 
+    @Test fun `a period is kept with the other factors in the same version`() {
+        val entry = DayEntry(date).withSleepQuality(2).withSleepFactor(SleepFactor.Period, on = true)
+        assertEquals(entry, DayEntryCodec.decode(date, DayEntryCodec.encode(entry)))
+        assertEquals("v7;;0.0;0;0;0;0;0;0;0;;0;;0;;;2;Period;0;0;;", DayEntryCodec.encode(entry))
+    }
+
     @Test fun `codec round-trips drinks with and without a time`() {
         val entry = DayEntry(date)
             .withDrink(Drink(DrinkKind.Coffee, 150, LocalTime.of(8, 10)))
