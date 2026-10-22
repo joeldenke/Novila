@@ -15,6 +15,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import se.novila.coach.DailyCoach
 import se.novila.coach.dailyCoach
+import se.novila.coach.readiness
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.model.Discovery
 import se.novila.model.DiscoveryProgress
@@ -26,6 +27,7 @@ import se.novila.model.TrendFeedback
 import se.novila.model.WeekdayMetric
 import se.novila.model.WeekdayPattern
 import se.novila.model.analyzeSleep
+import se.novila.recovery.RecoveryStatus
 import se.novila.ui.preview.PreviewData
 import java.time.DayOfWeek
 
@@ -102,6 +104,24 @@ class TodayScreenTest {
             )
             .assertExists()
         composeRule.onNodeWithText("Aim to be in bed by", substring = true).assertExists()
+    }
+
+    @Test fun `a calm day says why, in one sentence`() {
+        val night = PreviewData.today.copy(sleepHours = 5.5f)
+        val calm = readiness(night, Goals(), RecoveryStatus.Low)
+        show(
+            opened = mutableListOf(),
+            coach = dailyCoach(
+                night,
+                Goals(),
+                TrainingToday(plannedMinutes = 30),
+                recovery = RecoveryStatus.Low,
+                readiness = calm,
+            ),
+        )
+
+        val reasons = "because you slept 5.5 h and your resting heart rate or HRV is off your usual."
+        composeRule.onNodeWithText("A calm day is suggested, $reasons", substring = true).assertExists()
     }
 
     @Test fun `the coach leaves out what the checklist already says`() {

@@ -7,12 +7,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import se.novila.designsystem.component.NovilaReveal
 import se.novila.designsystem.theme.NovilaTheme
+import se.novila.exercise.TrainingLoad
 import se.novila.ui.common.ScreenList
 import java.time.DayOfWeek
 
 /**
  * The week's program, opened from the Training tab: every planned day (tap one to open its session,
- * [onOpenSession]), and once a session is done, the weekly review of what's done and what next week holds.
+ * [onOpenSession]), once a session is done the weekly review of what's done and what next week holds, and the last
+ * seven days' training load against the usual.
  */
 @Composable
 fun TrainingProgramScreen(
@@ -31,6 +33,9 @@ fun TrainingProgramScreen(
         if (review != null) {
             item(key = "review") { NovilaReveal(order = 1) { WeeklyReviewCard(review) } }
         }
+        state.load?.let { load ->
+            item(key = "load") { NovilaReveal(order = 2) { TrainingLoadCard(load) } }
+        }
     }
 }
 
@@ -47,6 +52,7 @@ private fun TrainingProgramScreenPreview() {
                 strengthMinutesToday = 0,
                 weekDone = mapOf(DayOfWeek.MONDAY to 28, DayOfWeek.TUESDAY to 32),
                 nextProgram = TrainingPreviewData.nextProgram,
+                load = TrainingLoad(week = 1240, usualWeek = 880, monotony = 1.1, sessions = 3, rated = 1),
             ),
             onOpenSession = {},
             contentPadding = PaddingValues(),

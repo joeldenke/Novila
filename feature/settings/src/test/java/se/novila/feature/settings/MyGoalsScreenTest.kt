@@ -40,6 +40,7 @@ class MyGoalsScreenTest {
         scrollTo("3 days a week, 45 min a session").assertExists()
         scrollTo("Not set up.").assertExists()
         scrollTo("Everything · No allergens chosen · Any time").assertExists()
+        scrollTo("Off.").assertExists()
     }
 
     @Test fun `each part opens where it is changed`() {
@@ -51,13 +52,18 @@ class MyGoalsScreenTest {
                 onOpenTrainingCoach = { opened += "training" },
                 onOpenSleepCoach = { opened += "sleep" },
                 onOpenFoodPreferences = { opened += "food" },
+                onOpenCycle = { opened += "cycle" },
             ),
         )
 
-        listOf("Steps, sleep and water", "The training coach", "The sleep coach", "Food preferences").forEach {
-            scrollTo(it).performClick()
-        }
+        listOf(
+            "Steps, sleep and water",
+            "The training coach",
+            "The sleep coach",
+            "Food preferences",
+            "Follow your cycle",
+        ).forEach { scrollTo(it).performClick() }
 
-        assertEquals(listOf("goals", "training", "sleep", "food"), opened)
+        assertEquals(listOf("goals", "training", "sleep", "food", "cycle"), opened)
     }
 }

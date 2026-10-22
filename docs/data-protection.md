@@ -45,11 +45,17 @@ aldrig Health Connects egna data – det är inte appens att radera.
 ## Radera data
 
 *Radera data* i Inställningar (`SettingsViewModel.deleteAllData`) tömmer varje DataStore-fil för
-hälsodata: loggade dagar, coachernas svar (med resultaten per övning), profil, mål, matpreferenser (med egna recept) och mätningar.
+hälsodata: loggade dagar, coachernas svar (med resultaten per övning), profil, mål, matpreferenser (med egna recept),
+mätningar och cykeln.
 `deleteLegacyPreferences` tar dessutom bort de gamla SharedPreferences-filerna, även för en store
 användaren aldrig öppnat. Påminnelserna töms och deras planerade jobb avbryts
 (`RemindersStore.clear`, `ReminderScheduler.cancelAll`), så ingen notis kommer efter en radering.
 Inställningar (tema, introduktionen klar) behålls, eftersom de inte är hälsodata.
+
+Cykeln (*Följ din cykel*, `CycleStore`) ligger i en egen fil, `cycle`, eftersom mensdagar och symtom är
+särskild kategori enligt GDPR artikel 9. Den är avslagen från början, och att stänga av den raderar allt som
+loggats, inte bara vid *Radera data*. Cykeln läses aldrig från Health Connect (`READ_MENSTRUATION` kräver ägarens
+ok, se roadmapen).
 
 Två saker görs **inte**, medvetet:
 

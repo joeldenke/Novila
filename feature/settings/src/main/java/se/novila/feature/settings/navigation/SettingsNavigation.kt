@@ -30,6 +30,8 @@ import androidx.navigation3.runtime.NavKey
 import com.mikepenz.aboutlibraries.ui.compose.android.produceLibraries
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.serialization.Serializable
+import se.novila.feature.settings.CycleScreen
+import se.novila.feature.settings.CycleViewModel
 import se.novila.feature.settings.DisclaimerScreen
 import se.novila.feature.settings.FoodPreferencesScreen
 import se.novila.feature.settings.FoodPreferencesViewModel
@@ -88,14 +90,18 @@ import se.novila.ui.R as UiR
 /** The diet, allergens and time that recipe suggestions on the Nutrition tab take into account. */
 @Serializable data object FoodPreferencesRoute : NavKey
 
+/** *Follow your cycle*: turned on or off here, logged on Training. */
+@Serializable data object CycleRoute : NavKey
+
 /** Reminders to log sleep, train and log food, each at its own time. */
 @Serializable data object RemindersRoute : NavKey
 
 /**
  * Settings and the screens opened from it. Settings, the profile (with the measurements), My goals, the goals, the
- * food preferences and the reminders have their own ViewModels, scoped to their entries; the others are static text.
- * Navigation inside goes through [navigator], on whichever tab Settings was opened from. My goals leads to the training
- * and the sleep coach, which other features own, through [onOpenTrainingCoach] and [onOpenSleepCoach] from `:app`.
+ * food preferences, the cycle and the reminders have their own ViewModels, scoped to their entries; the others are
+ * static text. Navigation inside goes through [navigator], on whichever tab Settings was opened from. My goals leads
+ * to the training and the sleep coach, which other features own, through [onOpenTrainingCoach] and [onOpenSleepCoach]
+ * from `:app`.
  */
 fun EntryProviderScope<NavKey>.settingsEntries(
     navigator: Navigator,
@@ -156,6 +162,7 @@ fun EntryProviderScope<NavKey>.settingsEntries(
                 onOpenTrainingCoach = onOpenTrainingCoach,
                 onOpenSleepCoach = onOpenSleepCoach,
                 onOpenFoodPreferences = { navigator.navigate(FoodPreferencesRoute) },
+                onOpenCycle = { navigator.navigate(CycleRoute) },
             ),
             contentPadding = contentPadding,
         )
@@ -177,6 +184,12 @@ fun EntryProviderScope<NavKey>.settingsEntries(
         // Nothing to show until the preferences are read, a moment at app start.
         val preferences = viewModel.preferences.collectAsStateWithLifecycle().value ?: return@entry
         FoodPreferencesScreen(preferences = preferences, onChange = viewModel::change, contentPadding = contentPadding)
+    }
+    entry<CycleRoute> {
+        val viewModel = metroViewModel<CycleViewModel>()
+        // Nothing to show until the cycle is read, a moment at app start.
+        val cycle = viewModel.cycle.collectAsStateWithLifecycle().value ?: return@entry
+        CycleScreen(cycle = cycle, onEnabled = viewModel::setEnabled, contentPadding = contentPadding)
     }
     entry<RemindersRoute> { RemindersEntry(contentPadding) }
     entry<HealthDataRoute> {
@@ -206,6 +219,7 @@ fun settingsTitle(route: NavKey?): String? = when (route) {
     MyGoalsRoute -> stringResource(R.string.my_goals_title)
     GoalsRoute -> stringResource(R.string.goals_title)
     FoodPreferencesRoute -> stringResource(R.string.food_preferences_title)
+    CycleRoute -> stringResource(R.string.cycle_title)
     RemindersRoute -> stringResource(R.string.settings_reminders)
     else -> null
 }

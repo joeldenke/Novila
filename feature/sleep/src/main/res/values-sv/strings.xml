@@ -35,6 +35,7 @@
     <string name="sleep_factor_stress">Stress</string>
     <string name="sleep_factor_late_meal">Sen måltid</string>
     <string name="sleep_factor_late_exercise">Sen träning</string>
+    <string name="sleep_factor_period">Mens</string>
     <string name="sleep_findings_title">Vad påverkar din sömn</string>
     <string name="sleep_findings_empty">Logga nätter och dagar ett par veckor, så hittar Novila vad som påverkar din sömn. %1$d av %2$d nätter loggade.</string>
     <string name="sleep_findings_none">Inget sticker ut i dina loggar än. Novila visar bara ett samband när dina nätter tydligt skiljer sig.</string>
@@ -81,4 +82,13 @@
     <string name="sleep_breathing_title">Andning och avslappning</string>
     <string name="sleep_breathing_body">Några lugna minuter före sänggåendet: lugn andning, boxandning eller 4-7-8.</string>
     <string name="sleep_coach_breathing">Lugn andning före sänggåendet</string>
+    <string name="sleep_coach_tip_weekend_shift">Dina helgnätter ligger en timme eller mer senare än vardagarnas. Att gå upp inom en timme från vardagstiden, även på helgen, håller rytmen.</string>
+    <string name="sleep_regularity_title">Hur regelbundet du sover</string>
+    <string name="sleep_regularity_empty">Logga när du lägger dig och vaknar några nätter i rad, så visar Novila hur regelbundet du sover. %1$d av %2$d nätter i rad.</string>
+    <string name="sleep_regularity_steady">Jämnt. Dina nätter är ungefär likadana från den ena till den andra: %1$d av 100, över %2$d nätter i rad.</string>
+    <string name="sleep_regularity_fairly_steady">Ganska jämnt. Dina nätter flyttar sig lite från den ena till den andra: %1$d av 100, över %2$d nätter i rad.</string>
+    <string name="sleep_regularity_irregular">Oregelbundet. Dina nätter flyttar sig ganska mycket från den ena till den andra: %1$d av 100, över %2$d nätter i rad. Jämna tider, även på helgen, hjälper.</string>
+    <string name="sleep_regularity_weekend_later">På helgen ligger mitten av din sömn %1$s senare än på vardagar.</string>
+    <string name="sleep_regularity_weekend_earlier">På helgen ligger mitten av din sömn %1$s tidigare än på vardagar.</string>
+    <string name="sleep_regularity_footer">Ur tiderna du loggar, eller din klocka. I studier hänger regelbunden sömn ihop med hälsan minst lika starkt som lång sömn.</string>
 </resources>

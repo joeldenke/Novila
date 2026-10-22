@@ -54,7 +54,8 @@ class TrainingWeek(
  * Plans the week of [today] from the [saved] days, the coach's [answers] and workouts a watch or another app
  * [recorded]. The same walk can be in both, so [TrainingHistory] counts it once. [draft] are answers the user is
  * trying out before setting up the coach. [recovery] from the watch makes today's session lighter when the body
- * is still recovering. [progress] is what the user did of each exercise lately: the strength sessions build on it a
+ * is still recovering, and so does [lighter], when the user chose a lighter session on a day with cycle symptoms.
+ * [progress] is what the user did of each exercise lately: the strength sessions build on it a
  * step at a time ([Progression]).
  */
 fun trainingWeek(
@@ -65,6 +66,7 @@ fun trainingWeek(
     draft: CoachPreferences? = null,
     recovery: RecoveryStatus = RecoveryStatus.Unknown,
     progress: ExerciseLog = ExerciseLog(),
+    lighter: Boolean = false,
 ): TrainingWeek {
     // Strength sessions done in session mode and cardio logged by hand, together with what Health Connect recorded.
     val days = saved.lastDays(count = ExerciseRepository.HISTORY_DAYS.toInt(), today = today)
@@ -78,15 +80,17 @@ fun trainingWeek(
         today = today,
         feedback = feedback,
         recovery = recovery,
+        lighter = lighter,
     )
     val plan = planned.copy(program = Progression.apply(planned.program, progress, today))
     val program = if (active != null) {
         plan.program
     } else {
-        Progression.apply(TrainingProgramGenerator.generate(history, today, recovery), progress, today)
+        val generated = TrainingProgramGenerator.generate(history, today, if (lighter) RecoveryStatus.Low else recovery)
+        Progression.apply(generated, progress, today)
     }
     // Next week from the same coach or generator, on a history where this week's sessions already count,
-    // so the weekly review can say what the training leads to. Recovery only lightens today, so not next week.
+    // so the weekly review can say what the training leads to. Recovery and a lighter day only lighten today.
     val nextMonday = program.weekStart.plusWeeks(1)
     val nextProgram = Progression.apply(
         if (active != null) {

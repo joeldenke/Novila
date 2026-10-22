@@ -490,4 +490,26 @@
     <string name="health_data_not_connected">Inte ansluten</string>
     <string name="health_data_missing">Health Connect saknas</string>
     <string name="health_data_hrv">HRV</string>
+    <string name="cycle_log">Din cykel</string>
+    <string name="cycle_sheet_title">Din cykel i dag</string>
+    <string name="cycle_period_today">Mens i dag</string>
+    <string name="cycle_symptoms_title">Hur känns kroppen?</string>
+    <string name="cycle_symptom_cramps">Mensvärk</string>
+    <string name="cycle_symptom_tiredness">Trött</string>
+    <string name="cycle_symptom_headache">Huvudvärk</string>
+    <string name="cycle_symptom_bloating">Uppsvälld</string>
+    <string name="cycle_symptom_low_mood">Nedstämd</string>
+    <string name="cycle_sheet_footer">Bara på den här telefonen. Med ett symtom erbjuder Novila ett lättare pass, och du väljer.</string>
+    <string name="cycle_lighter_title">Ett lättare pass i dag?</string>
+    <string name="cycle_lighter_body">Du har loggat hur kroppen känns i dag. Ett pass med ett set mindre, eller en kortare promenad, räknas också. Du väljer.</string>
+    <string name="cycle_lighter_yes">Lättare pass</string>
+    <string name="cycle_lighter_no">Som planerat</string>
+    <string name="coach_note_lighter">Du valde ett lättare pass i dag. Ett set mindre, eller kortare kondition, och resten av veckan som planerat.</string>
+    <string name="load_title">Träningsbelastning</string>
+    <string name="load_heavier">De här sju dagarna är tyngre än vanligt, ungefär %1$d %% mer än de tre veckorna innan. Det går bra ibland; låt nästa vecka öka lugnare.</string>
+    <string name="load_lighter">De här sju dagarna är lättare än vanligt, ungefär %1$d %% mindre än de tre veckorna innan. En lättare vecka ger kroppen tid att återhämta sig.</string>
+    <string name="load_usual">De här sju dagarna är ungefär lika tunga som de tre veckorna innan.</string>
+    <string name="load_unknown">Efter några veckors träning jämför Novila varje vecka med din vanliga.</string>
+    <string name="load_uniform">Dagarna har varit ungefär lika tunga. En lätt dag eller en vilodag mellan de tyngre gör det lättare att återhämta sig.</string>
+    <string name="load_footer">Belastning är ansträngning gånger minuter. %1$d av %2$d pass med ansträngningen du angav; de andra räknas som måttliga.</string>
 </resources>

@@ -80,4 +80,14 @@
     <string name="trends_training_less">Du tränade %1$s mindre än %2$s.</string>
     <string name="trends_sleep_goal">%1$d av %2$d nätter nådde ditt sömnmål på %3$s.</string>
     <string name="trends_water_goal">%1$d av %2$d dagar nådde ditt vattenmål på %3$d glas.</string>
+    <string name="coach_calm_day">En lugn dag föreslås, eftersom %1$s.</string>
+    <string name="coach_ready_day">Kroppen verkar redo i dag: %1$s.</string>
+    <string name="coach_reasons_and">%1$s och %2$s</string>
+    <string name="readiness_night">du sov %1$s</string>
+    <string name="readiness_recovery_low">din vilopuls eller HRV avviker från det vanliga</string>
+    <string name="readiness_recovery_normal">din återhämtning är normal</string>
+    <string name="readiness_load_heavier">veckan är tyngre än vanligt</string>
+    <string name="readiness_load_uniform">dagarna har varit lika tunga</string>
+    <string name="readiness_load_lighter">veckan har varit lättare än vanligt</string>
+    <string name="readiness_cycle_symptoms">du har loggat symtom i dag</string>
 </resources>

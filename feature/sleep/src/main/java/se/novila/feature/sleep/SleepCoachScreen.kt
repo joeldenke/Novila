@@ -252,6 +252,7 @@ internal val SleepCoachTip.label: Int
         SleepCoachTip.FixedWakeTime -> R.string.sleep_coach_tip_fixed_wake
         SleepCoachTip.OutOfBed -> R.string.sleep_coach_tip_out_of_bed
         SleepCoachTip.ShortNights -> R.string.sleep_coach_tip_short_nights
+        SleepCoachTip.WeekendShift -> R.string.sleep_coach_tip_weekend_shift
         SleepCoachTip.LateCaffeine -> R.string.sleep_coach_tip_late_caffeine
         SleepCoachTip.Screens -> R.string.sleep_coach_tip_screens
         SleepCoachTip.Alcohol -> R.string.sleep_coach_tip_alcohol

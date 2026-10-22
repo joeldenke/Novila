@@ -7,6 +7,7 @@ import org.junit.Test
 import se.novila.model.DayEntry
 import se.novila.model.Goals
 import se.novila.model.SleepFactor
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -85,6 +86,28 @@ class SleepCoachTest {
             night(it.toLong(), factors = if (it < 4) setOf(SleepFactor.LateCaffeine) else setOf(SleepFactor.Screens))
         }.plus(night(7))
         assertEquals(SleepCoachTip.LateCaffeine, plan(days).tips.first())
+    }
+
+    @Test fun `a period is never a tip, however often it is marked`() {
+        val days = (0 until 6).map {
+            night(it.toLong(), factors = if (it < 2) setOf(SleepFactor.Screens) else setOf(SleepFactor.Period))
+        }.plus(night(7))
+        assertEquals(emptyList<SleepCoachTip>(), plan(days).tips)
+        val screens = days.map { it.copy(sleepFactors = it.sleepFactors + SleepFactor.Screens) }
+        assertEquals(listOf(SleepCoachTip.Screens), plan(screens).tips)
+    }
+
+    @Test fun `sleeping in at weekends suggests keeping the weekend wake-up close to the weekday one`() {
+        // Two weeks ending on a Monday: in bed and up at the goal on weekdays, two and a half hours later at weekends.
+        val days = (13 downTo 0).map { night(it.toLong()) }.map { day ->
+            if (day.date.dayOfWeek == DayOfWeek.SATURDAY || day.date.dayOfWeek == DayOfWeek.SUNDAY) {
+                day.withSleepTimes(LocalTime.of(1, 0), LocalTime.of(9, 0)).withSleepQuality(3)
+            } else {
+                day
+            }
+        }
+        assertTrue(SleepCoachTip.WeekendShift in plan(days).tips)
+        assertTrue(SleepCoachTip.WeekendShift !in plan((13 downTo 0).map { night(it.toLong()) }).tips)
     }
 
     @Test fun `nights shorter than the goal suggest keeping the wake time and going to bed sleepy`() {

@@ -19,17 +19,28 @@ import se.novila.data.SelectedDay
 import se.novila.model.Goals
 import se.novila.model.History
 import se.novila.model.HistoryRange
+import se.novila.model.REGULARITY_NIGHTS
 import se.novila.model.SLEEP_WINDOW_NIGHTS
 import se.novila.model.SleepAnalysis
+import se.novila.model.SleepRegularity
 import se.novila.model.analyzeSleep
+import se.novila.model.sleepRegularity
 import se.novila.sleep.SleepRepository
 import se.novila.sleep.SleepState
 import se.novila.sleep.nightsByDate
 import se.novila.sleep.withNight
 import java.time.LocalDate
 
-/** The sleep in the [history] over the chosen range up to today, the [goals] and what the logs say ([analysis]). */
-data class SleepTrendsUiState(val history: History, val goals: Goals, val analysis: SleepAnalysis)
+/**
+ * The sleep in the [history] over the chosen range up to today, the [goals], what the logs say ([analysis]) and how
+ * regular the nights are ([regularity]).
+ */
+data class SleepTrendsUiState(
+    val history: History,
+    val goals: Goals,
+    val analysis: SleepAnalysis,
+    val regularity: SleepRegularity,
+)
 
 /**
  * The sleep over time, opened from the Sleep tab, scoped to its entry. Nights a watch recorded fill in the ones the
@@ -77,6 +88,7 @@ class SleepTrendsViewModel(
             goals = goals,
             // Every night in the window with the day before it, oldest first.
             analysis = analyzeSleep(shown.lastDays(SLEEP_WINDOW_NIGHTS + 1, today).reversed(), goals),
+            regularity = sleepRegularity(shown.lastDays(REGULARITY_NIGHTS.toInt(), today), today),
         )
     }
 

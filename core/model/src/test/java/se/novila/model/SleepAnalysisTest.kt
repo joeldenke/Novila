@@ -80,6 +80,30 @@ class SleepAnalysisTest {
         assertTrue(caffeine.difference < 0)
     }
 
+    @Test fun `nights marked with a period are tested like the other factors`() {
+        // A period on six nights in a row each month, with half an hour less sleep and a worse quality on them.
+        val days = days(60) { i, date ->
+            val period = i % 28 < 6
+            DayEntry(date)
+                .copy(sleepHours = (if (period) 6.5f else 7.5f) + wobble(i))
+                .withSleepQuality(if (period) 2 else 4)
+                .withSleepFactor(SleepFactor.Period, period)
+        }
+        val period = analyzeSleep(days, limit = 10).links.single { it.driver == SleepDriver.Period }
+        assertTrue(period.difference < 0)
+        assertTrue(period.withNights >= MIN_NIGHTS)
+    }
+
+    @Test fun `a period says nothing about nights without details`() {
+        // Only the period nights have details, so there are no nights without one to compare with.
+        val days = days(60) { i, date ->
+            val period = i % 28 < 6
+            DayEntry(date, sleepHours = (if (period) 6f else 8f) + wobble(i))
+                .withSleepFactor(SleepFactor.Period, period)
+        }
+        assertTrue(analyzeSleep(days, limit = 10).links.none { it.driver == SleepDriver.Period })
+    }
+
     @Test fun `coffee logged late the day before counts as late caffeine without the factor`() {
         // Every other day a coffee at four in the afternoon, the others at eight in the morning; the night after a
         // late one is an hour shorter. No night has details, so only the drinks tell.

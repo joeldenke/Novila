@@ -103,13 +103,17 @@ language model in the app, or data that leaves the app.
   Never predict ovulation or fertile days (contraception and fertility apps are medical devices under MDR, see *No
   medical claims* in `CLAUDE.md`), and no promises of training "optimized" by phase. Cycle data is special category
   health data (GDPR article 9); say plainly next to the choice that it never leaves the phone. In three steps:
-  - [ ] **Period as a sleep cause** (`SleepFactor`), so the sleep links test it like the other causes. No new
-    permission and no gender; a new `DayEntryCodec` version.
-  - [ ] **"Follow your cycle"** in *My goals*, off by default: log period days and symptoms in a sheet. On a symptom
-    day the coach offers a lighter session but never switches by itself. Recovery compares with the same phase of the
-    last cycle instead of the last days: in the luteal phase the resting heart rate normally rises a few beats and HRV
-    falls, so today `analyzeRecovery` can read a normal cycle as poor recovery and lighten sessions every month
-    without anyone knowing why.
+  - [x] **Period as a sleep cause** (`SleepFactor.Period`), so the sleep links test it like the other causes. No new
+    permission and no gender. The sleep coach never turns it into a tip, since it is not a habit. The factors are
+    stored by name, so it needed no new `DayEntryCodec` version: an older app skips names it doesn't know.
+  - [x] **"Follow your cycle"** in *My goals*, off by default: log period days and symptoms in a sheet. On a symptom
+    day the coach offers a lighter session but never switches by itself. In the luteal phase the resting heart rate
+    normally rises a few beats and HRV falls, so `analyzeRecovery` could read a normal cycle as poor recovery and
+    lighten sessions every month without anyone knowing why. Done: the period days and symptoms are logged in a
+    sheet on Training (`CycleStore`, its own file, deleted when the cycle is turned off), a symptom day offers a
+    lighter session (`CoachNote.Lighter`), and recovery compares a day only with days in the same half of the cycle
+    (`cyclePhase`). Health Connect gives only two weeks of resting heart rate and HRV, so "the same phase of the last
+    cycle" would need a longer read; the same half within the two weeks fixes the false alarm without it.
   - [ ] **Period days from Health Connect** (`READ_MENSTRUATION`) **(ok)**: a new badging line, privacy policy and
     Play declaration.
 
@@ -120,16 +124,22 @@ language model in the app, or data that leaves the app.
   in `:core:model` joins the parts with the same honest test as the sleep links, shown in a *Connections* card on
   Today. Mood and energy are read from the stored fields, so those two only appear when they were logged (they left
   Today in October 2026).
-- [ ] **Training load (session RPE):** RPE × minutes per session gives the week's load, and its monotony and strain
+- [x] **Training load (session RPE):** RPE × minutes per session gives the week's load, and its monotony and strain
   (Foster) show when a week gets too heavy or too uniform. The ratio of the last week to the last four (ACWR) is
   debated as an injury predictor, so it is only calm guidance ("this week is heavier than usual"), never a warning.
-  Built on data the app already has, deterministic and tested.
-- [ ] **Sleep regularity:** a regularity index (Sleep Regularity Index) and social jetlag (the sleep midpoint on
+  Built on data the app already has, deterministic and tested. Done: `trainingLoad` in `:core:exercise`, a card on
+  the week's program. The last seven days are compared with the three weeks before (uncoupled), and sessions
+  without the user's own effort (cardio, recorded workouts) count with a moderate effort for their kind.
+- [x] **Sleep regularity:** a regularity index (Sleep Regularity Index) and social jetlag (the sleep midpoint on
   weekdays against weekends) from the bedtimes and wake-ups already logged. Regularity is linked to health in studies
-  at least as strongly as length. Shown on Sleep and weighed by the sleep coach.
-- [ ] **Readiness that sums it up:** an explained readiness from last night's sleep, recovery, the training load and
+  at least as strongly as length. Shown on Sleep and weighed by the sleep coach. Done: `sleepRegularity` in
+  `:core:model` over four weeks, a card in Sleep's trends, and the sleep coach suggests a steady bedtime when the
+  nights are irregular and a steady weekend wake-up (`WeekendShift`) when the weekend moves the sleep an hour.
+- [x] **Readiness that sums it up:** an explained readiness from last night's sleep, recovery, the training load and
   any cycle symptoms ("A calm day is suggested, because …"). `dailyCoach` does part of it; make the weighting clear
-  and tested, never a score without reasons.
+  and tested, never a score without reasons. Done: `readiness` in `:core:coach` reads four signals that each pull
+  down, up or neither, and counts them. Two down is a calm day, one down a day as planned, none down and two up a
+  ready body. Today's coach says a calm day or a ready body with its reasons, and nothing unknown counts as bad.
 - [ ] **Step goals by age:** benefits level off around 6,000–8,000 steps a day from 60 and 8,000–10,000 below
   (Paluch et al., Lancet 2022), a better basis for the suggested step goal.
 - [ ] **Cardio fitness (VO2max) from the watch** via Health Connect **(ok)**: a good long-term measure, a new data type
@@ -204,8 +214,9 @@ Next, first what needs no approval and is used every day, then what needs the ow
     Makes progression worth more and gives the coach more to choose from. ← done
 18. Period as a sleep cause, and "Follow your cycle" with recovery that knows the cycle: it corrects something the
     app gets wrong today for many users. Period days from Health Connect follow **(ok)**.
+    ← period as a sleep cause and "Follow your cycle" done
 19. Training load and sleep regularity: both build on data the app already logs, and make the readiness that sums it
-    up possible.
+    up possible. ← done
 20. Achievements and streaks: restrained, built on what the user already logs, and never rewarding overtraining
     (recovery and rest days count).
 21. Export and import as a local file **(ok)**: a backup without the cloud before users have much data to lose.

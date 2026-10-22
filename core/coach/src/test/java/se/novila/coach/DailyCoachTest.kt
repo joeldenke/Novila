@@ -2,6 +2,7 @@ package se.novila.coach
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import se.novila.exercise.TrainingLoad
 import se.novila.model.DayEntry
 import se.novila.model.FoodLog
 import se.novila.model.Goals
@@ -118,5 +119,48 @@ class DailyCoachTest {
 
         assertEquals(CoachFocus.Train, coach.focus)
         assertEquals(listOf(CoachAdvice.PlannedSession(30)), coach.advice)
+    }
+
+    @Test fun `a calm day says its reasons at once, then lightens the session`() {
+        val calm = readiness(day(sleep = 5.5f), goals, RecoveryStatus.Low)!!
+        val coach = dailyCoach(
+            day = day(sleep = 5.5f),
+            goals = goals,
+            training = TrainingToday(plannedMinutes = 30),
+            recovery = RecoveryStatus.Low,
+            readiness = calm,
+        )
+
+        assertEquals(CoachFocus.Recover, coach.focus)
+        assertEquals(
+            listOf(
+                CoachAdvice.CalmDay(calm.reasons),
+                CoachAdvice.LighterSession(30),
+                CoachAdvice.EarlierBedtime(SleepCoachPreferences.DEFAULT_BEDTIME),
+            ),
+            coach.advice,
+        )
+    }
+
+    @Test fun `a calm day from the training load and symptoms is gentler even after a good night`() {
+        val heavy = TrainingLoad(week = 1400, usualWeek = 1000, monotony = 1.0, sessions = 4, rated = 2)
+        val calm = readiness(fullDay, goals, load = heavy, cycleSymptoms = true)!!
+        val coach = dailyCoach(day = fullDay, training = TrainingToday(plannedMinutes = 30), readiness = calm)
+
+        assertEquals(CoachFocus.Recover, coach.focus)
+        assertEquals(listOf(CoachAdvice.CalmDay(calm.reasons), CoachAdvice.LighterSession(30)), coach.advice)
+    }
+
+    @Test fun `a ready body is said with its reasons before the planned session`() {
+        val ready = readiness(fullDay, goals, RecoveryStatus.Normal)!!
+        val coach = dailyCoach(
+            day = fullDay,
+            training = TrainingToday(plannedMinutes = 30),
+            recovery = RecoveryStatus.Normal,
+            readiness = ready,
+        )
+
+        assertEquals(CoachFocus.Train, coach.focus)
+        assertEquals(listOf(CoachAdvice.ReadyDay(ready.reasons), CoachAdvice.PlannedSession(30)), coach.advice)
     }
 }

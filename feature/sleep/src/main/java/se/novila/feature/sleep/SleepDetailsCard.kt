@@ -67,4 +67,5 @@ private val SleepFactor.label: Int
         SleepFactor.Stress -> R.string.sleep_factor_stress
         SleepFactor.LateMeal -> R.string.sleep_factor_late_meal
         SleepFactor.LateExercise -> R.string.sleep_factor_late_exercise
+        SleepFactor.Period -> R.string.sleep_factor_period
     }

@@ -10,6 +10,7 @@ import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import se.novila.data.CoachStore
+import se.novila.data.CycleStore
 import se.novila.data.FoodPreferencesStore
 import se.novila.data.GoalsStore
 import se.novila.data.HealthStore
@@ -45,6 +46,7 @@ class SettingsViewModel(
     private val foodPreferencesStore: FoodPreferencesStore,
     private val measurementsStore: MeasurementsStore,
     private val remindersStore: RemindersStore,
+    private val cycleStore: CycleStore,
     private val reminderScheduler: ReminderScheduler,
     private val movementRepository: MovementRepository,
     private val context: Context,
@@ -81,8 +83,8 @@ class SettingsViewModel(
 
     /**
      * Forgets the profile, its goals and food preferences (allergies are health data), everything the user has logged,
-     * including the measurements, both coaches' answers and the reminders, and cancels their planned work. Settings
-     * stay, since they are not health data. Health Connect's own data is not Novila's to delete.
+     * including the measurements and the cycle, both coaches' answers and the reminders, and cancels their planned
+     * work. Settings stay, since they are not health data. Health Connect's own data is not Novila's to delete.
      *
      * The files themselves are sealed with a Tink key from the Android Keystore, and the backup rules exclude all
      * app data (app/src/main/res/xml), so no copy exists off the device to restore. The legacy SharedPreferences
@@ -96,6 +98,7 @@ class SettingsViewModel(
         goalsStore.clear()
         foodPreferencesStore.clear()
         measurementsStore.clear()
+        cycleStore.clear()
         // Clear first, so a worker that is already running reads "off"; then cancel what is still planned.
         remindersStore.clear()
         reminderScheduler.cancelAll()

@@ -77,6 +77,8 @@ fun coachNoteText(note: CoachNote): String = when (note) {
     is CoachNote.Rehab -> rehabNoteText(note.check)
 
     CoachNote.Recovery -> stringResource(R.string.coach_note_recovery)
+
+    CoachNote.Lighter -> stringResource(R.string.coach_note_lighter)
 }
 
 @Composable

@@ -57,7 +57,7 @@
     <string name="privacy_title">Privacy policy</string>
     <string name="privacy_intro">Novila is built so that your health data stays with you. This policy says what the app handles, where it is kept, who can see it and what you can do about it.</string>
     <string name="privacy_what_title">What Novila handles</string>
-    <string name="privacy_what_body">What you enter yourself: your name, birth year, height, weight and body measurements; your sleep, food (with the meals you write in your own words and star, for quick logging), drinks and workouts, with the repetitions you did and effort and pain after a session; your answers to the training and sleep coaches; your food preferences, including allergies, and the recipes you write yourself; and your goals, reminders and settings. If you allow it, also what Novila reads from Health Connect, below. Everything is optional, and Novila works without a name or an account.</string>
+    <string name="privacy_what_body">What you enter yourself: your name, birth year, height, weight and body measurements; your sleep (with what may have affected a night, such as your period), food (with the meals you write in your own words and star, for quick logging), drinks and workouts, with the repetitions you did and effort and pain after a session; your answers to the training and sleep coaches; your food preferences, including allergies, and the recipes you write yourself; if you turn on Follow your cycle, the days of your period and the symptoms you log, which are deleted when you turn it off; and your goals, reminders and settings. If you allow it, also what Novila reads from Health Connect, below. Everything is optional, and Novila works without a name or an account.</string>
     <string name="privacy_where_title">Where it is kept</string>
     <string name="privacy_where_body">Only on this phone, encrypted with a key from the phone\'s Android Keystore. Novila has no account and no server, and the app has no access to the internet, so nothing you log can be sent anywhere. Novila\'s data is left out of Android\'s backup and of transfers to a new phone.</string>
     <string name="privacy_health_connect_title">Health Connect</string>
@@ -196,4 +196,22 @@
         <item quantity="other">%1$d years</item>
     </plurals>
     <string name="measure_latest">Last measured %1$s</string>
+    <string name="cycle_part">Cycle</string>
+    <string name="cycle_title">Follow your cycle</string>
+    <string name="cycle_on">On. You log your cycle on Training.</string>
+    <string name="cycle_off">Off.</string>
+    <string name="cycle_intro">For anyone who has a period and wants training that takes it into account. It is up to you, and you can turn it off at any time.</string>
+    <string name="cycle_switch">Follow your cycle</string>
+    <string name="cycle_private">Your cycle stays on this phone. Turning it off deletes what you logged.</string>
+    <string name="cycle_nothing_logged">Nothing logged yet. Log your period and how your body feels under Your cycle on Training.</string>
+    <string name="cycle_last_period">Your last period began %1$s.</string>
+    <string name="cycle_does_title">What it does</string>
+    <string name="cycle_does_lighter">On a day you log a symptom, such as cramps or tiredness, the coach offers a lighter session. It never changes the session by itself.</string>
+    <string name="cycle_does_recovery">Resting heart rate often rises a few beats, and HRV falls, in the second half of a cycle. Recovery from your watch then compares a day only with days in the same half, so a normal cycle doesn\'t look like poor recovery.</string>
+    <string name="cycle_never_title">What it never does</string>
+    <string name="cycle_never_body">Novila never predicts ovulation or fertile days and is not a contraceptive. It doesn\'t plan your training by phase either: how the cycle affects training differs a lot from person to person, so how you feel decides.</string>
+    <string name="cycle_off_title">Turn off and delete?</string>
+    <string name="cycle_off_text">Everything you logged about your cycle is deleted from this phone.</string>
+    <string name="cycle_off_confirm">Turn off</string>
+    <string name="cycle_off_dismiss">Cancel</string>
 </resources>

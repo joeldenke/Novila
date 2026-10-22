@@ -98,4 +98,26 @@ class RecoveryAnalysisTest {
             recoveryDays(resting, hrv),
         )
     }
+
+    @Test fun `only comparable days form the baseline, and too few of them say nothing`() {
+        // From [lateFrom] on the days are in the late half of the cycle, with a few beats more and a lower HRV; the
+        // days before are in the early half.
+        fun days(lateFrom: Long) = (0L..7L).map { daysAgo ->
+            if (daysAgo <= lateFrom) {
+                RecoveryDay(today.minusDays(daysAgo), restingHeartRate = 56, hrvMillis = 38)
+            } else {
+                RecoveryDay(today.minusDays(daysAgo), restingHeartRate = 50, hrvMillis = 50)
+            }
+        }
+        fun sameHalf(lateFrom: Long) = { earlier: LocalDate, latest: LocalDate ->
+            val late = today.minusDays(lateFrom)
+            (earlier >= late) == (latest >= late)
+        }
+        // Against the whole week the late half looks like poor recovery.
+        assertEquals(RecoveryStatus.Low, analyzeRecovery(days(lateFrom = 2), today))
+        // Against its own half there are only two days to compare with, so nothing is judged.
+        assertEquals(RecoveryStatus.Unknown, analyzeRecovery(days(lateFrom = 2), today, sameHalf(lateFrom = 2)))
+        // With four late days before it, the same reading is normal for that half.
+        assertEquals(RecoveryStatus.Normal, analyzeRecovery(days(lateFrom = 4), today, sameHalf(lateFrom = 4)))
+    }
 }

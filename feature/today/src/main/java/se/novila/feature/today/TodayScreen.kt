@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import se.novila.coach.DailyCoach
 import se.novila.coach.dailyCoach
+import se.novila.coach.readiness
 import se.novila.designsystem.component.NovilaHeroCard
 import se.novila.designsystem.component.NovilaHeroSegment
 import se.novila.designsystem.component.NovilaIconButton
@@ -22,6 +23,7 @@ import se.novila.designsystem.component.NovilaScaffold
 import se.novila.designsystem.component.NovilaSky
 import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
+import se.novila.exercise.TrainingLoad
 import se.novila.feature.today.R
 import se.novila.model.DayEntry
 import se.novila.model.DiscoveryProgress
@@ -202,7 +204,10 @@ private fun BalanceCard(
 }
 
 @Composable
-private fun TodayScreenContent(hour: Int = 8) {
+private fun TodayScreenContent(
+    hour: Int = 8,
+    coach: DailyCoach = dailyCoach(PreviewData.today, Goals(), TrainingToday(plannedMinutes = 30)),
+) {
     NovilaTheme {
         NovilaScaffold { padding ->
             TodayScreen(
@@ -212,7 +217,7 @@ private fun TodayScreenContent(hour: Int = 8) {
                 name = PreviewData.profile.name,
                 goals = Goals(),
                 sleep = analyzeSleep(PreviewData.days()),
-                coach = dailyCoach(PreviewData.today, Goals(), TrainingToday(plannedMinutes = 30)),
+                coach = coach,
                 movement = PreviewData.movement,
                 onAddWater = {},
                 onOpenTraining = {},
@@ -231,6 +236,22 @@ private fun TodayScreenContent(hour: Int = 8) {
 @Preview(heightDp = 1400)
 @Composable
 private fun TodayScreenPreview() = TodayScreenContent()
+
+/** A short night and a heavy week: the coach suggests a calm day and says why. */
+@Preview(heightDp = 1400)
+@Composable
+private fun TodayScreenCalmPreview() {
+    val night = PreviewData.today.copy(sleepHours = 5.5f)
+    val heavy = TrainingLoad(week = 1400, usualWeek = 1000, monotony = 1.0, sessions = 4, rated = 2)
+    TodayScreenContent(
+        coach = dailyCoach(
+            night,
+            Goals(),
+            TrainingToday(plannedMinutes = 30),
+            readiness = readiness(night, Goals(), load = heavy),
+        ),
+    )
+}
 
 /** Dark theme late in the evening, under the moon. */
 @Preview(heightDp = 1400, uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)

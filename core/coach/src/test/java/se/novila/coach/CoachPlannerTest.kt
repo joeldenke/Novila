@@ -331,6 +331,24 @@ class CoachPlannerTest {
         )
     }
 
+    @Test fun `a lighter session the user chose is lighter the same way, with its own note`() {
+        val low = plan(recovery = RecoveryStatus.Low)
+        val lighter = CoachPlanner.plan(CoachPreferences(), emptyList(), today, lighter = true)
+        assertEquals(low.program, lighter.program)
+        assertTrue(lighter.notes.contains(CoachNote.Lighter))
+        assertTrue(lighter.notes.none { it == CoachNote.Recovery })
+        // When the watch says so too, the recovery note says why.
+        val both = CoachPlanner.plan(
+            CoachPreferences(),
+            emptyList(),
+            today,
+            recovery = RecoveryStatus.Low,
+            lighter = true,
+        )
+        assertEquals(low.program, both.program)
+        assertEquals(low.notes, both.notes)
+    }
+
     @Test fun `low recovery lightens today's cardio`() {
         val preferences = CoachPreferences(CoachGoal.Health, daysPerWeek = 5)
         val tuesday = monday.plusDays(1)

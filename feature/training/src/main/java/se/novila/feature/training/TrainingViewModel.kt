@@ -12,11 +12,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import se.novila.data.CycleStore
 import se.novila.data.HealthStore
 import se.novila.data.SettingsStore
 import se.novila.exercise.ExerciseRepository
 import se.novila.exercise.ExerciseState
 import se.novila.model.CardioLog
+import se.novila.model.CycleSymptom
+import se.novila.model.SessionChoice
 import se.novila.movement.MovementRepository
 import se.novila.movement.MovementState
 import se.novila.recovery.RecoveryRepository
@@ -26,7 +29,7 @@ import java.time.LocalTime
 
 /**
  * The Training tab: movement and workouts from Health Connect, recovery from the watch, the week's program and
- * today's cardio. Scoped to the tab's root entry.
+ * today's cardio, and today in the user's cycle when they follow it. Scoped to the tab's root entry.
  */
 @ViewModelKey
 @ContributesIntoMap(AppScope::class)
@@ -38,6 +41,7 @@ class TrainingViewModel(
     private val recoveryRepository: RecoveryRepository,
     private val store: HealthStore,
     private val settingsStore: SettingsStore,
+    private val cycleStore: CycleStore,
 ) : ViewModel() {
     private val date = MutableStateFlow(LocalDate.now())
     private val now = MutableStateFlow(LocalTime.now().hour)
@@ -93,6 +97,15 @@ class TrainingViewModel(
     fun logCardio(log: CardioLog) {
         store.update(date.value) { it.withCardio(log) }
     }
+
+    /** Whether the user has their period today, from the cycle sheet. */
+    fun setPeriod(on: Boolean) = cycleStore.update { it.withPeriod(date.value, on) }
+
+    /** Turns a symptom on or off for today, from the cycle sheet. */
+    fun setSymptom(symptom: CycleSymptom, on: Boolean) = cycleStore.update { it.withSymptom(date.value, symptom, on) }
+
+    /** What the user chose for today's session on a day with symptoms. The plan follows once it is saved. */
+    fun chooseSession(choice: SessionChoice) = cycleStore.update { it.withChoice(date.value, choice) }
 
     /** Reopens the intro so the setup that was skipped earlier can be finished. */
     fun openSetup() {

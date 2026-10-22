@@ -4,11 +4,16 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import se.novila.designsystem.component.NovilaBottomSheet
 import se.novila.designsystem.component.NovilaButton
 import se.novila.designsystem.component.NovilaEntries
 import se.novila.designsystem.component.NovilaEntry
@@ -19,6 +24,8 @@ import se.novila.designsystem.component.NovilaSky
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.exercise.ExerciseState
 import se.novila.model.CardioLog
+import se.novila.model.CycleDay
+import se.novila.model.CycleSymptom
 import se.novila.movement.MovementState
 import se.novila.navigation.SharedScreen
 import se.novila.recovery.RecoveryState
@@ -33,7 +40,9 @@ import se.novila.ui.R as UiR
  * The Training tab: the week at a glance with today's one main action, and movement and recovery from the watch
  * (today's session may be lighter for it) right below once Health Connect is connected. Then the card that logs
  * another workout and the ways into the week's program (with the weekly review), the coach and the exercise library.
- * Before Health Connect is connected, the card with its numbers waits at the bottom. When the introduction
+ * Before Health Connect is connected, the card with its numbers waits at the bottom. For a user who follows their
+ * cycle, the log card also opens the cycle sheet, and on a day with symptoms the coach offers a lighter session right
+ * under the week, which the user takes or leaves ([openCycleSheet] at first). When the introduction
  * was skipped ([setupIncomplete]), a quiet card at the top leads to finishing the setup (actions.onCompleteSetup).
  */
 @Composable
@@ -48,9 +57,12 @@ fun TrainingScreen(
     sky: NovilaSky = NovilaSky.Day,
     /** The introduction was skipped, so the coach's answers are not set up: one quiet card offers to finish it. */
     setupIncomplete: Boolean = false,
+    openCycleSheet: Boolean = false,
 ) {
     val today = state.today
     val plan = remember(state) { state.todayPlan() }
+    var loggingCycle by rememberSaveable(openCycleSheet) { mutableStateOf(openCycleSheet) }
+    val cycle = state.cycle
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
         setupHint(setupIncomplete, actions.onCompleteSetup)
         item(key = "overview") {
@@ -65,6 +77,11 @@ fun TrainingScreen(
                     onOpenSession = actions.onOpenSession,
                     sky = sky,
                 )
+            }
+        }
+        if (cycle?.offerLighter == true) {
+            item(key = "lighter") {
+                NovilaReveal(order = 1) { LighterSessionCard(onChoose = actions.cycle.onChooseSession) }
             }
         }
         val connected = movement is MovementState.Connected
@@ -82,6 +99,13 @@ fun TrainingScreen(
                         onClick = actions.onOpenCardioLog,
                         modifier = Modifier.weight(1f).fillMaxHeight(),
                     )
+                    if (cycle != null) {
+                        NovilaButton(
+                            text = stringResource(R.string.cycle_log),
+                            onClick = { loggingCycle = true },
+                            modifier = Modifier.weight(1f).fillMaxHeight(),
+                        )
+                    }
                 }
             }
         }
@@ -89,6 +113,11 @@ fun TrainingScreen(
             NovilaReveal(order = 2) { NovilaEntries(trainingHubEntries(state, actions)) }
         }
         if (!connected) healthData(movement, recovery, exercise, state, actions)
+    }
+    if (loggingCycle && cycle != null) {
+        NovilaBottomSheet(title = stringResource(R.string.cycle_sheet_title), onDismiss = { loggingCycle = false }) {
+            CycleSheet(cycle.day, actions.cycle)
+        }
     }
 }
 
@@ -166,6 +195,8 @@ data class TrainingActions(
     val onInstallHealth: () -> Unit = {},
     /** Reopens the intro, for the card shown when the setup was skipped. */
     val onCompleteSetup: () -> Unit = {},
+    /** The cycle sheet and the offer of a lighter session, for a user who follows their cycle. */
+    val cycle: CycleActions = CycleActions(),
 )
 
 @Composable
@@ -240,6 +271,15 @@ private fun TrainingScreenConnectPreview() = TrainingScreenContent(
     strengthDay.copy(today = DayOfWeek.SATURDAY),
     MovementState.NeedsPermission(),
     sky = NovilaSky.Night,
+)
+
+/** Cramps logged this morning in *Follow your cycle*: the coach offers a lighter session, and the log has the cycle. */
+@Preview(showBackground = true, heightDp = 1700)
+@Composable
+private fun TrainingScreenCyclePreview() = TrainingScreenContent(
+    strengthDay.copy(cycle = CycleToday(CycleDay(symptoms = setOf(CycleSymptom.Cramps)), offerLighter = true)),
+    exercise = ExerciseState.Connected(TrainingPreviewData.workouts),
+    sky = NovilaSky.Morning,
 )
 
 /** The watch says the body is still recovering in the morning: today's session is a little lighter. */

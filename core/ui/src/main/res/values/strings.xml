@@ -65,6 +65,7 @@
     <string name="sleep_driver_stress">After stressful evenings</string>
     <string name="sleep_driver_late_meal">After a late meal</string>
     <string name="sleep_driver_late_exercise">After late exercise</string>
+    <string name="sleep_driver_period">During your period</string>
     <string name="sleep_link_sentence">%1$s, %2$s.</string>
     <string name="sleep_link_longer">you slept %1$s longer</string>
     <string name="sleep_link_shorter">you slept %1$s less</string>
@@ -87,6 +88,7 @@
     <string name="sleep_changed_stress">your evening was stressful %1$d of 7 times (%2$d the week before)</string>
     <string name="sleep_changed_late_meal">you ate late on %1$d of 7 evenings (%2$d the week before)</string>
     <string name="sleep_changed_late_exercise">you trained late on %1$d of 7 evenings (%2$d the week before)</string>
+    <string name="sleep_changed_period">you had your period on %1$d of 7 nights (%2$d the week before)</string>
     <string name="sleep_change_confirmed">Your earlier nights show the same link.</string>
     <string name="sleep_change_unconfirmed">One week can be chance. Keep logging to see if it holds.</string>
     <string name="sleep_bedtime_spread">Your bedtime varies by about %1$s from night to night. A steady bedtime, weekends too, helps your sleep.</string>

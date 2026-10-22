@@ -50,6 +50,10 @@ Välj de hälsofunktioner appen har:
 - **Nutrition and weight management** – kostloggning per livsmedelsgrupp och måltider med egna ord, vatten, recept, vikt och kroppsmått.
 - **Sleep management** – sömnlogg, sömncoach, samband mellan dag och natt.
 - **Stress management, relaxation, mental acuity** – andningsövningarna (Andning och avslappning).
+- **Menstrual cycle tracking** (om formuläret har en sådan kategori, annars reproduktiv hälsa) – *Följ din cykel*:
+  mensdagar och symtom som användaren själv loggar, avslaget från början. Ett lättare pass erbjuds en dag med
+  symtom, och återhämtningen jämförs inom samma halva av cykeln. Inga förutsägelser av ägglossning eller fertila
+  dagar och inget preventivmedel, så aldrig *Fertility* eller *Contraception*.
 
 Välj **inte** medicinska kategorier (*Medical*, *Disease and condition management*, *Clinical decision support*,
 *Medical device*). Novila är inte en medicinteknisk produkt; skonsam träning (`Rehab` i koden) är allmän träning,

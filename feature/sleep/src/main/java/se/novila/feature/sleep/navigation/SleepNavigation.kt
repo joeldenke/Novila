@@ -105,6 +105,7 @@ fun EntryProviderScope<NavKey>.sleepEntries(
             history = state.history,
             goals = state.goals,
             analysis = state.analysis,
+            regularity = state.regularity,
             onRange = viewModel::selectRange,
             contentPadding = contentPadding,
         )
