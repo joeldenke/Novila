@@ -287,10 +287,10 @@ class TrainingScreenTest {
     }
 
     @Test fun `the program says how this week's load compares with the usual`() {
-        val load = TrainingLoad(week = 1300, usualWeek = 1000, monotony = 1.0, sessions = 3, rated = 1)
+        val load = TrainingLoad(week = 1400, usualWeek = 1000, monotony = 1.0, sessions = 3, rated = 1)
         showProgram(state.copy(load = load))
 
-        composeRule.onNodeWithText("about 30 % more", substring = true).assertExists()
+        composeRule.onNodeWithText("about 40 % more", substring = true).assertExists()
         composeRule.onNodeWithText("1 of 3 sessions with the effort you gave", substring = true).assertExists()
     }
 }
