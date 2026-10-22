@@ -6,9 +6,11 @@ import androidx.compose.ui.res.stringResource
 import se.novila.coach.CoachAdvice
 import se.novila.coach.CoachFocus
 import se.novila.coach.DailyCoach
+import se.novila.coach.ReadinessSignal
 import se.novila.designsystem.component.NovilaInsight
 import se.novila.designsystem.theme.NovilaColorRole
 import se.novila.designsystem.theme.NovilaTheme
+import se.novila.exercise.LoadComparison
 import se.novila.feature.today.R
 import se.novila.ui.common.clockText
 import se.novila.ui.common.durationText
@@ -53,6 +55,8 @@ private val DailyCoach.icon: Int
 /** One piece of the coach's suggestion as a sentence in the user's language. */
 @Composable
 private fun adviceText(advice: CoachAdvice): String = when (advice) {
+    is CoachAdvice.CalmDay -> stringResource(R.string.coach_calm_day, reasonsText(advice.reasons))
+    is CoachAdvice.ReadyDay -> stringResource(R.string.coach_ready_day, reasonsText(advice.reasons))
     is CoachAdvice.ShortNight -> stringResource(R.string.coach_short_night, hoursText(advice.hours))
     CoachAdvice.LowRecovery -> stringResource(R.string.coach_low_recovery)
     is CoachAdvice.LighterSession -> stringResource(R.string.coach_lighter_session, durationText(advice.minutes))
@@ -61,4 +65,25 @@ private fun adviceText(advice: CoachAdvice): String = when (advice) {
     is CoachAdvice.EarlierBedtime -> stringResource(R.string.coach_earlier_bedtime, clockText(advice.time))
     is CoachAdvice.AddPortion -> nextPortionText(advice.next)
     CoachAdvice.WellDone -> stringResource(R.string.coach_well_done)
+}
+
+/** The readiness's reasons as one clause, e.g. "you slept 5.5 h and this week is heavier than usual". */
+@Composable
+private fun reasonsText(reasons: List<ReadinessSignal>): String =
+    reasons.map { reasonText(it) }.reduce { first, second -> stringResource(R.string.coach_reasons_and, first, second) }
+
+@Composable
+private fun reasonText(signal: ReadinessSignal): String = when (signal) {
+    is ReadinessSignal.Night -> stringResource(R.string.readiness_night, hoursText(signal.hours))
+    is ReadinessSignal.Recovery -> stringResource(
+        if (signal.low) R.string.readiness_recovery_low else R.string.readiness_recovery_normal,
+    )
+    is ReadinessSignal.Load -> stringResource(
+        when {
+            signal.comparison == LoadComparison.Heavier -> R.string.readiness_load_heavier
+            signal.uniform -> R.string.readiness_load_uniform
+            else -> R.string.readiness_load_lighter
+        },
+    )
+    ReadinessSignal.CycleSymptoms -> stringResource(R.string.readiness_cycle_symptoms)
 }

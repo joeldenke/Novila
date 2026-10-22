@@ -80,4 +80,14 @@
     <string name="trends_training_less">You trained %1$s less than %2$s.</string>
     <string name="trends_sleep_goal">%1$d of %2$d nights reached your sleep goal of %3$s.</string>
     <string name="trends_water_goal">%1$d of %2$d days reached your water goal of %3$d glasses.</string>
+    <string name="coach_calm_day">A calm day is suggested, because %1$s.</string>
+    <string name="coach_ready_day">Your body seems ready today: %1$s.</string>
+    <string name="coach_reasons_and">%1$s and %2$s</string>
+    <string name="readiness_night">you slept %1$s</string>
+    <string name="readiness_recovery_low">your resting heart rate or HRV is off your usual</string>
+    <string name="readiness_recovery_normal">your recovery is normal</string>
+    <string name="readiness_load_heavier">this week is heavier than usual</string>
+    <string name="readiness_load_uniform">the days have been equally hard</string>
+    <string name="readiness_load_lighter">this week has been lighter than usual</string>
+    <string name="readiness_cycle_symptoms">you logged symptoms today</string>
 </resources>

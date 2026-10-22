@@ -124,6 +124,10 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
     sparas i `CoachStore`; är coachen inte inställd gäller `TrainingProgramGenerator`. Planen är alltid deterministisk
     och testad, och förklarar sig själv med `CoachNote`. Dagens gemensamma förslag för sömn, träning och kost är
     `dailyCoach` (`DailyCoach`, `CoachAdvice`), som väger delarna mot varandra och är deterministisk och enhetstestad.
+    Dagsformen (`readiness`, `Readiness`) läser natten, återhämtningen, träningsbelastningen och cykelns symtom som
+    signaler som drar ner, upp eller inte alls, och räknar dem: två ner är en lugn dag, en ner en dag som planerat,
+    ingen ner och två upp en kropp som verkar redo. Den visas aldrig som en poäng, bara med sina skäl i coachens
+    mening på Idag (`CoachAdvice.CalmDay`, `ReadyDay`); det som inte är känt räknas aldrig som dåligt.
     Se *Ingen AI* under Regler.
   - `:core:breathing` – de guidade andningsövningarna som data: `BreathingSession` (faser med längd i sekunder och
     antal rundor), `BreathingCatalog` (lugn andning, boxandning, 4-7-8) och `momentAt`, som deterministiskt räknar ut

@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import se.novila.coach.DailyCoach
 import se.novila.coach.dailyCoach
+import se.novila.coach.readiness
 import se.novila.data.CoachStore
 import se.novila.data.CycleStore
 import se.novila.data.GoalsStore
@@ -32,6 +33,7 @@ import se.novila.data.recoveryStatus
 import se.novila.data.trainingWeek
 import se.novila.exercise.ExerciseRepository
 import se.novila.exercise.ExerciseState
+import se.novila.exercise.trainingLoad
 import se.novila.model.DiscoveryProgress
 import se.novila.model.Drink
 import se.novila.model.DrinkKind
@@ -159,14 +161,23 @@ class TodayViewModel(
         // Planned the same way as the Training tab, so both say the same about today's session.
         val status = recoveryStatus(body.recovery, today, body.cycle, window)
         val fromSource = (recorded as? ExerciseState.Connected)?.exercises.orEmpty()
-        val training = trainingWeek(
+        val week = trainingWeek(
             inputs.days,
             answers,
             fromSource,
             today,
             recovery = status,
             lighter = body.cycle.lighter(today),
-        ).trainingOn(today)
+        )
+        val training = week.trainingOn(today)
+        // Today's readiness from last night, recovery, the training load and any cycle symptoms, with its reasons.
+        val readiness = readiness(
+            day = days.day(today),
+            goals = inputs.goals,
+            recovery = status,
+            load = trainingLoad(week.history, week.days.associate { it.date to it.effort }, today),
+            cycleSymptoms = body.cycle.enabled && body.cycle.log.on(today).symptoms.isNotEmpty(),
+        )
         // One coach for all parts: the day's sleep, training and food weighed together.
         val coach = dailyCoach(
             day = days.day(today),
@@ -174,6 +185,7 @@ class TodayViewModel(
             training = training,
             recovery = status,
             bedtimeGoal = sleepCoach.preferences?.bedtime ?: SleepCoachPreferences.DEFAULT_BEDTIME,
+            readiness = readiness,
         )
         return TodayUiState(
             week = days.week(today),

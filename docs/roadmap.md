@@ -135,9 +135,11 @@ language model in the app, or data that leaves the app.
   at least as strongly as length. Shown on Sleep and weighed by the sleep coach. Done: `sleepRegularity` in
   `:core:model` over four weeks, a card in Sleep's trends, and the sleep coach suggests a steady bedtime when the
   nights are irregular and a steady weekend wake-up (`WeekendShift`) when the weekend moves the sleep an hour.
-- [ ] **Readiness that sums it up:** an explained readiness from last night's sleep, recovery, the training load and
+- [x] **Readiness that sums it up:** an explained readiness from last night's sleep, recovery, the training load and
   any cycle symptoms ("A calm day is suggested, because …"). `dailyCoach` does part of it; make the weighting clear
-  and tested, never a score without reasons.
+  and tested, never a score without reasons. Done: `readiness` in `:core:coach` reads four signals that each pull
+  down, up or neither, and counts them. Two down is a calm day, one down a day as planned, none down and two up a
+  ready body. Today's coach says a calm day or a ready body with its reasons, and nothing unknown counts as bad.
 - [ ] **Step goals by age:** benefits level off around 6,000–8,000 steps a day from 60 and 8,000–10,000 below
   (Paluch et al., Lancet 2022), a better basis for the suggested step goal.
 - [ ] **Cardio fitness (VO2max) from the watch** via Health Connect **(ok)**: a good long-term measure, a new data type

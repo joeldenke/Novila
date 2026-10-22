@@ -32,6 +32,15 @@ enum class CoachFocus {
  * be read in order: together they are one connected suggestion, not a list of separate tips.
  */
 sealed interface CoachAdvice {
+    /**
+     * Today's readiness asks for a calm day, because of these [reasons] (at least two of last night, recovery, the
+     * training load and cycle symptoms). Said first, instead of the short night or the recovery alone.
+     */
+    data class CalmDay(val reasons: List<ReadinessSignal>) : CoachAdvice
+
+    /** The body seems ready for today's session, because of these [reasons]. */
+    data class ReadyDay(val reasons: List<ReadinessSignal>) : CoachAdvice
+
     /** Last night was clearly shorter than the user's sleep goal. */
     data class ShortNight(val hours: Float) : CoachAdvice
 
@@ -71,11 +80,13 @@ const val SHORT_NIGHT_MARGIN = 0.5f
 
 /**
  * Novila's one coach for all parts: the day's single suggestion, worked out from the user's own [day], their [goals],
- * today's [training] from the week's program, how the body has [recovered][recovery] and the [bedtimeGoal] the sleep
- * coach runs on. It connects the parts instead of advising on each one alone: a short night or a body that is still
- * recovering makes today's session lighter and points to an earlier bedtime, a normal day points to the planned
- * session and one food step, and when the day is done it simply says so. Deterministic, entirely on the device, and
- * never a diagnosis: the same day always gives the same suggestion, so it is unit tested.
+ * today's [training] from the week's program, how the body has [recovered][recovery], today's [readiness] and the
+ * [bedtimeGoal] the sleep coach runs on. It connects the parts instead of advising on each one alone: a short night,
+ * a body that is still recovering or a readiness that asks for a calm day (said with its reasons) makes today's
+ * session lighter and points to an earlier bedtime, a ready body is said with its reasons before the planned session,
+ * a normal day points to the planned session and one food step, and when the day is done it simply says so.
+ * Deterministic, entirely on the device, and never a diagnosis: the same day always gives the same suggestion, so it
+ * is unit tested.
  */
 fun dailyCoach(
     day: DayEntry,
@@ -83,6 +94,7 @@ fun dailyCoach(
     training: TrainingToday = TrainingToday(),
     recovery: RecoveryStatus = RecoveryStatus.Unknown,
     bedtimeGoal: LocalTime = SleepCoachPreferences.DEFAULT_BEDTIME,
+    readiness: Readiness? = null,
 ): DailyCoach {
     val shortNight = day.sleepHours > 0f && day.sleepHours < goals.sleepHours - SHORT_NIGHT_MARGIN
     val lowRecovery = recovery == RecoveryStatus.Low
@@ -91,12 +103,19 @@ fun dailyCoach(
     val trainingOpen = !training.isRest && remaining > 0
     val next = day.nextPortion(goals)
 
-    if (shortNight || lowRecovery) {
+    val calm = readiness?.takeIf { it.level == ReadinessLevel.Calm }
+    val ready = readiness?.takeIf { it.level == ReadinessLevel.Ready }
+    if (shortNight || lowRecovery || calm != null) {
         return DailyCoach(
             focus = CoachFocus.Recover,
             advice = buildList {
-                if (shortNight) add(CoachAdvice.ShortNight(day.sleepHours))
-                if (lowRecovery) add(CoachAdvice.LowRecovery)
+                // A calm day says all its reasons at once, the short night and the recovery among them.
+                if (calm != null) {
+                    add(CoachAdvice.CalmDay(calm.reasons))
+                } else {
+                    if (shortNight) add(CoachAdvice.ShortNight(day.sleepHours))
+                    if (lowRecovery) add(CoachAdvice.LowRecovery)
+                }
                 when {
                     trainingOpen -> add(CoachAdvice.LighterSession(remaining))
                     training.isRest -> add(CoachAdvice.RestDay)
@@ -110,6 +129,7 @@ fun dailyCoach(
         return DailyCoach(
             focus = CoachFocus.Train,
             advice = buildList {
+                ready?.let { add(CoachAdvice.ReadyDay(it.reasons)) }
                 add(CoachAdvice.PlannedSession(remaining))
                 next?.let { add(CoachAdvice.AddPortion(it)) }
             },
