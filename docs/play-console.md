@@ -13,8 +13,11 @@ och i Play Console i samma PR/release.** Typiska utlösare: en ny Health Connect
 1. **Policy → App content**: integritetspolicy, annonser, appåtkomst, innehållsklassning, målgrupp, Data safety,
    Health apps declaration och Health Connect-behörigheterna (avsnitten nedan).
 2. **Store presence → Main store listing**: kategori *Health & Fitness*, texter enligt *Butikssidan* nedan.
-3. **Release**: Android App Bundle (`.aab`), inte APK. Play kräver AAB för nya appar och Play App Signing. CI bygger
-   i dag APK:er (`assembleRelease`); lägg till `:app:bundleRelease` innan första uppladdningen.
+3. **Release**: Android App Bundle (`.aab`), inte APK. Play kräver AAB för nya appar och Play App Signing.
+   `Distribute to testers` bygger den (`:app:bundleRelease`) vid varje merge till `main`: ladda ner artefakten
+   `novila-<nummer>` från körningen och ladda upp `app-release.aab` och `mapping.txt` i Play Console. Bundlen är
+   signerad med release-nyckeln, som i Play App Signing blir *uppladdningsnyckeln*; Google signerar appen med sin
+   egen nyckel. Utan nyckeln i GitHub-hemligheterna är bundlen osignerad och Play tar inte emot den.
 
 ## Integritetspolicy
 
@@ -173,7 +176,8 @@ ingen `QUERY_ALL_PACKAGES` (bara `<queries>` för Health Connect och AICore), in
 ## Före första release
 
 - [ ] Release-nyckel i GitHub-hemligheterna och Play App Signing påslaget.
-- [ ] `:app:bundleRelease` byggs och laddas upp som AAB.
+- [x] `:app:bundleRelease` byggs i `Distribute to testers` (artefakten `novila-<nummer>`).
+- [ ] Den signerade bundlen laddad upp som AAB.
 - [ ] Integritetspolicyn publicerad på en fast adress och inlagd i Play Console.
 - [ ] App content ifyllt enligt tabellerna ovan; Health Connect-deklarationen inskickad och godkänd.
 - [ ] Skillen `play-policy-insights` körd mot den aktuella koden.

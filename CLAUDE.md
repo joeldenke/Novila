@@ -183,7 +183,9 @@ Strängar och ikoner ligger i modulen som använder dem; det flera moduler anvä
 - `Dependency submission` skickar bibliotekens beroendegraf till GitHub vid varje push till `main`, så Dependabot larmar
   om sårbara bibliotek (fliken Security). Testklassvägar räknas inte. Kör bara upplösning, ingen kompilering.
 - När PR:en mergas skickar `Distribute to testers` debug-APK:n (`se.novila.debug`) via Firebase App Distribution.
-  Samma körning bygger även release (R8), signerad bara om release-nyckeln finns i GitHub-hemligheterna.
+  Samma körning bygger även release (R8) som APK och som App Bundle (`.aab`, det Google Play tar emot), båda
+  signerade bara om release-nyckeln (uppladdningsnyckeln i Play App Signing) finns i GitHub-hemligheterna. Bundlen
+  och R8-mappningen ligger i körningens artefakt `novila-<nummer>`.
 
 ## Kvalitet
 - **Lint-policy:** `lint.xml` i roten sätter projektets regler och orsaker. Höj inte lint-fel till varningar

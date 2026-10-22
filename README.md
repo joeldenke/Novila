@@ -113,8 +113,8 @@ writes the code in a branch and opens a pull request, and CI is the only proof t
 1. **CI** runs formatting and lint, unit and screenshot tests with coverage, and a debug build with the APK check,
    as parallel jobs. When the pull request says the UI changes on purpose, CI records the new screenshots and pushes them to it for review.
 2. The pull request is merged when CI is green.
-3. **Distribute to testers** builds debug and release (R8) and sends the debug app to testers through Firebase App
-   Distribution, with release notes from the merged pull requests.
+3. **Distribute to testers** builds debug and release (R8), including the App Bundle for Google Play, and sends the
+   debug app to testers through Firebase App Distribution, with release notes from the merged pull requests.
 
 `CLAUDE.md` holds the project's rules and known pitfalls (Swedish), and Google's
 [Android skills](https://github.com/android/skills) are enabled for Claude Code in this repository.
