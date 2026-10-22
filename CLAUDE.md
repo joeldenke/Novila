@@ -357,7 +357,7 @@ där pluginet `firebase@firebase` inte alltid installeras.
   dagens enda huvudåtgärd ur `TodayPlan`). Sömn och Kost börjar på samma sätt (`NovilaHeroPanel` med
   `NovilaHeroPart`), var och en på sin egen botten med egna linjer: Sömn en nattsjö i sjöblått (krusningar mot en
   horisont och månens spegling i streck som smalnar av, alltid månen eftersom översikten gäller natten), Kost falurött
-  med fåror som löper mot en horisont i solens färg. Ringen visar timmar mot målet respektive kostpoängen, och
+  med fåror som löper mot en horisont. Ringen visar timmar mot målet respektive kostpoängen, och
   `NovilaHeroBars` veckans nätter mot målet respektive dagarnas poäng. Poängens delar per livsmedelsgrupp ligger sist
   i matens sheet (`ScoreBreakdownCard`). Rörelse och återhämtning från Health Connect är ett kort
   (`HealthDataCard`) med en statuspill (`NovilaStatus`) och streck för värden som saknas; utan anslutning ligger det

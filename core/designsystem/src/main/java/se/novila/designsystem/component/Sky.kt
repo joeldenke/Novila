@@ -171,7 +171,7 @@ internal fun Modifier.heroRipples(hero: NovilaHeroColors, sky: NovilaSky): Modif
             drawPath(path, hero.content.copy(alpha = 0.13f - 0.06f * depth), style = thin)
             val half = widest * (1f - 0.8f * depth) / 2f
             drawLine(
-                hero.sun.copy(alpha = 0.5f - 0.3f * depth),
+                hero.sun.copy(alpha = 0.22f - 0.14f * depth),
                 Offset(light - half, y),
                 Offset(light + half, y),
                 reflection,
@@ -182,8 +182,8 @@ internal fun Modifier.heroRipples(hero: NovilaHeroColors, sky: NovilaSky): Modif
 }
 
 /**
- * Nutrition's background: the [sky]'s glow over a horizon in the sun's color, and the furrows of a field running
- * from the bottom edge towards one point on it, like rows of something growing.
+ * Nutrition's background: the [sky]'s glow over a quiet horizon, and the furrows of a field running from the bottom
+ * edge towards one point on it, like rows of something growing.
  */
 internal fun Modifier.heroFurrows(hero: NovilaHeroColors, sky: NovilaSky): Modifier = drawWithCache {
     val horizon = size.height * FURROW_HORIZON
@@ -198,11 +198,6 @@ internal fun Modifier.heroFurrows(hero: NovilaHeroColors, sky: NovilaSky): Modif
         start to bottom
     }
     val thin = 1.2.dp.toPx()
-    val bold = Stroke(2.2.dp.toPx(), cap = StrokeCap.Round)
-    val line = Path().apply {
-        moveTo(-4.dp.toPx(), horizon)
-        lineTo(size.width + 4.dp.toPx(), horizon)
-    }
     onSky(hero, sky) {
         furrows.forEach { (start, end) ->
             drawLine(
@@ -216,7 +211,7 @@ internal fun Modifier.heroFurrows(hero: NovilaHeroColors, sky: NovilaSky): Modif
                 thin,
             )
         }
-        drawPath(line, hero.sun.copy(alpha = 0.5f), style = bold)
+        drawLine(hero.content.copy(alpha = 0.16f), Offset(0f, horizon), Offset(size.width, horizon), 1.dp.toPx())
     }
 }
 
