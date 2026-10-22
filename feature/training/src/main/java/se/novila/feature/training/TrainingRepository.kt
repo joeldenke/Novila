@@ -19,6 +19,7 @@ import se.novila.exercise.ExerciseLog
 import se.novila.exercise.ExerciseRepository
 import se.novila.exercise.ExerciseState
 import se.novila.exercise.TrainingHistory
+import se.novila.exercise.trainingLoad
 import se.novila.recovery.RecoveryRepository
 import se.novila.recovery.RecoveryState
 import java.time.LocalDate
@@ -108,6 +109,7 @@ class TrainingRepository(
                 .groupBy { it.date.dayOfWeek }
                 .mapValues { (_, done) -> done.sumOf { it.duration.inWholeMinutes }.toInt() },
             nextProgram = week.nextProgram,
+            load = trainingLoad(week.history, week.days.associate { it.date to it.effort }, today),
             cycle = if (cycle.enabled) {
                 CycleToday(day = cycle.log.on(today), offerLighter = sessionToday && cycle.log.lighterOffered(today))
             } else {

@@ -124,13 +124,17 @@ language model in the app, or data that leaves the app.
   in `:core:model` joins the parts with the same honest test as the sleep links, shown in a *Connections* card on
   Today. Mood and energy are read from the stored fields, so those two only appear when they were logged (they left
   Today in October 2026).
-- [ ] **Training load (session RPE):** RPE × minutes per session gives the week's load, and its monotony and strain
+- [x] **Training load (session RPE):** RPE × minutes per session gives the week's load, and its monotony and strain
   (Foster) show when a week gets too heavy or too uniform. The ratio of the last week to the last four (ACWR) is
   debated as an injury predictor, so it is only calm guidance ("this week is heavier than usual"), never a warning.
-  Built on data the app already has, deterministic and tested.
-- [ ] **Sleep regularity:** a regularity index (Sleep Regularity Index) and social jetlag (the sleep midpoint on
+  Built on data the app already has, deterministic and tested. Done: `trainingLoad` in `:core:exercise`, a card on
+  the week's program. The last seven days are compared with the three weeks before (uncoupled), and sessions
+  without the user's own effort (cardio, recorded workouts) count with a moderate effort for their kind.
+- [x] **Sleep regularity:** a regularity index (Sleep Regularity Index) and social jetlag (the sleep midpoint on
   weekdays against weekends) from the bedtimes and wake-ups already logged. Regularity is linked to health in studies
-  at least as strongly as length. Shown on Sleep and weighed by the sleep coach.
+  at least as strongly as length. Shown on Sleep and weighed by the sleep coach. Done: `sleepRegularity` in
+  `:core:model` over four weeks, a card in Sleep's trends, and the sleep coach suggests a steady bedtime when the
+  nights are irregular and a steady weekend wake-up (`WeekendShift`) when the weekend moves the sleep an hour.
 - [ ] **Readiness that sums it up:** an explained readiness from last night's sleep, recovery, the training load and
   any cycle symptoms ("A calm day is suggested, because …"). `dailyCoach` does part of it; make the weighting clear
   and tested, never a score without reasons.
@@ -210,7 +214,7 @@ Next, first what needs no approval and is used every day, then what needs the ow
     app gets wrong today for many users. Period days from Health Connect follow **(ok)**.
     ← period as a sleep cause and "Follow your cycle" done
 19. Training load and sleep regularity: both build on data the app already logs, and make the readiness that sums it
-    up possible.
+    up possible. ← done
 20. Achievements and streaks: restrained, built on what the user already logs, and never rewarding overtraining
     (recovery and rest days count).
 21. Export and import as a local file **(ok)**: a backup without the cloud before users have much data to lose.

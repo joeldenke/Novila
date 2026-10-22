@@ -505,4 +505,11 @@
     <string name="cycle_lighter_yes">Lättare pass</string>
     <string name="cycle_lighter_no">Som planerat</string>
     <string name="coach_note_lighter">Du valde ett lättare pass i dag. Ett set mindre, eller kortare kondition, och resten av veckan som planerat.</string>
+    <string name="load_title">Träningsbelastning</string>
+    <string name="load_heavier">De här sju dagarna är tyngre än vanligt, ungefär %1$d %% mer än de tre veckorna innan. Det går bra ibland; låt nästa vecka öka lugnare.</string>
+    <string name="load_lighter">De här sju dagarna är lättare än vanligt, ungefär %1$d %% mindre än de tre veckorna innan. En lättare vecka ger kroppen tid att återhämta sig.</string>
+    <string name="load_usual">De här sju dagarna är ungefär lika tunga som de tre veckorna innan.</string>
+    <string name="load_unknown">Efter några veckors träning jämför Novila varje vecka med din vanliga.</string>
+    <string name="load_uniform">Dagarna har varit ungefär lika tunga. En lätt dag eller en vilodag mellan de tyngre gör det lättare att återhämta sig.</string>
+    <string name="load_footer">Belastning är ansträngning gånger minuter. %1$d av %2$d pass med ansträngningen du angav; de andra räknas som måttliga.</string>
 </resources>

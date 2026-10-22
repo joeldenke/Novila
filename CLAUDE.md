@@ -82,7 +82,7 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   (`HealthConnectExerciseSource`, träningspass) och `SleepSource` (`HealthConnectSleepSource`, nätter), behörigheterna i modulens manifest (`HEALTH_PERMISSIONS`, frågas i en
   dialog via `rememberHealthPermissionRequest`) och integritetsskärmen (`HealthDataInfoActivity`)
 - Ren Kotlin, utan Android (`novila.jvm.library`, testas på sekunder):
-  - `:core:model` – `DayEntry` (`DayEntryCodec`), cykeln (`Cycle.kt`: `CycleLog`, `cyclePhase`, se *Cykeln* under Regler), kost, drycker (`Drink`, se *Drycker* under Regler), dagens balans, insikter, dagens sista logg (`LatestLog`) och uppmuntran (`cheers`), `analyzeSleep` (se *Sömnens samband*
+  - `:core:model` – `DayEntry` (`DayEntryCodec`), cykeln (`Cycle.kt`: `CycleLog`, `cyclePhase`, se *Cykeln* under Regler), sömnens regelbundenhet (`sleepRegularity`: Sleep Regularity Index och social jetlag över fyra veckor), kost, drycker (`Drink`, se *Drycker* under Regler), dagens balans, insikter, dagens sista logg (`LatestLog`) och uppmuntran (`cheers`), `analyzeSleep` (se *Sömnens samband*
     under Regler), `History` (dagarna över en
     `HistoryRange` i perioder, plus lika många dagar före att jämföra med; Sömn och Kost läser den via `HealthStore`), `Profile`, `Goals` (egna mål för
     steg, sömn och vatten; balans, insikter och kostpoäng mäts mot dem) och `AppSettings` (`ThemeMode`)
@@ -98,6 +98,9 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
     ("Jag gjorde det", `DayEntry.cardio`). `ExerciseRepository` håller passen från en källa (Health Connect) i minnet, och
     `TrainingHistory` slår ihop dem med appens egna (per dag och slag räknas den sida som har mest tid, så samma
     promenad räknas en gång). Det blir generatorns historik.
+    `trainingLoad` är veckans belastning (session-RPE, Foster: ansträngning × minuter, monotoni och strain) mot de tre
+    veckorna innan; pass utan användarens ansträngning räknas som måttliga, och jämförelsen är bara lugn vägledning,
+    aldrig en varning (ACWR är omstritt som skadeprediktor).
     `Progression` höjer varje övning steg för steg (dubbel progression): passläget frågar hur många repetitioner
     varje set blev (`Workout.done`), resultaten sparas i `CoachStore` (`ExerciseLog`), och nådde alla set målet blir
     det en repetition (eller fem sekunder) mer nästa gång, ett set klart under ger ett steg tillbaka. Det läggs på

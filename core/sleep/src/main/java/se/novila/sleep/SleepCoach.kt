@@ -2,7 +2,10 @@ package se.novila.sleep
 
 import se.novila.model.DayEntry
 import se.novila.model.Goals
+import se.novila.model.RegularityLevel
 import se.novila.model.SleepFactor
+import se.novila.model.SleepRegularity
+import se.novila.model.sleepRegularity
 import java.time.LocalTime
 import kotlin.math.abs
 
@@ -51,6 +54,9 @@ data class SleepCoachWeek(val nearGoal: Int, val logged: Int)
 enum class SleepCoachTip {
     RegularBedtime,
     FixedWakeTime,
+
+    /** The weekend moves the sleep an hour or more (social jetlag): get up close to the weekday time then too. */
+    WeekendShift,
     OutOfBed,
     LateCaffeine,
     Screens,
@@ -103,7 +109,8 @@ private const val WINDOW_NIGHTS = 14
 /**
  * The sleep coach's plan from the user's [days] (oldest first), their [goals] and the [preferences] the coach runs
  * on. Everything comes from the logs on the phone: which nights are near the bedtime goal, whether enough of the
- * bed time is spent asleep, and how often each evening factor was logged. Deterministic, so it is unit tested.
+ * bed time is spent asleep, how regular the nights are ([sleepRegularity]) and how often each evening factor was
+ * logged. Deterministic, so it is unit tested.
  */
 fun sleepCoachPlan(
     days: List<DayEntry>,
@@ -116,7 +123,7 @@ fun sleepCoachPlan(
     return SleepCoachPlan(
         routine = routine(preferences),
         week = week(nights, preferences),
-        tips = tips(withBedtime, preferences, goals),
+        tips = tips(withBedtime, preferences, goals, regularity(days)),
         nightsLogged = nights.count { it.sleepHours > 0f },
         tonight = routine(preferences).firstOrNull { minutesFrom(it.time) > minutesFrom(now) },
     )
@@ -135,17 +142,31 @@ private fun week(nights: List<DayEntry>, preferences: SleepCoachPreferences): Sl
 }
 
 /** The tips the logged nights point to, strongest evidence first, at most [MAX_TIPS]. */
-private fun tips(nights: List<DayEntry>, preferences: SleepCoachPreferences, goals: Goals): List<SleepCoachTip> {
-    val regularity = regularityTip(nights, preferences)
+private fun tips(
+    nights: List<DayEntry>,
+    preferences: SleepCoachPreferences,
+    goals: Goals,
+    regularity: SleepRegularity,
+): List<SleepCoachTip> {
+    val bedtime = regularityTip(nights, preferences, regularity)
     val wake = wakeTip(nights, preferences)
+    val weekend = SleepCoachTip.WeekendShift.takeIf { regularity.notableJetlag }
     val efficiency = efficiencyTip(nights)
     val factors = factorTips(nights)
     val short = shortTip(nights, goals)
-    return listOfNotNull(regularity, wake, efficiency).plus(factors).plus(listOfNotNull(short)).take(MAX_TIPS)
+    return listOfNotNull(bedtime, wake, weekend, efficiency).plus(factors).plus(listOfNotNull(short)).take(MAX_TIPS)
 }
 
-/** The bedtime goal is only half the nights away, or the bedtimes vary by an hour, when there are enough of them. */
-private fun regularityTip(nights: List<DayEntry>, preferences: SleepCoachPreferences): SleepCoachTip? {
+/**
+ * The bedtime goal is only half the nights away, when there are enough of them, or the nights are irregular from one
+ * to the next ([RegularityLevel.Irregular]).
+ */
+private fun regularityTip(
+    nights: List<DayEntry>,
+    preferences: SleepCoachPreferences,
+    regularity: SleepRegularity,
+): SleepCoachTip? {
+    if (regularity.level == RegularityLevel.Irregular) return SleepCoachTip.RegularBedtime
     val bedtimes = nights.mapNotNull { it.bedtime }
     if (bedtimes.size < MIN_TIP_NIGHTS) return null
     val near = bedtimes.count { distance(it, preferences.bedtime) <= NEAR_BEDTIME_MINUTES }
@@ -197,6 +218,12 @@ private fun shortTip(nights: List<DayEntry>, goals: Goals): SleepCoachTip? {
     val slept = nights.takeLast(WEEK_NIGHTS).map { it.sleepHours }.filter { it > 0f }
     if (slept.size < MIN_TIP_NIGHTS) return null
     return SleepCoachTip.ShortNights.takeIf { slept.average() < goals.sleepHours - 0.5f }
+}
+
+/** The regularity of the coach's nights, up to the last of [days] (the coach's two weeks, so two weekends). */
+private fun regularity(days: List<DayEntry>): SleepRegularity {
+    val today = days.lastOrNull()?.date ?: return SleepRegularity(null, 0, null, 0, 0)
+    return sleepRegularity(days.takeLast(WINDOW_NIGHTS), today)
 }
 
 /** The shorter way around the clock between two times of day, in minutes. */

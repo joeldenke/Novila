@@ -511,4 +511,11 @@
     <string name="cycle_lighter_yes">Lighter session</string>
     <string name="cycle_lighter_no">As planned</string>
     <string name="coach_note_lighter">You chose a lighter session today. One set less, or a shorter cardio, and the rest of the week as planned.</string>
+    <string name="load_title">Training load</string>
+    <string name="load_heavier">These seven days are heavier than usual, about %1$d %% more than the three weeks before. Fine now and then; let the next week build more gently.</string>
+    <string name="load_lighter">These seven days are lighter than usual, about %1$d %% less than the three weeks before. A lighter week gives the body time to recover.</string>
+    <string name="load_usual">These seven days are about as heavy as the three weeks before.</string>
+    <string name="load_unknown">After a few weeks of training, Novila compares each week with your usual one.</string>
+    <string name="load_uniform">The days have been about equally hard. An easy day or a rest day between harder ones makes it easier to recover.</string>
+    <string name="load_footer">Load is effort times minutes. %1$d of %2$d sessions with the effort you gave; the others count as moderate.</string>
 </resources>

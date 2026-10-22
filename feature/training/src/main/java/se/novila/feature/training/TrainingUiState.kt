@@ -2,6 +2,7 @@ package se.novila.feature.training
 
 import se.novila.coach.CoachPlan
 import se.novila.coach.CoachPreferences
+import se.novila.exercise.TrainingLoad
 import se.novila.exercise.TrainingProgram
 import se.novila.exercise.Workout
 import se.novila.model.CardioLog
@@ -25,6 +26,8 @@ data class TrainingUiState(
     val nextProgram: TrainingProgram? = null,
     /** Today in the user's cycle, or null when they don't follow it. */
     val cycle: CycleToday? = null,
+    /** The last seven days' training load against the usual, or null when nothing was trained in them. */
+    val load: TrainingLoad? = null,
 )
 
 /**

@@ -82,4 +82,13 @@
     <string name="sleep_breathing_title">Breathing and relaxation</string>
     <string name="sleep_breathing_body">A few calm minutes before bed: calm breathing, box breathing or 4-7-8.</string>
     <string name="sleep_coach_breathing">Calm breathing before bed</string>
+    <string name="sleep_coach_tip_weekend_shift">Your weekend nights are an hour or more later than your weekday ones. Getting up within an hour of your weekday time, weekends too, keeps your rhythm.</string>
+    <string name="sleep_regularity_title">How regular your sleep is</string>
+    <string name="sleep_regularity_empty">Log when you go to bed and wake up a few nights in a row, and Novila shows how regular your sleep is. %1$d of %2$d nights in a row.</string>
+    <string name="sleep_regularity_steady">Steady. Your nights are much the same from one to the next: %1$d of 100, over %2$d nights in a row.</string>
+    <string name="sleep_regularity_fairly_steady">Fairly steady. Your nights move a little from one to the next: %1$d of 100, over %2$d nights in a row.</string>
+    <string name="sleep_regularity_irregular">Irregular. Your nights move quite a lot from one to the next: %1$d of 100, over %2$d nights in a row. Steady times, weekends too, help.</string>
+    <string name="sleep_regularity_weekend_later">At weekends the middle of your sleep is %1$s later than on weekdays.</string>
+    <string name="sleep_regularity_weekend_earlier">At weekends the middle of your sleep is %1$s earlier than on weekdays.</string>
+    <string name="sleep_regularity_footer">From the times you log, or your watch. In studies, regular sleep is linked to health at least as strongly as long sleep.</string>
 </resources>

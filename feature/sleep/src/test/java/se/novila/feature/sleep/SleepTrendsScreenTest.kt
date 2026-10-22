@@ -18,6 +18,7 @@ import se.novila.designsystem.theme.NovilaTheme
 import se.novila.model.Goals
 import se.novila.model.HistoryRange
 import se.novila.model.SleepAnalysis
+import se.novila.model.SleepRegularity
 import se.novila.model.analyzeSleep
 import se.novila.ui.preview.PreviewData
 
@@ -28,6 +29,7 @@ class SleepTrendsScreenTest {
     private fun show(
         range: HistoryRange = HistoryRange.Week,
         analysis: SleepAnalysis = analyzeSleep(PreviewData.days()),
+        regularity: SleepRegularity = SleepRegularity(null, 0, null, 0, 0),
         onRange: (HistoryRange) -> Unit = {},
     ) {
         composeRule.setContent {
@@ -36,6 +38,7 @@ class SleepTrendsScreenTest {
                     history = PreviewData.history(range),
                     goals = Goals(),
                     analysis = analysis,
+                    regularity = regularity,
                     onRange = onRange,
                     contentPadding = PaddingValues(),
                 )
@@ -70,5 +73,16 @@ class SleepTrendsScreenTest {
         scrollTo("the four weeks before", substring = true).assertExists()
         scrollTo("Year").performClick()
         assertEquals(listOf(HistoryRange.Year), ranges)
+    }
+
+    @Test fun `regularity says how steady the nights are, and how much the weekend moves them`() {
+        show(regularity = SleepRegularity(index = 85, pairs = 20, socialJetlagMinutes = 75, 20, 8))
+        scrollTo("Steady", substring = true).assertExists()
+        scrollTo("later than on weekdays", substring = true).assertExists()
+    }
+
+    @Test fun `regularity waits for nights in a row with times`() {
+        show(regularity = SleepRegularity(null, pairs = 2, null, 2, 1))
+        scrollTo("2 of 5 nights in a row", substring = true).assertExists()
     }
 }
