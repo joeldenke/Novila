@@ -73,7 +73,7 @@ enum class CyclePhase { Early, Late }
  * [PERIOD_GAP_DAYS] days before, so a day the user forgot to log doesn't start a new period.
  */
 fun periodStarts(periodDays: Set<LocalDate>): List<LocalDate> = periodDays.sorted().filter { day ->
-    (1..PERIOD_GAP_DAYS).none { day.minusDays(it) in periodDays }
+    (1..PERIOD_GAP_DAYS).none { day.minusDays(it.toLong()) in periodDays }
 }
 
 /**
