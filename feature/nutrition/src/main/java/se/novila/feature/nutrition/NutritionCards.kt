@@ -11,13 +11,13 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import se.novila.designsystem.component.NovilaCard
-import se.novila.designsystem.component.NovilaMeter
 import se.novila.designsystem.component.NovilaHeroBar
 import se.novila.designsystem.component.NovilaHeroBars
 import se.novila.designsystem.component.NovilaHeroPanel
 import se.novila.designsystem.component.NovilaHeroPart
 import se.novila.designsystem.component.NovilaHeroRing
 import se.novila.designsystem.component.NovilaHeroText
+import se.novila.designsystem.component.NovilaMeter
 import se.novila.designsystem.component.NovilaSky
 import se.novila.designsystem.component.NovilaStepper
 import se.novila.designsystem.component.NovilaText
