@@ -180,6 +180,15 @@ ingen `QUERY_ALL_PACKAGES` (bara `<queries>` för Health Connect och AICore), in
 - [ ] Den signerade bundlen laddad upp som AAB.
 - [ ] Integritetspolicyn publicerad på en fast adress och inlagd i Play Console.
 - [ ] App content ifyllt enligt tabellerna ovan; Health Connect-deklarationen inskickad och godkänd.
-- [ ] Skillen `play-policy-insights` körd mot den aktuella koden.
+- [ ] Skillen `play-policy-insights` körd mot den aktuella koden. En manuell genomgång (oktober 2026) hittade två
+      saker, som skillen ska bekräfta:
+  - [ ] **AI-genererat innehåll:** Play kräver att appar som genererar innehåll med AI låter användaren rapportera
+        eller flagga stötande innehåll till utvecklaren inifrån appen. Coachens Gemini Nano-kommentar
+        (`CoachScreen`) har ingen sådan knapp, och utan `INTERNET` kan appen inte skicka en rapport själv. Ägaren
+        väljer: en *Rapportera*-knapp som öppnar ett mejl till utvecklaren med kommentaren ifylld, eller att
+        kommentaren stängs av i den första releasen.
+  - [ ] **16 KB-sidstorlek:** appen bär native-bibliotek (`arm64-v8a` m.fl., från biblioteken) och har targetSdk
+        35+, så Play kräver att de är 16 KB-justerade. Kontrollera i Play Consoles *App bundle explorer* efter
+        första uppladdningen.
 - [ ] Intern testning (Internal testing track) med Health Connect-dialogen, påminnelser och widgeten på en riktig
       enhet med Android 14+ och en med Android 13 eller äldre.
