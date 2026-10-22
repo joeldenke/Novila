@@ -97,6 +97,22 @@ Nano for more than the comment, or data that leaves the app.
   only, read in the foreground.
 - [x] **Breathing and relaxation:** short guided sessions (calm breathing, box breathing, 4-7-8) with a visual pacer,
   opened from Sleep and the sleep coach's evening routine. Nothing is logged (#76)
+- [ ] **The menstrual cycle, for those who want it.** Never a gender question in the introduction: gender does not say
+  who has a period (menopause, hormonal IUD, trans people), and the introduction only asks what the app uses. The
+  evidence: the phase's effect on performance is on average small and very individual (McNulty et al. 2020), training
+  planned by phase has weak support, and symptoms (cramps, fatigue, poorer sleep before the period) are what matter.
+  Never predict ovulation or fertile days (contraception and fertility apps are medical devices under MDR, see *No
+  medical claims* in `CLAUDE.md`), and no promises of training "optimized" by phase. Cycle data is special category
+  health data (GDPR article 9); say plainly next to the choice that it never leaves the phone. In three steps:
+  - [ ] **Period as a sleep cause** (`SleepFactor`), so the sleep links test it like the other causes. No new
+    permission and no gender; a new `DayEntryCodec` version.
+  - [ ] **"Follow your cycle"** in *My goals*, off by default: log period days and symptoms in a sheet. On a symptom
+    day the coach offers a lighter session but never switches by itself. Recovery compares with the same phase of the
+    last cycle instead of the last days: in the luteal phase the resting heart rate normally rises a few beats and HRV
+    falls, so today `analyzeRecovery` can read a normal cycle as poor recovery and lighten sessions every month
+    without anyone knowing why.
+  - [ ] **Period days from Health Connect** (`READ_MENSTRUATION`) **(ok)**: a new badging line, privacy policy and
+    Play declaration.
 
 ### 6. The coach as a whole
 - [x] **One coach for all parts:** "You slept 5.5 h. Do a lighter session and go to bed at 22:30." `dailyCoach`
@@ -105,6 +121,20 @@ Nano for more than the comment, or data that leaves the app.
   in `:core:model` joins the parts with the same honest test as the sleep links, shown in a *Connections* card on
   Today. Mood and energy are read from the stored fields, so those two only appear when they were logged (they left
   Today in October 2026).
+- [ ] **Training load (session RPE):** RPE × minutes per session gives the week's load, and its monotony and strain
+  (Foster) show when a week gets too heavy or too uniform. The ratio of the last week to the last four (ACWR) is
+  debated as an injury predictor, so it is only calm guidance ("this week is heavier than usual"), never a warning.
+  Built on data the app already has, deterministic and tested.
+- [ ] **Sleep regularity:** a regularity index (Sleep Regularity Index) and social jetlag (the sleep midpoint on
+  weekdays against weekends) from the bedtimes and wake-ups already logged. Regularity is linked to health in studies
+  at least as strongly as length. Shown on Sleep and weighed by the sleep coach.
+- [ ] **Readiness that sums it up:** an explained readiness from last night's sleep, recovery, the training load and
+  any cycle symptoms ("A calm day is suggested, because …"). `dailyCoach` does part of it; make the weighting clear
+  and tested, never a score without reasons.
+- [ ] **Step goals by age:** benefits level off around 6,000–8,000 steps a day from 60 and 8,000–10,000 below
+  (Paluch et al., Lancet 2022), a better basis for the suggested step goal.
+- [ ] **Cardio fitness (VO2max) from the watch** via Health Connect **(ok)**: a good long-term measure, a new data type
+  in the Play declaration.
 - [ ] **Achievements and streaks**, restrained and without rewarding overtraining
 - [ ] **Gemini Nano in more roles**, e.g. a weekly summary **(ok)**
 
@@ -171,11 +201,15 @@ Next, first what needs no approval and is used every day, then what needs the ow
     ← done (shortcuts and the tile, approved by the owner; servings from the widget remain)
 17. More exercises and equipment: variations, dumbbells, resistance bands and gym, via the `add-exercise` skill.
     Makes progression worth more and gives the coach more to choose from. ← done
-18. Achievements and streaks: restrained, built on what the user already logs, and never rewarding overtraining
+18. Period as a sleep cause, and "Follow your cycle" with recovery that knows the cycle: it corrects something the
+    app gets wrong today for many users. Period days from Health Connect follow **(ok)**.
+19. Training load and sleep regularity: both build on data the app already logs, and make the readiness that sums it
+    up possible.
+20. Achievements and streaks: restrained, built on what the user already logs, and never rewarding overtraining
     (recovery and rest days count).
-19. Export and import as a local file **(ok)**: a backup without the cloud before users have much data to lose.
-20. Gemini Nano weekly summary **(ok)**: explains the week's numbers, like the coach's comment, never new advice.
-21. Count reps with the camera **(ok)**: needs `CAMERA` and an on-device pose model, which changes the privacy policy
+21. Export and import as a local file **(ok)**: a backup without the cloud before users have much data to lose.
+22. Gemini Nano weekly summary **(ok)**: explains the week's numbers, like the coach's comment, never new advice.
+23. Count reps with the camera **(ok)**: needs `CAMERA` and an on-device pose model, which changes the privacy policy
     and the Play declaration.
-22. iOS via Kotlin and Compose Multiplatform: last, when the Android app is complete. Moving the pure Kotlin modules to
+24. iOS via Kotlin and Compose Multiplatform: last, when the Android app is complete. Moving the pure Kotlin modules to
     shared code can start earlier without changing the app.
