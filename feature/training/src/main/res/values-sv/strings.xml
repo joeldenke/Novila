@@ -425,17 +425,6 @@
     <string name="coach_note_rehab_seek_care">Senaste passet gjorde ont %1$d av 10 redan på första nivån. Vila några dagar och prata med en fysioterapeut eller vårdcentralen innan du fortsätter.</string>
     <string name="coach_note_rehab_done">Sista nivån går lugnt: %1$d pass i rad med smärta högst 3 av 10. Fortsätt så, eller byt mål till Allsidig hälsa för vanlig träning.</string>
     <string name="coach_rehab_change_phase">Byt till nivå %1$d</string>
-    <string name="coach_ai_title">Coachens kommentar</string>
-    <string name="coach_ai_unavailable">Gemini Nano finns inte på den här telefonen, så coachen förklarar veckan med sina egna skäl ovan.</string>
-    <string name="coach_ai_downloadable">Din telefon kan köra Gemini Nano, Googles AI-modell som körs i telefonen. Hämta den så kan coachen förklara veckan med egna ord. Planen och dina svar lämnar aldrig telefonen.</string>
-    <string name="coach_ai_download">Hämta Gemini Nano</string>
-    <string name="coach_ai_downloading">Telefonen hämtar Gemini Nano. Det kan ta en stund.</string>
-    <string name="coach_ai_ready">Gemini Nano kan förklara veckan med egna ord, direkt i telefonen.</string>
-    <string name="coach_ai_write">Låt coachen förklara veckan</string>
-    <string name="coach_ai_rewrite">Skriv en ny kommentar</string>
-    <string name="coach_ai_writing">Coachen skriver…</string>
-    <string name="coach_ai_failed">Det gick inte att skriva något just nu. Försök igen om en stund.</string>
-    <string name="coach_ai_disclaimer">Skrivet av Gemini Nano i din telefon. AI kan ha fel: det är programmet ovan som gäller.</string>
 
     <!-- Kondition loggad för hand -->
     <string name="cardio_title">Kondition i dag</string>

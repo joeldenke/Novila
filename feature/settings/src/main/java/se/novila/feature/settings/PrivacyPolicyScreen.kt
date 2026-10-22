@@ -19,7 +19,6 @@ private val PrivacySections = listOf(
     R.string.privacy_what_title to R.string.privacy_what_body,
     R.string.privacy_where_title to R.string.privacy_where_body,
     R.string.privacy_health_connect_title to R.string.privacy_health_connect_body,
-    R.string.privacy_ai_title to R.string.privacy_ai_body,
     R.string.privacy_shared_title to R.string.privacy_shared_body,
     R.string.privacy_screen_title to R.string.privacy_screen_body,
     R.string.privacy_control_title to R.string.privacy_control_body,

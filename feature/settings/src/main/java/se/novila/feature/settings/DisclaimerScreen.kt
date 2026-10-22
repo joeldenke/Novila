@@ -20,7 +20,6 @@ private val DisclaimerSections = listOf(
     R.string.disclaimer_ask_title to R.string.disclaimer_ask_body,
     R.string.disclaimer_stop_title to R.string.disclaimer_stop_body,
     R.string.disclaimer_rehab_title to R.string.disclaimer_rehab_body,
-    R.string.disclaimer_ai_title to R.string.disclaimer_ai_body,
     R.string.disclaimer_sources_title to R.string.disclaimer_sources_body,
 )
 

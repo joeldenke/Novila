@@ -7,17 +7,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import se.novila.anatomy.Equipment
-import se.novila.anatomy.ExerciseLibrary
-import se.novila.coach.AssistantAvailability
 import se.novila.coach.BodyArea
 import se.novila.coach.CoachGoal
 import se.novila.coach.CoachPreferences
-import se.novila.coach.CoachPromptInput
 import se.novila.coach.Consideration
 import se.novila.coach.RehabArea
 import se.novila.designsystem.component.NovilaAccentButton
@@ -38,30 +34,21 @@ import se.novila.ui.R as UiR
  * The training coach: the user's goal, time, focus and considerations in, the week the coach plans out,
  * with its reasons. Before the coach is set up the answers are only tried out, and [onCreate] makes the
  * plan the week's program; after that every change applies right away and [onSuggest] asks for another.
- * With the rehab goal, a rehab area and phase replace the focus areas. Where Gemini Nano runs on the phone,
- * [assistant] lets it explain the week in its own words ([onWriteMessage]), after [onDownloadAssistant].
+ * With the rehab goal, a rehab area and phase replace the focus areas.
  */
 @Composable
 fun CoachScreen(
     coach: CoachUiState,
-    assistant: AssistantUiState,
     today: DayOfWeek,
     onChange: (CoachPreferences) -> Unit,
     onCreate: () -> Unit,
     onSuggest: () -> Unit,
     onReset: () -> Unit,
     onOpenExercise: (String) -> Unit,
-    onDownloadAssistant: () -> Unit,
-    onWriteMessage: (CoachPromptInput) -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
     val preferences = coach.preferences
-    val promptInput = CoachPromptInput(
-        locale = LocalConfiguration.current.locales[0],
-        exerciseNames = ExerciseLibrary.all.associate { it.id to moveName(it.id) },
-        notes = coach.plan.notes.map { coachNoteText(it) },
-    )
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
         item(key = "intro") {
             NovilaCard(
@@ -197,15 +184,6 @@ fun CoachScreen(
                 }
             }
         }
-        if (assistant.availability != AssistantAvailability.Unknown) {
-            item(key = "assistant") {
-                AssistantCard(
-                    assistant = assistant,
-                    onDownload = onDownloadAssistant,
-                    onWrite = { onWriteMessage(promptInput) },
-                )
-            }
-        }
         item(key = "week") {
             TrainingProgramCard(coach.plan.program, today)
         }
@@ -267,72 +245,6 @@ private fun RehabCard(preferences: CoachPreferences, onChange: (CoachPreferences
     }
 }
 
-/**
- * Gemini Nano's comment on the week: how to get the model, the comment itself and that it can be wrong.
- * The program on the screen stays what counts.
- */
-@Composable
-private fun AssistantCard(assistant: AssistantUiState, onDownload: () -> Unit, onWrite: () -> Unit) {
-    val muted = NovilaTheme.colors.onSurfaceVariant
-    NovilaCard(title = stringResource(R.string.coach_ai_title), role = NovilaTheme.pillars.training) {
-        when {
-            assistant.availability == AssistantAvailability.Unavailable -> NovilaText(
-                stringResource(R.string.coach_ai_unavailable),
-                style = NovilaTheme.typography.bodyMedium,
-                color = muted,
-            )
-
-            assistant.availability == AssistantAvailability.Downloadable -> {
-                NovilaText(
-                    stringResource(R.string.coach_ai_downloadable),
-                    style = NovilaTheme.typography.bodyMedium,
-                    color = muted,
-                )
-                NovilaButton(
-                    stringResource(R.string.coach_ai_download),
-                    onClick = onDownload,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
-
-            assistant.availability == AssistantAvailability.Downloading -> NovilaText(
-                stringResource(R.string.coach_ai_downloading),
-                style = NovilaTheme.typography.bodyMedium,
-                color = muted,
-            )
-
-            assistant.writing -> NovilaText(
-                stringResource(R.string.coach_ai_writing),
-                style = NovilaTheme.typography.bodyMedium,
-                color = muted,
-            )
-
-            else -> {
-                val message = assistant.message
-                if (message != null) {
-                    NovilaText(message, style = NovilaTheme.typography.bodyMedium)
-                    NovilaText(
-                        stringResource(R.string.coach_ai_disclaimer),
-                        style = NovilaTheme.typography.bodySmall,
-                        color = muted,
-                    )
-                } else {
-                    NovilaText(
-                        stringResource(if (assistant.failed) R.string.coach_ai_failed else R.string.coach_ai_ready),
-                        style = NovilaTheme.typography.bodyMedium,
-                        color = muted,
-                    )
-                }
-                NovilaButton(
-                    stringResource(if (message != null) R.string.coach_ai_rewrite else R.string.coach_ai_write),
-                    onClick = onWrite,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
-        }
-    }
-}
-
 /** [items] as chips, [columns] to a row, each as wide as the others. */
 @Composable
 private fun <T> ChipRows(items: List<T>, columns: Int, chip: @Composable (T, Modifier) -> Unit) {
@@ -345,19 +257,16 @@ private fun <T> ChipRows(items: List<T>, columns: Int, chip: @Composable (T, Mod
 }
 
 @Composable
-private fun CoachScreenContent(coach: CoachUiState, assistant: AssistantUiState = AssistantUiState()) {
+private fun CoachScreenContent(coach: CoachUiState) {
     NovilaTheme {
         CoachScreen(
             coach = coach,
-            assistant = assistant,
             today = PreviewData.today.date.dayOfWeek,
             onChange = {},
             onCreate = {},
             onSuggest = {},
             onReset = {},
             onOpenExercise = {},
-            onDownloadAssistant = {},
-            onWriteMessage = {},
             contentPadding = PaddingValues(),
         )
     }
@@ -365,7 +274,7 @@ private fun CoachScreenContent(coach: CoachUiState, assistant: AssistantUiState 
 
 @Preview(showBackground = true, heightDp = 3200)
 @Composable
-private fun CoachScreenPreview() = CoachScreenContent(TrainingPreviewData.coach, TrainingPreviewData.assistantMessage)
+private fun CoachScreenPreview() = CoachScreenContent(TrainingPreviewData.coach)
 
 @Preview(showBackground = true)
 @Composable
@@ -373,7 +282,4 @@ private fun CoachScreenNewPreview() = CoachScreenContent(TrainingPreviewData.new
 
 @Preview(showBackground = true, heightDp = 2600)
 @Composable
-private fun CoachScreenRehabPreview() = CoachScreenContent(
-    TrainingPreviewData.rehabCoach,
-    AssistantUiState(availability = AssistantAvailability.Downloadable),
-)
+private fun CoachScreenRehabPreview() = CoachScreenContent(TrainingPreviewData.rehabCoach)

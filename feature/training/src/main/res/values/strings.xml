@@ -431,17 +431,6 @@
     <string name="coach_note_rehab_seek_care">The latest session hurt %1$d of 10 already at the first level. Rest for a few days and talk to a physiotherapist or your health centre before going on.</string>
     <string name="coach_note_rehab_done">The last level is calm: %1$d sessions in a row with pain at most 3 of 10. Keep going, or change the goal to All-round health for ordinary training.</string>
     <string name="coach_rehab_change_phase">Change to level %1$d</string>
-    <string name="coach_ai_title">The coach\'s comment</string>
-    <string name="coach_ai_unavailable">Gemini Nano is not available on this phone, so the coach explains the week with its own reasons above.</string>
-    <string name="coach_ai_downloadable">Your phone can run Gemini Nano, Google\'s AI model that runs on the phone. Get it and the coach can explain your week in its own words. Your plan and answers never leave the phone.</string>
-    <string name="coach_ai_download">Get Gemini Nano</string>
-    <string name="coach_ai_downloading">Your phone is getting Gemini Nano. It can take a while.</string>
-    <string name="coach_ai_ready">Gemini Nano can explain your week in its own words, right on your phone.</string>
-    <string name="coach_ai_write">Let the coach explain the week</string>
-    <string name="coach_ai_rewrite">Write a new comment</string>
-    <string name="coach_ai_writing">The coach is writing…</string>
-    <string name="coach_ai_failed">Nothing could be written right now. Try again in a while.</string>
-    <string name="coach_ai_disclaimer">Written by Gemini Nano on your phone. AI can be wrong: the program above is what counts.</string>
 
     <!-- Cardio logged by hand -->
     <string name="cardio_title">Cardio today</string>

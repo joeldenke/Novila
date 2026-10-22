@@ -9,7 +9,7 @@ Se `docs/play-console.md` för hur adressen publiceras.
 
 ## English
 
-*Updated 21 October 2026*
+*Updated 22 October 2026*
 
 Novila is built so that your health data stays with you. This policy says what the app handles, where it is
 kept, who can see it and what you can do about it.
@@ -37,11 +37,6 @@ memory: Novila never saves it, never writes to Health Connect and never shares i
 Health Connect follows the Health Connect permissions policy, including its Limited Use requirements. You can turn
 off access at any time in Health Connect.
 
-### The coach's AI comment
-
-If your phone has Gemini Nano, the coach can write a comment on your week when you ask for one. The model runs on
-the phone, in Android's AICore, and the plan it reads never leaves the phone.
-
 ### Shared with no one
 
 Novila has no ads, no analytics and no tracking. Your data is not sold, not shared with anyone and not used for
@@ -62,8 +57,7 @@ nothing more for the developer to delete or hand over. Data in Health Connect is
 
 ### Google Play and Android
 
-Novila is installed through Google Play, and Health Connect, AICore and Gemini Nano are parts of Android made by
-Google. They follow [Google's privacy policy](https://policies.google.com/privacy). If you share usage and
+Novila is installed through Google Play, and Health Connect is part of Android made by Google. They follow [Google's privacy policy](https://policies.google.com/privacy). If you share usage and
 diagnostics with Google, Google Play may give the developer crash reports, which do not contain what you log in
 Novila.
 
@@ -81,7 +75,7 @@ new version comes with an app update, with its date above.
 
 ## Svenska
 
-*Uppdaterad 21 oktober 2026*
+*Uppdaterad 22 oktober 2026*
 
 Novila är byggd så att din hälsodata stannar hos dig. Den här policyn säger vad appen hanterar, var det sparas,
 vem som kan se det och vad du kan göra åt det.
@@ -109,11 +103,6 @@ sparar den aldrig, skriver aldrig till Health Connect och delar den aldrig. Novi
 Connect följer Health Connects behörighetspolicy, inklusive kraven på begränsad användning (Limited Use). Du kan
 när som helst stänga av åtkomsten i Health Connect.
 
-### Coachens AI-kommentar
-
-Har din telefon Gemini Nano kan coachen skriva en kommentar om din vecka när du ber om det. Modellen körs i
-telefonen, i Androids AICore, och planen den läser lämnar aldrig telefonen.
-
 ### Delas inte med någon
 
 Novila har ingen reklam, inga analysverktyg och ingen spårning. Din data säljs inte, delas inte med någon och
@@ -134,7 +123,7 @@ finns inget mer för utvecklaren att radera eller lämna ut. Data i Health Conne
 
 ### Google Play och Android
 
-Novila installeras via Google Play, och Health Connect, AICore och Gemini Nano är delar av Android som Google gör.
+Novila installeras via Google Play, och Health Connect är en del av Android som Google gör.
 De följer [Googles integritetspolicy](https://policies.google.com/privacy?hl=sv). Delar du användning och
 diagnostik med Google kan Google Play ge utvecklaren kraschrapporter, som inte innehåller det du loggar i Novila.
 
