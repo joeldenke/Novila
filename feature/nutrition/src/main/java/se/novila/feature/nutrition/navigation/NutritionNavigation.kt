@@ -10,6 +10,7 @@ import androidx.navigation3.runtime.NavKey
 import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.serialization.Serializable
+import se.novila.designsystem.component.NovilaSky
 import se.novila.feature.nutrition.DrinkActions
 import se.novila.feature.nutrition.NutritionNavigation
 import se.novila.feature.nutrition.NutritionScreen
@@ -81,6 +82,7 @@ fun EntryProviderScope<NavKey>.nutritionEntries(
             onCompleteSetup = viewModel::openSetup,
             quickPicks = quickPicks,
             onToggleFavorite = viewModel::toggleFavorite,
+            sky = NovilaSky.at(state.hour),
         )
     }
     entry<RecipesRoute>(metadata = sharedScreen(SharedScreen.Recipes)) {

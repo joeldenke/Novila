@@ -5,6 +5,9 @@
     <!-- Kost -->
     <string name="nutrition_score_title">Dagens kostpoäng</string>
     <string name="nutrition_score_title_day">Kostpoäng</string>
+    <string name="nutrition_hero_day">%1$s: %2$d av 100</string>
+    <string name="nutrition_hero_day_missing">%1$s: inget loggat</string>
+    <string name="nutrition_breakdown_title">Så räknas poängen</string>
     <string name="nutrition_next_title">Nästa steg</string>
     <string name="nutrition_done_title">Alla livsmedelsgrupper i mål</string>
     <string name="nutrition_done_body">Varje livsmedelsgrupp har nått sitt dagsmål.</string>

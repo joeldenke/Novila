@@ -41,6 +41,7 @@ internal object NovilaPalette {
 
     // Falu red
     val Falu10 = Color(0xFF5A1A0E)
+    val Falu17 = Color(0xFF2E1A16)
     val Falu20 = Color(0xFF5E1A10)
     val Falu25 = Color(0xFF43211A)
     val Falu40 = Color(0xFF9A3324)
@@ -264,6 +265,8 @@ internal val NovilaDarkAccent = NovilaAccentColors(sun = NovilaPalette.SunDark, 
 /**
  * The pine hero card at the top of a dashboard: a vertical-ish gradient from [start] to [end],
  * [content] for its text, the [sun] for its emblem and pillar-tinted progress segments on [track].
+ * Sleep's hero panel is a night lake from [sleepStart] to [sleepEnd], Nutrition's falu red from [nutritionStart]
+ * to [nutritionEnd], with the same content, track and sun.
  */
 @Immutable
 data class NovilaHeroColors(
@@ -275,6 +278,10 @@ data class NovilaHeroColors(
     val training: Color,
     val sleep: Color,
     val nutrition: Color,
+    val sleepStart: Color,
+    val sleepEnd: Color,
+    val nutritionStart: Color,
+    val nutritionEnd: Color,
 )
 
 /** Cards sit on the birch background as a lighter surface with a hairline outline. */
@@ -294,6 +301,10 @@ internal val NovilaLightHero = with(NovilaPalette) {
         training = Pine80,
         sleep = Lake80,
         nutrition = Falu80,
+        sleepStart = Lake10,
+        sleepEnd = Lake40,
+        nutritionStart = Falu10,
+        nutritionEnd = Falu40,
     )
 }
 
@@ -307,6 +318,10 @@ internal val NovilaDarkHero = with(NovilaPalette) {
         training = Pine80,
         sleep = Lake80,
         nutrition = Falu80,
+        sleepStart = Lake16,
+        sleepEnd = Lake25,
+        nutritionStart = Falu17,
+        nutritionEnd = Falu25,
     )
 }
 

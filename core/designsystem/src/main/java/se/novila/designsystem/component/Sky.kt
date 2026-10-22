@@ -140,6 +140,86 @@ internal fun Modifier.heroMotionLines(hero: NovilaHeroColors, sky: NovilaSky): M
     }
 }
 
+/**
+ * Sleep's background: a night lake. The [sky]'s glow above a still horizon, ripples that lie closer together towards
+ * it and grow towards the viewer, and the moon's reflection as strokes in its color that narrow as they come closer.
+ */
+internal fun Modifier.heroRipples(hero: NovilaHeroColors, sky: NovilaSky): Modifier = drawWithCache {
+    val horizon = size.height * RIPPLE_HORIZON
+    val light = size.width - 36.dp.toPx()
+    val step = 6.dp.toPx()
+    val ripples = (1..RIPPLES).map { ring ->
+        val depth = ring / RIPPLES.toFloat()
+        val y = horizon + (size.height - horizon) * depth * depth
+        val amplitude = (1f + 3f * depth).dp.toPx()
+        val wave = (40f + 50f * depth).dp.toPx()
+        val path = Path()
+        var x = 0f
+        while (x <= size.width + step) {
+            val dy = amplitude * sin(2 * PI * x / wave + ring * 1.3).toFloat()
+            if (x == 0f) path.moveTo(x, y + dy) else path.lineTo(x, y + dy)
+            x += step
+        }
+        Triple(path, y, depth)
+    }
+    val thin = Stroke(1.2.dp.toPx())
+    val reflection = 2.4.dp.toPx()
+    val widest = 44.dp.toPx()
+    onSky(hero, sky) {
+        drawLine(hero.content.copy(alpha = 0.16f), Offset(0f, horizon), Offset(size.width, horizon), 1.dp.toPx())
+        ripples.forEach { (path, y, depth) ->
+            drawPath(path, hero.content.copy(alpha = 0.13f - 0.06f * depth), style = thin)
+            val half = widest * (1f - 0.8f * depth) / 2f
+            drawLine(
+                hero.sun.copy(alpha = 0.5f - 0.3f * depth),
+                Offset(light - half, y),
+                Offset(light + half, y),
+                reflection,
+                StrokeCap.Round,
+            )
+        }
+    }
+}
+
+/**
+ * Nutrition's background: the [sky]'s glow over a horizon in the sun's color, and the furrows of a field running
+ * from the bottom edge towards one point on it, like rows of something growing.
+ */
+internal fun Modifier.heroFurrows(hero: NovilaHeroColors, sky: NovilaSky): Modifier = drawWithCache {
+    val horizon = size.height * FURROW_HORIZON
+    val vanishing = Offset(size.width * 0.7f, horizon)
+    val furrows = (0 until FURROWS).map { i ->
+        val bottom = Offset(size.width * (-0.5f + 2f * i / (FURROWS - 1)), size.height)
+        // Starting a little below the horizon, so the rows don't run together into a point.
+        val start = Offset(
+            vanishing.x + (bottom.x - vanishing.x) * FURROW_START,
+            vanishing.y + (bottom.y - vanishing.y) * FURROW_START,
+        )
+        start to bottom
+    }
+    val thin = 1.2.dp.toPx()
+    val bold = Stroke(2.2.dp.toPx(), cap = StrokeCap.Round)
+    val line = Path().apply {
+        moveTo(-4.dp.toPx(), horizon)
+        lineTo(size.width + 4.dp.toPx(), horizon)
+    }
+    onSky(hero, sky) {
+        furrows.forEach { (start, end) ->
+            drawLine(
+                Brush.linearGradient(
+                    listOf(hero.content.copy(alpha = 0.04f), hero.content.copy(alpha = 0.14f)),
+                    start,
+                    end,
+                ),
+                start,
+                end,
+                thin,
+            )
+        }
+        drawPath(line, hero.sun.copy(alpha = 0.5f), style = bold)
+    }
+}
+
 /** Draws the [sky]'s glow behind the content, then the background's own [lines]. */
 private fun CacheDrawScope.onSky(
     hero: NovilaHeroColors,
@@ -160,3 +240,8 @@ private const val CONTOURS = 12
 private const val CONTOUR_POINTS = 45
 private const val CONTOUR_FLATTEN = 0.8
 private const val MOTION_LINES = 8
+private const val RIPPLES = 7
+private const val RIPPLE_HORIZON = 0.5f
+private const val FURROWS = 13
+private const val FURROW_HORIZON = 0.42f
+private const val FURROW_START = 0.06f

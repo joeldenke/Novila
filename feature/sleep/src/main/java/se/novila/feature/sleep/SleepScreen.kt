@@ -1,7 +1,6 @@
 package se.novila.feature.sleep
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -11,16 +10,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import se.novila.designsystem.component.NovilaAccentButton
 import se.novila.designsystem.component.NovilaBottomSheet
-import se.novila.designsystem.component.NovilaButton
 import se.novila.designsystem.component.NovilaCard
 import se.novila.designsystem.component.NovilaEntries
 import se.novila.designsystem.component.NovilaEntry
 import se.novila.designsystem.component.NovilaEntryLayout
 import se.novila.designsystem.component.NovilaReveal
 import se.novila.designsystem.component.NovilaSheetContent
-import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.model.DayEntry
 import se.novila.model.Goals
@@ -36,7 +32,6 @@ import se.novila.sleep.WindDownMoment
 import se.novila.sleep.WindDownStep
 import se.novila.ui.common.DayPicker
 import se.novila.ui.common.ScreenList
-import se.novila.ui.common.clockText
 import se.novila.ui.common.hoursText
 import se.novila.ui.preview.PreviewData
 import java.time.LocalDate
@@ -86,11 +81,14 @@ fun SleepScreen(
         item(key = "day") { DayPicker(day.date, today, actions.onSelectDay, NovilaTheme.pillars.sleep) }
         item(key = "night") {
             NovilaReveal(order = 0) {
-                NightCard(day, goals, isToday, watch, fromWatch, actions, onLog = { logging = true })
+                SleepOverview(day, history.days, goals, isToday, fromWatch, onLog = { logging = true })
             }
         }
+        if (watch is SleepState.NeedsPermission) {
+            item(key = "watch") { NovilaReveal(order = 1) { WatchCard(watch, actions) } }
+        }
         item(key = "entries") {
-            NovilaReveal(order = 1) { NovilaEntries(sleepHubEntries(history, coach, actions)) }
+            NovilaReveal(order = 2) { NovilaEntries(sleepHubEntries(history, coach, actions)) }
         }
     }
     if (logging) {
@@ -107,67 +105,15 @@ internal fun NightSheet(day: DayEntry, goals: Goals, actions: SleepActions, isTo
     SleepDetailsCard(day, actions)
 }
 
-/**
- * The night in short: the hours against the goal, when the user slept and how it felt, and the button that logs it,
- * the sun while nothing is logged. Asks for nights from Health Connect while it isn't allowed to.
- */
+/** Asks for nights from Health Connect while it isn't allowed to, under the overview. */
 @Composable
-private fun NightCard(
-    day: DayEntry,
-    goals: Goals,
-    isToday: Boolean,
-    watch: SleepState,
-    fromWatch: Boolean,
-    actions: SleepActions,
-    onLog: () -> Unit,
-) {
-    val sleep = NovilaTheme.pillars.sleep
+private fun WatchCard(watch: SleepState.NeedsPermission, actions: SleepActions) {
     NovilaCard(
-        title = stringResource(if (isToday) R.string.sleep_title else R.string.sleep_title_day),
+        title = stringResource(R.string.sleep_watch_title),
         icon = painterResource(UiR.drawable.ic_sleep),
-        role = sleep,
+        role = NovilaTheme.pillars.sleep,
     ) {
-        NovilaText(hoursText(day.sleepHours), style = NovilaTheme.typography.headlineSmall)
-        val bedtime = day.bedtime
-        val wakeTime = day.wakeTime
-        val details = listOfNotNull(
-            if (bedtime != null && wakeTime != null) {
-                stringResource(R.string.sleep_night_times, clockText(bedtime), clockText(wakeTime))
-            } else {
-                null
-            },
-            day.sleepQuality.takeIf { it in 1..QualityLevels.size }?.let { stringResource(QualityLevels[it - 1]) },
-        )
-        if (details.isNotEmpty()) {
-            NovilaText(details.joinToString(" · "), style = NovilaTheme.typography.bodyMedium)
-        }
-        NovilaText(
-            stringResource(R.string.sleep_goal, hoursText(goals.sleepHours)),
-            style = NovilaTheme.typography.bodySmall,
-            color = NovilaTheme.colors.onSurfaceVariant,
-        )
-        if (fromWatch) {
-            NovilaText(
-                stringResource(R.string.sleep_from_watch),
-                style = NovilaTheme.typography.bodySmall,
-                color = NovilaTheme.colors.onSurfaceVariant,
-            )
-        }
-        if (day.sleepHours > 0f) {
-            NovilaButton(
-                text = stringResource(R.string.sleep_change_night),
-                onClick = onLog,
-                role = sleep,
-                modifier = Modifier.fillMaxWidth(),
-            )
-        } else {
-            NovilaAccentButton(
-                text = stringResource(R.string.sleep_log_night),
-                onClick = onLog,
-                modifier = Modifier.fillMaxWidth(),
-            )
-        }
-        if (watch is SleepState.NeedsPermission) WatchAccess(watch.denied, actions)
+        WatchAccess(watch.denied, actions)
     }
 }
 

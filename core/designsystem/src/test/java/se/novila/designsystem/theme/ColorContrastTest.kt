@@ -94,7 +94,14 @@ class ColorContrastTest {
     }
 
     @Test fun `hero text meets 4,5 to 1 across its gradient`() = assertPairs(TEXT, heroes) { hero ->
-        listOf("content/start" to (hero.content to hero.start), "content/end" to (hero.content to hero.end))
+        listOf(
+            "content/start" to (hero.content to hero.start),
+            "content/end" to (hero.content to hero.end),
+            "content/sleepStart" to (hero.content to hero.sleepStart),
+            "content/sleepEnd" to (hero.content to hero.sleepEnd),
+            "content/nutritionStart" to (hero.content to hero.nutritionStart),
+            "content/nutritionEnd" to (hero.content to hero.nutritionEnd),
+        )
     }
 
     @Test fun `hero sun and progress stand out across its gradient`() = assertPairs(NON_TEXT, heroes) { hero ->
@@ -106,6 +113,15 @@ class ColorContrastTest {
                 "nutrition" to (hero.nutrition to ground),
             )
         } + ("check/training" to (hero.start to hero.training)) // A done day in NovilaWeekStrip.
+    }
+
+    // Sleep's and Nutrition's panels: the part's own bars and ring, and the sun for the shown day.
+    @Test fun `sleep and nutrition heroes keep their progress and sun apart`() = assertPairs(NON_TEXT, heroes) { hero ->
+        listOf(hero.sleepStart, hero.sleepEnd).flatMap { ground ->
+            listOf("sleep" to (hero.sleep to ground), "sun/sleep" to (hero.sun to ground))
+        } + listOf(hero.nutritionStart, hero.nutritionEnd).flatMap { ground ->
+            listOf("nutrition" to (hero.nutrition to ground), "sun/nutrition" to (hero.sun to ground))
+        }
     }
 
     @Test fun `anatomy muscles and outline stand out`() = assertPairs(NON_TEXT, anatomy) { (card, figure) ->

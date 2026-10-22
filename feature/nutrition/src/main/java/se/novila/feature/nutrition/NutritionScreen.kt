@@ -19,6 +19,7 @@ import se.novila.designsystem.component.NovilaEntryLayout
 import se.novila.designsystem.component.NovilaQuickActions
 import se.novila.designsystem.component.NovilaReveal
 import se.novila.designsystem.component.NovilaSheetContent
+import se.novila.designsystem.component.NovilaSky
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.model.DayEntry
 import se.novila.model.DrinkKind
@@ -84,13 +85,16 @@ fun NutritionScreen(
     /** The introduction was skipped, so the setup is unfinished: one quiet card offers to finish it. */
     setupIncomplete: Boolean = false,
     onCompleteSetup: () -> Unit = {},
+    sky: NovilaSky = NovilaSky.Day,
 ) {
     val isToday = day.date == today
     var sheet by rememberSaveable(openSheet) { mutableStateOf(openSheet) }
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
         item(key = "day") { DayPicker(day.date, today, onSelectDay, NovilaTheme.pillars.nutrition) }
         setupHint(setupIncomplete, onCompleteSetup)
-        item(key = "score") { NovilaReveal(order = 0) { NutritionScoreCard(day, goals, isToday) } }
+        item(key = "score") {
+            NovilaReveal(order = 0) { NutritionOverview(day, history.days, goals, isToday, sky = sky) }
+        }
         item(key = "log") {
             NovilaReveal(order = 1) {
                 LogActions(
@@ -114,7 +118,7 @@ fun NutritionScreen(
             title = stringResource(R.string.nutrition_sheet_food),
             onDismiss = { sheet = null },
         ) {
-            FoodSheet(day, onPortions, onTreats, onLogMeal, isToday, quickPicks.meals, onToggleFavorite)
+            FoodSheet(day, goals, onPortions, onTreats, onLogMeal, isToday, quickPicks.meals, onToggleFavorite)
         }
 
         NutritionSheet.Drinks -> NovilaBottomSheet(
@@ -128,10 +132,14 @@ fun NutritionScreen(
     }
 }
 
-/** The usual meals with one tap, then food in the user's own words or per food group, as the sheet shows it. */
+/**
+ * The usual meals with one tap, then food in the user's own words or per food group, and last how the day's score
+ * adds up, as the sheet shows it.
+ */
 @Composable
 internal fun FoodSheet(
     day: DayEntry,
+    goals: Goals,
     onPortions: (FoodGroup, Int) -> Unit,
     onTreats: (Int) -> Unit,
     onLogMeal: (String) -> Unit,
@@ -142,6 +150,7 @@ internal fun FoodSheet(
     QuickPicksCard(picks, onLogMeal, onToggleFavorite)
     MealLogCard(onLogMeal)
     FoodLogCard(day, onPortions, onTreats, isToday)
+    ScoreBreakdownCard(day, goals, isToday)
 }
 
 /** Food and other drinks open their sheets; water, logged most often, is one tap. */
@@ -275,6 +284,7 @@ private fun FoodSheetPreview() {
         NovilaSheetContent(stringResource(R.string.nutrition_sheet_food)) {
             FoodSheet(
                 PreviewData.today,
+                Goals(),
                 onPortions = { _, _ -> },
                 onTreats = {},
                 onLogMeal = {},
@@ -294,7 +304,14 @@ private fun FoodSheetPreview() {
 private fun FoodSheetFirstTimePreview() {
     NovilaTheme {
         NovilaSheetContent(stringResource(R.string.nutrition_sheet_food)) {
-            FoodSheet(PreviewData.today, onPortions = { _, _ -> }, onTreats = {}, onLogMeal = {}, isToday = true)
+            FoodSheet(
+                PreviewData.today,
+                Goals(),
+                onPortions = { _, _ -> },
+                onTreats = {},
+                onLogMeal = {},
+                isToday = true,
+            )
         }
     }
 }
