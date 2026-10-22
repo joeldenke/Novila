@@ -46,8 +46,8 @@ import se.novila.designsystem.theme.NovilaTheme
 
 /**
  * Which part of the app a [NovilaHeroPanel] is the overview of. Each has its own ground and lines: Training is pine
- * with lines sweeping up like movement, Sleep a night lake with ripples and the moon's reflection, Nutrition falu
- * red with the furrows of a field running towards the horizon.
+ * with lines sweeping up like movement, Sleep a night lake with ripples, Nutrition falu red with the furrows of a
+ * field running towards the horizon.
  */
 enum class NovilaHeroPart { Training, Sleep, Nutrition }
 

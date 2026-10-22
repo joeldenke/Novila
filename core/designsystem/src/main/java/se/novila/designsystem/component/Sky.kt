@@ -141,12 +141,11 @@ internal fun Modifier.heroMotionLines(hero: NovilaHeroColors, sky: NovilaSky): M
 }
 
 /**
- * Sleep's background: a night lake. The [sky]'s glow above a still horizon, ripples that lie closer together towards
- * it and grow towards the viewer, and the moon's reflection as strokes in its color that narrow as they come closer.
+ * Sleep's background: a night lake. The [sky]'s glow above a still horizon, and ripples that lie closer together
+ * towards it and grow towards the viewer.
  */
 internal fun Modifier.heroRipples(hero: NovilaHeroColors, sky: NovilaSky): Modifier = drawWithCache {
     val horizon = size.height * RIPPLE_HORIZON
-    val light = size.width - 36.dp.toPx()
     val step = 6.dp.toPx()
     val ripples = (1..RIPPLES).map { ring ->
         val depth = ring / RIPPLES.toFloat()
@@ -160,23 +159,13 @@ internal fun Modifier.heroRipples(hero: NovilaHeroColors, sky: NovilaSky): Modif
             if (x == 0f) path.moveTo(x, y + dy) else path.lineTo(x, y + dy)
             x += step
         }
-        Triple(path, y, depth)
+        path to depth
     }
     val thin = Stroke(1.2.dp.toPx())
-    val reflection = 2.4.dp.toPx()
-    val widest = 44.dp.toPx()
     onSky(hero, sky) {
         drawLine(hero.content.copy(alpha = 0.16f), Offset(0f, horizon), Offset(size.width, horizon), 1.dp.toPx())
-        ripples.forEach { (path, y, depth) ->
+        ripples.forEach { (path, depth) ->
             drawPath(path, hero.content.copy(alpha = 0.13f - 0.06f * depth), style = thin)
-            val half = widest * (1f - 0.8f * depth) / 2f
-            drawLine(
-                hero.sun.copy(alpha = 0.22f - 0.14f * depth),
-                Offset(light - half, y),
-                Offset(light + half, y),
-                reflection,
-                StrokeCap.Round,
-            )
         }
     }
 }
