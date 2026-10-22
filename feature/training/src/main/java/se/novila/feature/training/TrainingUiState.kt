@@ -5,6 +5,7 @@ import se.novila.coach.CoachPreferences
 import se.novila.exercise.TrainingProgram
 import se.novila.exercise.Workout
 import se.novila.model.CardioLog
+import se.novila.model.CycleDay
 import se.novila.recovery.RecoveryStatus
 import java.time.DayOfWeek
 
@@ -22,7 +23,15 @@ data class TrainingUiState(
     val weekDone: Map<DayOfWeek, Int> = emptyMap(),
     /** Next week's program, planned the same way on a history that includes this week, for the weekly review. */
     val nextProgram: TrainingProgram? = null,
+    /** Today in the user's cycle, or null when they don't follow it. */
+    val cycle: CycleToday? = null,
 )
+
+/**
+ * Today in *Follow your cycle*: what the user logged ([day]), and whether the coach offers a lighter session
+ * ([offerLighter]: symptoms logged, a session planned and nothing chosen yet). The coach never switches by itself.
+ */
+data class CycleToday(val day: CycleDay = CycleDay(), val offerLighter: Boolean = false)
 
 /** Today's cardio: what the user [logged] by hand and the minutes a watch or another app recorded. */
 data class CardioToday(val logged: List<CardioLog> = emptyList(), val recordedMinutes: Int = 0) {

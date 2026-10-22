@@ -52,7 +52,7 @@
     <string name="privacy_title">Integritetspolicy</string>
     <string name="privacy_intro">Novila är byggd så att din hälsodata stannar hos dig. Den här policyn säger vad appen hanterar, var det sparas, vem som kan se det och vad du kan göra åt det.</string>
     <string name="privacy_what_title">Vad Novila hanterar</string>
-    <string name="privacy_what_body">Det du själv fyller i: ditt namn, födelseår, längd, vikt och kroppsmått, din sömn (med det som kan ha påverkat natten, till exempel mens), kost (med måltiderna du skriver med egna ord och stjärnmärker, för snabbloggning), dryck och dina pass, med repetitionerna du gjorde och ansträngning och smärta efter ett pass, dina svar till tränings- och sömncoachen, dina matpreferenser, även allergier, och recepten du själv skriver, och dina mål, påminnelser och inställningar. Om du tillåter det även det Novila läser från Health Connect, se nedan. Allt är frivilligt, och Novila fungerar utan namn och utan konto.</string>
+    <string name="privacy_what_body">Det du själv fyller i: ditt namn, födelseår, längd, vikt och kroppsmått, din sömn (med det som kan ha påverkat natten, till exempel mens), kost (med måltiderna du skriver med egna ord och stjärnmärker, för snabbloggning), dryck och dina pass, med repetitionerna du gjorde och ansträngning och smärta efter ett pass, dina svar till tränings- och sömncoachen, dina matpreferenser, även allergier, och recepten du själv skriver, om du slår på Följ din cykel även dina mensdagar och symtomen du loggar, som raderas när du stänger av den, och dina mål, påminnelser och inställningar. Om du tillåter det även det Novila läser från Health Connect, se nedan. Allt är frivilligt, och Novila fungerar utan namn och utan konto.</string>
     <string name="privacy_where_title">Var det sparas</string>
     <string name="privacy_where_body">Bara i den här telefonen, krypterat med en nyckel från telefonens Android Keystore. Novila har inget konto och ingen server, och appen har ingen åtkomst till internet, så inget du loggar kan skickas någonstans. Novilas data lämnas utanför Androids säkerhetskopiering och överföringar till en ny telefon.</string>
     <string name="privacy_health_connect_title">Health Connect</string>
@@ -189,4 +189,22 @@
         <item quantity="other">%1$d år</item>
     </plurals>
     <string name="measure_latest">Senast mätt %1$s</string>
+    <string name="cycle_part">Cykel</string>
+    <string name="cycle_title">Följ din cykel</string>
+    <string name="cycle_on">På. Du loggar din cykel på Träning.</string>
+    <string name="cycle_off">Av.</string>
+    <string name="cycle_intro">För dig som har mens och vill att träningen tar hänsyn till den. Det är frivilligt, och du kan stänga av när du vill.</string>
+    <string name="cycle_switch">Följ din cykel</string>
+    <string name="cycle_private">Din cykel stannar på den här telefonen. Stänger du av raderas det du har loggat.</string>
+    <string name="cycle_nothing_logged">Inget loggat än. Logga mens och hur kroppen känns under Din cykel på Träning.</string>
+    <string name="cycle_last_period">Din senaste mens började %1$s.</string>
+    <string name="cycle_does_title">Vad den gör</string>
+    <string name="cycle_does_lighter">En dag du loggar ett symtom, som mensvärk eller trötthet, erbjuder coachen ett lättare pass. Den byter aldrig pass själv.</string>
+    <string name="cycle_does_recovery">Vilopulsen stiger ofta några slag, och HRV sjunker, under andra halvan av cykeln. Återhämtningen från klockan jämför då en dag bara med dagar i samma halva, så att en vanlig cykel inte ser ut som dålig återhämtning.</string>
+    <string name="cycle_never_title">Vad den aldrig gör</string>
+    <string name="cycle_never_body">Novila förutsäger aldrig ägglossning eller fertila dagar och är inget preventivmedel. Den planerar inte heller träningen efter fas: hur cykeln påverkar träningen skiljer sig mycket mellan personer, så det är hur du mår som avgör.</string>
+    <string name="cycle_off_title">Stäng av och radera?</string>
+    <string name="cycle_off_text">Allt du har loggat om din cykel raderas från telefonen.</string>
+    <string name="cycle_off_confirm">Stäng av</string>
+    <string name="cycle_off_dismiss">Avbryt</string>
 </resources>

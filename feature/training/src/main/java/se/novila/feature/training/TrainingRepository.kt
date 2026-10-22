@@ -8,8 +8,11 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import se.novila.coach.CoachPreferences
 import se.novila.data.CoachStore
+import se.novila.data.CycleStore
 import se.novila.data.HealthStore
 import se.novila.data.SavedCoach
+import se.novila.data.SavedCycle
+import se.novila.data.recoveryStatus
 import se.novila.data.trainingWeek
 import se.novila.exercise.ExerciseKind
 import se.novila.exercise.ExerciseLog
@@ -18,13 +21,12 @@ import se.novila.exercise.ExerciseState
 import se.novila.exercise.TrainingHistory
 import se.novila.recovery.RecoveryRepository
 import se.novila.recovery.RecoveryState
-import se.novila.recovery.RecoveryStatus
-import se.novila.recovery.analyzeRecovery
 import java.time.LocalDate
 
 /**
  * The week's program for the Training tab's ViewModels, from the saved days, the coach's answers, the workouts
- * Health Connect recorded, the watch's recovery and what the user did of each exercise lately. Each ViewModel gets
+ * Health Connect recorded, the watch's recovery, the user's cycle (when they follow it) and what the user did of each
+ * exercise lately. Each ViewModel gets
  * its own; the stores behind it are shared, so a finished session, a logged walk or a changed answer shows up
  * everywhere through [states].
  */
@@ -34,6 +36,7 @@ class TrainingRepository(
     private val coach: CoachStore,
     private val exercises: ExerciseRepository,
     private val recovery: RecoveryRepository,
+    private val cycle: CycleStore,
 ) {
     /**
      * The program for the week of each date in [dates], read again whenever a day or the coach's answers are saved,
@@ -48,8 +51,13 @@ class TrainingRepository(
             coach.answers.filterNotNull(),
             exercises.state,
         ) { date, draft, days, saved, recorded -> TrainingInputs(date, draft, days, saved, recorded) }
-        return combine(inputs, recovery.state, coach.progress.filterNotNull()) { input, recovery, progress ->
-            read(input.days, input.saved, input.recorded, input.date, input.draft, recovery, progress)
+        return combine(
+            inputs,
+            recovery.state,
+            coach.progress.filterNotNull(),
+            cycle.cycle.filterNotNull(),
+        ) { input, recovery, progress, cycle ->
+            read(input.days, input.saved, input.recorded, input.date, input.draft, recovery, progress, cycle)
         }
     }
 
@@ -58,7 +66,8 @@ class TrainingRepository(
         val days = health.days.value ?: return null
         val saved = coach.answers.value ?: return null
         val progress = coach.progress.value ?: return null
-        return read(days, saved, exercises.state.value, today, draft, recovery.state.value, progress)
+        val followed = cycle.cycle.value ?: return null
+        return read(days, saved, exercises.state.value, today, draft, recovery.state.value, progress, followed)
     }
 
     /** The program for the week of [today], once the stores are read. */
@@ -72,13 +81,18 @@ class TrainingRepository(
         draft: CoachPreferences?,
         recovery: RecoveryState,
         progress: ExerciseLog,
+        cycle: SavedCycle,
     ): TrainingUiState {
         val fromSource = (recorded as? ExerciseState.Connected)?.exercises.orEmpty()
-        val status = (recovery as? RecoveryState.Connected)?.let { analyzeRecovery(it.days, today) }
-            ?: RecoveryStatus.Unknown
-        val week = trainingWeek(saved, answers, fromSource, today, draft, status, progress)
+        val nights = saved.lastDays(count = RECOVERY_NIGHTS, today = today)
+        val status = recoveryStatus(recovery, today, cycle, nights)
+        val week = trainingWeek(saved, answers, fromSource, today, draft, status, progress, cycle.lighter(today))
         val program = week.program
         val day = week.days.first()
+        // Mobility is done in the user's own time, so a lighter session is only offered for one that can be.
+        val sessionToday = program.sessions.any {
+            it.day == today.dayOfWeek && it.type.kind != ExerciseKind.Mobility
+        }
         return TrainingUiState(
             program = program,
             coach = CoachUiState(week.preferences, week.plan, active = week.active),
@@ -94,9 +108,17 @@ class TrainingRepository(
                 .groupBy { it.date.dayOfWeek }
                 .mapValues { (_, done) -> done.sumOf { it.duration.inWholeMinutes }.toInt() },
             nextProgram = week.nextProgram,
+            cycle = if (cycle.enabled) {
+                CycleToday(day = cycle.log.on(today), offerLighter = sessionToday && cycle.log.lighterOffered(today))
+            } else {
+                null
+            },
         )
     }
 }
+
+/** The nights read for periods marked on Sleep: the longest cycle and the week of recovery readings before it. */
+private const val RECOVERY_NIGHTS = 60
 
 /** The stores' latest values, together, so recovery can be combined in as well. */
 private data class TrainingInputs(

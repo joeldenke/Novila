@@ -61,13 +61,24 @@ fun recoveryDays(resting: Map<LocalDate, Int>, hrv: Map<LocalDate, Long>): List<
  * [STALE_DAYS] days, the status is [RecoveryStatus.Unknown]:
  * - Resting heart rate: [ELEVATED_BPM] or more above the baseline's median.
  * - HRV: less than [LOW_HRV_PERCENT] percent of the baseline's median.
+ *
+ * Only earlier days that are [comparable] with the latest one form the baseline. For a user who follows their cycle,
+ * that is the days in the same half of it: resting heart rate normally rises a few beats and HRV falls in the late
+ * half, so a baseline from the early half would read a normal cycle as poor recovery. Fewer than
+ * [MIN_BASELINE_DAYS] such days leave the metric unjudged, never [RecoveryStatus.Low].
  * Deterministic and plain Kotlin, so it is unit tested. The source of the readings doesn't matter.
  */
-fun analyzeRecovery(days: List<RecoveryDay>, today: LocalDate): RecoveryStatus {
+fun analyzeRecovery(
+    days: List<RecoveryDay>,
+    today: LocalDate,
+    comparable: (earlier: LocalDate, latest: LocalDate) -> Boolean = { _, _ -> true },
+): RecoveryStatus {
     val measured = days.filter { it.date <= today && !it.isEmpty }.sortedBy { it.date }
     val current = measured.lastOrNull() ?: return RecoveryStatus.Unknown
     if (current.date < today.minusDays(STALE_DAYS)) return RecoveryStatus.Unknown
-    val baseline = measured.filter { it.date >= current.date.minusDays(BASELINE_DAYS) && it.date < current.date }
+    val baseline = measured.filter {
+        it.date >= current.date.minusDays(BASELINE_DAYS) && it.date < current.date && comparable(it.date, current.date)
+    }
     val resting = impaired(
         current = current.restingHeartRate?.toDouble(),
         baseline = baseline.mapNotNull { it.restingHeartRate }.map(Int::toDouble),

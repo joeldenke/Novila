@@ -106,11 +106,14 @@ language model in the app, or data that leaves the app.
   - [x] **Period as a sleep cause** (`SleepFactor.Period`), so the sleep links test it like the other causes. No new
     permission and no gender. The sleep coach never turns it into a tip, since it is not a habit. The factors are
     stored by name, so it needed no new `DayEntryCodec` version: an older app skips names it doesn't know.
-  - [ ] **"Follow your cycle"** in *My goals*, off by default: log period days and symptoms in a sheet. On a symptom
-    day the coach offers a lighter session but never switches by itself. Recovery compares with the same phase of the
-    last cycle instead of the last days: in the luteal phase the resting heart rate normally rises a few beats and HRV
-    falls, so today `analyzeRecovery` can read a normal cycle as poor recovery and lighten sessions every month
-    without anyone knowing why.
+  - [x] **"Follow your cycle"** in *My goals*, off by default: log period days and symptoms in a sheet. On a symptom
+    day the coach offers a lighter session but never switches by itself. In the luteal phase the resting heart rate
+    normally rises a few beats and HRV falls, so `analyzeRecovery` could read a normal cycle as poor recovery and
+    lighten sessions every month without anyone knowing why. Done: the period days and symptoms are logged in a
+    sheet on Training (`CycleStore`, its own file, deleted when the cycle is turned off), a symptom day offers a
+    lighter session (`CoachNote.Lighter`), and recovery compares a day only with days in the same half of the cycle
+    (`cyclePhase`). Health Connect gives only two weeks of resting heart rate and HRV, so "the same phase of the last
+    cycle" would need a longer read; the same half within the two weeks fixes the false alarm without it.
   - [ ] **Period days from Health Connect** (`READ_MENSTRUATION`) **(ok)**: a new badging line, privacy policy and
     Play declaration.
 
@@ -205,7 +208,7 @@ Next, first what needs no approval and is used every day, then what needs the ow
     Makes progression worth more and gives the coach more to choose from. ← done
 18. Period as a sleep cause, and "Follow your cycle" with recovery that knows the cycle: it corrects something the
     app gets wrong today for many users. Period days from Health Connect follow **(ok)**.
-    ← period as a sleep cause done
+    ← period as a sleep cause and "Follow your cycle" done
 19. Training load and sleep regularity: both build on data the app already logs, and make the readiness that sums it
     up possible.
 20. Achievements and streaks: restrained, built on what the user already logs, and never rewarding overtraining

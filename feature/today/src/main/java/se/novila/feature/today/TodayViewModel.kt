@@ -17,15 +17,18 @@ import kotlinx.coroutines.launch
 import se.novila.coach.DailyCoach
 import se.novila.coach.dailyCoach
 import se.novila.data.CoachStore
+import se.novila.data.CycleStore
 import se.novila.data.GoalsStore
 import se.novila.data.HealthStore
 import se.novila.data.HealthStore.SavedDays
 import se.novila.data.ProfileStore
 import se.novila.data.SavedCoach
+import se.novila.data.SavedCycle
 import se.novila.data.SavedSleepCoach
 import se.novila.data.SettingsStore
 import se.novila.data.SleepCoachStore
 import se.novila.data.Week
+import se.novila.data.recoveryStatus
 import se.novila.data.trainingWeek
 import se.novila.exercise.ExerciseRepository
 import se.novila.exercise.ExerciseState
@@ -43,8 +46,6 @@ import se.novila.movement.MovementRepository
 import se.novila.movement.MovementState
 import se.novila.recovery.RecoveryRepository
 import se.novila.recovery.RecoveryState
-import se.novila.recovery.RecoveryStatus
-import se.novila.recovery.analyzeRecovery
 import se.novila.sleep.SleepCoachPreferences
 import se.novila.sleep.SleepRepository
 import se.novila.sleep.SleepState
@@ -80,6 +81,9 @@ private data class TodayInputs(
     val watch: SleepState,
 )
 
+/** The watch's recovery and the user's cycle, together, since both decide how light today's session is. */
+private data class TodayBody(val recovery: RecoveryState, val cycle: SavedCycle)
+
 /** The Today tab. Scoped to its entry; reads the same stores as the other tabs, so their changes show up here. */
 @ViewModelKey
 @ContributesIntoMap(AppScope::class)
@@ -95,6 +99,7 @@ class TodayViewModel(
     private val exerciseRepository: ExerciseRepository,
     private val recoveryRepository: RecoveryRepository,
     private val settingsStore: SettingsStore,
+    private val cycleStore: CycleStore,
 ) : ViewModel() {
     private val now = MutableStateFlow(LocalDateTime.now())
 
@@ -110,7 +115,7 @@ class TodayViewModel(
             ) { now, days, profile, goals, watch -> TodayInputs(now, days, profile.name, goals, watch) },
             coachStore.answers.filterNotNull(),
             exerciseRepository.state,
-            recoveryRepository.state,
+            combine(recoveryRepository.state, cycleStore.cycle.filterNotNull(), ::TodayBody),
             sleepCoachStore.answers.filterNotNull(),
             ::read,
         ).stateIn(viewModelScope, SharingStarted.Eagerly, initial())
@@ -121,8 +126,10 @@ class TodayViewModel(
         val goals = goalsStore.goals.value ?: return null
         val answers = coachStore.answers.value ?: return null
         val sleepCoach = sleepCoachStore.answers.value ?: return null
+        val cycle = cycleStore.cycle.value ?: return null
         val inputs = TodayInputs(now.value, days, profile.name, goals, sleepRepository.state.value)
-        return read(inputs, answers, exerciseRepository.state.value, recoveryRepository.state.value, sleepCoach)
+        val body = TodayBody(recoveryRepository.state.value, cycle)
+        return read(inputs, answers, exerciseRepository.state.value, body, sleepCoach)
     }
 
     val movement: StateFlow<MovementState> = movementRepository.state
@@ -140,7 +147,7 @@ class TodayViewModel(
         inputs: TodayInputs,
         answers: SavedCoach,
         recorded: ExerciseState,
-        recovery: RecoveryState,
+        body: TodayBody,
         sleepCoach: SavedSleepCoach,
     ): TodayUiState {
         val nights = inputs.watch.nightsByDate
@@ -150,10 +157,16 @@ class TodayViewModel(
         val window = days.lastDays(SLEEP_WINDOW_NIGHTS + 1, today).reversed()
         val sleep = analyzeSleep(window, inputs.goals)
         // Planned the same way as the Training tab, so both say the same about today's session.
-        val status = (recovery as? RecoveryState.Connected)?.let { analyzeRecovery(it.days, today) }
-            ?: RecoveryStatus.Unknown
+        val status = recoveryStatus(body.recovery, today, body.cycle, window)
         val fromSource = (recorded as? ExerciseState.Connected)?.exercises.orEmpty()
-        val training = trainingWeek(inputs.days, answers, fromSource, today, recovery = status).trainingOn(today)
+        val training = trainingWeek(
+            inputs.days,
+            answers,
+            fromSource,
+            today,
+            recovery = status,
+            lighter = body.cycle.lighter(today),
+        ).trainingOn(today)
         // One coach for all parts: the day's sleep, training and food weighed together.
         val coach = dailyCoach(
             day = days.day(today),

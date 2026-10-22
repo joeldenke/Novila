@@ -23,6 +23,9 @@ import se.novila.anatomy.ExerciseLibrary
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.model.CardioLog
 import se.novila.model.CardioType
+import se.novila.model.CycleDay
+import se.novila.model.CycleSymptom
+import se.novila.model.SessionChoice
 import se.novila.movement.MovementState
 import se.novila.recovery.RecoveryState
 import se.novila.recovery.RecoveryStatus
@@ -242,5 +245,43 @@ class TrainingScreenTest {
         show(state, TrainingActions())
 
         composeRule.onNodeWithText("Setup not finished").assertDoesNotExist()
+    }
+
+    @Test fun `without the cycle there is no cycle button and no offer`() {
+        show(state, TrainingActions())
+
+        composeRule.onNodeWithText("Your cycle").assertDoesNotExist()
+        composeRule.onNodeWithText("A lighter session today?").assertDoesNotExist()
+    }
+
+    @Test fun `a day with symptoms offers a lighter session, and the user chooses`() {
+        val chosen = mutableListOf<SessionChoice>()
+        show(
+            state.copy(cycle = CycleToday(CycleDay(symptoms = setOf(CycleSymptom.Cramps)), offerLighter = true)),
+            TrainingActions(cycle = CycleActions(onChooseSession = { chosen += it })),
+        )
+
+        scrollTo("Lighter session").performClick()
+        scrollTo("As planned").performClick()
+
+        assertEquals(listOf(SessionChoice.Lighter, SessionChoice.AsPlanned), chosen)
+    }
+
+    @Test fun `the cycle sheet logs the period and symptoms for today`() {
+        val period = mutableListOf<Boolean>()
+        val symptoms = mutableListOf<Pair<CycleSymptom, Boolean>>()
+        show(
+            state.copy(cycle = CycleToday()),
+            TrainingActions(
+                cycle = CycleActions(onPeriod = { period += it }, onSymptom = { s, on -> symptoms += s to on }),
+            ),
+        )
+
+        scrollTo("Your cycle").performClick()
+        composeRule.onNodeWithText("Period today").performClick()
+        composeRule.onNodeWithText("Headache").performClick()
+
+        assertEquals(listOf(true), period)
+        assertEquals(listOf(CycleSymptom.Headache to true), symptoms)
     }
 }

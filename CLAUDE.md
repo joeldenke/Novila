@@ -66,7 +66,7 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
 - `:core:navigation` – `NavigationState` (en back stack per flik, varje entry med egen sparad state och
   `ViewModelStore` via `rememberViewModelStoreNavEntryDecorator`), `Navigator` och `SharedScreen` (nycklarna som
   låter en ingång växa till skärmen den öppnar, se *Rörelse* under Regler)
-- `:core:data` – lagring i Preferences DataStore (`HealthStore`, `CoachStore`, `SettingsStore`, `ProfileStore`, `GoalsStore`,
+- `:core:data` – lagring i Preferences DataStore (`HealthStore`, `CoachStore`, `SettingsStore`, `ProfileStore`, `GoalsStore`, `CycleStore`,
   singletons i `AppScope` vars `StateFlow` `days`/`answers`/`settings`/`profile`/`goals` får alla ViewModels att läsa om efter en sparning). `PreferencesStore` flyttar gamla SharedPreferences hit vid första läsningen, håller datan i
   minnet och köar sparningar i storens egen scope (i ordning, klara även när ViewModeln rensas). `SavedDays` avkodar
   varje dag en gång per ögonblicksbild, även genom `showing`. Tills första läsningen
@@ -82,7 +82,7 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   (`HealthConnectExerciseSource`, träningspass) och `SleepSource` (`HealthConnectSleepSource`, nätter), behörigheterna i modulens manifest (`HEALTH_PERMISSIONS`, frågas i en
   dialog via `rememberHealthPermissionRequest`) och integritetsskärmen (`HealthDataInfoActivity`)
 - Ren Kotlin, utan Android (`novila.jvm.library`, testas på sekunder):
-  - `:core:model` – `DayEntry` (`DayEntryCodec`), kost, drycker (`Drink`, se *Drycker* under Regler), dagens balans, insikter, dagens sista logg (`LatestLog`) och uppmuntran (`cheers`), `analyzeSleep` (se *Sömnens samband*
+  - `:core:model` – `DayEntry` (`DayEntryCodec`), cykeln (`Cycle.kt`: `CycleLog`, `cyclePhase`, se *Cykeln* under Regler), kost, drycker (`Drink`, se *Drycker* under Regler), dagens balans, insikter, dagens sista logg (`LatestLog`) och uppmuntran (`cheers`), `analyzeSleep` (se *Sömnens samband*
     under Regler), `History` (dagarna över en
     `HistoryRange` i perioder, plus lika många dagar före att jämföra med; Sömn och Kost läser den via `HealthStore`), `Profile`, `Goals` (egna mål för
     steg, sömn och vatten; balans, insikter och kostpoäng mäts mot dem) och `AppSettings` (`ThemeMode`)
@@ -363,7 +363,7 @@ där pluginet `firebase@firebase` inte alltid installeras.
   `ScreenList` centrerar innehållet på högst 720 dp. `NovilaEntries` lägger två till fyra rutor per rad efter bredden.
   Lägg en `@Preview` med `widthDp = 900` för nya startsidor. Följ skillen `adaptive`.
 - **Mina mål:** allt appen planerar efter samlas på en skärm (`MyGoalsScreen`), som öppnas från profilen: dagliga mål,
-  träningscoachen, sömncoachen och matpreferenserna, var och en med vad den står på och en rad dit den ändras. Samma
+  träningscoachen, sömncoachen, matpreferenserna och *Följ din cykel*, var och en med vad den står på och en rad dit den ändras. Samma
   skärmar öppnas från ingångarna på varje flik. Ny inställning som styr en plan läggs till här, inte som en egen rad i
   Inställningar, som bara har det som gäller appen.
 - **Profil:** `ProfileScreen` är en sida för personen: avatar (`NovilaAvatar`, initialer på granen), namn, födelseår
@@ -481,6 +481,14 @@ där pluginet `firebase@firebase` inte alltid installeras.
   inte går utan `INTERNET`. Planen, skälen och insikterna är deterministiska och förklarar sig själva. Att lägga
   tillbaka en modell, på enheten eller i molnet, kräver ägarens ok, rapportering enligt Plays policy för AI-genererat
   innehåll, ny integritetstext och ny Play-deklaration.
+- **Cykeln:** *Följ din cykel* i *Mina mål* (`CycleScreen`) är avslagen från början, ligger i en egen fil
+  (`CycleStore`) och raderas när den stängs av. Användaren loggar mensdagar och symtom i ett sheet på Träning; en dag
+  med symtom och ett pass erbjuder coachen ett lättare pass (`SessionChoice`, `CoachNote.Lighter`) men byter aldrig
+  själv. Återhämtningen (`recoveryStatus`) jämför en dag bara med dagar i samma halva av cykeln (`cyclePhase`), så en
+  vanlig lutealfas inte läses som dålig återhämtning; Health Connect ger bara två veckor, så aldrig "samma fas förra
+  cykeln". Appen förutsäger aldrig ägglossning eller fertila dagar (preventivmedels- och fertilitetsappar är
+  medicintekniska), planerar aldrig träning efter fas och frågar aldrig om kön. Mensdagar från Health Connect
+  (`READ_MENSTRUATION`) kräver ägarens ok.
 - **Påminnelser:** bara WorkManager, ett engångsjobb per påminnelse och dag (`ReminderScheduler`). Inga
   periodiska jobb, ingen tjänst i förgrunden, inga exakta larm (`SCHEDULE_EXACT_ALARM`) och inget som körs mellan
   påminnelserna. Workern läser bara det som redan är sparat, visar notisen om något saknas och lägger nästa dag; den

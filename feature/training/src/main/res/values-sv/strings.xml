@@ -490,4 +490,19 @@
     <string name="health_data_not_connected">Inte ansluten</string>
     <string name="health_data_missing">Health Connect saknas</string>
     <string name="health_data_hrv">HRV</string>
+    <string name="cycle_log">Din cykel</string>
+    <string name="cycle_sheet_title">Din cykel i dag</string>
+    <string name="cycle_period_today">Mens i dag</string>
+    <string name="cycle_symptoms_title">Hur känns kroppen?</string>
+    <string name="cycle_symptom_cramps">Mensvärk</string>
+    <string name="cycle_symptom_tiredness">Trött</string>
+    <string name="cycle_symptom_headache">Huvudvärk</string>
+    <string name="cycle_symptom_bloating">Uppsvälld</string>
+    <string name="cycle_symptom_low_mood">Nedstämd</string>
+    <string name="cycle_sheet_footer">Bara på den här telefonen. Med ett symtom erbjuder Novila ett lättare pass, och du väljer.</string>
+    <string name="cycle_lighter_title">Ett lättare pass i dag?</string>
+    <string name="cycle_lighter_body">Du har loggat hur kroppen känns i dag. Ett pass med ett set mindre, eller en kortare promenad, räknas också. Du väljer.</string>
+    <string name="cycle_lighter_yes">Lättare pass</string>
+    <string name="cycle_lighter_no">Som planerat</string>
+    <string name="coach_note_lighter">Du valde ett lättare pass i dag. Ett set mindre, eller kortare kondition, och resten av veckan som planerat.</string>
 </resources>

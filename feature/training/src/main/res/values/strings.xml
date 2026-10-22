@@ -496,4 +496,19 @@
     <string name="health_data_not_connected">Not connected</string>
     <string name="health_data_missing">Health Connect is missing</string>
     <string name="health_data_hrv">HRV</string>
+    <string name="cycle_log">Your cycle</string>
+    <string name="cycle_sheet_title">Your cycle today</string>
+    <string name="cycle_period_today">Period today</string>
+    <string name="cycle_symptoms_title">How does your body feel?</string>
+    <string name="cycle_symptom_cramps">Cramps</string>
+    <string name="cycle_symptom_tiredness">Tired</string>
+    <string name="cycle_symptom_headache">Headache</string>
+    <string name="cycle_symptom_bloating">Bloated</string>
+    <string name="cycle_symptom_low_mood">Low mood</string>
+    <string name="cycle_sheet_footer">Only on this phone. With a symptom, Novila offers a lighter session, and you choose.</string>
+    <string name="cycle_lighter_title">A lighter session today?</string>
+    <string name="cycle_lighter_body">You logged how your body feels today. A session with one set less, or a shorter walk, still counts. You choose.</string>
+    <string name="cycle_lighter_yes">Lighter session</string>
+    <string name="cycle_lighter_no">As planned</string>
+    <string name="coach_note_lighter">You chose a lighter session today. One set less, or a shorter cardio, and the rest of the week as planned.</string>
 </resources>

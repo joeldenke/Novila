@@ -18,6 +18,7 @@ import se.novila.feature.training.CardioLogScreen
 import se.novila.feature.training.CardioLogViewModel
 import se.novila.feature.training.CoachScreen
 import se.novila.feature.training.CoachViewModel
+import se.novila.feature.training.CycleActions
 import se.novila.feature.training.ExerciseDetailScreen
 import se.novila.feature.training.ExerciseLibraryScreen
 import se.novila.feature.training.ExerciseViewModel
@@ -120,6 +121,11 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
                 onOpenHealthSettings = { HealthConnectSource.openSettings(context) },
                 onInstallHealth = { HealthConnectSource.openInstall(context) },
                 onCompleteSetup = viewModel::openSetup,
+                cycle = CycleActions(
+                    onPeriod = viewModel::setPeriod,
+                    onSymptom = viewModel::setSymptom,
+                    onChooseSession = viewModel::chooseSession,
+                ),
             ),
             contentPadding = contentPadding,
             exercise = exercise,

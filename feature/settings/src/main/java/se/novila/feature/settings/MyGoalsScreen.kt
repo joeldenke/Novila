@@ -36,12 +36,13 @@ data class MyGoalsActions(
     val onOpenTrainingCoach: () -> Unit = {},
     val onOpenSleepCoach: () -> Unit = {},
     val onOpenFoodPreferences: () -> Unit = {},
+    val onOpenCycle: () -> Unit = {},
 )
 
 /**
- * Everything Novila plans by, in one place: the daily goals, the training coach, the sleep coach and the food
- * preferences, each with what it is set to now and a row to where it is changed. The same screens open from Your
- * plan on each tab; this is where the user finds them all.
+ * Everything Novila plans by, in one place: the daily goals, the training coach, the sleep coach, the food preferences
+ * and *Follow your cycle*, each with what it is set to now and a row to where it is changed. The same screens open from
+ * Your plan on each tab; this is where the user finds them all.
  */
 @Composable
 fun MyGoalsScreen(
@@ -119,6 +120,16 @@ fun MyGoalsScreen(
                 onClick = actions.onOpenFoodPreferences,
             )
         }
+        item(key = "cycle") {
+            Part(
+                title = stringResource(R.string.cycle_part),
+                icon = painterResource(UiR.drawable.ic_training),
+                role = pillars.training,
+                row = stringResource(R.string.cycle_title),
+                summary = stringResource(if (state.cycle) R.string.cycle_on else R.string.cycle_off),
+                onClick = actions.onOpenCycle,
+            )
+        }
     }
 }
 
@@ -172,5 +183,6 @@ private fun MyGoalsSetUpPreview() = MyGoalsContent(
         coach = CoachPreferences(daysPerWeek = 3, sessionMinutes = 45),
         sleepCoach = SleepCoachPreferences(bedtime = LocalTime.of(22, 30), wakeTime = LocalTime.of(6, 30)),
         food = FoodPreferences(Diet.Vegetarian, setOf(Allergen.Peanuts)),
+        cycle = true,
     ),
 )

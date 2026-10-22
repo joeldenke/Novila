@@ -19,9 +19,10 @@ kept, who can see it and what you can do about it.
 What you enter yourself: your name, birth year, height, weight and body measurements; your sleep (with what may have
 affected a night, such as your period), food (with the meals you write in your own words and star, for quick logging),
 drinks and workouts, with the repetitions you did and effort and pain after a session; your answers to the training and
-sleep coaches; your food preferences, including allergies, and the recipes you write yourself; and your goals, reminders
-and settings. If you allow it, also what Novila reads from Health Connect, below. Everything is optional, and Novila
-works without a name or an account.
+sleep coaches; your food preferences, including allergies, and the recipes you write yourself; if you turn on *Follow
+your cycle*, the days of your period and the symptoms you log, which are deleted when you turn it off; and your goals,
+reminders and settings. If you allow it, also what Novila reads from Health Connect, below. Everything is optional, and
+Novila works without a name or an account.
 
 ### Where it is kept
 
@@ -86,9 +87,10 @@ vem som kan se det och vad du kan göra åt det.
 Det du själv fyller i: ditt namn, födelseår, längd, vikt och kroppsmått, din sömn (med det som kan ha påverkat natten,
 till exempel mens), kost (med måltiderna du skriver med egna ord och stjärnmärker, för snabbloggning), dryck och dina
 pass, med repetitionerna du gjorde och ansträngning och smärta efter ett pass, dina svar till tränings- och sömncoachen,
-dina matpreferenser, även allergier, och recepten du själv skriver, och dina mål, påminnelser och inställningar. Om du
-tillåter det även det Novila läser från Health Connect, se nedan. Allt är frivilligt, och Novila fungerar utan namn och
-utan konto.
+dina matpreferenser, även allergier, och recepten du själv skriver, om du slår på *Följ din cykel* även dina mensdagar
+och symtomen du loggar, som raderas när du stänger av den, och dina mål, påminnelser och inställningar. Om du tillåter
+det även det Novila läser från Health Connect, se nedan. Allt är frivilligt, och Novila fungerar utan namn och utan
+konto.
 
 ### Var det sparas
 

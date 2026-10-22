@@ -56,6 +56,9 @@ sealed interface CoachNote {
 
     /** The watch says the body is still recovering (resting heart rate up, HRV down): today's session is lighter. */
     data object Recovery : CoachNote
+
+    /** The user chose a lighter session on a day with cycle symptoms: today's session is lighter. */
+    data object Lighter : CoachNote
 }
 
 /**
@@ -77,8 +80,9 @@ data class CoachPlan(val program: TrainingProgram, val notes: List<CoachNote>, v
  * - Sets, repetitions and rest follow the strength level and the goal; the time estimate includes the warm-up
  *   and the cool-down that [Workout] runs around the sets.
  * - The user's feedback after the latest sessions adjusts the dose, and suggests the next rehab phase
- *   ([CoachFeedback]). When the watch says the body is still recovering ([RecoveryStatus.Low]), today's
- *   session alone is lighter: one set less and a lighter cardio. Rehab stays as it is — it is already
+ *   ([CoachFeedback]). When the watch says the body is still recovering ([RecoveryStatus.Low]), or the
+ *   user chose a lighter session on a day with cycle symptoms (`lighter`), today's session alone is lighter: one
+ *   set less and a lighter cardio. Rehab stays as it is — it is already
  *   managed by pain, not by numbers.
  * Plain Kotlin and deterministic: the same answers give the same program until [CoachPreferences.variation]
  * changes, so it is unit tested.
@@ -108,6 +112,7 @@ object CoachPlanner {
         today: LocalDate,
         feedback: List<SessionFeedback> = emptyList(),
         recovery: RecoveryStatus = RecoveryStatus.Unknown,
+        lighter: Boolean = false,
     ): CoachPlan {
         val weekStart = TrainingProgramGenerator.weekStart(today)
         val recent = TrainingProgramGenerator.summarize(history, weekStart)
@@ -146,7 +151,7 @@ object CoachPlanner {
             cardioDays.map { PlannedSession(it, recent.cardioType, cardioMinutes) } +
             mobilityDays.map { PlannedSession(it, ExerciseType.Mobility, mobilityMinutes) }
         val weeklyCardio = cardioMinutes * cardioDays.size
-        val adjusted = if (recovery == RecoveryStatus.Low) {
+        val adjusted = if (recovery == RecoveryStatus.Low || lighter) {
             sessions.map { it.loweredFor(today) }
         } else {
             sessions
@@ -155,7 +160,11 @@ object CoachPlanner {
         return CoachPlan(
             program = TrainingProgram(weekStart, weeklyCardio, adjusted.sortedBy { it.day }),
             notes = notes(preferences, recent.level, strengthCount, weeklyCardio, effort) +
-                if (adjusted != sessions) listOf(CoachNote.Recovery) else emptyList(),
+                when {
+                    adjusted == sessions -> emptyList()
+                    recovery == RecoveryStatus.Low -> listOf(CoachNote.Recovery)
+                    else -> listOf(CoachNote.Lighter)
+                },
         )
     }
 
