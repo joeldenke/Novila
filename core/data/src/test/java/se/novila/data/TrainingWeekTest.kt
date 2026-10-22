@@ -12,6 +12,9 @@ import se.novila.exercise.ExerciseResult
 import se.novila.exercise.ExerciseType
 import se.novila.exercise.Progression
 import se.novila.exercise.TrainingProgramGenerator
+import se.novila.model.CardioLog
+import se.novila.model.CardioType
+import se.novila.model.DayEntry
 import se.novila.model.TrainingToday
 import java.time.LocalDate
 import kotlin.time.Duration.Companion.minutes
@@ -65,5 +68,21 @@ class TrainingWeekTest {
         val dosed = week.program.sessions.first { it.exercises.isNotEmpty() }.exercises.first()
         assertEquals(first.amount + Progression.step(first.dosage), dosed.amount)
         assertEquals(first.amount, dosed.previous)
+    }
+
+    @Test fun `minutes per date count Novila's own sessions with the watch's, the same walk once`() {
+        val days = listOf(
+            DayEntry(monday, strengthMinutes = 30).withCardio(CardioLog(CardioType.Walking, 20)),
+            DayEntry(monday.plusDays(1)),
+        )
+        val recorded = listOf(
+            // The watch's recording of the same walk, a little longer, and a run the app never saw.
+            Exercise(ExerciseType.Walking, monday, 25.minutes),
+            Exercise(ExerciseType.Running, monday.plusDays(2), 40.minutes),
+        )
+        assertEquals(
+            mapOf(monday to 55, monday.plusDays(2) to 40),
+            trainingMinutesByDate(days, recorded),
+        )
     }
 }

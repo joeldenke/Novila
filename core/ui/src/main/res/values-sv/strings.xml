@@ -146,6 +146,7 @@
     <string name="history_training_title_month">Träning, senaste fyra veckorna</string>
     <string name="history_training_title_year">Träning, senaste året</string>
     <string name="history_training_caption">Styrka och kondition loggat i Novila</string>
+    <string name="history_training_caption_watch">Styrka och kondition, loggat i Novila eller registrerat av din klocka</string>
     <string name="history_training_more">%1$s mer än %2$s</string>
     <string name="history_training_less">%1$s mindre än %2$s</string>
     <string name="history_training_description">Träningsminuter under perioden, %1$s totalt.</string>

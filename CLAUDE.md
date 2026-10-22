@@ -98,6 +98,9 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
     ("Jag gjorde det", `DayEntry.cardio`). `ExerciseRepository` håller passen från en källa (Health Connect) i minnet, och
     `TrainingHistory` slår ihop dem med appens egna (per dag och slag räknas den sida som har mest tid, så samma
     promenad räknas en gång). Det blir generatorns historik.
+    `trainingMinutesByDate` (i `:core:data`) ger minuterna per dag på samma sätt, för Träningens *Trender*
+    (`TrainingTrendsScreen`: vecka, fyra veckor eller år med `TrainingHistoryCard`); klockans pass finns bara för de
+    fem veckor som läses, så längre bak räknas det som loggats i Novila.
     `trainingLoad` är veckans belastning (session-RPE, Foster: ansträngning × minuter, monotoni och strain) mot de tre
     veckorna innan; pass utan användarens ansträngning räknas som måttliga, och jämförelsen är bara lugn vägledning,
     aldrig en varning (ACWR är omstritt som skadeprediktor).

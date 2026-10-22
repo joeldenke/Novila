@@ -512,4 +512,6 @@
     <string name="load_unknown">Efter några veckors träning jämför Novila varje vecka med din vanliga.</string>
     <string name="load_uniform">Dagarna har varit ungefär lika tunga. En lätt dag eller en vilodag mellan de tyngre gör det lättare att återhämta sig.</string>
     <string name="load_footer">Belastning är ansträngning gånger minuter. %1$d av %2$d pass med ansträngningen du angav; de andra räknas som måttliga.</string>
+    <string name="training_entry_trends">Trender</string>
+    <string name="training_entry_trends_summary">%1$s träning den här veckan</string>
 </resources>

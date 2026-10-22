@@ -29,6 +29,8 @@ import se.novila.feature.training.TrainingActions
 import se.novila.feature.training.TrainingProgramScreen
 import se.novila.feature.training.TrainingProgramViewModel
 import se.novila.feature.training.TrainingScreen
+import se.novila.feature.training.TrainingTrendsScreen
+import se.novila.feature.training.TrainingTrendsViewModel
 import se.novila.feature.training.TrainingViewModel
 import se.novila.feature.training.WorkoutScreen
 import se.novila.feature.training.WorkoutViewModel
@@ -59,6 +61,9 @@ import java.time.DayOfWeek
 
 /** This week's program, day by day, and the weekly review. */
 @Serializable data object TrainingProgramRoute : NavKey
+
+/** The training over time: a week, four weeks or a year, with the watch's workouts. */
+@Serializable data object TrainingTrendsRoute : NavKey
 
 /** One strength or rehab day of this week's program, before starting it ([day] is ISO, Monday is 1). */
 @Serializable
@@ -115,6 +120,7 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
                 onOpenCardioLog = { navigator.navigate(CardioLogRoute) },
                 onOpenCoach = { navigator.navigate(CoachRoute) },
                 onOpenProgram = { navigator.navigate(TrainingProgramRoute) },
+                onOpenTrends = { navigator.navigate(TrainingTrendsRoute) },
                 onOpenExercise = openExercise,
                 onConnectHealth = connectHealth,
                 onConnectRecovery = connectRecovery,
@@ -133,6 +139,16 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
             sky = NovilaSky.at(hour),
             setupIncomplete = setupIncomplete,
         )
+    }
+    entry<TrainingTrendsRoute>(metadata = sharedScreen(SharedScreen.TrainingTrends)) {
+        val viewModel = metroViewModel<TrainingTrendsViewModel>()
+        LifecycleResumeEffect(viewModel) {
+            viewModel.refresh()
+            onPauseOrDispose { }
+        }
+        // Nothing to show until the saved days are read, a moment at app start.
+        val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
+        TrainingTrendsScreen(state = state, onRange = viewModel::selectRange, contentPadding = contentPadding)
     }
     entry<TrainingProgramRoute>(metadata = sharedScreen(SharedScreen.TrainingProgram)) {
         val viewModel = metroViewModel<TrainingProgramViewModel>()
@@ -232,6 +248,7 @@ fun trainingDetailTitle(route: NavKey?): String? = when (route) {
     CardioLogRoute -> stringResource(R.string.cardio_log_title)
     ExerciseLibraryRoute -> stringResource(R.string.exercises_title)
     TrainingProgramRoute -> stringResource(R.string.program_title)
+    TrainingTrendsRoute -> stringResource(R.string.training_entry_trends)
     is SessionRoute -> sessionTitle(route.dayOfWeek)
     is WorkoutRoute -> stringResource(R.string.workout_title)
     else -> null

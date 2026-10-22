@@ -34,7 +34,8 @@ language model in the app, or data that leaves the app.
   time and only if not already logged. WorkManager, one job per reminder and day. Bedtime remains.
 - [x] **Edit earlier days.** Sleep and nutrition can be changed up to 30 days back (the day picker on Sleep and Nutrition).
 - [x] **History longer than 7 days:** Sleep and Nutrition show a week, four weeks (one point per week) or a year (one
-  per month), with the average compared to the period before. Training minutes over time remain.
+  per month), with the average compared to the period before. Training has the same under *Trends*: minutes over a
+  week, four weeks or a year against the period before, with the watch's workouts counted once with Novila's own.
 - [x] **Own goals** for steps, sleep and water, with suggestions based on age and weight in the profile. Servings follow
   the Swedish Food Agency's dietary guidelines, which the nutrition score is built on.
 - [ ] **Export and import** as a local file, without the cloud **(ok)**
