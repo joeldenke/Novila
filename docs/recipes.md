@@ -1,7 +1,7 @@
 # Recipes
 
 Novila's recipe suggestions are a curated, on-device library in `:core:recipes`. They are never generated and never
-come from Gemini Nano or a cloud service: a generated recipe could contain something the user is allergic to.
+come from a language model or a cloud service: a generated recipe could contain something the user is allergic to.
 
 The library is one source of truth, the `Recipe` enum in
 `core/recipes/src/main/java/se/novila/recipes/Recipe.kt`. The Nutrition tab only reads it; there is no per-screen

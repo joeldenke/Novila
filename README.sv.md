@@ -40,9 +40,8 @@ finns från dag ett. Vad som kommer härnäst står i [roadmapen](docs/roadmap.m
   det som läses ligger bara i minnet. Integritetsskärmen som Health Connect länkar till säger exakt det.
 - **Påminnelserna är av tills du slår på dem.** Notiser frågas först då. Varje påminnelse är ett WorkManager-jobb
   om dagen som läser det som redan finns sparat på telefonen och visar en notis bara om något saknas.
-- **AI:n körs på telefonen.** Träningsplanen är deterministisk, testad Kotlin. Gemini Nano (via AICore) skriver
-  bara en kort kommentar om den färdiga planen, prompten lämnar aldrig enheten och svaret visas med en
-  AI-reservation. Modellen väljer aldrig övningar, doser eller rehabråd.
+- **Ingen AI bestämmer något.** Träningsplanen, coachens skäl och insikterna är deterministisk, testad Kotlin som
+  förklarar sig själv; ingen språkmodell skriver i appen.
 - **APK:n granskas.** CI jämför APK:ns behörigheter, SDK-nivåer, features och exporterade komponenter med en
   incheckad fil och fallerar på minsta skillnad, så inget bibliotek kan smyga in en behörighet.
 
@@ -58,7 +57,6 @@ finns från dag ett. Vad som kommer härnäst står i [roadmapen](docs/roadmap.m
 | Dependency injection | [Metro](https://zacsweers.github.io/metro/), en Kotlin-kompilatorplugin som kopplar ihop allt vid kompilering |
 | Lagring | Preferences DataStore med versionerat format som migreras |
 | Hälsodata | Health Connect; en källa för Google Health API (REST) finns men är inte inkopplad än |
-| AI på enheten | Gemini Nano via ML Kit GenAI Prompt API |
 | Plattform | minSdk 26, compileSdk och targetSdk 37 |
 | Tester | JUnit, Robolectric och Compose UI-tester, Roborazzi-skärmdumpar av varje `@Preview`, täckning med Kover |
 | Kodkvalitet | Spotless med ktlint, Android lint med projektets policy (`lint.xml`), arkitekturtester |
@@ -90,7 +88,7 @@ varandra, vilket ett test kontrollerar.
 :core:ui                 Delat UI: listor, formatering, historikkort, previewdata
 :core:reminders          Påminnelser: WorkManager-jobb och notiser
 :core:navigation         Back stack per flik, Navigator
-:core:data               Lagring i DataStore och coachens Gemini Nano-modell
+:core:data               Lagring i DataStore
 :core:healthconnect      Health Connect som källa för rörelse, träningspass, sömn och återhämtning, integritetsskärmen
 :core:model              Ren Kotlin: dagar, kostpoäng, dagens balans, insikter, inställningar
 :core:movement           Ren Kotlin: rörelsedata oberoende av källa

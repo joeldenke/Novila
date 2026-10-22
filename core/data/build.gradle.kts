@@ -21,8 +21,6 @@ dependencies {
     // AeadSerializer plus Tink itself (Aead, AndroidKeysetManager). See EncryptingPreferencesSerializer.
     implementation(libs.androidx.datastore.tink)
     implementation(libs.tink.android)
-    // Gemini Nano on the device, for the coach's message. See GeminiNanoCoachModel.
-    implementation(libs.mlkit.genai.prompt)
     // Restores a real DataStore file with the device-side actions backup tests use, see EncryptedDataStoreRestoreTest.
     testImplementation(libs.androidx.test.backup)
 }

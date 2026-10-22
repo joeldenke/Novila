@@ -1,7 +1,6 @@
 package se.novila.feature.training
 
 import se.novila.anatomy.Equipment
-import se.novila.coach.AssistantAvailability
 import se.novila.coach.BodyArea
 import se.novila.coach.CoachGoal
 import se.novila.coach.CoachPlanner
@@ -76,14 +75,6 @@ internal object TrainingPreviewData {
         feedback = listOf(1L, 3L, 5L).map { daysAgo ->
             SessionFeedback(date.minusDays(daysAgo), effort = 5, pain = 2, rehabPhase = 2)
         },
-    )
-
-    /** What Gemini Nano might write about [coach]'s week. */
-    val assistantMessage = AssistantUiState(
-        availability = AssistantAvailability.Available,
-        message = "Den här veckan bygger du styrka i benen tre dagar, med vila emellan så att musklerna " +
-            "hinner återhämta sig. Knäböj och höftlyft gör jobbet utan hopp, så knäna skonas. Börja " +
-            "måndagens pass lugnt och fokusera på tekniken i första setet.",
     )
 
     /** The coach before it is set up. */

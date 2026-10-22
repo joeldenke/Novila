@@ -57,8 +57,6 @@
     <string name="privacy_where_body">Bara i den här telefonen, krypterat med en nyckel från telefonens Android Keystore. Novila har inget konto och ingen server, och appen har ingen åtkomst till internet, så inget du loggar kan skickas någonstans. Novilas data lämnas utanför Androids säkerhetskopiering och överföringar till en ny telefon.</string>
     <string name="privacy_health_connect_title">Health Connect</string>
     <string name="privacy_health_connect_body">Om du tillåter det läser Novila dagens steg och aktiva kalorier, dina träningspass de senaste fem veckorna, din sömn upp till två år bakåt samt din vilopuls och hjärtfrekvensvariabilitet de senaste två veckorna. Datan läses bara när appen är öppen, används bara för att visa din dag och planera din träning och finns bara i minnet: Novila sparar den aldrig, skriver aldrig till Health Connect och delar den aldrig. Novilas användning av data från Health Connect följer Health Connects behörighetspolicy, inklusive kraven på begränsad användning (Limited Use). Du kan när som helst stänga av åtkomsten i Health Connect.</string>
-    <string name="privacy_ai_title">Coachens AI-kommentar</string>
-    <string name="privacy_ai_body">Har din telefon Gemini Nano kan coachen skriva en kommentar om din vecka när du ber om det. Modellen körs i telefonen, i Androids AICore, och planen den läser lämnar aldrig telefonen.</string>
     <string name="privacy_shared_title">Delas inte med någon</string>
     <string name="privacy_shared_body">Novila har ingen reklam, inga analysverktyg och ingen spårning. Din data säljs inte, delas inte med någon och används inte för reklam. Utvecklaren får aldrig del av den.</string>
     <string name="privacy_screen_title">Notiser, widgeten och rutan</string>
@@ -66,12 +64,12 @@
     <string name="privacy_control_title">Du bestämmer</string>
     <string name="privacy_control_body">Du kan se och ändra det du har loggat i appen. Radera all data under Inställningar tar bort din hälsodata från telefonen på en gång, och avinstallerar du Novila försvinner allt. Ingen kopia finns någon annanstans, så det finns inget mer för utvecklaren att radera eller lämna ut. Data i Health Connect hanteras i Health Connect.</string>
     <string name="privacy_google_title">Google Play och Android</string>
-    <string name="privacy_google_body">Novila installeras via Google Play, och Health Connect, AICore och Gemini Nano är delar av Android som Google gör. De följer Googles integritetspolicy. Delar du användning och diagnostik med Google kan Google Play ge utvecklaren kraschrapporter, som inte innehåller det du loggar i Novila.</string>
+    <string name="privacy_google_body">Novila installeras via Google Play, och Health Connect är en del av Android som Google gör. De följer Googles integritetspolicy. Delar du användning och diagnostik med Google kan Google Play ge utvecklaren kraschrapporter, som inte innehåller det du loggar i Novila.</string>
     <string name="privacy_adults_title">För vuxna</string>
     <string name="privacy_adults_body">Novila är gjord för vuxna och riktar sig inte till barn.</string>
     <string name="privacy_contact_title">Frågor och ändringar</string>
     <string name="privacy_contact_body">Frågor om integritet skickas till utvecklarens kontaktadress på Novilas sida i Google Play. Du kan också klaga hos Integritetsskyddsmyndigheten (IMY). Ändras policyn kommer den nya versionen med en uppdatering av appen, med datum nedan.</string>
-    <string name="privacy_updated">Uppdaterad 21 oktober 2026</string>
+    <string name="privacy_updated">Uppdaterad 22 oktober 2026</string>
 
     <!-- Licenser -->
     <string name="licenses_title">Öppna licenser</string>
@@ -92,8 +90,6 @@
     <string name="disclaimer_stop_body">Avbryt och vila om du får ont i bröstet, blir yr, andfådd eller får skarp smärta. Sök vård om det inte går över. Ring 112 vid akut fara.</string>
     <string name="disclaimer_rehab_title">Skonsam träning</string>
     <string name="disclaimer_rehab_body">Coachens program för skonsam träning är allmänna och ersätter inte en plan från din fysioterapeut. Följ smärtgränsen, och din vårdgivares råd före Novilas.</string>
-    <string name="disclaimer_ai_title">AI-kommentarer</string>
-    <string name="disclaimer_ai_body">Coachens kommentar skrivs av Gemini Nano i din telefon. AI kan ha fel. Själva programmet görs utan AI, och det är programmet som gäller.</string>
     <string name="disclaimer_sources_title">Var råden kommer ifrån</string>
     <string name="disclaimer_sources_body">Aktivitetsmålen följer WHO:s råd om fysisk aktivitet och kostpoängen Livsmedelsverkets kostråd. Dina egna behov kan skilja sig.</string>
 

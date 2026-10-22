@@ -40,9 +40,8 @@ from day one. What comes next is in the [roadmap](docs/roadmap.md).
   privacy screen Health Connect links to says exactly that.
 - **Reminders are off until you turn them on.** Notifications are asked for only then. Each reminder is one
   WorkManager job a day that reads what is already saved on the phone and notifies only when something is missing.
-- **AI runs on the phone.** The training plan is deterministic, tested Kotlin. Gemini Nano (through AICore)
-  only writes a short comment about the finished plan, the prompt never leaves the device, and the answer is
-  shown with an AI disclaimer. The model never picks exercises, doses or rehab advice.
+- **No AI decides anything.** The training plan, the coach's reasons and the insights are deterministic, tested
+  Kotlin that explains itself; no language model writes in the app.
 - **The APK is reviewed.** CI compares the APK's permissions, SDK levels, features and exported components with
   a committed file and fails on any difference, so no library can add a permission unnoticed.
 
@@ -58,7 +57,6 @@ from day one. What comes next is in the [roadmap](docs/roadmap.md).
 | Dependency injection | [Metro](https://zacsweers.github.io/metro/), a compile-time Kotlin compiler plugin |
 | Storage | Preferences DataStore with a versioned, migrated format |
 | Health data | Health Connect; a Google Health API (REST) source exists but is not wired in yet |
-| On-device AI | Gemini Nano via the ML Kit GenAI Prompt API |
 | Platform | minSdk 26, compileSdk and targetSdk 37 |
 | Testing | JUnit, Robolectric and Compose UI tests, Roborazzi screenshot tests of every `@Preview`, Kover coverage |
 | Code quality | Spotless with ktlint, Android lint with a project policy (`lint.xml`), architecture tests |
@@ -91,7 +89,7 @@ each other, which a test checks.
 :core:ui                 Shared UI: lists, formatting, history cards, preview data
 :core:reminders          Reminders: WorkManager jobs and notifications
 :core:navigation         Back stack per tab, Navigator
-:core:data               DataStore stores and the Gemini Nano coach model
+:core:data               DataStore stores
 :core:healthconnect      Health Connect as a movement, workout, sleep and recovery source, privacy screen
 :core:model              Pure Kotlin: day entries, nutrition score, daily balance, insights, settings
 :core:movement           Pure Kotlin: movement data independent of source

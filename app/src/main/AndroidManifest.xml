@@ -10,9 +10,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <!--
-      No network access. ML Kit (Gemini Nano, through AICore on the phone) pulls in Google's datatransport library,
-      which asks for INTERNET to send usage statistics. Gemini Nano itself doesn't need the network, and health data
-      stays on the phone, so the permission is removed for every library. Adding it back needs the owner's ok.
+      No network access: health data stays on the phone, so the permission is removed for every library, also one
+      that asks for it to send usage statistics. Adding it back needs the owner's ok.
     -->
     <uses-permission
         android:name="android.permission.INTERNET"

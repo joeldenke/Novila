@@ -2,7 +2,6 @@ package se.novila.feature.training.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -176,21 +175,15 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
             viewModel.refresh()
             onPauseOrDispose { }
         }
-        // Whether Gemini Nano can run here is asked when the coach opens, never in the background.
-        LaunchedEffect(viewModel) { viewModel.checkAssistant() }
         val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
-        val assistant by viewModel.assistant.collectAsStateWithLifecycle()
         CoachScreen(
             coach = state.coach,
-            assistant = assistant,
             today = state.today,
             onChange = viewModel::change,
             onCreate = viewModel::createProgram,
             onSuggest = viewModel::nextSuggestion,
             onReset = viewModel::reset,
             onOpenExercise = openExercise,
-            onDownloadAssistant = viewModel::downloadAssistant,
-            onWriteMessage = viewModel::writeAssistantMessage,
             contentPadding = contentPadding,
         )
     }

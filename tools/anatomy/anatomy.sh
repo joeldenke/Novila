@@ -72,7 +72,6 @@ case "$command" in
       "$ROOT/core/coach/src/test/java/se/novila/coach/CoachFeedbackTest.kt"
       "$ROOT/core/coach/src/test/java/se/novila/coach/CoachPlannerTest.kt"
       "$ROOT/core/coach/src/test/java/se/novila/coach/CoachPreferencesTest.kt"
-      "$ROOT/core/coach/src/test/java/se/novila/coach/CoachPromptTest.kt"
     )
     # shellcheck disable=SC2046
     compile $(sources) "${tests[@]}"
@@ -80,8 +79,7 @@ case "$command" in
       se.novila.anatomy.AnatomyTest se.novila.anatomy.RepetitionCounterTest \
       se.novila.exercise.StrengthSessionsTest se.novila.exercise.TrainingProgramGeneratorTest \
       se.novila.exercise.WorkoutTest se.novila.exercise.ExerciseRepositoryTest se.novila.exercise.TrainingHistoryTest \
-      se.novila.coach.CoachPlannerTest se.novila.coach.CoachFeedbackTest se.novila.coach.CoachPreferencesTest \
-      se.novila.coach.CoachPromptTest
+      se.novila.coach.CoachPlannerTest se.novila.coach.CoachFeedbackTest se.novila.coach.CoachPreferencesTest
     ;;
   render)
     # shellcheck disable=SC2046

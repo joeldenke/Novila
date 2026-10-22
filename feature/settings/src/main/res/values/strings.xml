@@ -62,8 +62,6 @@
     <string name="privacy_where_body">Only on this phone, encrypted with a key from the phone\'s Android Keystore. Novila has no account and no server, and the app has no access to the internet, so nothing you log can be sent anywhere. Novila\'s data is left out of Android\'s backup and of transfers to a new phone.</string>
     <string name="privacy_health_connect_title">Health Connect</string>
     <string name="privacy_health_connect_body">If you allow it, Novila reads today\'s steps and active calories, your workouts from the last five weeks, your sleep up to two years back, and your resting heart rate and heart rate variability from the last two weeks. The data is read only while the app is open, used only to show your day and plan your training, and kept only in memory: Novila never saves it, never writes to Health Connect and never shares it. Novila\'s use of data from Health Connect follows the Health Connect permissions policy, including its Limited Use requirements. You can turn off access at any time in Health Connect.</string>
-    <string name="privacy_ai_title">The coach\'s AI comment</string>
-    <string name="privacy_ai_body">If your phone has Gemini Nano, the coach can write a comment on your week when you ask for one. The model runs on the phone, in Android\'s AICore, and the plan it reads never leaves the phone.</string>
     <string name="privacy_shared_title">Shared with no one</string>
     <string name="privacy_shared_body">Novila has no ads, no analytics and no tracking. Your data is not sold, not shared with anyone and not used for advertising. The developer never receives it.</string>
     <string name="privacy_screen_title">Notifications, the widget and the tile</string>
@@ -71,12 +69,12 @@
     <string name="privacy_control_title">You decide</string>
     <string name="privacy_control_body">You can see and change what you have logged in the app. Delete all data under Settings removes your health data from the phone at once, and uninstalling Novila removes all of it. No copy exists anywhere else, so there is nothing more for the developer to delete or hand over. Data in Health Connect is managed in Health Connect.</string>
     <string name="privacy_google_title">Google Play and Android</string>
-    <string name="privacy_google_body">Novila is installed through Google Play, and Health Connect, AICore and Gemini Nano are parts of Android made by Google. They follow Google\'s privacy policy. If you share usage and diagnostics with Google, Google Play may give the developer crash reports, which do not contain what you log in Novila.</string>
+    <string name="privacy_google_body">Novila is installed through Google Play, and Health Connect is part of Android made by Google. They follow Google\'s privacy policy. If you share usage and diagnostics with Google, Google Play may give the developer crash reports, which do not contain what you log in Novila.</string>
     <string name="privacy_adults_title">For adults</string>
     <string name="privacy_adults_body">Novila is made for adults and is not directed at children.</string>
     <string name="privacy_contact_title">Questions and changes</string>
     <string name="privacy_contact_body">Questions about privacy go to the developer\'s contact address on Novila\'s page in Google Play. You can also complain to the Swedish Authority for Privacy Protection (IMY). If this policy changes, the new version comes with an app update, with its date below.</string>
-    <string name="privacy_updated">Updated 21 October 2026</string>
+    <string name="privacy_updated">Updated 22 October 2026</string>
 
     <!-- Licenses -->
     <string name="licenses_title">Open source licenses</string>
@@ -97,8 +95,6 @@
     <string name="disclaimer_stop_body">Stop and rest if you feel chest pain, dizziness, shortness of breath or sharp pain. Seek care if it does not pass. In an emergency, call 112.</string>
     <string name="disclaimer_rehab_title">Gentle training</string>
     <string name="disclaimer_rehab_body">The coach\'s gentle training programs are general and do not replace a plan from your physiotherapist. Follow the pain limit, and your caregiver\'s advice before Novila\'s.</string>
-    <string name="disclaimer_ai_title">AI comments</string>
-    <string name="disclaimer_ai_body">The coach\'s comment is written by Gemini Nano on your phone. AI can be wrong. The program itself is made without AI, and it is what counts.</string>
     <string name="disclaimer_sources_title">Where the advice comes from</string>
     <string name="disclaimer_sources_body">Activity goals follow the WHO\'s physical activity guidelines, and the nutrition score follows the Swedish Food Agency\'s dietary guidelines. Your own needs can differ.</string>
 

@@ -67,8 +67,7 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   `ViewModelStore` via `rememberViewModelStoreNavEntryDecorator`), `Navigator` och `SharedScreen` (nycklarna som
   låter en ingång växa till skärmen den öppnar, se *Rörelse* under Regler)
 - `:core:data` – lagring i Preferences DataStore (`HealthStore`, `CoachStore`, `SettingsStore`, `ProfileStore`, `GoalsStore`,
-  singletons i `AppScope` vars `StateFlow` `days`/`answers`/`settings`/`profile`/`goals` får alla ViewModels att läsa om efter en sparning) och `GeminiNanoCoachModel` (bunden som
-  `CoachLanguageModel`). `PreferencesStore` flyttar gamla SharedPreferences hit vid första läsningen, håller datan i
+  singletons i `AppScope` vars `StateFlow` `days`/`answers`/`settings`/`profile`/`goals` får alla ViewModels att läsa om efter en sparning). `PreferencesStore` flyttar gamla SharedPreferences hit vid första läsningen, håller datan i
   minnet och köar sparningar i storens egen scope (i ordning, klara även när ViewModeln rensas). `SavedDays` avkodar
   varje dag en gång per ögonblicksbild, även genom `showing`. Tills första läsningen
   är klar är ViewModelns state `null` och entryn ritar inget. Använd aldrig SharedPreferences för ny data.
@@ -120,10 +119,9 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
     repetitioner mer), och smärtan i rehabpassen ger ett förslag på fas (smärtmonitoreringsmodellen: högst 3 av 10 är
     okej, över 5 är för mycket). Coachen föreslår bara en ny fas; användaren byter. Svaren
     sparas i `CoachStore`; är coachen inte inställd gäller `TrainingProgramGenerator`. Planen är alltid deterministisk
-    och testad. Gemini Nano (`GeminiNanoCoachModel`, ML Kit Prompt API via AICore) skriver bara en kommentar om den
-    färdiga planen (`CoachPrompt` bygger prompten och tvättar svaret), aldrig själva planen. Dagens gemensamma förslag
-    för sömn, träning och kost är `dailyCoach` (`DailyCoach`, `CoachAdvice`), som väger delarna mot varandra och är
-    deterministisk och enhetstestad. Se *Gemini Nano* under Regler.
+    och testad, och förklarar sig själv med `CoachNote`. Dagens gemensamma förslag för sömn, träning och kost är
+    `dailyCoach` (`DailyCoach`, `CoachAdvice`), som väger delarna mot varandra och är deterministisk och enhetstestad.
+    Se *Ingen AI* under Regler.
   - `:core:breathing` – de guidade andningsövningarna som data: `BreathingSession` (faser med längd i sekunder och
     antal rundor), `BreathingCatalog` (lugn andning, boxandning, 4-7-8) och `momentAt`, som deterministiskt räknar ut
     runda, fas, sekunder kvar och hur långt in i fasen man är vid en förfluten tid. `breathScale` ger cirkelns storlek.
@@ -377,7 +375,7 @@ där pluginet `firebase@firebase` inte alltid installeras.
   mindre mättnad och ljus, aldrig en grå slöja) och nederkanten flyter ut i ytan; nattskogen och solnedgången behåller sitt ljus. Rita inte landskap i kod: det har
   provats och når inte upp till målade bilder. Nya scener tas fram i samma stil som de befintliga.
 - **Inga medicinska påståenden:** appen ger allmänna råd och ska inte låta som vård (medicintekniska regler, MDR).
-  I texter, butikssidan och Gemini Nano-prompten heter målet `Rehab` *skonsam träning* och dess faser *nivåer*;
+  I texter och på butikssidan heter målet `Rehab` *skonsam träning* och dess faser *nivåer*;
   skriv aldrig rehab, rehabilitering, behandling, terapi eller att appen läker, lindrar eller hjälper mot en
   sjukdom eller besvär (sömnlöshet, skada). Råden om när man ska söka vård behålls. Koden får heta `Rehab`.
 - **Appikonen:** ett vitt N på granplattan, med solen i skåran och solnedgången som tre snitt genom N:ets nedre del
@@ -422,7 +420,7 @@ där pluginet `firebase@firebase` inte alltid installeras.
   koffein i mg, näringsämnen eller kosttillskott: det kräver en livsmedelsdatabas och närmar sig hälsopåståenden
   (förordning 1924/2006). Lägg inte till det utan att ägaren ber om det.
 - **Recept:** förslagen väljs alltid deterministiskt ur `Recipe` och användarens egna recept (testat i
-  `RecipeSuggestionsTest` och `OwnRecipeTest`), aldrig genererade av Gemini Nano eller någon annan modell: ett påhittat
+  `RecipeSuggestionsTest` och `OwnRecipeTest`), aldrig genererade av en språkmodell: ett påhittat
   recept kan innehålla något användaren är allergisk mot. Ett recept som innehåller en av användarens allergener föreslås aldrig, och kortet ber alltid användaren
   kontrollera ingredienserna själv. Nytt recept: ange portioner (grönsaker cirka 100 g per portion, potatis räknas
   inte), diet, alla allergener i ingredienserna, tid och ingrediensfamiljer (`FoodKind`), plus namn, ingredienser och
@@ -478,10 +476,11 @@ där pluginet `firebase@firebase` inte alltid installeras.
   inkopplad än. Att koppla in den kräver ägarens ok och, i samma PR: Google-inloggning som `AccessTokenProvider`,
   behörigheten `INTERNET` (ny rad i badging), uppdaterad integritetsskärm och Play-deklaration, och skillen
   `android-permissions-security`. Svaren tolkas i `GoogleHealthJson`; okända fält ignoreras.
-- **Gemini Nano:** coachens kommentar körs med Gemini Nano i AICore på telefonen; prompten (veckans plan) lämnar
-  aldrig enheten. Modellen får aldrig bestämma övningar, doser eller rehabråd: den förklarar bara planen från
-  `CoachPlanner`, och svaret visas med en AI-reservation. Inga emojis eller markdown (`CoachPrompt.clean`). Att använda
-  modellen till mer än så, eller byta till en molnmodell, kräver ägarens ok.
+- **Ingen AI:** appen har ingen språkmodell. Coachens kommentar med Gemini Nano togs bort i oktober 2026: den gav
+  lite utöver coachens egna skäl, och Play kräver att AI-genererat innehåll går att rapportera inifrån appen, vilket
+  inte går utan `INTERNET`. Planen, skälen och insikterna är deterministiska och förklarar sig själva. Att lägga
+  tillbaka en modell, på enheten eller i molnet, kräver ägarens ok, rapportering enligt Plays policy för AI-genererat
+  innehåll, ny integritetstext och ny Play-deklaration.
 - **Påminnelser:** bara WorkManager, ett engångsjobb per påminnelse och dag (`ReminderScheduler`). Inga
   periodiska jobb, ingen tjänst i förgrunden, inga exakta larm (`SCHEDULE_EXACT_ALARM`) och inget som körs mellan
   påminnelserna. Workern läser bara det som redan är sparat, visar notisen om något saknas och lägger nästa dag; den
@@ -512,7 +511,7 @@ där pluginet `firebase@firebase` inte alltid installeras.
   scaffoldens `contentPadding`, så inget hamnar under klockan eller utanför en rund skärm. Rader med flera knappar
   delar bredden (`weight`). Varje `@Preview` blir en skärmdump, på alla klockformer för skärmar med mycket text.
 - Hälsodata stannar på enheten. Inga nätverksanrop, analysverktyg eller Firebase-SDK:er i appen utan att ägaren ber om det.
-  Appen har ingen `INTERNET`-behörighet: ML Kit drar in Googles telemetri (`datatransport`), som ber om den för att
-  skicka användningsstatistik, så den tas bort i appens manifest (`tools:node="remove"`). Lägg aldrig tillbaka den
+  Appen har ingen `INTERNET`-behörighet, och den tas bort i appens manifest (`tools:node="remove"`), så inget
+  bibliotek kan be om den, till exempel för att skicka användningsstatistik. Lägg aldrig tillbaka den
   utan ägarens ok; Google Health API-källan kräver den, se ovan.
 - Pinna GitHub Actions till commit-SHA med versionskommentar. Dependabot håller dem uppdaterade.

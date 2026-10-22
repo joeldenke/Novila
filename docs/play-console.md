@@ -114,7 +114,7 @@ Var beredd på att Google ber om en kort skärminspelning som visar var varje da
 ## Data safety
 
 Play definierar *collected* som data som skickas från enheten. Data som bara behandlas på enheten räknas inte, och
-inte heller data som bara skickas via Androids egna system (Health Connect, AICore). Novila kan inte skicka något
+inte heller data som bara skickas via Androids egna system (Health Connect). Novila kan inte skicka något
 (ingen `INTERNET`), så:
 
 | Fråga | Svar |
@@ -139,12 +139,11 @@ Hela listan i `app/badging/debug-badging.txt`. Utöver Health Connect:
 | `WAKE_LOCK` | WorkManager | Håller enheten vaken de millisekunder en påminnelse körs. | Nej |
 | `RECEIVE_BOOT_COMPLETED` | WorkManager | Lägger tillbaka planerade påminnelser efter omstart. | Nej |
 | `ACCESS_NETWORK_STATE` | WorkManager | WorkManagers nätverksvillkor; ger ingen nätverksåtkomst och används inte av appen. | Nej |
-| `com.google.android.apps.aicore.service.BIND_SERVICE` | ML Kit GenAI | Ansluter till AICore för Gemini Nano på enheten. | Nej |
 | `se.novila.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` | AndroidX Core | Appens egen signaturbehörighet för icke-exporterade receivers. | Nej |
 
 Inga behörigheter som kräver egna formulär: ingen plats, inga kontakter, inga exakta larm
 (`SCHEDULE_EXACT_ALARM`/`USE_EXACT_ALARM`), ingen förgrundstjänst (`FOREGROUND_SERVICE` tas bort i manifestet),
-ingen `QUERY_ALL_PACKAGES` (bara `<queries>` för Health Connect och AICore), inga tillgänglighetstjänster.
+ingen `QUERY_ALL_PACKAGES` (bara `<queries>` för Health Connect), inga tillgänglighetstjänster.
 
 ## Butikssidan
 
@@ -157,7 +156,7 @@ ingen `QUERY_ALL_PACKAGES` (bara `<queries>` för Health Connect och AICore), in
 - Ta med en rad om att Novila ger allmänna råd och inte är en medicinteknisk produkt.
 - Påståenden om integritet ("allt stannar i telefonen", "ingen reklam") är sanna i dag och ska stämma med Data
   safety. Nämn att Health Connect behövs för steg, pass, nätter och återhämtning, men att allt går att logga själv.
-- Gemini Nano nämns som valfri AI-kommentar på enheten, med att planen alltid görs utan AI.
+- Appen har ingen AI: planen och insikterna görs av regler som förklarar sig själva. Det kan stå på butikssidan.
 - Inga emojis i skärmdumpar eller texter (som i appen).
 
 ## GDPR, kort
@@ -182,13 +181,10 @@ ingen `QUERY_ALL_PACKAGES` (bara `<queries>` för Health Connect och AICore), in
 - [ ] App content ifyllt enligt tabellerna ovan; Health Connect-deklarationen inskickad och godkänd.
 - [ ] Skillen `play-policy-insights` körd mot den aktuella koden. En manuell genomgång (oktober 2026) hittade två
       saker, som skillen ska bekräfta:
-  - [ ] **AI-genererat innehåll:** Play kräver att appar som genererar innehåll med AI låter användaren rapportera
-        eller flagga stötande innehåll till utvecklaren inifrån appen. Coachens Gemini Nano-kommentar
-        (`CoachScreen`) har ingen sådan knapp, och utan `INTERNET` kan appen inte skicka en rapport själv. Ägaren
-        väljer: en *Rapportera*-knapp som öppnar ett mejl till utvecklaren med kommentaren ifylld, eller att
-        kommentaren stängs av i den första releasen.
-  - [ ] **16 KB-sidstorlek:** appen bär native-bibliotek (`arm64-v8a` m.fl., från biblioteken) och har targetSdk
-        35+, så Play kräver att de är 16 KB-justerade. Kontrollera i Play Consoles *App bundle explorer* efter
+  - [x] **AI-genererat innehåll:** Play kräver att AI-genererat innehåll går att rapportera inifrån appen. Coachens
+        Gemini Nano-kommentar saknade det, så den togs bort; appen har ingen AI.
+  - [ ] **16 KB-sidstorlek:** om appen bär native-bibliotek (`native-code` i badgingen) och har targetSdk
+        35+ kräver Play att de är 16 KB-justerade. Kontrollera i Play Consoles *App bundle explorer* efter
         första uppladdningen.
 - [ ] Intern testning (Internal testing track) med Health Connect-dialogen, påminnelser och widgeten på en riktig
       enhet med Android 14+ och en med Android 13 eller äldre.
