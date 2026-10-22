@@ -31,6 +31,7 @@ import se.novila.navigation.SharedScreen
 import se.novila.recovery.RecoveryState
 import se.novila.recovery.RecoveryStatus
 import se.novila.ui.common.ScreenList
+import se.novila.ui.common.durationText
 import se.novila.ui.common.setupHint
 import se.novila.ui.preview.PreviewData
 import java.time.DayOfWeek
@@ -145,7 +146,7 @@ private fun LazyListScope.healthData(
     }
 }
 
-/** The week's program, the coach and the exercise library, each with where it stands. */
+/** The week's program, the coach, the training over time and the exercise library, each with where it stands. */
 @Composable
 private fun trainingHubEntries(state: TrainingUiState, actions: TrainingActions): List<NovilaEntry> {
     val training = NovilaTheme.pillars.training
@@ -169,6 +170,14 @@ private fun trainingHubEntries(state: TrainingUiState, actions: TrainingActions)
             ),
         ),
         NovilaEntry(
+            title = stringResource(R.string.training_entry_trends),
+            icon = painterResource(UiR.drawable.ic_insight),
+            role = training,
+            onClick = actions.onOpenTrends,
+            sharedKey = SharedScreen.TrainingTrends,
+            summary = stringResource(R.string.training_entry_trends_summary, durationText(state.weekDone.values.sum())),
+        ),
+        NovilaEntry(
             title = stringResource(R.string.exercises_title),
             icon = painterResource(UiR.drawable.ic_training),
             role = training,
@@ -188,6 +197,7 @@ data class TrainingActions(
     val onOpenCardioLog: () -> Unit = {},
     val onOpenCoach: () -> Unit = {},
     val onOpenProgram: () -> Unit = {},
+    val onOpenTrends: () -> Unit = {},
     val onOpenExercise: (String) -> Unit = {},
     val onConnectHealth: () -> Unit = {},
     val onConnectRecovery: () -> Unit = {},

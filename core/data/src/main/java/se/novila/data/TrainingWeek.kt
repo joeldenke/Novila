@@ -104,6 +104,15 @@ fun trainingWeek(
     return TrainingWeek(days, history, preferences, active != null, plan, program, nextProgram)
 }
 
+/**
+ * Minutes trained per date in [days]: Novila's own sessions and the workouts a watch or another app [recorded], the
+ * same walk counted once ([TrainingHistory]). Dates without training are left out.
+ */
+fun trainingMinutesByDate(days: List<DayEntry>, recorded: List<Exercise>): Map<LocalDate, Int> =
+    TrainingHistory.merge(days.flatMap(::ownExercises), recorded)
+        .groupBy { it.date }
+        .mapValues { (_, done) -> done.sumOf { it.duration.inWholeMinutes }.toInt() }
+
 private fun ownExercises(day: DayEntry): List<Exercise> = buildList {
     if (day.strengthMinutes > 0) add(Exercise(ExerciseType.Strength, day.date, day.strengthMinutes.minutes))
     day.cardio.forEach { add(Exercise(it.type.exerciseType, day.date, it.minutes.minutes)) }

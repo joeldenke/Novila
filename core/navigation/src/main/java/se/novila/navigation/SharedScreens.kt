@@ -19,6 +19,7 @@ enum class SharedScreen {
     TrainingProgram,
     TrainingCoach,
     ExerciseLibrary,
+    TrainingTrends,
     SleepCoach,
     Breathing,
     SleepTrends,

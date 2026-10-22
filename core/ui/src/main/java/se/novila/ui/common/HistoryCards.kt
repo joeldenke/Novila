@@ -15,6 +15,7 @@ import se.novila.designsystem.component.NovilaLineChart
 import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaColorRole
 import se.novila.designsystem.theme.NovilaTheme
+import se.novila.model.DayEntry
 import se.novila.model.GOOD_NUTRITION_SCORE
 import se.novila.model.Goals
 import se.novila.model.History
@@ -120,15 +121,22 @@ fun NutritionHistoryCard(history: History, goals: Goals, onRange: ((HistoryRange
 }
 
 /**
- * Training minutes logged in the app over the [history]'s range as bars: a bar per day, week or month, the minutes
- * of strength and cardio in it. With [onRange] the user picks the range; the total is compared with the range before.
+ * Training minutes over the [history]'s range as bars: a bar per day, week or month, the minutes of strength and
+ * cardio in it. By default only what was logged in the app counts; with [minutes] each day is counted another way,
+ * such as together with the watch's workouts ([includesWatch], which the caption then says). With [onRange] the user
+ * picks the range; the total is compared with the range before.
  */
 @Composable
-fun TrainingHistoryCard(history: History, onRange: ((HistoryRange) -> Unit)? = null) {
+fun TrainingHistoryCard(
+    history: History,
+    onRange: ((HistoryRange) -> Unit)? = null,
+    minutes: (DayEntry) -> Int = { it.trainingMinutes },
+    includesWatch: Boolean = false,
+) {
     val training = NovilaTheme.pillars.training
-    val total = history.days.sumOf { it.trainingMinutes }
-    val before = history.previous.sumOf { it.trainingMinutes }
-    val values = remember(history) { history.periods.map { period -> period.days.sumOf { it.trainingMinutes } } }
+    val total = history.days.sumOf(minutes)
+    val before = history.previous.sumOf(minutes)
+    val values = remember(history, minutes) { history.periods.map { period -> period.days.sumOf(minutes) } }
     NovilaCard(
         title = stringResource(
             when (history.range) {
@@ -144,7 +152,9 @@ fun TrainingHistoryCard(history: History, onRange: ((HistoryRange) -> Unit)? = n
         val beforeRange = historyBeforeText(history.range)
         HistorySummary(
             value = durationText(total),
-            caption = stringResource(R.string.history_training_caption),
+            caption = stringResource(
+                if (includesWatch) R.string.history_training_caption_watch else R.string.history_training_caption,
+            ),
             trend = when {
                 total == 0 || before == 0 -> null
 

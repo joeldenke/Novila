@@ -157,6 +157,7 @@
     <string name="history_training_title_month">Training, last four weeks</string>
     <string name="history_training_title_year">Training, last year</string>
     <string name="history_training_caption">Strength and cardio logged in Novila</string>
+    <string name="history_training_caption_watch">Strength and cardio, logged in Novila or recorded by your watch</string>
     <string name="history_training_more">%1$s more than %2$s</string>
     <string name="history_training_less">%1$s less than %2$s</string>
     <string name="history_training_description">Training minutes over the range, %1$s in all.</string>

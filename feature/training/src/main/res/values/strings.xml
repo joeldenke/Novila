@@ -518,4 +518,6 @@
     <string name="load_unknown">After a few weeks of training, Novila compares each week with your usual one.</string>
     <string name="load_uniform">The days have been about equally hard. An easy day or a rest day between harder ones makes it easier to recover.</string>
     <string name="load_footer">Load is effort times minutes. %1$d of %2$d sessions with the effort you gave; the others count as moderate.</string>
+    <string name="training_entry_trends">Trends</string>
+    <string name="training_entry_trends_summary">%1$s trained this week</string>
 </resources>
