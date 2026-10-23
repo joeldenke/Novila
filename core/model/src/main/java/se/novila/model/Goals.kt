@@ -30,7 +30,11 @@ data class Goals(
         const val SLEEP_STEP = 0.5f
         val WATER_GLASSES = 4..16
 
-        /** Steps a day from age 60, where the health benefit levels off (Paluch et al., Lancet Public Health 2022). */
+        /**
+         * Steps a day by age, in the middle of where the health benefit levels off: 8,000–10,000 below 60 and
+         * 6,000–8,000 from 60 (Paluch et al., Lancet Public Health 2022). Without an age, the general [STEPS_GOAL].
+         */
+        const val STEPS_BELOW_60 = 9000
         const val STEPS_FROM_60 = 7000
 
         /** Drink besides food per kilo of body weight, about 1.5 l at 70 kg (Livsmedelsverket: 1–1.5 l a day). */
@@ -46,7 +50,11 @@ data class Goals(
         fun suggested(profile: Profile, year: Int): Goals {
             val age = profile.ageIn(year)
             return Goals(
-                steps = if (age != null && age >= 60) STEPS_FROM_60 else STEPS_GOAL.toInt(),
+                steps = when {
+                    age == null -> STEPS_GOAL.toInt()
+                    age < 60 -> STEPS_BELOW_60
+                    else -> STEPS_FROM_60
+                },
                 sleepHours = when {
                     age == null -> SLEEP_GOAL_HOURS
                     age < 18 -> 9f

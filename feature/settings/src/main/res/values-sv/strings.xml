@@ -159,6 +159,7 @@
     <string name="goals_raise">%1$s: höj målet</string>
     <string name="goals_suggestion">Förslag för dig</string>
     <string name="goals_suggestion_body">Utifrån din profil: %1$s steg, %2$s sömn och %3$d glas vatten om dagen.</string>
+    <string name="goals_suggestion_steps_why">Stegen följer din ålder: hälsovinsten planar ut kring 8 000–10 000 om dagen, och kring 6 000–8 000 från 60.</string>
     <string name="goals_suggestion_use">Använd förslaget</string>
     <string name="goals_suggestion_in_use">Du använder de här målen.</string>
     <string name="goals_suggestion_needs_profile">Fyll i födelseår eller vikt i profilen, så föreslår Novila mål som passar dig.</string>

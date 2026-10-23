@@ -123,6 +123,7 @@ private fun SuggestionCard(goals: Goals, suggestion: Goals?, onUseSuggestion: (G
                 suggestion.waterGlasses,
             ),
         )
+        Body(stringResource(R.string.goals_suggestion_steps_why))
         if (suggestion == goals) {
             Body(stringResource(R.string.goals_suggestion_in_use))
         } else {

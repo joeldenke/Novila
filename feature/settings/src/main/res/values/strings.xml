@@ -164,6 +164,7 @@
     <string name="goals_raise">%1$s: raise the goal</string>
     <string name="goals_suggestion">Suggested for you</string>
     <string name="goals_suggestion_body">From your profile: %1$s steps, %2$s of sleep and %3$d glasses of water a day.</string>
+    <string name="goals_suggestion_steps_why">Steps follow your age: the health benefit levels off around 8,000–10,000 a day, and around 6,000–8,000 from 60.</string>
     <string name="goals_suggestion_use">Use these goals</string>
     <string name="goals_suggestion_in_use">You are using these goals.</string>
     <string name="goals_suggestion_needs_profile">Add your birth year or weight to your profile, and Novila suggests goals that fit you.</string>
