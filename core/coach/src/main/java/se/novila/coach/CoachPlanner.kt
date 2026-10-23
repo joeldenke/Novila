@@ -514,10 +514,10 @@ object CoachPlanner {
     private const val RECOVERY_CARDIO_FACTOR = 0.8
     private const val RECOVERY_MIN_CARDIO_MINUTES = 10
 
-    /** Each session gets one of each before anything else, in this order. */
     /** WHO's age for older adults, from which it advises balance training (WHO guidelines 2020). */
     const val BALANCE_AGE = 65
 
+    /** Each session gets one of each before anything else, in this order. */
     private val REQUIRED = listOf(
         setOf(MovementPattern.Legs, MovementPattern.Hinge),
         setOf(MovementPattern.Push),
