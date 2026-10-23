@@ -7,6 +7,9 @@
     <!-- Nutrition -->
     <string name="nutrition_score_title">Today\'s nutrition score</string>
     <string name="nutrition_score_title_day">Nutrition score</string>
+    <string name="nutrition_hero_day">%1$s: %2$d of 100</string>
+    <string name="nutrition_hero_day_missing">%1$s: nothing logged</string>
+    <string name="nutrition_breakdown_title">How the score adds up</string>
     <string name="nutrition_next_title">Next step</string>
     <string name="nutrition_done_title">All food groups on target</string>
     <string name="nutrition_done_body">Every food group has reached its daily goal.</string>

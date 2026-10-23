@@ -7,11 +7,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import se.novila.designsystem.component.NovilaCard
+import se.novila.designsystem.component.NovilaHeroBar
+import se.novila.designsystem.component.NovilaHeroBars
+import se.novila.designsystem.component.NovilaHeroPanel
+import se.novila.designsystem.component.NovilaHeroPart
+import se.novila.designsystem.component.NovilaHeroRing
+import se.novila.designsystem.component.NovilaHeroText
 import se.novila.designsystem.component.NovilaMeter
-import se.novila.designsystem.component.NovilaScoreRing
+import se.novila.designsystem.component.NovilaSky
 import se.novila.designsystem.component.NovilaStepper
 import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
@@ -24,45 +31,87 @@ import se.novila.model.nextPortion
 import se.novila.model.nutritionScore
 import se.novila.model.portions
 import se.novila.ui.common.nextPortionText
+import se.novila.ui.common.weekdayLabels
+import java.time.format.TextStyle
 import kotlin.math.roundToInt
 import se.novila.ui.R as UiR
 
 /**
- * The day's nutrition score, the smartest next step and how each food group contributes. Titled as today's when
- * [isToday].
+ * The day at a glance at the top of Nutrition, on the falu red field under the [sky]: the shown [day]'s nutrition
+ * score, the smartest next step, and the scores of the [week] up to the day. Titled as today's when [isToday].
  */
 @Composable
-fun NutritionScoreCard(today: DayEntry, goals: Goals, isToday: Boolean = true) {
-    val nutrition = NovilaTheme.pillars.nutrition
-    val score = today.nutritionScore(goals)
-    NovilaCard(
+internal fun NutritionOverview(
+    day: DayEntry,
+    week: List<DayEntry>,
+    goals: Goals,
+    isToday: Boolean,
+    modifier: Modifier = Modifier,
+    sky: NovilaSky = NovilaSky.Day,
+) {
+    val score = day.nutritionScore(goals)
+    NovilaHeroPanel(
         title = stringResource(if (isToday) R.string.nutrition_score_title else R.string.nutrition_score_title_day),
-        icon = painterResource(UiR.drawable.ic_nutrition),
-        role = nutrition,
+        modifier = modifier,
+        sky = sky,
+        part = NovilaHeroPart.Nutrition,
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.l),
         ) {
-            NovilaScoreRing(
-                score = score?.total ?: 0,
+            NovilaHeroRing(
                 progress = score?.progress ?: 0f,
-                caption = stringResource(UiR.string.balance_unit),
-                role = nutrition,
+                value = score?.total?.toString() ?: stringResource(UiR.string.value_missing),
+                unit = stringResource(UiR.string.balance_unit),
             )
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.xs)) {
-                val next = today.nextPortion(goals)
-                NovilaText(
-                    stringResource(if (next != null) R.string.nutrition_next_title else R.string.nutrition_done_title),
-                    style = NovilaTheme.typography.labelLarge,
-                    color = NovilaTheme.colors.onSurfaceVariant,
-                )
-                NovilaText(
-                    if (next != null) nextPortionText(next) else stringResource(R.string.nutrition_done_body),
-                    style = NovilaTheme.typography.bodyMedium,
-                )
-            }
+            val next = day.nextPortion(goals)
+            NovilaHeroText(
+                headline = stringResource(
+                    if (next != null) R.string.nutrition_next_title else R.string.nutrition_done_title,
+                ),
+                body = if (next != null) nextPortionText(next) else stringResource(R.string.nutrition_done_body),
+                modifier = Modifier.weight(1f),
+            )
         }
+        NovilaHeroBars(bars = scores(week, day, goals), max = 100f)
+    }
+}
+
+/** A bar per day of the [week] with its score, the [shown] one in the sun's color. */
+@Composable
+private fun scores(week: List<DayEntry>, shown: DayEntry, goals: Goals): List<NovilaHeroBar> {
+    val locale = LocalConfiguration.current.locales[0]
+    val labels = weekdayLabels(week)
+    return week.mapIndexed { i, day ->
+        val name = day.date.dayOfWeek.getDisplayName(TextStyle.FULL, locale)
+        val score = day.nutritionScore(goals)?.total
+        NovilaHeroBar(
+            label = labels[i],
+            value = score?.toFloat(),
+            current = day.date == shown.date,
+            description = if (score != null) {
+                stringResource(R.string.nutrition_hero_day, name, score)
+            } else {
+                stringResource(R.string.nutrition_hero_day_missing, name)
+            },
+        )
+    }
+}
+
+/**
+ * How the shown day's score adds up: each food group's points, what sweets and snacks took off, and what the
+ * weights follow. Last in the food sheet, under what is logged.
+ */
+@Composable
+fun ScoreBreakdownCard(today: DayEntry, goals: Goals, isToday: Boolean = true) {
+    val nutrition = NovilaTheme.pillars.nutrition
+    val score = today.nutritionScore(goals)
+    NovilaCard(
+        title = stringResource(R.string.nutrition_breakdown_title),
+        icon = painterResource(UiR.drawable.ic_nutrition),
+        role = nutrition,
+    ) {
         Column(verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.m)) {
             FoodGroup.entries.forEach { group ->
                 val part = score?.parts?.firstOrNull { it.group == group }

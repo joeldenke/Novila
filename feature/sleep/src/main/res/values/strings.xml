@@ -6,6 +6,13 @@
     <string name="sleep_night_times">%1$s to %2$s</string>
     <string name="sleep_log_night">Log the night</string>
     <string name="sleep_change_night">Change the night</string>
+    <string name="sleep_hero_of_goal">of %1$s</string>
+    <string name="sleep_hero_empty">No night logged yet</string>
+    <string name="sleep_hero_logged">Night logged</string>
+    <string name="sleep_hero_from_watch">From your watch</string>
+    <string name="sleep_hero_night">%1$s: %2$s</string>
+    <string name="sleep_hero_night_missing">%1$s: not logged</string>
+    <string name="sleep_watch_title">Nights from your watch</string>
     <string name="sleep_sheet_title">The night</string>
     <string name="sleep_entry_trends">Trends</string>
     <string name="sleep_entry_trends_summary">%1$s a night on average this week</string>
