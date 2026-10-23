@@ -503,8 +503,8 @@
     <string name="health_data_not_connected">Inte ansluten</string>
     <string name="health_data_missing">Health Connect saknas</string>
     <string name="health_data_hrv">HRV</string>
-    <string name="cycle_log">Din cykel</string>
-    <string name="cycle_sheet_title">Din cykel i dag</string>
+    <string name="cycle_log">Mens</string>
+    <string name="cycle_sheet_title">Mens och symtom i dag</string>
     <string name="cycle_period_today">Mens i dag</string>
     <string name="cycle_symptoms_title">Hur känns kroppen?</string>
     <string name="cycle_symptom_cramps">Mensvärk</string>

@@ -96,7 +96,7 @@ vem som kan se det och vad du kan göra åt det.
 Det du själv fyller i: ditt namn, födelseår, längd, vikt och kroppsmått, din sömn (med det som kan ha påverkat natten,
 till exempel mens), kost (med måltiderna du skriver med egna ord och stjärnmärker, för snabbloggning), dryck och dina
 pass, med repetitionerna du gjorde och ansträngning och smärta efter ett pass, dina svar till tränings- och sömncoachen,
-dina matpreferenser, även allergier, och recepten du själv skriver, om du slår på *Följ din cykel* även dina mensdagar
+dina matpreferenser, även allergier, och recepten du själv skriver, om du slår på *Mens och träning* även dina mensdagar
 och symtomen du loggar, som raderas när du stänger av den, och dina mål, påminnelser och inställningar. Om du tillåter
 det även det Novila läser från Health Connect, se nedan. Allt är frivilligt, och Novila fungerar utan namn och utan
 konto.
