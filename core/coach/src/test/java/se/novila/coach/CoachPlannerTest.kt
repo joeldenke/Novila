@@ -33,7 +33,8 @@ class CoachPlannerTest {
         history: List<Exercise> = emptyList(),
         recovery: RecoveryStatus = RecoveryStatus.Unknown,
         age: Int? = null,
-    ) = CoachPlanner.plan(preferences, history, today, recovery = recovery, age = age)
+        stalled: Set<String> = emptySet(),
+    ) = CoachPlanner.plan(preferences, history, today, recovery = recovery, age = age, stalled = stalled)
 
     private val TrainingProgram.strength: List<PlannedSession>
         get() = sessions.filter { it.type == ExerciseType.Strength }
@@ -258,6 +259,20 @@ class CoachPlannerTest {
         assertTrue(newcomer.notes.contains(CoachNote.CardioBelowGuideline(30)))
     }
 
+    @Test fun `a stalled exercise makes way for another for the same movement, and the coach says so`() {
+        fun ids(plan: CoachPlan) = plan.program.sessions.flatMap { it.exercises }.map { it.exerciseId }.toSet()
+        val usual = plan()
+        val stuck = ids(usual).first { id -> CoachCatalog.byId(id)!!.pattern == MovementPattern.Legs }
+        val swapped = plan(stalled = setOf(stuck))
+        assertFalse(stuck in ids(swapped))
+        // Still a lower-body exercise in every strength session.
+        swapped.program.sessions.filter { it.type == ExerciseType.Strength }.forEach { session ->
+            assertTrue(session.exercises.any { CoachCatalog.byId(it.exerciseId)!!.pattern in LOWER_BODY })
+        }
+        assertTrue(CoachNote.Stalled(listOf(stuck)) in swapped.notes)
+        assertTrue(usual.notes.none { it is CoachNote.Stalled })
+    }
+
     @Test fun `from 65 there are three strength days, each starting with a balance exercise`() {
         fun strength(plan: CoachPlan) = plan.program.sessions.filter { it.type == ExerciseType.Strength }
         fun CoachPlan.balanceExercises() = strength(this).flatMap { it.exercises }
@@ -461,3 +476,5 @@ class CoachPlannerTest {
         assertTrue(low.notes.none { it == CoachNote.Recovery })
     }
 }
+
+private val LOWER_BODY = setOf(MovementPattern.Legs, MovementPattern.Hinge)

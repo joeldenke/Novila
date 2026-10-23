@@ -5,8 +5,10 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import se.novila.coach.CoachCatalog
 import se.novila.coach.CoachPlanner
 import se.novila.coach.CoachPreferences
+import se.novila.coach.MovementPattern
 import se.novila.exercise.Exercise
 import se.novila.exercise.ExerciseKind
 import se.novila.exercise.ExerciseLog
@@ -53,6 +55,17 @@ class TrainingWeekTest {
             week.nextProgram,
         )
         assertEquals(3, week.program.sessions.count { it.type == ExerciseType.Strength })
+    }
+
+    @Test fun `an exercise stuck at its target gives way in the coach's week`() {
+        val preferences = CoachPreferences(daysPerWeek = 3)
+        // A lower-body exercise, since there are others to take its place.
+        val first = CoachPlanner.plan(preferences, emptyList(), monday).program.sessions
+            .flatMap { it.exercises }.map { it.exerciseId }
+            .first { CoachCatalog.byId(it)!!.pattern == MovementPattern.Legs }
+        val stuck = (1..3).map { ExerciseResult(first, monday.minusDays(it * 3L), 12, listOf(12, 10, 11)) }.reversed()
+        val week = trainingWeek(saved, SavedCoach(preferences), emptyList(), monday, progress = ExerciseLog(stuck))
+        assertTrue(week.program.sessions.flatMap { it.exercises }.none { it.exerciseId == first })
     }
 
     @Test fun `this week's program stays the one that counts`() {

@@ -45,6 +45,8 @@ fun coachNoteText(note: CoachNote): String = when (note) {
 
     CoachNote.Balance -> stringResource(R.string.coach_note_balance)
 
+    is CoachNote.Stalled -> stringResource(R.string.coach_note_stalled, exerciseList(note.exercises))
+
     is CoachNote.Focus -> stringResource(
         R.string.coach_note_focus,
         muscleList(BodyArea.entries.filter { it in note.areas }.flatMap { it.muscles }.toSet()),
@@ -168,6 +170,13 @@ val Equipment.label: Int
         Equipment.Band -> R.string.equipment_band
         Equipment.Barbell -> R.string.equipment_barbell
     }
+
+/** The names of the exercises [ids], in order, as one list; ids without texts are left out. */
+@Composable
+private fun exerciseList(ids: List<String>): String {
+    val separator = stringResource(R.string.list_separator)
+    return ids.mapNotNull { moveText(it)?.name }.map { stringResource(it) }.joinToString(separator)
+}
 
 /** The equipment as a readable list, in a fixed order. */
 @Composable

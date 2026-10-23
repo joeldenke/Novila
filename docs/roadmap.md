@@ -73,9 +73,14 @@ language model in the app, or data that leaves the app.
   (`CoachPlanner.BALANCE_AGE`, the age from the profile's birth year). From 65 the coach plans three strength days when
   the user trains on three days or more, each session starts with a balance exercise, and the coach says why
   (`CoachNote.Balance`). Without the coach set up, the generated program stays as it was.
-- [ ] **Deload and plateaus in progression:** `Progression` only steps up. After a few weeks of rising load, suggest a
+- [x] **Deload and plateaus in progression:** `Progression` only steps up. After a few weeks of rising load, suggest a
   lighter week, and when an exercise has stood still for three or four sessions, suggest another variant of the
-  same movement. Built on `ExerciseLog` and `trainingLoad`.
+  same movement. Built on `ExerciseLog` and `trainingLoad`. Done, from `ExerciseLog` alone: a lighter week
+  (`Progression.lighterWeek`) after four weeks of strength in a row when last week's sets fell clearly short more
+  often than they reached the target, with one set less and the targets held, shown on the week's program. It
+  follows the sessions rather than a calendar, so it comes when needed and doesn't repeat by itself. A plateau
+  (`Progression.stalled`): three sessions at the same target without reaching it; the coach then picks another
+  exercise for the same movement while the results are remembered, and says so (`CoachNote.Stalled`).
 - [ ] **Heart rate zones in cardio sessions** (`HeartRateRecord`) **(ok)**: makes the intensity exact for those with a
   watch, and zone 2 training possible. A new data type in the Play declaration.
 - [ ] **Write sessions to Health Connect** (`WRITE_EXERCISE`) **(ok)**: Novila's strength sessions don't show in Fit,
@@ -275,7 +280,7 @@ Next, first what needs no approval and is used every day, then what needs the ow
 23. Advice by age in the coach: balance and functional training from 65, with the exercises it needs. ← done
 24. Sleep debt and chronotype: both build on the nights already there, and give `readiness` one more honest signal.
     ← done
-25. Deload and plateaus in progression, and the weight's trend.
+25. Deload and plateaus in progression, and the weight's trend. ← deload and plateaus done
 26. Steps over time **(ok)**: the cheapest change that needs approval, with the most use.
 27. Heart rate zones and writing sessions to Health Connect **(ok)**. Menopause as a sleep cause, when the owner
     decides.

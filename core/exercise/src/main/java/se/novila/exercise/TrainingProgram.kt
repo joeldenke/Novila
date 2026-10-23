@@ -29,11 +29,15 @@ data class RecentTraining(
     fun cardioMinutes(moderateMinutes: Double): Double = moderateMinutes / cardioType.intensity.moderateMinutes
 }
 
-/** A week of workouts starting on Monday [weekStart], sorted by day. [cardioMinutes] are minutes on the clock. */
+/**
+ * A week of workouts starting on Monday [weekStart], sorted by day. [cardioMinutes] are minutes on the clock. In a
+ * [lighterWeek] the strength sessions have a set less and hold their targets ([Progression.lighterWeek]).
+ */
 data class TrainingProgram(
     val weekStart: LocalDate,
     val cardioMinutes: Int,
     val sessions: List<PlannedSession>,
+    val lighterWeek: Boolean = false,
 )
 
 /**

@@ -41,7 +41,14 @@ data class ExerciseLog(val results: List<ExerciseResult> = emptyList()) {
  * latest session reached the target, the next one has a repetition more (five seconds for a hold); when a set fell
  * clearly short, a step less; otherwise the same. The dose the coach or the program plans is the starting point, and
  * the progression stays within [MAX_STEPS_UP] steps above it and [MAX_STEPS_DOWN] below. Rehab sessions are left as
- * they are: pain decides their dose, not repetitions. Plain Kotlin and deterministic, so it is unit tested.
+ * they are: pain decides their dose, not repetitions.
+ *
+ * Two things the steps alone miss. A lighter week ([lighterWeek]): after [LIGHTER_AFTER_WEEKS] weeks of strength in a
+ * row, when last week's sessions fell clearly short more often than they reached the target, this week has one set
+ * less of each exercise and holds the targets where they were, so the body catches up before the next step. It
+ * follows the sessions, not the calendar, so it comes when it is needed and doesn't repeat by itself. And a plateau
+ * ([stalled]): an exercise whose last [STALLED_SESSIONS] sessions kept the same target without reaching it, which the
+ * coach can swap for another exercise for the same movement. Plain Kotlin and deterministic, so it is unit tested.
  */
 object Progression {
     const val STEP_REPETITIONS = 1
@@ -55,17 +62,75 @@ object Progression {
     /** How long a result is remembered: a break longer than this starts from the planned dose again. */
     const val MEMORY_DAYS = 42L
 
-    /** [program]'s strength sessions with every exercise dosed from [log]; other sessions as they are. */
+    /** Weeks of strength in a row before a lighter week can come. */
+    const val LIGHTER_AFTER_WEEKS = 4
+
+    /** Exercises clearly short last week, at the least, before a lighter week. */
+    const val LIGHTER_MISSED = 2
+
+    /** Sessions at the same target without reaching it before an exercise has stalled. */
+    const val STALLED_SESSIONS = 3
+
+    /**
+     * [program]'s strength sessions with every exercise dosed from [log], lighter in a [lighterWeek]; other sessions
+     * as they are.
+     */
     fun apply(program: TrainingProgram, log: ExerciseLog, today: LocalDate): TrainingProgram {
         if (log.results.isEmpty()) return program
+        val lighter = lighterWeek(log, program.weekStart)
         return program.copy(
             sessions = program.sessions.map { session ->
                 if (session.type != ExerciseType.Strength) {
                     session
                 } else {
-                    session.copy(exercises = session.exercises.map { dose(it, log, today) })
+                    val exercises = session.exercises.map {
+                        if (lighter) held(it, log, today) else dose(it, log, today)
+                    }
+                    session.copy(exercises = exercises)
                 }
             },
+            lighterWeek = lighter,
+        )
+    }
+
+    /**
+     * Whether the week from [weekStart] is a lighter one: strength in each of the [LIGHTER_AFTER_WEEKS] weeks before it,
+     * and in the last of them at least [LIGHTER_MISSED] exercises fell clearly short, more than reached the target.
+     */
+    fun lighterWeek(log: ExerciseLog, weekStart: LocalDate): Boolean {
+        val weeks = (1..LIGHTER_AFTER_WEEKS).map { weekStart.minusWeeks(it.toLong()) }
+        val trained = weeks.all { start -> log.results.any { it.date >= start && it.date < start.plusWeeks(1) } }
+        if (!trained) return false
+        val lastWeek = log.results.filter { it.date >= weeks.first() && it.date < weekStart }
+        val missed = lastWeek.count { it.missed }
+        return missed >= LIGHTER_MISSED && missed > lastWeek.count { it.reached }
+    }
+
+    /**
+     * The exercises that have stalled before [today]: the last [STALLED_SESSIONS] results in memory kept the same
+     * target, and none of them reached it.
+     */
+    fun stalled(log: ExerciseLog, today: LocalDate): Set<String> = log.results
+        .filter { it.date < today && it.date > today.minusDays(MEMORY_DAYS) }
+        .groupBy { it.exerciseId }
+        .filterValues { results ->
+            val last = results.takeLast(STALLED_SESSIONS)
+            last.size == STALLED_SESSIONS && last.map { it.planned }.distinct().size == 1 && last.none { it.reached }
+        }
+        .keys
+
+    /** [planned] in a lighter week: one set less, and the latest target held rather than moved on. */
+    fun held(planned: PlannedExercise, log: ExerciseLog, today: LocalDate): PlannedExercise {
+        val latest = log.latest(planned.exerciseId, today)
+        val step = step(planned.dosage)
+        val amount = (latest?.planned ?: planned.amount).coerceIn(
+            (planned.amount - MAX_STEPS_DOWN * step).coerceAtLeast(1),
+            planned.amount + MAX_STEPS_UP * step,
+        )
+        return planned.copy(
+            sets = (planned.sets - 1).coerceAtLeast(1),
+            amount = amount,
+            previous = latest?.planned,
         )
     }
 

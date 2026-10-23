@@ -3,6 +3,7 @@
     <!-- Training program -->
     <string name="program_title">This week\'s program</string>
     <string name="program_summary">%1$d minutes of cardio and strength on %2$d days a week.</string>
+    <string name="program_lighter_week">A lighter week: one set less and the same targets as last time. After four weeks in a row and sessions that fell short of the target, it lets your body catch up.</string>
     <string name="program_basis">Based on the WHO\'s activity guidelines and your recent workouts. Cardio time rises by at most a tenth a week.</string>
     <string name="program_done">Done</string>
     <string name="minutes_value" translatable="false">%1$d min</string>
@@ -397,6 +398,7 @@
     <string name="coach_weekdays_spread">The coach spreads the days over the week. Tap a day to choose your own.</string>
     <string name="coach_weekdays_own">Your own days. The coach puts the strength sessions as far apart as they can be.</string>
     <string name="coach_weekdays_spread_again">Let the coach spread them out</string>
+    <string name="coach_note_stalled">%1$s stayed at the same target for three sessions, so the coach picks another exercise for the same movement for a while. A new exercise often gets you moving again.</string>
     <string name="coach_note_balance">From 65, WHO advises balance and strength training on at least three days a week, to stay steady on your feet. Each strength session starts with a balance exercise.</string>
     <string name="coach_note_one_strength">One strength session a week is a good start. WHO advises two a week when you have room for them.</string>
     <string name="program_coach_off">The program follows your recent workouts. Set up the coach to plan it from your goal, your time and your own days.</string>
