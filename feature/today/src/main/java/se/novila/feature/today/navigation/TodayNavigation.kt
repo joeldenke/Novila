@@ -10,6 +10,8 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.serialization.Serializable
+import se.novila.feature.today.AchievementsScreen
+import se.novila.feature.today.AchievementsViewModel
 import se.novila.feature.today.DiscoveriesScreen
 import se.novila.feature.today.DiscoveriesViewModel
 import se.novila.feature.today.R
@@ -28,8 +30,11 @@ import se.novila.navigation.Navigator
 /** Sleep, food and training over the same range, with what the trends say together. */
 @Serializable data object TrendsRoute : NavKey
 
+/** The weeks in a row and the milestones. */
+@Serializable data object AchievementsRoute : NavKey
+
 /**
- * Today and the discoveries and trends opened from it, each with its own ViewModel scoped to the entry. Navigation
+ * Today and the discoveries, trends and achievements opened from it, each with its own ViewModel scoped to the entry. Navigation
  * inside the tab goes through [navigator]; the other tabs and Settings are opened through the callbacks, so this
  * module never depends on another feature.
  */
@@ -70,6 +75,7 @@ fun EntryProviderScope<NavKey>.todayEntries(
             training = state.training,
             onOpenDiscoveries = { navigator.navigate(DiscoveriesRoute) },
             onOpenTrends = { navigator.navigate(TrendsRoute) },
+            onOpenAchievements = { navigator.navigate(AchievementsRoute) },
             upcoming = state.upcoming,
             setupIncomplete = setupIncomplete,
             onCompleteSetup = viewModel::openSetup,
@@ -105,6 +111,15 @@ fun EntryProviderScope<NavKey>.todayEntries(
             contentPadding = contentPadding,
         )
     }
+    entry<AchievementsRoute> {
+        val viewModel = metroViewModel<AchievementsViewModel>()
+        LifecycleResumeEffect(viewModel) {
+            viewModel.refresh()
+            onPauseOrDispose { }
+        }
+        val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
+        AchievementsScreen(achievements = state, contentPadding = contentPadding)
+    }
 }
 
 /** The top bar title of a screen inside the Today tab, or null when [route] is not one of them. */
@@ -112,5 +127,6 @@ fun EntryProviderScope<NavKey>.todayEntries(
 fun todayDetailTitle(route: NavKey?): String? = when (route) {
     DiscoveriesRoute -> stringResource(R.string.discoveries_title)
     TrendsRoute -> stringResource(R.string.trends_title)
+    AchievementsRoute -> stringResource(R.string.achievements_title)
     else -> null
 }

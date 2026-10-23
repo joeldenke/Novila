@@ -345,6 +345,7 @@ där pluginet `firebase@firebase` inte alltid installeras.
   coachens förslag `dailyCoach` står överst i kortet, utan det raderna redan säger) och veckans insikter med vägen
   till *Upptäckter* (alla insikter och sambanden mellan delarna) och *Trender* (`TrendsScreen`: sömn, kost och
   träning över samma period, med `trendFeedback` som jämför med perioden innan och väger delarna mot varandra).
+  Därifrån når man också *Veckor och milstolpar* (`AchievementsScreen`, se *Veckor i rad* under Regler).
   Insiktskortet visar också vad loggarna snart låser upp (`discoveryProgress`), som staplar som fylls.
   Veckodiagrammen hör till delarnas egna flikar, och mående (humör, energi, stress, dagbok) togs bort för att syftet var oklart;
   lägg inte tillbaka dem på Idag utan att ägaren ber om det.
@@ -426,6 +427,12 @@ där pluginet `firebase@firebase` inte alltid installeras.
   halvt steg i kvalitet) och Welchs t ≥ 2, och alltid med antalet nätter och "samband, inte bevis". En dag utan loggar
   är okänd, aldrig en dag utan träning. Veckans förändring (`SleepChange`) visas bara tillsammans med det som ändrades
   med den, och säger om de tidigare nätterna bekräftar det. Ändra trösklarna bara medvetet: `SleepAnalysisTest`.
+- **Veckor i rad och milstolpar:** `achievements` i `:core:model` (testat i `AchievementsTest`) räknar vanor i hela
+  veckor, aldrig dagar, så en missad dag bryter inget: fyra nätter nära sömnmålet, fyra dagar med bra kostpoäng och
+  två dagar med träning *och* två med vila. En vecka med träning varje dag räknas aldrig, och fler pass är aldrig värda
+  mer. Milstolparna räknar nätter, träningsdagar, matdagar och dagar med vattenmålet över alla sparade dagar
+  (`SavedDays.dates`). Visas bara på sin egen skärm, öppnad från insikterna på Idag: inga notiser, inga röda siffror,
+  ingen svit på Idag och inget som tas bort. Belöna aldrig mer träning, längre pass eller mindre sömn.
 - **Kostpoäng:** `nutritionScore()` (0–100) viktar livsmedelsgrupper efter Livsmedelsverkets kostråd (`FoodGroup`) med
   avdrag för sött och snacks. Ändra vikterna bara medvetet: `NutritionTest` och dagens balans bygger på dem.
 - **Drycker:** vätska loggas som `Drink` (slag, ml, klockslag) i `DayEntry.drinks`, per glas, flaska eller valfri mängd

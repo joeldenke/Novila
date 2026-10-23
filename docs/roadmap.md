@@ -145,7 +145,12 @@ language model in the app, or data that leaves the app.
   (Paluch et al., Lancet 2022), a better basis for the suggested step goal.
 - [ ] **Cardio fitness (VO2max) from the watch** via Health Connect **(ok)**: a good long-term measure, a new data type
   in the Play declaration.
-- [ ] **Achievements and streaks**, restrained and without rewarding overtraining
+- [x] **Achievements and streaks**, restrained and without rewarding overtraining. Done: `achievements` in
+  `:core:model` counts habits in whole weeks, so a missed day breaks nothing: four nights near the sleep goal, four
+  days with a good nutrition score, and two days of training *and* two of rest (a week of training every day never
+  counts, and more sessions are never worth more). Milestones count nights, training days, food days and days at the
+  water goal over every saved day. Shown on *Weeks and milestones*, opened from Today's insights; no notifications,
+  nothing taken away and no streak shown on Today itself.
 - [x] ~~**Gemini Nano in more roles**, e.g. a weekly summary~~ Gemini Nano was removed in October 2026: the
   coach's comment added little to its own reasons, and Play requires AI content to be reportable in the app, which
   needs the internet. The weekly review and the insights explain the numbers without a model.
@@ -219,7 +224,7 @@ Next, first what needs no approval and is used every day, then what needs the ow
 19. Training load and sleep regularity: both build on data the app already logs, and make the readiness that sums it
     up possible. ← done
 20. Achievements and streaks: restrained, built on what the user already logs, and never rewarding overtraining
-    (recovery and rest days count).
+    (recovery and rest days count). ← done
 21. Export and import as a local file **(ok)**: a backup without the cloud before users have much data to lose.
 22. Count reps with the camera **(ok)**: needs `CAMERA` and an on-device pose model, which changes the privacy policy
     and the Play declaration.

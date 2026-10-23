@@ -52,8 +52,8 @@ import se.novila.ui.R as UiR
  * What to do today: greeting (by [name] when the profile has one), today's balance as rings, the day's checklist
  * led by the one [coach]'s connected suggestion (sleep, the program's [training], food and water, each with the one
  * button that does it) and the week's insights with what the logs will unlock ([upcoming]), the way to the trends of
- * sleep, food and training together ([onOpenTrends]) and to all discoveries ([onOpenDiscoveries]), where the
- * connections between the parts are. The rings are the summary of the day; tapping a part on
+ * sleep, food and training together ([onOpenTrends]), to all discoveries ([onOpenDiscoveries]), where the
+ * connections between the parts are, and to the weeks in a row and milestones ([onOpenAchievements]). The rings are the summary of the day; tapping a part on
  * them opens that part's tab, so the balance is not repeated as a row of tiles. Everything is measured against the
  * user's [goals]; the weeks in charts are on each part's own tab. Blocks arrive one by one. When the introduction
  * was skipped ([setupIncomplete]), a quiet card under the greeting leads to finishing the setup ([onCompleteSetup]).
@@ -78,6 +78,7 @@ fun TodayScreen(
     training: TrainingToday = TrainingToday(),
     onOpenDiscoveries: () -> Unit = {},
     onOpenTrends: () -> Unit = {},
+    onOpenAchievements: () -> Unit = {},
     /** What the logs will unlock, shown in the insights until it is there. */
     upcoming: List<DiscoveryProgress> = emptyList(),
     /** The introduction was skipped, so the profile and the coaches are not set up: one card offers to finish it. */
@@ -109,7 +110,9 @@ fun TodayScreen(
         }
         item(key = "checklist") { NovilaReveal(order = 2) { DayChecklistCard(checklist, actions, coach) } }
         item(key = "insights") {
-            NovilaReveal(order = 3) { InsightsCard(insights, sleep, upcoming, onOpenTrends, onOpenDiscoveries) }
+            NovilaReveal(order = 3) {
+                InsightsCard(insights, sleep, upcoming, onOpenTrends, onOpenDiscoveries, onOpenAchievements)
+            }
         }
     }
 }
