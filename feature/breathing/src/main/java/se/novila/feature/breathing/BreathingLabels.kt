@@ -21,6 +21,13 @@ internal fun sessionBody(session: BreathingSession): Int = when (session.id) {
     else -> R.string.breathing_session_calm_body
 }
 
+/** The session's own icon, so each one is told apart at a glance. */
+internal fun sessionIcon(session: BreathingSession): Int = when (session.id) {
+    "box" -> R.drawable.ic_breathing_box
+    "four-seven-eight" -> R.drawable.ic_breathing_four_seven_eight
+    else -> R.drawable.ic_breathing_calm
+}
+
 /** The name of the phase shown while breathing. Both holds read "Hold". */
 internal val BreathPhase.label: Int
     get() = when (this) {
