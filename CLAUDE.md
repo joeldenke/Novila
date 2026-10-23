@@ -253,6 +253,8 @@ Misstag som redan har gjorts i det här repot. Gör dem inte igen.
   berodde på `androidx.core`. Debug-bygget fick det transitivt via ett debug-beroende, så PR:en var grön men
   release-bygget i `Distribute to testers` kompilerade inte (#91). Deklarera varje bibliotek en modul importerar
   direkt i modulen. Build-jobbet kompilerar nu även release (`:app:compileReleaseKotlin`, utan R8).
+- **Apostrofer i strängar:** en oescapad `'` i `strings.xml` (t.ex. "Android's") får aapt att vägra hela filen med
+  bara "Can not extract resource", utan strängen (#104). Skriv `\'`. `ArchitectureTest` hittar dem.
 - **Spotless och Isolated Projects:** ge Spotless filträd (`fileTree(...)`) som `target`, aldrig glob-strängar som
   `"**/*.kt"`. För en glob slår Spotless upp varje undermoduls `build`-katalog, och då fallerar bygget med
   "cannot access 'Project.layout' functionality on subprojects". Isolated Projects stoppar sådant i varje bygge.
