@@ -9,7 +9,7 @@ Se `docs/play-console.md` för hur adressen publiceras.
 
 ## English
 
-*Updated 22 October 2026*
+*Updated 23 October 2026*
 
 Novila is built so that your health data stays with you. This policy says what the app handles, where it is
 kept, who can see it and what you can do about it.
@@ -54,8 +54,17 @@ time.
 ### You decide
 
 You can see and change what you have logged in the app. *Delete all data* under Settings removes your health data
-from the phone at once, and uninstalling Novila removes all of it. No copy exists anywhere else, so there is
-nothing more for the developer to delete or hand over. Data in Health Connect is managed in Health Connect.
+from the phone at once, and uninstalling Novila removes all of it. No copy exists anywhere else, unless you saved one
+yourself (below), so there is nothing more for the developer to delete or hand over. Data in Health Connect is managed
+in Health Connect.
+
+### Your own copy
+
+Under Settings you can save a copy of your data as a file, and read it in again, for example on a new phone. You
+choose where the file is saved with Android's own file picker, and Novila never sends it anywhere. The copy holds what
+you have entered in Novila, not what is read from Health Connect, and it is not encrypted, so keep it where only you
+can reach it. If you save it in a cloud service, that service's terms apply to the file. Reading a copy in replaces
+what Novila has on the phone.
 
 ### Google Play and Android
 
@@ -77,7 +86,7 @@ new version comes with an app update, with its date above.
 
 ## Svenska
 
-*Uppdaterad 22 oktober 2026*
+*Uppdaterad 23 oktober 2026*
 
 Novila är byggd så att din hälsodata stannar hos dig. Den här policyn säger vad appen hanterar, var det sparas,
 vem som kan se det och vad du kan göra åt det.
@@ -122,8 +131,17 @@ rutan.
 ### Du bestämmer
 
 Du kan se och ändra det du har loggat i appen. *Radera all data* under Inställningar tar bort din hälsodata från
-telefonen på en gång, och avinstallerar du Novila försvinner allt. Ingen kopia finns någon annanstans, så det
-finns inget mer för utvecklaren att radera eller lämna ut. Data i Health Connect hanteras i Health Connect.
+telefonen på en gång, och avinstallerar du Novila försvinner allt. Ingen kopia finns någon annanstans, om du inte
+själv har sparat en (nedan), så det finns inget mer för utvecklaren att radera eller lämna ut. Data i Health Connect
+hanteras i Health Connect.
+
+### Din egen kopia
+
+Under Inställningar kan du spara en kopia av dina data som en fil och läsa in den igen, till exempel i en ny telefon.
+Du väljer var filen sparas med Androids egen filväljare, och Novila skickar den aldrig någonstans. Kopian innehåller
+det du har fyllt i i Novila, inte det som läses från Health Connect, och den är inte krypterad, så spara den där bara
+du kommer åt den. Sparar du den i en molntjänst gäller den tjänstens villkor för filen. När du läser in en kopia
+ersätts det Novila har i telefonen.
 
 ### Google Play och Android
 

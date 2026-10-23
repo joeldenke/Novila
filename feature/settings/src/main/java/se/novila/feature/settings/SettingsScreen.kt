@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,6 +54,8 @@ data class SettingsActions(
     val onOpenTerms: () -> Unit = {},
     val onOpenLicenses: () -> Unit = {},
     val onDeleteData: () -> Unit = {},
+    val onExportData: () -> Unit = {},
+    val onImportData: () -> Unit = {},
     val onShowIntro: () -> Unit = {},
 )
 
@@ -63,6 +66,7 @@ data class SettingsActions(
  *
  * @param canUseDynamicColor wallpaper colors exist (Android 12+)
  * @param canChooseLanguage the phone has per-app language settings (Android 13+)
+ * @param transfer how the latest export or import of the user's data went, or null before one
  */
 @Composable
 fun SettingsScreen(
@@ -75,6 +79,7 @@ fun SettingsScreen(
     actions: SettingsActions,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
+    transfer: DataTransfer? = null,
 ) {
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
         item(key = "profile") { ProfileCard(settings, profile, actions) }
@@ -84,7 +89,7 @@ fun SettingsScreen(
         item(key = "reminders") { RemindersCard(actions.onOpenReminders) }
         item(key = "health-connect") { HealthConnectCard(movement, actions) }
         item(key = "disclaimer") { DisclaimerCard(actions.onOpenDisclaimer) }
-        item(key = "data") { DataCard(actions.onDeleteData) }
+        item(key = "data") { DataCard(actions, transfer) }
         item(key = "about") {
             AboutCard(version = version, actions = actions)
         }
@@ -275,13 +280,30 @@ private fun DisclaimerCard(onOpenDisclaimer: () -> Unit) {
     }
 }
 
-/** Deleting asks first: it cannot be undone, and there is no backup outside the phone. */
+/**
+ * The user's data: a copy to a file they keep themselves ([SettingsActions.onExportData]), the same file back in place
+ * of what is here ([SettingsActions.onImportData]), and deleting it all. Importing and deleting ask first: neither
+ * can be undone, and there is no backup outside the phone. Says how the latest export or import went ([transfer]).
+ */
 @Composable
-private fun DataCard(onDeleteData: () -> Unit) {
+private fun DataCard(actions: SettingsActions, transfer: DataTransfer?) {
     var confirming by rememberSaveable { mutableStateOf(false) }
+    var importing by rememberSaveable { mutableStateOf(false) }
     var deleted by rememberSaveable { mutableStateOf(false) }
     NovilaCard(title = stringResource(R.string.settings_data)) {
         Body(stringResource(R.string.settings_data_body))
+        NovilaButton(
+            text = stringResource(R.string.settings_export_data),
+            onClick = actions.onExportData,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        NovilaButton(
+            text = stringResource(R.string.settings_import_data),
+            onClick = { importing = true },
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Body(stringResource(R.string.settings_export_body))
+        transfer?.let { Body(stringResource(it.message)) }
         if (deleted) {
             Body(stringResource(R.string.settings_data_deleted))
         } else {
@@ -289,8 +311,23 @@ private fun DataCard(onDeleteData: () -> Unit) {
                 text = stringResource(R.string.settings_delete_data),
                 onClick = { confirming = true },
                 role = NovilaTheme.pillars.nutrition,
+                modifier = Modifier.fillMaxWidth(),
             )
         }
+    }
+    if (importing) {
+        NovilaConfirmDialog(
+            title = stringResource(R.string.settings_import_data_title),
+            text = stringResource(R.string.settings_import_data_body),
+            confirmLabel = stringResource(R.string.settings_import_data_confirm),
+            dismissLabel = stringResource(R.string.settings_cancel),
+            onConfirm = {
+                importing = false
+                deleted = false
+                actions.onImportData()
+            },
+            onDismiss = { importing = false },
+        )
     }
     if (confirming) {
         NovilaConfirmDialog(
@@ -301,12 +338,21 @@ private fun DataCard(onDeleteData: () -> Unit) {
             onConfirm = {
                 confirming = false
                 deleted = true
-                onDeleteData()
+                actions.onDeleteData()
             },
             onDismiss = { confirming = false },
         )
     }
 }
+
+private val DataTransfer.message: Int
+    get() = when (this) {
+        DataTransfer.Exported -> R.string.settings_exported
+        DataTransfer.ExportFailed -> R.string.settings_export_failed
+        DataTransfer.Imported -> R.string.settings_imported
+        DataTransfer.ImportUnreadable -> R.string.settings_import_unreadable
+        DataTransfer.ImportTooNew -> R.string.settings_import_too_new
+    }
 
 @Composable
 private fun AboutCard(version: AppVersion, actions: SettingsActions) {
@@ -379,11 +425,11 @@ private fun SettingsContent(
     }
 }
 
-@Preview(heightDp = 1400)
+@Preview(heightDp = 1700)
 @Composable
 private fun SettingsPreview() = SettingsContent(MovementState.NeedsPermission())
 
-@Preview(heightDp = 1400, uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
+@Preview(heightDp = 1700, uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
 private fun SettingsDarkPreview() = SettingsContent(
     movement = MovementState.Connected(TodayMovement(steps = 6400, activeKilocalories = 210)),

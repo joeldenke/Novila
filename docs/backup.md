@@ -33,6 +33,9 @@ Det som annars skulle ha ingått och nu medvetet lämnas utanför:
   läsas här.
 - **WorkManager-databasen**, cachar och allt annat ett bibliotek lägger i appens katalog.
 
+Den som vill flytta sina data till en ny telefon sparar en egen kopia i Inställningar (*Spara en kopia av mina
+data*) och läser in den där; se *Export och import* i `docs/data-protection.md`.
+
 `allowBackup` är kvar på `"true"`. Uteslutningen är explicit, och att stänga av backup helt stänger
 också av enhetsöverföringen. Se *Dataskydd på enheten* (`docs/data-protection.md`) för krypteringen.
 

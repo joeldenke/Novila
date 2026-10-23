@@ -6,7 +6,8 @@ klistra in är på engelska, som formulären. Allt här bygger på hur appen fun
 
 **Ändras något av det, ändras svaren här, i integritetspolicyn (`docs/privacy-policy.md` och `privacy_*`-strängarna)
 och i Play Console i samma PR/release.** Typiska utlösare: en ny Health Connect-typ, Google Health API-källan
-(`INTERNET`), en kraschrapporterare eller analys-SDK, export av data, en cache på disk för Health Connect-data.
+(`INTERNET`), en kraschrapporterare eller analys-SDK, en ändring i exporten (till exempel att Health Connect-data
+kommer med, eller att appen själv skickar filen någonstans), en cache på disk för Health Connect-data.
 
 ## Ordning i Play Console
 
@@ -106,6 +107,10 @@ Motiveringar att klistra in, en per behörighet:
   the last two weeks. When it is clearly lower, today's training session is made a little lighter. Read only while
   the app is open, kept in memory only, never compared with medical thresholds.*
 
+Health Connect-data ingår **aldrig** i användarens export: den sparas aldrig (bara i minnet), och exporten läser bara
+appens egna filer. Det håller exporten utanför Health Connects regler om överföring (Limited Use). Lägg aldrig till
+den i exporten utan att läsa om policyn och fråga ägaren.
+
 Övriga frågor i Health Connect-deklarationen:
 
 | Fråga | Svar |
@@ -133,7 +138,15 @@ inte heller data som bara skickas via Androids egna system (Health Connect). Nov
 | Is all of the user data collected by your app encrypted in transit? | Visas inte när svaret ovan är No |
 | Do you provide a way for users to request that their data is deleted? | Visas inte; i appen finns ändå *Radera all data* |
 
-Play visar då *No data collected* och *No data shared with third parties*. Kraschrapporter i Android vitals samlas av
+Play visar då *No data collected* och *No data shared with third parties*.
+
+**Exporten ändrar inte svaren.** *Spara en kopia av mina data* (`DataExport`) skriver en fil som användaren själv
+skapar i Androids filväljare (Storage Access Framework, `ACTION_CREATE_DOCUMENT`), och *Läs in en sparad kopia*
+läser en fil användaren väljer (`ACTION_OPEN_DOCUMENT`). Appen väljer aldrig mål, skickar inget själv och har fortfarande
+ingen `INTERNET`; utvecklaren tar aldrig emot filen. Väljer användaren en molntjänst i filväljaren är det tjänstens app
+som laddar upp, på användarens initiativ, vilket Play räknar varken som insamling eller delning (användarinitierad
+överföring som användaren förväntar sig). Läs ändå Play-formulärets hjälptext när det fylls i, och svara efter den.
+Ingen ny behörighet, ingen exporterad komponent (badgingen oförändrad). Kraschrapporter i Android vitals samlas av
 Google Play, inte av appen, och deklareras inte.
 
 Detta är bara sant så länge appen saknar `INTERNET` och SDK:er som skickar något. `checkDebugBadging` i CI fallerar
@@ -175,8 +188,8 @@ ingen `QUERY_ALL_PACKAGES` (bara `<queries>` för Health Connect), inga tillgän
   Utvecklaren tar aldrig emot, lagrar eller kommer åt den, och har därför inga register att lämna ut eller radera,
   inga personuppgiftsbiträden och inga överföringar till tredje land.
 - Användarens rättigheter uppfylls i appen: se och ändra (varje skärm), radera (*Radera all data*, avinstallation),
-  återkalla Health Connect-åtkomst (Health Connect). Dataportabilitet (export till fil) står på roadmapen; den
-  ändrar inget i Data safety så länge filen sparas lokalt av användaren.
+  återkalla Health Connect-åtkomst (Health Connect) och dataportabilitet (artikel 20): *Spara en kopia av mina data*
+  ger allt användaren fyllt i som JSON, ett strukturerat och maskinläsbart format, och kan läsas in igen.
 - Policyn anger kontaktväg (Play) och rätten att klaga hos IMY.
 - Om något någon gång skickas från telefonen (Google Health API, synk, kraschrapportering) blir utvecklaren
   personuppgiftsansvarig för hälsodata. Det kräver laglig grund (uttryckligt samtycke), en konsekvensbedömning

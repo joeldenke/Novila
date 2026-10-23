@@ -6,6 +6,8 @@ plugins {
 novila {
     coroutines()
     metro()
+    // The user's export file is JSON (DataExport), read and written without generated serializers.
+    serialization(json = true)
 }
 
 dependencies {

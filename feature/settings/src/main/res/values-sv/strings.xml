@@ -32,7 +32,18 @@
 
     <!-- Dina data -->
     <string name="settings_data">Dina data</string>
-    <string name="settings_data_body">Allt du loggar sparas bara i den här telefonen. Novila har inget konto och inget moln, så inget kan återställas när det har raderats.</string>
+    <string name="settings_data_body">Allt du loggar sparas bara i den här telefonen. Novila har inget konto och inget moln, så spara en egen kopia om du vill kunna få tillbaka det.</string>
+    <string name="settings_export_data">Spara en kopia av mina data</string>
+    <string name="settings_import_data">Läs in en sparad kopia</string>
+    <string name="settings_export_body">Kopian är en fil du själv väljer var du sparar, med allt du loggat, din profil, dina mål, dina matpreferenser och båda coacherna. Den är inte krypterad, så spara den där bara du kommer åt den. Påminnelserna och appens inställningar ingår inte.</string>
+    <string name="settings_import_data_title">Ersätta dina data med kopian?</string>
+    <string name="settings_import_data_body">Allt Novila har i den här telefonen nu ersätts med det som finns i kopian. Det går inte att ångra, så spara en kopia av det som finns här först om du vill behålla det.</string>
+    <string name="settings_import_data_confirm">Välj kopian</string>
+    <string name="settings_exported">Kopian är sparad.</string>
+    <string name="settings_export_failed">Kopian kunde inte sparas. Försök igen, eller välj en annan plats.</string>
+    <string name="settings_imported">Kopian är inläst.</string>
+    <string name="settings_import_unreadable">Filen är inte en kopia från Novila, eller så är den skadad. Inget ändrades.</string>
+    <string name="settings_import_too_new">Kopian är från en nyare version av Novila. Uppdatera appen och försök igen. Inget ändrades.</string>
     <string name="settings_delete_data">Radera all data</string>
     <string name="settings_delete_data_title">Radera all data?</string>
     <string name="settings_delete_data_body">Din profil och dina mål, dina mått, din loggade sömn, kost, dryck och dina pass, dina matpreferenser och båda coachernas svar raderas från telefonen. Dina påminnelser stängs av. Det går inte att ångra. Data i Health Connect påverkas inte.</string>
@@ -62,14 +73,16 @@
     <string name="privacy_screen_title">Notiser, widgeten och rutan</string>
     <string name="privacy_screen_body">Påminnelser du slår på visar en kort notis, och widgeten visar, om du lägger till den, dagens balans, sömn, kost och vatten på hemskärmen. Rutan i snabbinställningarna visar, om du lägger till den, dagens glas vatten, men inte på låsskärmen. Den som ser din telefon kan se dem. Du kan när som helst stänga av påminnelserna och ta bort widgeten och rutan.</string>
     <string name="privacy_control_title">Du bestämmer</string>
-    <string name="privacy_control_body">Du kan se och ändra det du har loggat i appen. Radera all data under Inställningar tar bort din hälsodata från telefonen på en gång, och avinstallerar du Novila försvinner allt. Ingen kopia finns någon annanstans, så det finns inget mer för utvecklaren att radera eller lämna ut. Data i Health Connect hanteras i Health Connect.</string>
+    <string name="privacy_control_body">Du kan se och ändra det du har loggat i appen. Radera all data under Inställningar tar bort din hälsodata från telefonen på en gång, och avinstallerar du Novila försvinner allt. Ingen kopia finns någon annanstans, om du inte själv har sparat en (nedan), så det finns inget mer för utvecklaren att radera eller lämna ut. Data i Health Connect hanteras i Health Connect.</string>
+    <string name="privacy_copy_title">Din egen kopia</string>
+    <string name="privacy_copy_body">Under Inställningar kan du spara en kopia av dina data som en fil och läsa in den igen, till exempel i en ny telefon. Du väljer var filen sparas med Androids egen filväljare, och Novila skickar den aldrig någonstans. Kopian innehåller det du har fyllt i i Novila, inte det som läses från Health Connect, och den är inte krypterad, så spara den där bara du kommer åt den. Sparar du den i en molntjänst gäller den tjänstens villkor för filen. När du läser in en kopia ersätts det Novila har i telefonen.</string>
     <string name="privacy_google_title">Google Play och Android</string>
     <string name="privacy_google_body">Novila installeras via Google Play, och Health Connect är en del av Android som Google gör. De följer Googles integritetspolicy. Delar du användning och diagnostik med Google kan Google Play ge utvecklaren kraschrapporter, som inte innehåller det du loggar i Novila.</string>
     <string name="privacy_adults_title">För vuxna</string>
     <string name="privacy_adults_body">Novila är gjord för vuxna och riktar sig inte till barn.</string>
     <string name="privacy_contact_title">Frågor och ändringar</string>
     <string name="privacy_contact_body">Frågor om integritet skickas till utvecklarens kontaktadress på Novilas sida i Google Play. Du kan också klaga hos Integritetsskyddsmyndigheten (IMY). Ändras policyn kommer den nya versionen med en uppdatering av appen, med datum nedan.</string>
-    <string name="privacy_updated">Uppdaterad 22 oktober 2026</string>
+    <string name="privacy_updated">Uppdaterad 23 oktober 2026</string>
 
     <!-- Licenser -->
     <string name="licenses_title">Öppna licenser</string>

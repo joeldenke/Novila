@@ -14,6 +14,8 @@ import java.io.File
  * - ViewModels belong to the feature that shows them and are created by Metro (`metroViewModel()`), scoped to their
  *   Navigation 3 entry. No shared ViewModel in :app and no `viewModel()` without Metro's factory.
  * - Saved data lives in DataStore through the stores in :core:data, never in SharedPreferences.
+ * - An apostrophe in a string resource is escaped (`\'`): aapt refuses the whole file otherwise, and says only
+ *   that it "can not extract resource", without the string.
  *
  * The sources are declared as inputs of the test task (novila.android.application), so it reruns when they change.
  */
@@ -69,6 +71,20 @@ class ArchitectureTest {
             file.readLines().any { "getSharedPreferences(" in it || "import android.content.SharedPreferences" in it }
         }
         assertTrue("Save through a store in :core:data (DataStore) instead: ${offenders.names()}", offenders.isEmpty())
+    }
+
+    @Test fun `apostrophes in string resources are escaped`() {
+        val unescaped = Regex("""(?<!\\)'""")
+        val text = Regex("""<(string|item)\b[^>]*>([^<]*)</\1>""")
+        val offenders = modules()
+            .flatMap { File(it, "src/main/res").walkTopDown().filter { file -> file.name == "strings.xml" }.toList() }
+            .flatMap { file ->
+                text.findAll(file.readText())
+                    .filter { unescaped.containsMatchIn(it.groupValues[2]) }
+                    .map { "${file.relativeTo(root).path}: ${it.groupValues[2].take(60)}" }
+                    .toList()
+            }
+        assertTrue("Escape the apostrophe as \\' in: $offenders", offenders.isEmpty())
     }
 
     private fun List<File>.names() = joinToString { it.relativeTo(root).path }

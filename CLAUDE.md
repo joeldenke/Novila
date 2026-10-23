@@ -253,6 +253,8 @@ Misstag som redan har gjorts i det här repot. Gör dem inte igen.
   berodde på `androidx.core`. Debug-bygget fick det transitivt via ett debug-beroende, så PR:en var grön men
   release-bygget i `Distribute to testers` kompilerade inte (#91). Deklarera varje bibliotek en modul importerar
   direkt i modulen. Build-jobbet kompilerar nu även release (`:app:compileReleaseKotlin`, utan R8).
+- **Apostrofer i strängar:** en oescapad `'` i `strings.xml` (t.ex. "Android's") får aapt att vägra hela filen med
+  bara "Can not extract resource", utan strängen (#104). Skriv `\'`. `ArchitectureTest` hittar dem.
 - **Spotless och Isolated Projects:** ge Spotless filträd (`fileTree(...)`) som `target`, aldrig glob-strängar som
   `"**/*.kt"`. För en glob slår Spotless upp varje undermoduls `build`-katalog, och då fallerar bygget med
   "cannot access 'Project.layout' functionality on subprojects". Isolated Projects stoppar sådant i varje bygge.
@@ -549,6 +551,12 @@ där pluginet `firebase@firebase` inte alltid installeras.
   importera `androidx.compose.material3` själv. Skärmen ligger i `AppScaffold` och `ScreenScaffold` och listan tar
   scaffoldens `contentPadding`, så inget hamnar under klockan eller utanför en rund skärm. Rader med flera knappar
   delar bredden (`weight`). Varje `@Preview` blir en skärmdump, på alla klockformer för skärmar med mycket text.
+- **Export och import:** `DataExport` i `:core:data` skriver och läser användarens egen kopia som JSON via Androids
+  filväljare (Storage Access Framework), utan behörighet och utan att appen skickar något. Samma filer som *Radera
+  data*, utom påminnelserna; Health Connect-data aldrig. Värdena sparas exakt som storarna sparar dem, så en ny
+  version av en codec (`DayEntryCodec` m.fl.) gör att gamla exporter migreras som gammal data; en export från ett
+  senare bygge vägras. Ny store med hälsodata: lägg till den i `DataExport` och *Radera data*. Ändras vad exporten
+  innehåller eller vart den går, ändras `docs/data-protection.md`, integritetspolicyn och `docs/play-console.md`.
 - Hälsodata stannar på enheten. Inga nätverksanrop, analysverktyg eller Firebase-SDK:er i appen utan att ägaren ber om det.
   Appen har ingen `INTERNET`-behörighet, och den tas bort i appens manifest (`tools:node="remove"`), så inget
   bibliotek kan be om den, till exempel för att skicka användningsstatistik. Lägg aldrig tillbaka den
