@@ -404,7 +404,8 @@
     <string name="coach_note_back">Easy on the back: calm trunk exercises instead of ones that bend or arch the back.</string>
     <string name="coach_note_quiet">No jumping, so it works in an apartment.</string>
     <string name="coach_note_equipment">The sessions use your equipment (%1$s) where it trains the same muscles, since it can be made heavier as you get stronger.</string>
-    <string name="coach_note_cardio_low">The program has %1$d minutes of cardio. WHO recommends at least 150 a week, so add brisk walks in everyday life too.</string>
+    <string name="coach_note_cardio_low">The program\'s cardio counts as %1$d minutes. WHO recommends at least 150 a week, so add brisk walks in everyday life too.</string>
+    <string name="coach_note_cardio_vigorous">Your cardio is vigorous, so WHO counts each minute as two: the program\'s %1$d minutes count as %2$d.</string>
     <string name="coach_note_cardio_progression">Cardio builds on your recent workouts and rises by at most a tenth a week.</string>
     <string name="coach_goal_rehab">Gentle training</string>
     <string name="exercise_rehab">Gentle session</string>

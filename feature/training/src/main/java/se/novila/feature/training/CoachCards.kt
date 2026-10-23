@@ -63,6 +63,12 @@ fun coachNoteText(note: CoachNote): String = when (note) {
 
     is CoachNote.CardioBelowGuideline -> stringResource(R.string.coach_note_cardio_low, note.minutes)
 
+    is CoachNote.VigorousCardio -> stringResource(
+        R.string.coach_note_cardio_vigorous,
+        note.minutes,
+        note.moderateMinutes,
+    )
+
     CoachNote.CardioProgression -> stringResource(R.string.coach_note_cardio_progression)
 
     is CoachNote.RehabPhase -> stringResource(

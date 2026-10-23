@@ -257,6 +257,22 @@ class CoachPlannerTest {
         assertTrue(newcomer.notes.contains(CoachNote.CardioBelowGuideline(30)))
     }
 
+    @Test fun `running counts double towards WHO's guideline, the same minutes of walking don't`() {
+        fun weekly(type: ExerciseType) = (1..4L).map { Exercise(type, monday.minusWeeks(it).plusDays(1), 75.minutes) }
+        val preferences = CoachPreferences(CoachGoal.Endurance, daysPerWeek = 5, sessionMinutes = 60)
+
+        // 75 minutes of running count as 150; a tenth more is 165, or three runs of 30 minutes.
+        val runner = plan(preferences, weekly(ExerciseType.Running))
+        assertEquals(90, runner.program.cardioMinutes)
+        assertTrue(CoachNote.VigorousCardio(90, 180) in runner.notes)
+        assertTrue(runner.notes.none { it is CoachNote.CardioBelowGuideline })
+
+        val walker = plan(preferences, weekly(ExerciseType.Walking))
+        assertEquals(90, walker.program.cardioMinutes)
+        assertTrue(walker.notes.none { it is CoachNote.VigorousCardio })
+        assertTrue(CoachNote.CardioBelowGuideline(90) in walker.notes)
+    }
+
     @Test fun `the same answers give the same program, a new variation another one`() {
         val preferences = CoachPreferences(sessionMinutes = 45)
         val history = strengthTwiceAWeek()

@@ -25,8 +25,8 @@ internal object TrainingPreviewData {
     val workouts = (1L..4L).flatMap { week ->
         val monday = date.minusWeeks(week).with(DayOfWeek.MONDAY)
         listOf(
-            Exercise(ExerciseType.Running, monday.plusDays(1), 35.minutes),
-            Exercise(ExerciseType.Running, monday.plusDays(5), 50.minutes),
+            Exercise(ExerciseType.Running, monday.plusDays(1), 25.minutes),
+            Exercise(ExerciseType.Running, monday.plusDays(5), 35.minutes),
             Exercise(ExerciseType.Strength, monday.plusDays(3), 30.minutes),
         )
     }
