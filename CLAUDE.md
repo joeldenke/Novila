@@ -160,6 +160,9 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   - `:core:googlehealth` – Google Health API (REST v4) som `ExerciseSource`: läser
     `users/me/dataTypes/exercise/dataPoints`. Ännu inte inkopplad i `:app`, se *Google Health API* under Regler.
 - `build-logic` – inkluderat bygge med convention plugins (`novila.*`) och `novila { }`, se `build-logic/README.md`
+- `site/` och `tools/site/build_site.py` – webbplatsen novila.app (GitHub Pages): startsidan på engelska (`/`) och
+  svenska (`/sv/`), integritetspolicyn (`/privacy/`, `/sv/integritet/`) och användarvillkoren (`/terms/`,
+  `/sv/villkor/`). Se *Webbplatsen* under Regler.
 
 Beroenden går nedåt: `:app` → `:feature:*` → `:core:ui`/`:core:navigation`/`:core:designsystem` → ren Kotlin.
 Strängar och ikoner ligger i modulen som använder dem; det flera moduler använder ligger i `:core:ui`
@@ -193,6 +196,9 @@ Strängar och ikoner ligger i modulen som använder dem; det flera moduler anvä
   ingen obligatorisk kontroll, så titta på den i PR:er som rör klockan.
 - Kan din miljö inte nå Google Maven: pusha och följ körningen (`gh pr checks`, `gh run view --log-failed`)
   och rätta tills den är grön. Säg aldrig att något fungerar utan grönt CI.
+- `Website` (`pages.yml`) bygger webbplatsen på PR:er som rör den och publicerar den med GitHub Pages vid merge.
+  Ändras bara `site/`, `tools/site/` eller `pages.yml` hoppar `CI` över lint, tester och bygge, och
+  `distribute.yml` skickar inget till testarna, som för klockan.
 - `Dependency submission` skickar bibliotekens beroendegraf till GitHub vid varje push till `main`, så Dependabot larmar
   om sårbara bibliotek (fliken Security). Testklassvägar räknas inte. Kör bara upplösning, ingen kompilering.
 - När PR:en mergas skickar `Distribute to testers` debug-APK:n (`se.novila.debug`) via Firebase App Distribution.
@@ -546,6 +552,18 @@ där pluginet `firebase@firebase` inte alltid installeras.
   safety, Health apps declaration och Health Connect-behörigheterna. Ändras vad appen läser, sparar eller skickar,
   eller tillkommer en behörighet, uppdatera policyn, `HealthDataInfoActivity`s text och `docs/play-console.md` i
   samma PR. Text före en Health Connect-dialog ska nämna alla typer dialogen frågar om.
+- **Webbplatsen:** novila.app byggs av `tools/site/build_site.py` (bara Pythons standardbibliotek) till `build/site`.
+  Startsidorna skrivs för hand i `site/home.en.html` och `site/home.sv.html` och ska säga samma sak; ramen är
+  `site/layout.html` och stilen `site/style.css`: stora rundade kort, ett budskap per kort, i appens färger (Skog &
+  sol). Policyn och villkoren görs av avsnitten `## English` och `## Svenska` i `docs/privacy-policy.md` och
+  `docs/terms-of-use.md`, så de skrivs aldrig in i `site/`. Typsnittet, scenerna och ikonen kopieras från appen, och
+  telefonerna visar appens egna skärmdumpsreferenser (`SCREENS` i byggskriptet), så sajten alltid visar appen som den
+  är. Adresserna (`PAGES` i byggskriptet) är publika och står i Play Console; flytta aldrig en. Sajten följer appens
+  regler för texter (*Inga medicinska påståenden*, inga emojis, inga andra appar eller "bäst") och har inga kakor,
+  analysverktyg, externa typsnitt eller skript. Domänen och HTTPS ställs in under repots Settings → Pages, inte med en
+  `CNAME`-fil.
+  Google Play-knappen är text, inte en länk, tills appen finns i Play; gör den då till en länk till
+  `play.google.com/store/apps/details?id=se.novila` och byt "Snart på" i båda startsidorna.
 - **Wear OS:** `:wear` är en egen app (`se.novila.wear`, minSdk 30) med samma designspråk men utan flikar, navigation
   eller sparade data. Den får bara köra ett pass ur `StandaloneSession` och visa `Workout`-stegen; ingen Wearable Data
   Layer, ingen Health Connect och ingen lagring på klockan, eftersom det skulle ändra integritets- och Play-deklarationen.

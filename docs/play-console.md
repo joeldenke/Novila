@@ -24,16 +24,17 @@ kommer med, eller att appen själv skickar filen någonstans), en cache på disk
 
 - Play kräver en publik adress (vanlig webbsida, inte PDF eller redigerbart dokument) och samma policy i appen.
   I appen: Inställningar → *Integritetspolicy* (`PrivacyPolicyScreen`). Publikt: texten i `docs/privacy-policy.md`.
-- Publicera den till exempel med GitHub Pages (om repot är publikt) eller Google Sites, på en adress som inte byter
-  plats. Samma adress anges även i Health Connect-deklarationen.
+- Adressen är `https://novila.app/privacy/` (svenska: `https://novila.app/sv/integritet/`), publicerad av
+  workflowen `Website` med GitHub Pages ur `docs/privacy-policy.md`. Samma adress anges även i Health
+  Connect-deklarationen. Flytta den aldrig.
 - Policyn hänvisar till utvecklarens kontaktadress i Play. Fyll i *Developer contact → Email* i Play Console; det är
   den adressen användare skriver till.
 
 ## Användarvillkor
 
 Play kräver inga användarvillkor för en gratis app utan konto, och Play Console har inget fält för dem. De finns ändå
-i appen (Inställningar → *Användarvillkor*, `TermsScreen`) och som publik text i `docs/terms-of-use.md`, att publicera
-bredvid integritetspolicyn om en adress behövs. Inget i dem ändrar svaren nedan.
+i appen (Inställningar → *Användarvillkor*, `TermsScreen`) och som publik text i `docs/terms-of-use.md`, publicerad
+på `https://novila.app/terms/` (svenska: `https://novila.app/sv/villkor/`). Inget i dem ändrar svaren nedan.
 
 ## App content: svar
 

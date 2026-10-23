@@ -1,0 +1,73 @@
+# Novila's website, novila.app: the home page, the privacy policy and the terms of use in English and Swedish, built
+# by tools/site/build_site.py from site/ and the two documents in docs/. A PR that changes them builds the site, so
+# a document the builder can't render fails there; a merge to main publishes it with GitHub Pages. The custom domain
+# and HTTPS are set in the repository's Settings → Pages (source: GitHub Actions), not in a CNAME file.
+name: Website
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - site/**
+      - tools/site/**
+      - docs/privacy-policy.md
+      - docs/terms-of-use.md
+      - docs/play-icon.png
+      - feature/onboarding/src/main/res/drawable-nodpi/**
+      - core/designsystem/src/main/res/font/**
+      - feature/*/src/test/screenshots/**
+      - .github/workflows/pages.yml
+  push:
+    branches: [main]
+    paths:
+      - site/**
+      - tools/site/**
+      - docs/privacy-policy.md
+      - docs/terms-of-use.md
+      - docs/play-icon.png
+      - feature/onboarding/src/main/res/drawable-nodpi/**
+      - core/designsystem/src/main/res/font/**
+      - feature/*/src/test/screenshots/**
+      - .github/workflows/pages.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build website
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build
+        run: python3 tools/site/build_site.py
+      - if: github.event_name != 'pull_request'
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+      - if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: build/site
+
+  deploy:
+    name: Publish website
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

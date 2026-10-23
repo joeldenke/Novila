@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="{{lang}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{title}}</title>
+  <meta name="description" content="{{description}}">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#24533B">
+  <link rel="canonical" href="{{canonical}}">
+  <link rel="alternate" hreflang="en" href="{{alternate_en}}">
+  <link rel="alternate" hreflang="sv" href="{{alternate_sv}}">
+  <link rel="alternate" hreflang="x-default" href="{{alternate_en}}">
+  <link rel="icon" type="image/png" href="/icon.png">
+  <link rel="apple-touch-icon" href="/icon.png">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body class="page-{{page}}">
+  <a class="skip" href="#content">{{skip}}</a>
+  <header class="top">
+    <div class="top-inner">
+      <a class="brand" href="/{{home}}"><img src="/icon.png" alt="" width="28" height="28"><span>Novila</span></a>
+      <a class="language" href="/{{switch}}" hreflang="{{switch_lang}}" lang="{{switch_lang}}">{{switch_label}}</a>
+    </div>
+  </header>
+  <main id="content">
+{{body}}
+  </main>
+  <footer class="bottom">
+    <nav>
+      <a href="/{{home}}">{{home_label}}</a>
+      <a href="/{{privacy}}">{{privacy_label}}</a>
+      <a href="/{{terms}}">{{terms_label}}</a>
+    </nav>
+    <p>{{footer}}</p>
+  </footer>
+</body>
+</html>

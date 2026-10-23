@@ -8,8 +8,9 @@
 #   - Build: the debug APK and its badging check.
 # "Lint, test and build" collects them and is the required status check in branch protection, so nothing red can
 # be merged. Release builds (R8, release signing) only run on merge to main, in distribute.yml.
-# The Wear OS app has its own workflow (wear.yml). When a PR or push changes nothing but the watch (wear/ and
-# wear.yml), the Changes job says so and the three jobs are skipped: one push runs one pipeline, never both.
+# The Wear OS app (wear.yml) and the website (pages.yml) have their own workflows. When a PR or push changes nothing
+# but the watch (wear/ and wear.yml) or the site (site/, tools/site/ and pages.yml), the Changes job says so and the
+# three jobs are skipped: one push runs one pipeline, never both.
 name: CI
 
 on:
@@ -29,9 +30,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Whether anything outside the watch changed: the PR's files, the pushed range, or for a manual run the branch
-  # against main. When unsure (an API error, a huge diff, main itself) it says yes, so nothing is ever skipped by
-  # mistake.
+  # Whether anything outside the watch and the site changed: the PR's files, the pushed range, or for a manual run
+  # the branch against main. When unsure (an API error, a huge diff, main itself) it says yes, so nothing is ever
+  # skipped by mistake.
   changes:
     name: Changes
     runs-on: ubuntu-latest
@@ -56,10 +57,10 @@ jobs:
             *) files=$(gh api "$api/compare/$DEFAULT_BRANCH...$GITHUB_SHA" --jq '.files[].filename') || files="" ;;
           esac
           count=$(grep -c . <<<"$files" || true)
-          others=$(grep -vE '^(wear/|\.github/workflows/wear\.yml$)' <<<"$files" || true)
+          others=$(grep -vE '^(wear/|site/|tools/site/|\.github/workflows/(wear|pages)\.yml$)' <<<"$files" || true)
           if [ "$count" -eq 0 ] || [ "$count" -ge 300 ] || [ -n "$others" ]; then app=true; else app=false; fi
           echo "app=$app" >> "$GITHUB_OUTPUT"
-          [ "$app" = true ] || echo "::notice title=Only the watch changed::Skipping the phone's jobs; wear.yml checks this"
+          [ "$app" = true ] || echo "::notice title=Only the watch or the site changed::Skipping the phone's jobs; wear.yml or pages.yml checks this"
 
   lint:
     name: Format and lint
