@@ -3,7 +3,6 @@ package se.novila.feature.breathing
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import org.junit.Assert.assertEquals
@@ -12,6 +11,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import se.novila.designsystem.component.NovilaEntryLayout
 import se.novila.designsystem.theme.NovilaTheme
 
 @RunWith(RobolectricTestRunner::class)
@@ -19,26 +19,30 @@ import se.novila.designsystem.theme.NovilaTheme
 class BreathingScreenTest {
     @get:Rule val composeRule = createComposeRule()
 
-    @Test fun `the list shows every session with its length and a start button`() {
+    @Test fun `the list shows every session with its length and what it does`() {
         composeRule.setContent {
-            NovilaTheme { BreathingScreen(BreathingActions(), PaddingValues()) }
+            NovilaTheme(entryLayout = NovilaEntryLayout.Rows) { BreathingScreen(BreathingActions(), PaddingValues()) }
         }
 
         composeRule.onNodeWithText("Calm breathing").assertIsDisplayed()
-        composeRule.onNodeWithText("About 1 min").assertIsDisplayed()
-        composeRule.onNodeWithContentDescription("Start Calm breathing").assertIsDisplayed()
+        composeRule.onNodeWithText("About 1 min · ", substring = true).assertIsDisplayed()
         composeRule.onNodeWithText("4-7-8 breathing").assertIsDisplayed()
-        composeRule.onNodeWithText("About 1 min 16 s").assertIsDisplayed()
-        composeRule.onNodeWithContentDescription("Start 4-7-8 breathing").assertIsDisplayed()
+        composeRule.onNodeWithText("About 1 min 16 s · A long, slow out-breath.", substring = true).assertIsDisplayed()
     }
 
-    @Test fun `starting a session opens it by id`() {
+    @Test fun `tapping a tile opens the session by id`() = opensBox(NovilaEntryLayout.Grid)
+
+    @Test fun `tapping a row opens the session by id`() = opensBox(NovilaEntryLayout.Rows)
+
+    private fun opensBox(layout: NovilaEntryLayout) {
         var opened: String? = null
         composeRule.setContent {
-            NovilaTheme { BreathingScreen(BreathingActions(onOpenSession = { opened = it }), PaddingValues()) }
+            NovilaTheme(entryLayout = layout) {
+                BreathingScreen(BreathingActions(onOpenSession = { opened = it }), PaddingValues())
+            }
         }
 
-        composeRule.onNodeWithContentDescription("Start Box breathing").performClick()
+        composeRule.onNodeWithText("Box breathing").performClick()
         assertEquals("box", opened)
     }
 

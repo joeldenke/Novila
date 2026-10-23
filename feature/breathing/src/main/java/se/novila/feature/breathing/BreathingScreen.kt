@@ -1,18 +1,15 @@
 package se.novila.feature.breathing
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import se.novila.breathing.BreathingCatalog
-import se.novila.breathing.BreathingSession
-import se.novila.designsystem.component.NovilaButton
-import se.novila.designsystem.component.NovilaCard
+import se.novila.designsystem.component.NovilaEntries
+import se.novila.designsystem.component.NovilaEntry
+import se.novila.designsystem.component.NovilaEntryLayout
 import se.novila.designsystem.component.NovilaReveal
 import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
@@ -26,30 +23,36 @@ data class BreathingActions(
 )
 
 /**
- * Breathing and relaxation: every session in [BreathingCatalog], each with its length and a start button. The
- * sessions are data, so this list is the same however many there are.
+ * Breathing and relaxation: every session in [BreathingCatalog] as a way in ([NovilaEntries]), with its own icon,
+ * its length and what it does; a tap starts it. Tiles or rows follow the user's choice in Settings. The sessions are
+ * data, so this list is the same however many there are.
  */
 @Composable
 fun BreathingScreen(actions: BreathingActions, contentPadding: PaddingValues, modifier: Modifier = Modifier) {
     val sleep = NovilaTheme.pillars.sleep
+    val entries = BreathingCatalog.sessions.map { session ->
+        NovilaEntry(
+            title = stringResource(sessionName(session)),
+            icon = painterResource(sessionIcon(session)),
+            role = sleep,
+            onClick = { actions.onOpenSession(session.id) },
+            summary = stringResource(
+                R.string.breathing_session_summary,
+                sessionDuration(session),
+                stringResource(sessionBody(session)),
+            ),
+        )
+    }
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
         item(key = "intro") {
-            NovilaCard(
-                title = stringResource(R.string.breathing_title),
-                icon = painterResource(R.drawable.ic_breathing),
-                role = sleep,
-            ) {
-                NovilaText(
-                    stringResource(R.string.breathing_intro),
-                    style = NovilaTheme.typography.bodyMedium,
-                    color = NovilaTheme.colors.onSurfaceVariant,
-                )
-            }
+            NovilaText(
+                stringResource(R.string.breathing_intro),
+                style = NovilaTheme.typography.bodyMedium,
+                color = NovilaTheme.colors.onSurfaceVariant,
+            )
         }
-        BreathingCatalog.sessions.forEachIndexed { index, session ->
-            item(key = session.id) {
-                NovilaReveal(order = index + 1) { BreathingSessionCard(session, actions.onOpenSession) }
-            }
+        item(key = "sessions") {
+            NovilaReveal(order = 1) { NovilaEntries(entries) }
         }
         item(key = "footer") {
             NovilaText(
@@ -61,41 +64,19 @@ fun BreathingScreen(actions: BreathingActions, contentPadding: PaddingValues, mo
     }
 }
 
-/** One session: its name, what it does, how long it takes and a button to start. */
-@Composable
-private fun BreathingSessionCard(session: BreathingSession, onOpen: (String) -> Unit) {
-    val name = stringResource(sessionName(session))
-    NovilaCard(
-        title = name,
-        icon = painterResource(R.drawable.ic_breathing),
-        role = NovilaTheme.pillars.sleep,
-    ) {
-        Column(verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s)) {
-            NovilaText(
-                stringResource(sessionBody(session)),
-                style = NovilaTheme.typography.bodyMedium,
-                color = NovilaTheme.colors.onSurfaceVariant,
-            )
-            NovilaText(
-                sessionDuration(session),
-                style = NovilaTheme.typography.labelMedium,
-                color = NovilaTheme.colors.onSurfaceVariant,
-            )
-        }
-        NovilaButton(
-            text = stringResource(R.string.breathing_start),
-            onClick = { onOpen(session.id) },
-            contentDescription = stringResource(R.string.breathing_start_session, name),
-            role = NovilaTheme.pillars.sleep,
-            modifier = Modifier.fillMaxWidth(),
-        )
-    }
-}
-
-@Preview(showBackground = true, heightDp = 1400)
+@Preview(showBackground = true, heightDp = 1000)
 @Composable
 private fun BreathingScreenPreview() {
     NovilaTheme {
+        BreathingScreen(BreathingActions(), PaddingValues())
+    }
+}
+
+/** The sessions as rows, as chosen in Settings. */
+@Preview(showBackground = true, heightDp = 1000)
+@Composable
+private fun BreathingScreenRowsPreview() {
+    NovilaTheme(entryLayout = NovilaEntryLayout.Rows) {
         BreathingScreen(BreathingActions(), PaddingValues())
     }
 }
