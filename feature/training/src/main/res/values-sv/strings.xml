@@ -3,6 +3,7 @@
     <!-- Träningsprogram -->
     <string name="program_title">Veckans program</string>
     <string name="program_summary">%1$d minuter kondition och styrka %2$d dagar i veckan.</string>
+    <string name="program_lighter_week">En lättare vecka: ett set mindre och samma mål som förra gången. Efter fyra veckor i rad och pass som inte nådde målet hinner kroppen ikapp.</string>
     <string name="program_basis">Bygger på WHO:s råd om fysisk aktivitet och dina senaste pass. Konditionstiden ökar med högst en tiondel i veckan.</string>
     <string name="program_done">Klart</string>
     <string name="exercise_walking">Rask promenad</string>
@@ -391,6 +392,7 @@
     <string name="coach_weekdays_spread">Coachen sprider ut dagarna över veckan. Tryck på en dag för att välja själv.</string>
     <string name="coach_weekdays_own">Dina egna dagar. Coachen lägger styrkepassen så långt isär som det går.</string>
     <string name="coach_weekdays_spread_again">Låt coachen sprida ut dem</string>
+    <string name="coach_note_stalled">%1$s har stått på samma mål i tre pass, så coachen väljer en annan övning för samma rörelse ett tag. En ny övning får ofta det att lossna igen.</string>
     <string name="coach_note_balance">Från 65 år rekommenderar WHO balans- och styrketräning minst tre dagar i veckan, för att stå stadigt. Varje styrkepass börjar med en balansövning.</string>
     <string name="coach_note_one_strength">Ett styrkepass i veckan är en bra början. WHO rekommenderar två i veckan när du har utrymme för det.</string>
     <string name="program_coach_off">Programmet utgår från dina senaste pass. Ställ in coachen för att planera det efter ditt mål, din tid och dina egna dagar.</string>

@@ -109,7 +109,11 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
     `Progression` höjer varje övning steg för steg (dubbel progression): passläget frågar hur många repetitioner
     varje set blev (`Workout.done`), resultaten sparas i `CoachStore` (`ExerciseLog`), och nådde alla set målet blir
     det en repetition (eller fem sekunder) mer nästa gång, ett set klart under ger ett steg tillbaka. Det läggs på
-    styrkepassen i `trainingWeek`; rehabpassen doseras av smärtan och rörs inte.
+    styrkepassen i `trainingWeek`; rehabpassen doseras av smärtan och rörs inte. Efter fyra veckor i rad med styrka,
+    när förra veckans set oftare föll klart under målet än nådde det, blir veckan lättare (`lighterWeek`: ett set
+    mindre och målen står kvar, `TrainingProgram.lighterWeek`); den följer passen, inte kalendern. En övning som stått
+    på samma mål utan att nås tre pass i rad (`stalled`) byts av coachen mot en annan för samma rörelse
+    (`CoachNote.Stalled`).
   - `:core:sleep` – nätter från en klocka oberoende av källa: `Night`, `SleepSource`, `SleepRepository` (bara i minnet)
     och `nightsOf` (dagens längsta session på minst tre timmar, på morgonen användaren vaknade). `withNight` fyller
     i en dag utan egen sömn; användarens egen logg vinner alltid. Sömn och Idag visar dagarna så via

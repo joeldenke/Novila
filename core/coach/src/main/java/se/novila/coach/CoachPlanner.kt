@@ -38,6 +38,12 @@ sealed interface CoachNote {
      * strength sessions start with a balance exercise, on three days when there are that many.
      */
     data object Balance : CoachNote
+
+    /**
+     * The [exercises] stood at the same target for [se.novila.exercise.Progression.STALLED_SESSIONS] sessions without
+     * reaching it: the coach picks another exercise for the same movement for a while, where there is one.
+     */
+    data class Stalled(val exercises: List<String>) : CoachNote
     data class Focus(val areas: Set<BodyArea>) : CoachNote
     data class Considered(val consideration: Consideration) : CoachNote
 
@@ -121,6 +127,7 @@ object CoachPlanner {
         recovery: RecoveryStatus = RecoveryStatus.Unknown,
         lighter: Boolean = false,
         age: Int? = null,
+        stalled: Set<String> = emptySet(),
     ): CoachPlan {
         val weekStart = TrainingProgramGenerator.weekStart(today)
         val recent = TrainingProgramGenerator.summarize(history, weekStart)
@@ -155,10 +162,11 @@ object CoachPlanner {
         val first = (preferences.variation - SUGGESTIONS_BACK).coerceAtLeast(0)
         val before = (first until preferences.variation).fold(emptyList<Set<String>>()) { avoid, variation ->
             val earlier = preferences.copy(variation = variation)
-            strengthSessions(earlier, strengthDays, recent.level, effort, balance, avoid)
+            strengthSessions(earlier, strengthDays, recent.level, effort, balance, stalled, avoid)
                 .map { session -> session.ids() }
         }
-        val strength = strengthSessions(preferences, strengthDays, recent.level, effort, balance, before)
+        val strength = strengthSessions(preferences, strengthDays, recent.level, effort, balance, stalled, before)
+        val swapped = stalled.filter { id -> strength.none { session -> id in session.ids() } }.sorted()
         val sessions = strength +
             cardioDays.map { PlannedSession(it, recent.cardioType, cardioMinutes) } +
             mobilityDays.map { PlannedSession(it, ExerciseType.Mobility, mobilityMinutes) }
@@ -173,6 +181,7 @@ object CoachPlanner {
         return CoachPlan(
             program = TrainingProgram(weekStart, weeklyCardio, adjusted.sortedBy { it.day }),
             notes = notes(preferences, recent.level, strengthCount, weeklyCardio, weeklyModerate, effort, balance) +
+                listOfNotNull(swapped.takeIf { it.isNotEmpty() }?.let { CoachNote.Stalled(it) }) +
                 when {
                     adjusted == sessions -> emptyList()
                     recovery == RecoveryStatus.Low -> listOf(CoachNote.Recovery)
@@ -183,7 +192,8 @@ object CoachPlanner {
 
     /**
      * A strength session on each of [days], each varied from the one before it, starting with a balance exercise when
-     * [balance]. [avoid] are exercises to steer away from in each session, by its place in the week.
+     * [balance]. [avoid] are exercises to steer away from in each session, by its place in the week, and [stalled] ones
+     * to steer away from in all of them.
      */
     private fun strengthSessions(
         preferences: CoachPreferences,
@@ -191,12 +201,13 @@ object CoachPlanner {
         level: StrengthLevel,
         effort: EffortCheck?,
         balance: Boolean,
+        stalled: Set<String>,
         avoid: List<Set<String>> = emptyList(),
     ): List<PlannedSession> {
         val sessions = mutableListOf<PlannedSession>()
         days.forEachIndexed { index, day ->
             val previous = sessions.lastOrNull()?.ids().orEmpty()
-            val skip = avoid.getOrNull(index).orEmpty()
+            val skip = avoid.getOrNull(index).orEmpty() + stalled
             val exercises = session(preferences, level, index, previous, effort?.advice, balance, skip)
             sessions += PlannedSession(day, ExerciseType.Strength, sessionMinutes(exercises), exercises)
         }

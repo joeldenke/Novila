@@ -78,6 +78,8 @@ fun trainingWeek(
     val feedback = days.mapNotNull(::feedback)
     val active = answers.preferences
     val preferences = active ?: draft ?: CoachPreferences()
+    // Exercises stuck at the same target: the coach picks others for the same movement for a while.
+    val stalled = Progression.stalled(progress, today)
     val planned = CoachPlanner.plan(
         preferences,
         history = history,
@@ -86,6 +88,7 @@ fun trainingWeek(
         recovery = recovery,
         lighter = lighter,
         age = age,
+        stalled = stalled,
     )
     val plan = planned.copy(program = Progression.apply(planned.program, progress, today))
     val program = if (active != null) {
@@ -99,7 +102,7 @@ fun trainingWeek(
     val nextMonday = program.weekStart.plusWeeks(1)
     val nextProgram = Progression.apply(
         if (active != null) {
-            CoachPlanner.plan(preferences, history, nextMonday, feedback, age = age).program
+            CoachPlanner.plan(preferences, history, nextMonday, feedback, age = age, stalled = stalled).program
         } else {
             TrainingProgramGenerator.generate(history, nextMonday)
         },

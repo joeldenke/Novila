@@ -52,6 +52,13 @@ fun TrainingProgramCard(
             style = NovilaTheme.typography.bodyMedium,
             color = NovilaTheme.colors.onSurfaceVariant,
         )
+        if (program.lighterWeek) {
+            NovilaText(
+                stringResource(R.string.program_lighter_week),
+                style = NovilaTheme.typography.bodyMedium,
+                color = training.color,
+            )
+        }
         program.sessions.forEach { session ->
             val open = onOpenSession?.takeIf { session.exercises.isNotEmpty() }
             SessionRow(session, isToday = session.day == today, done = (done[session.day] ?: 0) > 0, onOpen = open)
