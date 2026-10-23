@@ -59,6 +59,23 @@ language model in the app, or data that leaves the app.
 - [x] **More rehab areas:** shoulder, neck, hip
 - [x] **Warm-up and cool-down** in workout mode, and the rest timer as a notification
 - [x] **Weekly review:** "3 of 4 sessions, next week …"
+- [ ] **Intensity, as WHO counts it:** WHO's advice is 150–300 minutes of moderate *or* 75–150 minutes of vigorous
+  activity a week, where a vigorous minute counts as two. `TrainingProgramGenerator` counts minutes only, so a runner
+  gets too little credit. Read the intensity from the session's kind and the user's RPE (already saved), without a
+  heart rate; heart rate zones refine it later (below). Like Fitbit's Active Zone Minutes and Garmin's intensity
+  minutes, deterministic and tested.
+- [ ] **Advice by age in the coach:** WHO advises adults from 65 to do balance and functional training at least three
+  days a week, against falls. The coach does not read the birth year yet. Add balance exercises (via `add-exercise`)
+  and a rule in `CoachPlanner`, the same way the step goal already follows age.
+- [ ] **Deload and plateaus in progression:** `Progression` only steps up. After a few weeks of rising load, suggest a
+  lighter week, and when an exercise has stood still for three or four sessions, suggest another variant of the
+  same movement. Built on `ExerciseLog` and `trainingLoad`.
+- [ ] **Heart rate zones in cardio sessions** (`HeartRateRecord`) **(ok)**: makes the intensity exact for those with a
+  watch, and zone 2 training possible. A new data type in the Play declaration.
+- [ ] **Write sessions to Health Connect** (`WRITE_EXERCISE`) **(ok)**: Novila's strength sessions don't show in Fit,
+  Fitbit or other apps today. With `PlannedExerciseSessionRecord` the watch app could also get the week's plan
+  without the Wearable Data Layer. The app's first write: new permission, badging line, privacy policy and Play
+  declaration.
 
 ### 3. Sleep
 - [x] **Bedtime and wake-up** instead of just hours, so regularity shows
@@ -69,6 +86,15 @@ language model in the app, or data that leaves the app.
 - [x] **Sleep from Health Connect** (`READ_SLEEP`) **(ok)**: the watch's night fills in Sleep and Today when the user
   has not logged it themselves, only in memory. The sleep reminder does not know about it (no background reading).
 - [x] **Sleep coach:** bedtime goal, evening routine and sleep hygiene (CBT-I-inspired)
+- [ ] **Sleep debt:** the last 14 nights against the sleep goal, recent nights weighing more ("you slept four hours
+  short this week"), as a signal in `dailyCoach` and `readiness`. Like Oura and Rise. Built on nights already
+  logged or read.
+- [ ] **Chronotype and a bedtime window:** the sleep midpoint on free days, corrected for sleep debt (MSFsc,
+  Roenneberg), from the nights `sleepRegularity` already reads, so the sleep coach suggests a bedtime that suits the
+  person rather than only a goal. Never a type label that sounds like a diagnosis.
+- [ ] **Menopause as a sleep cause:** hot flashes and night sweats as a `SleepFactor`, tested like the other causes and,
+  like the period, never turned into a tip. No prediction and no new permission, but a sensitive subject: decided by
+  the owner.
 
 ### 4. Nutrition
 - [x] **Meal logging** ("Breakfast: porridge, berries") that fills in the groups
@@ -91,6 +117,8 @@ language model in the app, or data that leaves the app.
 
 ### 5. Body and mood
 - [x] **Weight and measurements over time** (the profile only has one value)
+- [ ] **The weight's trend:** a smoothed moving average over the measurements, so daily swings in fluid don't steer the
+  impression (like Happy Scale and MacroFactor). Neutral wording, never a weight loss goal.
 - [x] ~~**Extended mood:** energy, stress and a journal line~~ Removed from Today in October 2026, together with mood:
   their purpose was unclear to the owner. The saved fields remain in `DayEntry`.
 - [x] **Recovery:** resting heart rate and HRV from the watch **(ok)**, which can lower the session's intensity. A card on
@@ -146,6 +174,9 @@ language model in the app, or data that leaves the app.
 - [x] **Step goals by age:** benefits level off around 6,000–8,000 steps a day from 60 and 8,000–10,000 below
   (Paluch et al., Lancet 2022), a better basis for the suggested step goal. Done: `Goals.suggested` suggests the middle
   of each range (9,000 below 60, 7,000 from 60) and the general 8,000 without an age; the suggestion card says why.
+- [ ] **Steps over time** **(ok)**: the table above says "Steps only for today". `READ_STEPS` is already granted, but
+  reading history changes what the app reads, so `HealthDataInfoActivity`, the privacy policy and
+  `docs/play-console.md` change with it. Gives steps in Trends and in the connections (steps ↔ sleep).
 - [ ] **Cardio fitness (VO2max) from the watch** via Health Connect **(ok)**: a good long-term measure, a new data type
   in the Play declaration.
 - [x] **Achievements and streaks**, restrained and without rewarding overtraining. Done: `achievements` in
@@ -229,7 +260,15 @@ Next, first what needs no approval and is used every day, then what needs the ow
 20. Achievements and streaks: restrained, built on what the user already logs, and never rewarding overtraining
     (recovery and rest days count). ← done
 21. Export and import as a local file **(ok)**: a backup without the cloud before users have much data to lose. ← done
-22. Count reps with the camera **(ok)**: needs `CAMERA` and an on-device pose model, which changes the privacy policy
+22. Intensity as WHO counts it: corrects something the app gets wrong today, since it says it follows WHO. Built on
+    the session's kind and RPE.
+23. Advice by age in the coach: balance and functional training from 65, with the exercises it needs.
+24. Sleep debt and chronotype: both build on the nights already there, and give `readiness` one more honest signal.
+25. Deload and plateaus in progression, and the weight's trend.
+26. Steps over time **(ok)**: the cheapest change that needs approval, with the most use.
+27. Heart rate zones and writing sessions to Health Connect **(ok)**. Menopause as a sleep cause, when the owner
+    decides.
+28. Count reps with the camera **(ok)**: needs `CAMERA` and an on-device pose model, which changes the privacy policy
     and the Play declaration.
-23. iOS via Kotlin and Compose Multiplatform: last, when the Android app is complete. Moving the pure Kotlin modules to
+29. iOS via Kotlin and Compose Multiplatform: last, when the Android app is complete. Moving the pure Kotlin modules to
     shared code can start earlier without changing the app.
