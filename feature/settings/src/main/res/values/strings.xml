@@ -184,7 +184,12 @@
     <string name="measure_hips_error">Enter hips between %1$d and %2$d cm.</string>
     <string name="measure_save">Save</string>
     <string name="measure_value" translatable="false">%1$d %2$s</string>
-    <string name="measure_chart_description">Weight over time, from %1$d to %2$d kilos.</string>
+    <string name="measure_chart_description">Your weight\'s trend over time, from %1$d to %2$d kilos.</string>
+    <string name="measure_trend">Your weight\'s trend is %1$s kg.</string>
+    <string name="measure_trend_steady">Your weight\'s trend is %1$s kg, about the same over the last %2$d weeks.</string>
+    <string name="measure_trend_lower">Your weight\'s trend is %1$s kg, about %2$s kg a week lower over the last %3$d weeks.</string>
+    <string name="measure_trend_higher">Your weight\'s trend is %1$s kg, about %2$s kg a week higher over the last %3$d weeks.</string>
+    <string name="measure_trend_footer">The line is a running average of your weigh-ins, so a day\'s swing in fluid and food barely moves it. The days below show what the scale said.</string>
     <string name="measure_privacy">Everything you measure is saved on this phone only and needs no account. The newest weight becomes the profile\'s weight, so the goals stay in step with the scale. Deleting all data under Settings deletes it too.</string>
 
     <!-- Reminders -->

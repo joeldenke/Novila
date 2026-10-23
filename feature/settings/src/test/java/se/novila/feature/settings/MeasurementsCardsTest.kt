@@ -98,6 +98,21 @@ class MeasurementsCardsTest {
         composeRule.onAllNodesWithText("–").assertCountEquals(2)
     }
 
+    @Test fun `the history shows the weight's trend in neutral words, not the day's swing`() {
+        composeRule.setContent { NovilaTheme { MeasurementsHistoryCard(sampleMeasurements) } }
+
+        // Weighed 76, 75, 74 and 73 kg over three weeks: the running average trails the scale a little.
+        composeRule.onNodeWithText("Your weight's trend is 73.8 kg, about 0.7 kg a week lower over the last 3 weeks.")
+            .assertExists()
+        composeRule.onNodeWithText("running average", substring = true).assertExists()
+    }
+
+    @Test fun `a single weigh-in has no trend yet`() {
+        composeRule.setContent { NovilaTheme { MeasurementsHistoryCard(listOf(logged)) } }
+
+        composeRule.onNodeWithText("trend", substring = true).assertDoesNotExist()
+    }
+
     @Test fun `without measurements, the latest card shows dashes`() {
         composeRule.setContent { NovilaTheme { LatestMeasurementsCard(emptyList(), onLog = {}) } }
 
