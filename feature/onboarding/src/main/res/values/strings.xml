@@ -51,7 +51,10 @@
     <string name="onboarding_goal_rehab">Your gentle training stays as it is. Choose a goal to change it.</string>
     <string name="onboarding_time_title">Your time</string>
     <string name="onboarding_days">Days a week</string>
-    <string name="onboarding_days_value">%1$d days</string>
+    <plurals name="onboarding_days_value">
+        <item quantity="one">%1$d day</item>
+        <item quantity="other">%1$d days</item>
+    </plurals>
     <string name="onboarding_fewer_days">Fewer days</string>
     <string name="onboarding_more_days">More days</string>
     <string name="onboarding_minutes">Minutes per session</string>
@@ -71,8 +74,14 @@
 
     <string name="onboarding_ready_title">Your week is ready</string>
     <string name="onboarding_ready_title_named">Your week is ready, %1$s</string>
-    <string name="onboarding_ready_body">%1$s, %2$d days a week, about %3$d minutes at a time.</string>
-    <string name="onboarding_ready_body_rehab">Gentle training, %1$d days a week, about %2$d minutes at a time.</string>
+    <plurals name="onboarding_ready_body">
+        <item quantity="one">%1$s, %2$d day a week, about %3$d minutes at a time.</item>
+        <item quantity="other">%1$s, %2$d days a week, about %3$d minutes at a time.</item>
+    </plurals>
+    <plurals name="onboarding_ready_body_rehab">
+        <item quantity="one">Gentle training, %1$d day a week, about %2$d minutes at a time.</item>
+        <item quantity="other">Gentle training, %1$d days a week, about %2$d minutes at a time.</item>
+    </plurals>
     <string name="onboarding_ready_training">Your program is under Training</string>
     <string name="onboarding_ready_sleep">Log last night\'s sleep tomorrow morning</string>
     <string name="onboarding_ready_nutrition">Start with breakfast under Nutrition</string>

@@ -41,6 +41,8 @@ fun coachNoteText(note: CoachNote): String = when (note) {
 
     CoachNote.RestBetweenStrengthDays -> stringResource(R.string.coach_note_rest)
 
+    CoachNote.OneStrengthDay -> stringResource(R.string.coach_note_one_strength)
+
     is CoachNote.Focus -> stringResource(
         R.string.coach_note_focus,
         muscleList(BodyArea.entries.filter { it in note.areas }.flatMap { it.muscles }.toSet()),

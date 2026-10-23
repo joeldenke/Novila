@@ -354,7 +354,10 @@
     <string name="coach_goal_mobility">Mobility</string>
     <string name="coach_time_title">Your time</string>
     <string name="coach_days">Days a week</string>
-    <string name="coach_days_value">%1$d days</string>
+    <plurals name="coach_days_value">
+        <item quantity="one">%1$d day</item>
+        <item quantity="other">%1$d days</item>
+    </plurals>
     <string name="coach_minutes">Minutes per session</string>
     <string name="coach_minutes_value">About %1$d minutes</string>
     <string name="coach_fewer_days">Fewer days</string>
@@ -376,6 +379,16 @@
     <string name="equipment_barbell">Barbell</string>
     <string name="coach_why_title">Why this program</string>
     <string name="coach_create">Create my program</string>
+    <string name="coach_weekdays_title">Days to train</string>
+    <string name="coach_weekdays_spread">The coach spreads the days over the week. Tap a day to choose your own.</string>
+    <string name="coach_weekdays_own">Your own days. The coach puts the strength sessions as far apart as they can be.</string>
+    <string name="coach_weekdays_spread_again">Let the coach spread them out</string>
+    <string name="coach_note_one_strength">One strength session a week is a good start. WHO advises two a week when you have room for them.</string>
+    <string name="program_coach_off">The program follows your recent workouts. Set up the coach to plan it from your goal, your time and your own days.</string>
+    <string name="program_coach_on">The coach plans the week from your answers. Want other exercises? Ask for another program.</string>
+    <string name="program_coach_suggested">A new program: the strength sessions have other exercises wherever there are others. Tap a day to see them.</string>
+    <string name="program_coach_rehab">Gentle training follows the level you are on, with exercises chosen by hand for it.</string>
+    <string name="program_coach_settings">Change the coach\'s settings</string>
     <string name="coach_suggest">Suggest another program</string>
     <string name="coach_reset">Use the standard program</string>
     <string name="coach_note_goal_health">All-round health: full-body strength and cardio along the WHO\'s guidelines.</string>

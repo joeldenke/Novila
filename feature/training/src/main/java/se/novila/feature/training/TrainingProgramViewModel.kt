@@ -10,13 +10,17 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
+import se.novila.data.CoachStore
 import java.time.LocalDate
 
-/** The week's program and the weekly review, opened from the Training tab, scoped to its entry. */
+/**
+ * The week's program and the weekly review, opened from the Training tab, scoped to its entry. When the coach is set
+ * up, it can suggest another program from the same answers.
+ */
 @ViewModelKey
 @ContributesIntoMap(AppScope::class)
 @Inject
-class TrainingProgramViewModel(training: TrainingRepository) : ViewModel() {
+class TrainingProgramViewModel(training: TrainingRepository, private val coachStore: CoachStore) : ViewModel() {
     private val date = MutableStateFlow(LocalDate.now())
 
     /** The week's program, or null before the stores' first read. */
@@ -26,5 +30,11 @@ class TrainingProgramViewModel(training: TrainingRepository) : ViewModel() {
     /** Called on resume so "today" stays correct after midnight. */
     fun refresh() {
         date.value = LocalDate.now()
+    }
+
+    /** Another program from the coach's answers, used right away: the strength sessions get other exercises. */
+    fun nextSuggestion() {
+        val coach = state.value?.coach?.takeIf { it.active } ?: return
+        coachStore.save(coach.preferences.nextVariation())
     }
 }

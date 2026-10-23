@@ -119,7 +119,10 @@
     <string name="my_goals_daily">Varje dag</string>
     <string name="my_goals_daily_row">Steg, sömn och vatten</string>
     <string name="my_goals_training_row">Träningscoachen</string>
-    <string name="my_goals_training_on">%1$d dagar i veckan, %2$d min per pass</string>
+    <plurals name="my_goals_training_on">
+        <item quantity="one">%1$d dag i veckan, %2$d min per pass</item>
+        <item quantity="other">%1$d dagar i veckan, %2$d min per pass</item>
+    </plurals>
     <string name="my_goals_training_off">Inte inställd. Veckan planeras efter dina senaste pass.</string>
     <string name="my_goals_sleep_row">Sömncoachen</string>
     <string name="my_goals_sleep_on">Lägg dig %1$s, upp %2$s</string>

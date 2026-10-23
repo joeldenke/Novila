@@ -348,7 +348,10 @@
     <string name="coach_goal_mobility">Rörlighet</string>
     <string name="coach_time_title">Din tid</string>
     <string name="coach_days">Dagar i veckan</string>
-    <string name="coach_days_value">%1$d dagar</string>
+    <plurals name="coach_days_value">
+        <item quantity="one">%1$d dag</item>
+        <item quantity="other">%1$d dagar</item>
+    </plurals>
     <string name="coach_minutes">Minuter per pass</string>
     <string name="coach_minutes_value">Ungefär %1$d minuter</string>
     <string name="coach_fewer_days">Färre dagar</string>
@@ -370,6 +373,16 @@
     <string name="equipment_barbell">Skivstång</string>
     <string name="coach_why_title">Därför ser programmet ut så här</string>
     <string name="coach_create">Skapa mitt program</string>
+    <string name="coach_weekdays_title">Träningsdagar</string>
+    <string name="coach_weekdays_spread">Coachen sprider ut dagarna över veckan. Tryck på en dag för att välja själv.</string>
+    <string name="coach_weekdays_own">Dina egna dagar. Coachen lägger styrkepassen så långt isär som det går.</string>
+    <string name="coach_weekdays_spread_again">Låt coachen sprida ut dem</string>
+    <string name="coach_note_one_strength">Ett styrkepass i veckan är en bra början. WHO rekommenderar två i veckan när du har utrymme för det.</string>
+    <string name="program_coach_off">Programmet utgår från dina senaste pass. Ställ in coachen för att planera det efter ditt mål, din tid och dina egna dagar.</string>
+    <string name="program_coach_on">Coachen planerar veckan efter dina svar. Vill du ha andra övningar? Be om ett annat program.</string>
+    <string name="program_coach_suggested">Ett nytt program: styrkepassen har andra övningar där det finns andra. Tryck på en dag för att se dem.</string>
+    <string name="program_coach_rehab">Skonsam träning följer nivån du är på, med övningar handplockade för den.</string>
+    <string name="program_coach_settings">Ändra coachens inställningar</string>
     <string name="coach_suggest">Föreslå ett annat program</string>
     <string name="coach_reset">Använd standardprogrammet</string>
     <string name="coach_note_goal_health">Allsidig hälsa: styrka för hela kroppen och kondition enligt WHO:s råd.</string>

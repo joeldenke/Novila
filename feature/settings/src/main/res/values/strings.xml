@@ -124,7 +124,10 @@
     <string name="my_goals_daily">Every day</string>
     <string name="my_goals_daily_row">Steps, sleep and water</string>
     <string name="my_goals_training_row">The training coach</string>
-    <string name="my_goals_training_on">%1$d days a week, %2$d min a session</string>
+    <plurals name="my_goals_training_on">
+        <item quantity="one">%1$d day a week, %2$d min a session</item>
+        <item quantity="other">%1$d days a week, %2$d min a session</item>
+    </plurals>
     <string name="my_goals_training_off">Not set up. The week is planned from your recent workouts.</string>
     <string name="my_goals_sleep_row">The sleep coach</string>
     <string name="my_goals_sleep_on">To bed at %1$s, up at %2$s</string>

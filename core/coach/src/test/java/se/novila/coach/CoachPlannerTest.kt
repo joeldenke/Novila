@@ -1,6 +1,7 @@
 package se.novila.coach
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -66,11 +67,40 @@ class CoachPlannerTest {
         }
     }
 
-    @Test fun `there are always at least two strength days with a rest day between them`() {
+    @Test fun `there are two strength days with a rest day between them whenever the week has room`() {
         everyAnswer.forEach { preferences ->
             val strength = plan(preferences).program.strength.map { it.day }
-            assertTrue(preferences.toString(), strength.size >= 2)
-            assertTrue(preferences.toString(), CoachPlanner.minGap(strength) >= 2)
+            assertTrue(preferences.toString(), strength.size >= minOf(2, preferences.daysPerWeek))
+            if (strength.size >= 2) assertTrue(preferences.toString(), CoachPlanner.minGap(strength) >= 2)
+        }
+    }
+
+    @Test fun `one day a week is a full strength session, and the coach says what WHO advises`() {
+        CoachGoal.entries.filter { it != CoachGoal.Rehab }.forEach { goal ->
+            val plan = plan(CoachPreferences(goal, daysPerWeek = 1))
+            assertEquals(goal.toString(), 1, plan.program.sessions.size)
+            assertEquals(goal.toString(), 1, plan.program.strength.size)
+            assertTrue(goal.toString(), CoachNote.OneStrengthDay in plan.notes)
+            assertFalse(goal.toString(), CoachNote.RestBetweenStrengthDays in plan.notes)
+        }
+    }
+
+    @Test fun `the user's own days are the days of the week`() {
+        val days = setOf(DayOfWeek.TUESDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
+        val preferences = CoachPreferences().withDays(3).copy(days = days)
+        val program = plan(preferences).program
+        assertEquals(days.sorted(), program.sessions.map { it.day })
+        // The strength days are the two furthest apart: Tuesday and Saturday.
+        assertEquals(listOf(DayOfWeek.TUESDAY, DayOfWeek.SATURDAY), program.strength.map { it.day })
+    }
+
+    @Test fun `another suggestion changes the exercises, and the next one changes them again`() {
+        listOf(CoachPreferences(), CoachPreferences(equipment = setOf(Equipment.Dumbbells, Equipment.Band))).forEach {
+            val first = plan(it).program.strength.flatMap { session -> session.ids() }
+            val second = plan(it.nextVariation()).program.strength.flatMap { session -> session.ids() }
+            val third = plan(it.nextVariation().nextVariation()).program.strength.flatMap { session -> session.ids() }
+            assertNotEquals(it.toString(), first, second)
+            assertNotEquals(it.toString(), second, third)
         }
     }
 
@@ -178,7 +208,7 @@ class CoachPlannerTest {
     }
 
     @Test fun `the two sessions of a week vary`() {
-        everyAnswer.filter { it.considerations.isEmpty() }.forEach { preferences ->
+        everyAnswer.filter { it.considerations.isEmpty() && it.daysPerWeek >= 2 }.forEach { preferences ->
             val (a, b) = plan(preferences, strengthTwiceAWeek()).program.strength.map { it.ids().toSet() }
             assertNotEquals(preferences.toString(), a, b)
         }
@@ -267,8 +297,8 @@ class CoachPlannerTest {
             (CoachPreferences.MIN_DAYS..CoachPreferences.MAX_DAYS).forEach { days ->
                 val program = rehab(area, phase = 1, days = days).program
                 val sessions = program.sessions.filter { it.type == ExerciseType.Rehab }
-                assertEquals(3, sessions.size)
-                assertTrue("$area $days", CoachPlanner.minGap(sessions.map { it.day }) >= 2)
+                assertEquals(minOf(3, days), sessions.size)
+                if (sessions.size >= 2) assertTrue("$area $days", CoachPlanner.minGap(sessions.map { it.day }) >= 2)
                 val others = program.sessions - sessions.toSet()
                 assertTrue(others.all { it.type == ExerciseType.Walking && it.exercises.isEmpty() })
                 assertEquals(days, program.sessions.size)

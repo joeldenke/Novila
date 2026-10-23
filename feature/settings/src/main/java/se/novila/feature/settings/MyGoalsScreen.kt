@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import se.novila.coach.CoachPreferences
@@ -84,7 +85,12 @@ fun MyGoalsScreen(
                 role = pillars.training,
                 row = stringResource(R.string.my_goals_training_row),
                 summary = if (coach != null) {
-                    stringResource(R.string.my_goals_training_on, coach.daysPerWeek, coach.sessionMinutes)
+                    pluralStringResource(
+                        R.plurals.my_goals_training_on,
+                        coach.daysPerWeek,
+                        coach.daysPerWeek,
+                        coach.sessionMinutes,
+                    )
                 } else {
                     stringResource(R.string.my_goals_training_off)
                 },

@@ -160,6 +160,8 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
         TrainingProgramScreen(
             state = state,
             onOpenSession = { day -> navigator.navigate(SessionRoute(day)) },
+            onSuggest = viewModel::nextSuggestion,
+            onOpenCoach = { navigator.navigate(CoachRoute) },
             contentPadding = contentPadding,
         )
     }
@@ -200,12 +202,9 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
         val state = viewModel.state.collectAsStateWithLifecycle().value ?: return@entry
         CoachScreen(
             coach = state.coach,
-            today = state.today,
             onChange = viewModel::change,
             onCreate = viewModel::createProgram,
-            onSuggest = viewModel::nextSuggestion,
             onReset = viewModel::reset,
-            onOpenExercise = openExercise,
             contentPadding = contentPadding,
         )
     }
