@@ -387,7 +387,7 @@ där pluginet `firebase@firebase` inte alltid installeras.
   hänsyn och coachens skäl), öppnad från Träning och från *Mina mål*. Veckan och "Föreslå ett annat program" ligger
   på veckans program (`TrainingProgramScreen`), där övningarna syns, med en väg till inställningarna.
 - **Mina mål:** allt appen planerar efter samlas på en skärm (`MyGoalsScreen`), som öppnas från profilen: dagliga mål,
-  träningscoachen, sömncoachen, matpreferenserna och *Följ din cykel*, var och en med vad den står på och en rad dit den ändras. Samma
+  träningscoachen, sömncoachen, matpreferenserna och *Mens och träning*, var och en med vad den står på och en rad dit den ändras. Samma
   skärmar öppnas från ingångarna på varje flik. Ny inställning som styr en plan läggs till här, inte som en egen rad i
   Inställningar, som bara har det som gäller appen.
 - **Profil:** `ProfileScreen` är en sida för personen: avatar (`NovilaAvatar`, initialer på granen), namn, födelseår
@@ -511,11 +511,12 @@ där pluginet `firebase@firebase` inte alltid installeras.
   inte går utan `INTERNET`. Planen, skälen och insikterna är deterministiska och förklarar sig själva. Att lägga
   tillbaka en modell, på enheten eller i molnet, kräver ägarens ok, rapportering enligt Plays policy för AI-genererat
   innehåll, ny integritetstext och ny Play-deklaration.
-- **Cykeln:** *Följ din cykel* i *Mina mål* (`CycleScreen`) är avslagen från början, ligger i en egen fil
+- **Cykeln:** *Mens och träning* i *Mina mål* (`CycleScreen`) är avslagen från början, ligger i en egen fil
   (`CycleStore`) och raderas när den stängs av. Användaren loggar mensdagar och symtom i ett sheet på Träning; en dag
   med symtom och ett pass erbjuder coachen ett lättare pass (`SessionChoice`, `CoachNote.Lighter`) men byter aldrig
-  själv. Återhämtningen (`recoveryStatus`) jämför en dag bara med dagar i samma halva av cykeln (`cyclePhase`), så en
-  vanlig lutealfas inte läses som dålig återhämtning; Health Connect ger bara två veckor, så aldrig "samma fas förra
+  själv. I svenska texter heter det *mens* (*menscykeln* i löptext), aldrig *cykel* ensamt, som läses som en
+  cykel man åker på. Återhämtningen (`recoveryStatus`) jämför en dag bara med dagar i samma halva av cykeln
+  (`cyclePhase`), så en vanlig lutealfas inte läses som dålig återhämtning; Health Connect ger bara två veckor, så aldrig "samma fas förra
   cykeln". Appen förutsäger aldrig ägglossning eller fertila dagar (preventivmedels- och fertilitetsappar är
   medicintekniska), planerar aldrig träning efter fas och frågar aldrig om kön. Mensdagar från Health Connect
   (`READ_MENSTRUATION`) kräver ägarens ok.

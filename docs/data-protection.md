@@ -52,7 +52,7 @@ användaren aldrig öppnat. Påminnelserna töms och deras planerade jobb avbryt
 (`RemindersStore.clear`, `ReminderScheduler.cancelAll`), så ingen notis kommer efter en radering.
 Inställningar (tema, introduktionen klar) behålls, eftersom de inte är hälsodata.
 
-Cykeln (*Följ din cykel*, `CycleStore`) ligger i en egen fil, `cycle`, eftersom mensdagar och symtom är
+Cykeln (*Mens och träning*, `CycleStore`) ligger i en egen fil, `cycle`, eftersom mensdagar och symtom är
 särskild kategori enligt GDPR artikel 9. Den är avslagen från början, och att stänga av den raderar allt som
 loggats, inte bara vid *Radera data*. Cykeln läses aldrig från Health Connect (`READ_MENSTRUATION` kräver ägarens
 ok, se roadmapen).
