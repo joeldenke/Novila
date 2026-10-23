@@ -147,19 +147,12 @@ internal object ExportCodec {
         preferences.asMap().entries.sortedBy { it.key.name }.associate { (key, value) ->
             key.name to when (value) {
                 is String -> typed("string", JsonPrimitive(value))
-
                 is Int -> typed("int", JsonPrimitive(value))
-
                 is Long -> typed("long", JsonPrimitive(value))
-
                 is Float -> typed("float", JsonPrimitive(value))
-
                 is Double -> typed("double", JsonPrimitive(value))
-
                 is Boolean -> typed("boolean", JsonPrimitive(value))
-
                 is Set<*> -> typed("string_set", JsonArray(value.map { JsonPrimitive(it.toString()) }))
-
                 else -> throw IllegalArgumentException("${key.name} has a type the export doesn't know")
             }
         },
