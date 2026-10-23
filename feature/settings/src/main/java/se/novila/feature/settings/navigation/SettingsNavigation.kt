@@ -53,6 +53,7 @@ import se.novila.feature.settings.RemindersViewModel
 import se.novila.feature.settings.SettingsActions
 import se.novila.feature.settings.SettingsScreen
 import se.novila.feature.settings.SettingsViewModel
+import se.novila.feature.settings.TermsScreen
 import se.novila.healthconnect.HealthConnectSource
 import se.novila.healthconnect.HealthDataInfoScreen
 import se.novila.healthconnect.rememberHealthPermissionRequest
@@ -75,6 +76,9 @@ import se.novila.ui.R as UiR
 
 /** Novila's privacy policy, which Google Play requires inside the app. */
 @Serializable data object PrivacyPolicyRoute : NavKey
+
+/** Novila's terms of use. */
+@Serializable data object TermsRoute : NavKey
 
 /** The open-source licenses of everything the app ships. */
 @Serializable data object LicensesRoute : NavKey
@@ -154,6 +158,7 @@ fun EntryProviderScope<NavKey>.settingsEntries(
                 onOpenHealthInfo = { navigator.navigate(HealthDataRoute) },
                 onOpenDisclaimer = { navigator.navigate(DisclaimerRoute) },
                 onOpenPrivacy = { navigator.navigate(PrivacyPolicyRoute) },
+                onOpenTerms = { navigator.navigate(TermsRoute) },
                 onOpenLicenses = { navigator.navigate(LicensesRoute) },
                 onDeleteData = viewModel::deleteAllData,
                 onExportData = { exportFile.launch(exportFileName(LocalDate.now())) },
@@ -214,6 +219,7 @@ fun EntryProviderScope<NavKey>.settingsEntries(
     }
     entry<DisclaimerRoute> { DisclaimerScreen(contentPadding = contentPadding) }
     entry<PrivacyPolicyRoute> { PrivacyPolicyScreen(contentPadding = contentPadding) }
+    entry<TermsRoute> { TermsScreen(contentPadding = contentPadding) }
     entry<LicensesRoute> {
         val libraries by produceLibraries(licensesResId)
         LicensesScreen(libraries = libraries, contentPadding = contentPadding)
@@ -227,6 +233,7 @@ fun settingsTitle(route: NavKey?): String? = when (route) {
     HealthDataRoute -> stringResource(HealthConnectR.string.health_info_title)
     DisclaimerRoute -> stringResource(R.string.disclaimer_title)
     PrivacyPolicyRoute -> stringResource(R.string.privacy_title)
+    TermsRoute -> stringResource(R.string.terms_title)
     LicensesRoute -> stringResource(R.string.licenses_title)
     ProfileRoute -> stringResource(R.string.profile_title)
     MyGoalsRoute -> stringResource(R.string.my_goals_title)

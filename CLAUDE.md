@@ -33,7 +33,7 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   `NovilaSceneImage` med parallax), namn, mål och tid för coachen, Health Connect och en sammanfattning i `NovilaHeroBanner`.
   Visas ensam (utan flikar) tills `AppSettings.onboarded` är satt; `NovilaApp` ger den en egen entry via
   `rememberStandaloneEntries`. Kan visas igen från Inställningar.
-- `:feature:settings` – Inställningar (profil med kroppsmått och vägen till *Mina mål*, tema, påminnelser, Health Connect, ansvarsfriskrivning, radera data, integritetspolicy, licenser, introduktionen, version).
+- `:feature:settings` – Inställningar (profil med kroppsmått och vägen till *Mina mål*, tema, påminnelser, Health Connect, ansvarsfriskrivning, radera data, integritetspolicy, användarvillkor, licenser, introduktionen, version).
   Ingen flik: öppnas med kugghjulet i toppraden (på Idag i hälsningen) och läggs på aktuell fliks back stack. `Navigator` flyttar
   den om den öppnas från en annan flik, så samma nyckel aldrig ligger i två stackar som visas samtidigt.
 - `:feature:widget` – widgeten på hemskärmen (Glance): `NovilaWidget` visar dagens balans, sömn, kost och vatten samt
@@ -535,6 +535,9 @@ där pluginet `firebase@firebase` inte alltid installeras.
   `DayHighlightsTest`) och påstår aldrig mer än appen vet: ingen väderdata (ingen `INTERNET`), så solen nämns bara
   via årstiden. Uppdateras när appen sparar (`WidgetUpdates`) och av systemet en gång i timmen, för midnatt; inga
   egna jobb. Nya knappar är en `ActionCallback` med en keep-regel i `app/proguard-rules.pro`.
+- **Användarvillkor:** finns i appen (`TermsScreen`, strängarna `terms_*`) och som publik text i
+  `docs/terms-of-use.md`; ändra båda och datumet. De ska aldrig godkännas för att använda appen och följer *Inga
+  medicinska påståenden*. Tvingande konsumentlag går före; ändringar läses helst av någon med juridisk kunskap.
 - **Integritetspolicy och Play:** policyn finns i appen (`PrivacyPolicyScreen`, strängarna `privacy_*`) och som
   publik text i `docs/privacy-policy.md`; ändra båda och datumet. `docs/play-console.md` håller svaren för Data
   safety, Health apps declaration och Health Connect-behörigheterna. Ändras vad appen läser, sparar eller skickar,

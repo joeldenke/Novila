@@ -51,6 +51,7 @@ data class SettingsActions(
     val onOpenHealthInfo: () -> Unit = {},
     val onOpenDisclaimer: () -> Unit = {},
     val onOpenPrivacy: () -> Unit = {},
+    val onOpenTerms: () -> Unit = {},
     val onOpenLicenses: () -> Unit = {},
     val onDeleteData: () -> Unit = {},
     val onExportData: () -> Unit = {},
@@ -370,6 +371,12 @@ private fun AboutCard(version: AppVersion, actions: SettingsActions) {
             title = stringResource(R.string.settings_privacy),
             summary = stringResource(R.string.settings_privacy_summary),
             onClick = actions.onOpenPrivacy,
+            trailing = { Chevron() },
+        )
+        NovilaListRow(
+            title = stringResource(R.string.settings_terms),
+            summary = stringResource(R.string.settings_terms_summary),
+            onClick = actions.onOpenTerms,
             trailing = { Chevron() },
         )
         NovilaListRow(
