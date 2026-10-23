@@ -59,7 +59,7 @@ class TrainingWeek(
  * trying out before setting up the coach. [recovery] from the watch makes today's session lighter when the body
  * is still recovering, and so does [lighter], when the user chose a lighter session on a day with cycle symptoms.
  * [progress] is what the user did of each exercise lately: the strength sessions build on it a
- * step at a time ([Progression]).
+ * step at a time ([Progression]). The user's [age], when known, lets the coach follow WHO's advice for older adults.
  */
 fun trainingWeek(
     saved: HealthStore.SavedDays,
@@ -70,6 +70,7 @@ fun trainingWeek(
     recovery: RecoveryStatus = RecoveryStatus.Unknown,
     progress: ExerciseLog = ExerciseLog(),
     lighter: Boolean = false,
+    age: Int? = null,
 ): TrainingWeek {
     // Strength sessions done in session mode and cardio logged by hand, together with what Health Connect recorded.
     val days = saved.lastDays(count = ExerciseRepository.HISTORY_DAYS.toInt(), today = today)
@@ -84,6 +85,7 @@ fun trainingWeek(
         feedback = feedback,
         recovery = recovery,
         lighter = lighter,
+        age = age,
     )
     val plan = planned.copy(program = Progression.apply(planned.program, progress, today))
     val program = if (active != null) {
@@ -97,7 +99,7 @@ fun trainingWeek(
     val nextMonday = program.weekStart.plusWeeks(1)
     val nextProgram = Progression.apply(
         if (active != null) {
-            CoachPlanner.plan(preferences, history = history, today = nextMonday, feedback = feedback).program
+            CoachPlanner.plan(preferences, history, nextMonday, feedback, age = age).program
         } else {
             TrainingProgramGenerator.generate(history, nextMonday)
         },

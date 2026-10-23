@@ -5,8 +5,11 @@ import se.novila.anatomy.ExerciseLibrary
 import se.novila.exercise.Dosage
 import se.novila.exercise.StrengthLevel
 
-/** The movement an exercise trains. A balanced session covers the lower body, a push and the trunk. */
-enum class MovementPattern { Legs, Hinge, Calves, Push, Back, Core, Conditioning }
+/**
+ * The movement an exercise trains. A balanced session covers the lower body, a push and the trunk. Sessions run in
+ * this order, so a balance exercise comes first, while the legs are fresh.
+ */
+enum class MovementPattern { Balance, Legs, Hinge, Calves, Push, Back, Core, Conditioning }
 
 /**
  * What the coach needs to know about an exercise in the anatomy library, besides its muscles: the
@@ -93,6 +96,9 @@ object CoachCatalog {
         CoachExercise("front_squat", MovementPattern.Legs, level = StrengthLevel.Intermediate, knees = true),
         CoachExercise("deadlift", MovementPattern.Hinge, level = StrengthLevel.Intermediate, back = true),
         CoachExercise("barbell_row", MovementPattern.Back, level = StrengthLevel.Intermediate, back = true),
+        // Balance, only from CoachPlanner.BALANCE_AGE, when WHO advises it.
+        CoachExercise("single_leg_stand", MovementPattern.Balance, Dosage.Seconds, perSide = true),
+        CoachExercise("single_leg_hinge", MovementPattern.Balance, perSide = true, level = StrengthLevel.Intermediate),
     )
 
     fun byId(id: String): CoachExercise? = exercises.firstOrNull { it.id == id }

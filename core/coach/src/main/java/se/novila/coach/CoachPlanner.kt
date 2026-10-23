@@ -32,6 +32,12 @@ sealed interface CoachNote {
 
     /** One strength day a week: a good start, and WHO advises two when there is room. */
     data object OneStrengthDay : CoachNote
+
+    /**
+     * From [CoachPlanner.BALANCE_AGE], WHO advises balance and strength training at least three days a week: the
+     * strength sessions start with a balance exercise, on three days when there are that many.
+     */
+    data object Balance : CoachNote
     data class Focus(val areas: Set<BodyArea>) : CoachNote
     data class Considered(val consideration: Consideration) : CoachNote
 
@@ -80,6 +86,8 @@ data class CoachPlan(val program: TrainingProgram, val notes: List<CoachNote>, v
  * - The days are spread over the week, with the strength days as far apart as possible (at least 48 hours
  *   when there is room), cardio on the others and mobility last. The goal decides the split.
  * - Cardio follows TrainingProgramGenerator: at most a tenth more a week than the recent average.
+ * - From [BALANCE_AGE] (WHO's advice for older adults), there are three strength days when the user trains on three
+ *   days or more, and each strength session starts with a balance exercise.
  * - Each strength session first gets a lower-body exercise, a push and a trunk exercise, then fills the
  *   time with the exercises that best train the muscles still lacking, weighted towards the focus areas,
  *   varied between the week's sessions. Exercises that don't suit the considerations, or need equipment the
@@ -112,6 +120,7 @@ object CoachPlanner {
         feedback: List<SessionFeedback> = emptyList(),
         recovery: RecoveryStatus = RecoveryStatus.Unknown,
         lighter: Boolean = false,
+        age: Int? = null,
     ): CoachPlan {
         val weekStart = TrainingProgramGenerator.weekStart(today)
         val recent = TrainingProgramGenerator.summarize(history, weekStart)
@@ -122,7 +131,8 @@ object CoachPlanner {
         }
         val effort = CoachFeedback.effort(feedback, today)
 
-        val strengthCount = strengthDays(preferences)
+        val balance = age != null && age >= BALANCE_AGE
+        val strengthCount = strengthDays(preferences, balance)
         val strengthDays = spreadOut(days, strengthCount)
         val others = days - strengthDays.toSet()
         val mobilityDays = others.takeLast(min(mobilityDays(preferences), others.size))
@@ -144,10 +154,11 @@ object CoachPlanner {
         // suggestions before are worked out the same way, a few back, so each one differs from the one shown last.
         val first = (preferences.variation - SUGGESTIONS_BACK).coerceAtLeast(0)
         val before = (first until preferences.variation).fold(emptyList<Set<String>>()) { avoid, variation ->
-            strengthSessions(preferences.copy(variation = variation), strengthDays, recent.level, effort, avoid)
+            val earlier = preferences.copy(variation = variation)
+            strengthSessions(earlier, strengthDays, recent.level, effort, balance, avoid)
                 .map { session -> session.ids() }
         }
-        val strength = strengthSessions(preferences, strengthDays, recent.level, effort, before)
+        val strength = strengthSessions(preferences, strengthDays, recent.level, effort, balance, before)
         val sessions = strength +
             cardioDays.map { PlannedSession(it, recent.cardioType, cardioMinutes) } +
             mobilityDays.map { PlannedSession(it, ExerciseType.Mobility, mobilityMinutes) }
@@ -161,7 +172,7 @@ object CoachPlanner {
 
         return CoachPlan(
             program = TrainingProgram(weekStart, weeklyCardio, adjusted.sortedBy { it.day }),
-            notes = notes(preferences, recent.level, strengthCount, weeklyCardio, weeklyModerate, effort) +
+            notes = notes(preferences, recent.level, strengthCount, weeklyCardio, weeklyModerate, effort, balance) +
                 when {
                     adjusted == sessions -> emptyList()
                     recovery == RecoveryStatus.Low -> listOf(CoachNote.Recovery)
@@ -171,21 +182,22 @@ object CoachPlanner {
     }
 
     /**
-     * A strength session on each of [days], each varied from the one before it. [avoid] are exercises to steer away
-     * from in each session, by its place in the week.
+     * A strength session on each of [days], each varied from the one before it, starting with a balance exercise when
+     * [balance]. [avoid] are exercises to steer away from in each session, by its place in the week.
      */
     private fun strengthSessions(
         preferences: CoachPreferences,
         days: List<DayOfWeek>,
         level: StrengthLevel,
         effort: EffortCheck?,
+        balance: Boolean,
         avoid: List<Set<String>> = emptyList(),
     ): List<PlannedSession> {
         val sessions = mutableListOf<PlannedSession>()
         days.forEachIndexed { index, day ->
             val previous = sessions.lastOrNull()?.ids().orEmpty()
             val skip = avoid.getOrNull(index).orEmpty()
-            val exercises = session(preferences, level, index, previous, effort?.advice, skip)
+            val exercises = session(preferences, level, index, previous, effort?.advice, balance, skip)
             sessions += PlannedSession(day, ExerciseType.Strength, sessionMinutes(exercises), exercises)
         }
         return sessions
@@ -263,10 +275,15 @@ object CoachPlanner {
         rest = REHAB_REST,
     )
 
-    /** WHO's two strength days; three when strength is the goal and there is time for it. */
-    private fun strengthDays(preferences: CoachPreferences): Int =
-        (if (preferences.goal == CoachGoal.Strength && preferences.daysPerWeek >= 4) 3 else 2)
-            .coerceAtMost(preferences.daysPerWeek)
+    /**
+     * WHO's two strength days; three when strength is the goal and there is time for it, and from [BALANCE_AGE], when
+     * WHO advises balance and strength on at least three days.
+     */
+    private fun strengthDays(preferences: CoachPreferences, balance: Boolean): Int = when {
+        balance -> 3
+        preferences.goal == CoachGoal.Strength && preferences.daysPerWeek >= 4 -> 3
+        else -> 2
+    }.coerceAtMost(preferences.daysPerWeek)
 
     private fun mobilityDays(preferences: CoachPreferences): Int = when {
         preferences.goal == CoachGoal.Mobility -> if (preferences.daysPerWeek >= 4) 2 else 1
@@ -306,6 +323,7 @@ object CoachPlanner {
         index: Int,
         previous: Set<String>,
         effort: EffortAdvice?,
+        balance: Boolean,
         avoid: Set<String> = emptySet(),
     ): List<PlannedExercise> {
         val candidates = CoachCatalog.exercises.filter {
@@ -313,6 +331,7 @@ object CoachPlanner {
                 it.canDoWith(preferences.equipment) &&
                 it.level <= level &&
                 !it.rehabOnly &&
+                (balance || it.pattern != MovementPattern.Balance) &&
                 ExerciseLibrary.byId(it.id) != null
         }
         val jitter = Random(preferences.variation * 1_000 + index).let { random ->
@@ -347,8 +366,8 @@ object CoachPlanner {
 
         fun timeWith(exercise: CoachExercise) = (chosen + exercise).map(::dosed).total()
 
-        // A balanced base first: lower body, a push and the trunk.
-        REQUIRED.forEach { patterns ->
+        // A balanced base first: balance from BALANCE_AGE, then lower body, a push and the trunk.
+        (if (balance) listOf(setOf(MovementPattern.Balance)) + REQUIRED else REQUIRED).forEach { patterns ->
             candidates.filter { it.pattern in patterns && it !in chosen }.maxByOrNull(::score)?.let(::pick)
         }
         // Then the exercises that add the most, while there is time.
@@ -437,11 +456,13 @@ object CoachPlanner {
         weeklyCardio: Int,
         weeklyModerate: Int,
         effort: EffortCheck?,
+        balance: Boolean,
     ): List<CoachNote> = buildList {
         add(CoachNote.Goal(preferences.goal))
         add(CoachNote.Level(level))
         effort?.let { add(CoachNote.Effort(it)) }
         if (strengthDays > 1) add(CoachNote.RestBetweenStrengthDays) else add(CoachNote.OneStrengthDay)
+        if (balance) add(CoachNote.Balance)
         if (preferences.focus.isNotEmpty()) add(CoachNote.Focus(preferences.focus))
         Consideration.entries.filter { it in preferences.considerations }.forEach { add(CoachNote.Considered(it)) }
         if (preferences.equipment.isNotEmpty()) add(CoachNote.UsesEquipment(preferences.equipment))
@@ -492,6 +513,9 @@ object CoachPlanner {
     /** Today's cardio is lighter while the body recovers, but never under ten minutes. */
     private const val RECOVERY_CARDIO_FACTOR = 0.8
     private const val RECOVERY_MIN_CARDIO_MINUTES = 10
+
+    /** WHO's age for older adults, from which it advises balance training (WHO guidelines 2020). */
+    const val BALANCE_AGE = 65
 
     /** Each session gets one of each before anything else, in this order. */
     private val REQUIRED = listOf(

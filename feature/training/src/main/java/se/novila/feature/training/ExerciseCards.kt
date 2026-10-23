@@ -162,6 +162,18 @@ internal fun moveText(id: String): MoveText? = when (id) {
 
     "barbell_row" -> MoveText(R.string.move_barbell_row, R.array.move_barbell_row_steps, R.string.move_barbell_row_tip)
 
+    "single_leg_stand" -> MoveText(
+        R.string.move_single_leg_stand,
+        R.array.move_single_leg_stand_steps,
+        R.string.move_single_leg_stand_tip,
+    )
+
+    "single_leg_hinge" -> MoveText(
+        R.string.move_single_leg_hinge,
+        R.array.move_single_leg_hinge_steps,
+        R.string.move_single_leg_hinge_tip,
+    )
+
     else -> null
 }
 

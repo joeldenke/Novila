@@ -126,6 +126,9 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
     Ett nytt förslag (`variation`) styr bort från övningarna i förslaget innan, där det finns andra; med en dag i
     veckan blir det ett helt styrkepass och coachen säger vad WHO rekommenderar (`CoachNote.OneStrengthDay`). Målet
     `Rehab` ger ett handvalt, fasindelat program (knä, ländrygg, axel, nacke eller höft, fas 1–3) med smärtgräns och vårdråd.
+    Från 65 år (`BALANCE_AGE`, åldern ur profilens födelseår) följer coachen WHO:s råd för äldre: tre styrkedagar
+    när användaren tränar minst tre dagar, och varje styrkepass börjar med en balansövning (`MovementPattern.Balance`,
+    som aldrig väljs för yngre), med skälet i `CoachNote.Balance`.
     `CoachFeedback` läser svaren efter passen: ansträngning och smärta ändrar dosen (ett set mindre eller två
     repetitioner mer), och smärtan i rehabpassen ger ett förslag på fas (smärtmonitoreringsmodellen: högst 3 av 10 är
     okej, över 5 är för mycket). Coachen föreslår bara en ny fas; användaren byter. Svaren

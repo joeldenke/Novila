@@ -10,6 +10,7 @@ import se.novila.coach.CoachPreferences
 import se.novila.data.CoachStore
 import se.novila.data.CycleStore
 import se.novila.data.HealthStore
+import se.novila.data.ProfileStore
 import se.novila.data.SavedCoach
 import se.novila.data.SavedCycle
 import se.novila.data.recoveryStatus
@@ -20,14 +21,15 @@ import se.novila.exercise.ExerciseRepository
 import se.novila.exercise.ExerciseState
 import se.novila.exercise.TrainingHistory
 import se.novila.exercise.trainingLoad
+import se.novila.model.Profile
 import se.novila.recovery.RecoveryRepository
 import se.novila.recovery.RecoveryState
 import java.time.LocalDate
 
 /**
  * The week's program for the Training tab's ViewModels, from the saved days, the coach's answers, the workouts
- * Health Connect recorded, the watch's recovery, the user's cycle (when they follow it) and what the user did of each
- * exercise lately. Each ViewModel gets
+ * Health Connect recorded, the watch's recovery, the user's cycle (when they follow it), what the user did of each
+ * exercise lately and their age (WHO advises balance training from 65). Each ViewModel gets
  * its own; the stores behind it are shared, so a finished session, a logged walk or a changed answer shows up
  * everywhere through [states].
  */
@@ -38,6 +40,7 @@ class TrainingRepository(
     private val exercises: ExerciseRepository,
     private val recovery: RecoveryRepository,
     private val cycle: CycleStore,
+    private val profile: ProfileStore,
 ) {
     /**
      * The program for the week of each date in [dates], read again whenever a day or the coach's answers are saved,
@@ -57,8 +60,9 @@ class TrainingRepository(
             recovery.state,
             coach.progress.filterNotNull(),
             cycle.cycle.filterNotNull(),
-        ) { input, recovery, progress, cycle ->
-            read(input.days, input.saved, input.recorded, input.date, input.draft, recovery, progress, cycle)
+            profile.profile.filterNotNull(),
+        ) { input, recovery, progress, cycle, profile ->
+            read(input.days, input.saved, input.recorded, input.date, input.draft, recovery, progress, cycle, profile)
         }
     }
 
@@ -68,7 +72,8 @@ class TrainingRepository(
         val saved = coach.answers.value ?: return null
         val progress = coach.progress.value ?: return null
         val followed = cycle.cycle.value ?: return null
-        return read(days, saved, exercises.state.value, today, draft, recovery.state.value, progress, followed)
+        val person = profile.profile.value ?: return null
+        return read(days, saved, exercises.state.value, today, draft, recovery.state.value, progress, followed, person)
     }
 
     /** The program for the week of [today], once the stores are read. */
@@ -83,11 +88,22 @@ class TrainingRepository(
         recovery: RecoveryState,
         progress: ExerciseLog,
         cycle: SavedCycle,
+        person: Profile,
     ): TrainingUiState {
         val fromSource = (recorded as? ExerciseState.Connected)?.exercises.orEmpty()
         val nights = saved.lastDays(count = RECOVERY_NIGHTS, today = today)
         val status = recoveryStatus(recovery, today, cycle, nights)
-        val week = trainingWeek(saved, answers, fromSource, today, draft, status, progress, cycle.lighter(today))
+        val week = trainingWeek(
+            saved,
+            answers,
+            fromSource,
+            today,
+            draft,
+            status,
+            progress,
+            cycle.lighter(today),
+            age = person.ageIn(today.year),
+        )
         val program = week.program
         val day = week.days.first()
         // Mobility is done in the user's own time, so a lighter session is only offered for one that can be.
