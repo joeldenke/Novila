@@ -15,12 +15,15 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import se.novila.designsystem.theme.NovilaTheme
+import se.novila.model.BodyClock
 import se.novila.model.Goals
 import se.novila.model.HistoryRange
 import se.novila.model.SleepAnalysis
+import se.novila.model.SleepDebt
 import se.novila.model.SleepRegularity
 import se.novila.model.analyzeSleep
 import se.novila.ui.preview.PreviewData
+import java.time.LocalTime
 
 @RunWith(RobolectricTestRunner::class)
 class SleepTrendsScreenTest {
@@ -30,6 +33,8 @@ class SleepTrendsScreenTest {
         range: HistoryRange = HistoryRange.Week,
         analysis: SleepAnalysis = analyzeSleep(PreviewData.days()),
         regularity: SleepRegularity = SleepRegularity(null, 0, null, 0, 0),
+        debt: SleepDebt = SleepDebt(minutes = null, nights = 0),
+        bodyClock: BodyClock? = null,
         onRange: (HistoryRange) -> Unit = {},
     ) {
         composeRule.setContent {
@@ -39,6 +44,8 @@ class SleepTrendsScreenTest {
                     goals = Goals(),
                     analysis = analysis,
                     regularity = regularity,
+                    debt = debt,
+                    bodyClock = bodyClock,
                     onRange = onRange,
                     contentPadding = PaddingValues(),
                 )
@@ -84,5 +91,21 @@ class SleepTrendsScreenTest {
     @Test fun `regularity waits for nights in a row with times`() {
         show(regularity = SleepRegularity(null, pairs = 2, null, 2, 1))
         scrollTo("2 of 5 nights in a row", substring = true).assertExists()
+    }
+
+    @Test fun `the sleep need says how far behind the goal the two weeks are, and when the body clock suits bed`() {
+        show(
+            debt = SleepDebt(minutes = 300, nights = 13),
+            bodyClock = BodyClock(LocalTime.of(3, 45), freeNights = 8, workNights = 19),
+        )
+        scrollTo("About 5 h behind your goal", substring = true).assertExists()
+        scrollTo("pay it back", substring = true).assertExists()
+        scrollTo("a bedtime around", substring = true).assertExists()
+    }
+
+    @Test fun `the sleep need waits for nights`() {
+        show(debt = SleepDebt(minutes = null, nights = 2))
+        scrollTo("2 of 5 nights in the last two weeks", substring = true).assertExists()
+        scrollTo("shows your body clock", substring = true).assertExists()
     }
 }

@@ -16,14 +16,19 @@ import se.novila.data.GoalsStore
 import se.novila.data.HealthStore
 import se.novila.data.HealthStore.SavedDays
 import se.novila.data.SelectedDay
+import se.novila.model.BodyClock
+import se.novila.model.DEBT_NIGHTS
 import se.novila.model.Goals
 import se.novila.model.History
 import se.novila.model.HistoryRange
 import se.novila.model.REGULARITY_NIGHTS
 import se.novila.model.SLEEP_WINDOW_NIGHTS
 import se.novila.model.SleepAnalysis
+import se.novila.model.SleepDebt
 import se.novila.model.SleepRegularity
 import se.novila.model.analyzeSleep
+import se.novila.model.bodyClock
+import se.novila.model.sleepDebt
 import se.novila.model.sleepRegularity
 import se.novila.sleep.SleepRepository
 import se.novila.sleep.SleepState
@@ -32,14 +37,16 @@ import se.novila.sleep.withNight
 import java.time.LocalDate
 
 /**
- * The sleep in the [history] over the chosen range up to today, the [goals], what the logs say ([analysis]) and how
- * regular the nights are ([regularity]).
+ * The sleep in the [history] over the chosen range up to today, the [goals], what the logs say ([analysis]), how
+ * regular the nights are ([regularity]), the two weeks' sleep [debt] and the user's [bodyClock].
  */
 data class SleepTrendsUiState(
     val history: History,
     val goals: Goals,
     val analysis: SleepAnalysis,
     val regularity: SleepRegularity,
+    val debt: SleepDebt,
+    val bodyClock: BodyClock?,
 )
 
 /**
@@ -89,6 +96,8 @@ class SleepTrendsViewModel(
             // Every night in the window with the day before it, oldest first.
             analysis = analyzeSleep(shown.lastDays(SLEEP_WINDOW_NIGHTS + 1, today).reversed(), goals),
             regularity = sleepRegularity(shown.lastDays(REGULARITY_NIGHTS.toInt(), today), today),
+            debt = sleepDebt(shown.lastDays(DEBT_NIGHTS.toInt(), today), goals, today),
+            bodyClock = bodyClock(shown.lastDays(REGULARITY_NIGHTS.toInt(), today), today),
         )
     }
 

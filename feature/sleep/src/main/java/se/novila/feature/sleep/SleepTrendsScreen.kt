@@ -6,12 +6,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import se.novila.designsystem.component.NovilaReveal
 import se.novila.designsystem.theme.NovilaTheme
+import se.novila.model.BodyClock
 import se.novila.model.Goals
 import se.novila.model.History
 import se.novila.model.HistoryRange
 import se.novila.model.SleepAnalysis
+import se.novila.model.SleepDebt
 import se.novila.model.SleepRegularity
 import se.novila.model.analyzeSleep
+import se.novila.model.bodyClock
+import se.novila.model.sleepDebt
 import se.novila.model.sleepRegularity
 import se.novila.ui.common.ScreenList
 import se.novila.ui.common.SleepHistoryCard
@@ -20,7 +24,8 @@ import se.novila.ui.preview.PreviewData
 /**
  * The sleep over time, opened from the Sleep tab: the [history] up to today over a week, four weeks or a year
  * ([onRange]) compared with the period before and the [goals], and what the user's logs say about their sleep
- * ([analysis]), and how regular the nights are ([regularity]).
+ * ([analysis]), how regular the nights are ([regularity]), and the sleep need: the two weeks' [debt] and the user's
+ * [bodyClock].
  */
 @Composable
 fun SleepTrendsScreen(
@@ -28,6 +33,8 @@ fun SleepTrendsScreen(
     goals: Goals,
     analysis: SleepAnalysis,
     regularity: SleepRegularity,
+    debt: SleepDebt,
+    bodyClock: BodyClock?,
     onRange: (HistoryRange) -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
@@ -35,7 +42,8 @@ fun SleepTrendsScreen(
     ScreenList(contentPadding = contentPadding, modifier = modifier) {
         item(key = "history") { NovilaReveal(order = 0) { SleepHistoryCard(history, goals, onRange) } }
         item(key = "findings") { NovilaReveal(order = 1) { SleepFindingsCard(analysis) } }
-        item(key = "regularity") { NovilaReveal(order = 2) { SleepRegularityCard(regularity) } }
+        item(key = "need") { NovilaReveal(order = 2) { SleepNeedCard(debt, bodyClock, goals.sleepHours) } }
+        item(key = "regularity") { NovilaReveal(order = 3) { SleepRegularityCard(regularity) } }
     }
 }
 
@@ -47,6 +55,8 @@ private fun SleepTrendsScreenContent(range: HistoryRange, analysis: SleepAnalysi
             goals = Goals(),
             analysis = analysis,
             regularity = sleepRegularity(PreviewData.days(), PreviewData.today.date),
+            debt = sleepDebt(PreviewData.days(), Goals(), PreviewData.today.date),
+            bodyClock = bodyClock(PreviewData.days(), PreviewData.today.date),
             onRange = {},
             contentPadding = PaddingValues(),
         )

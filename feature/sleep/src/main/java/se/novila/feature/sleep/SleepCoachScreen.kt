@@ -26,6 +26,7 @@ import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.component.NovilaTimeDialog
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.model.DayEntry
+import se.novila.model.bodyClock
 import se.novila.sleep.SleepCoachPreferences
 import se.novila.sleep.SleepCoachTip
 import se.novila.sleep.WindDownMoment
@@ -80,6 +81,13 @@ fun SleepCoachScreen(
                         NovilaText(clockText(state.preferences.wakeTime), style = NovilaTheme.typography.titleMedium)
                     },
                 )
+                state.bodyClockBedtime?.let { bedtime ->
+                    NovilaText(
+                        stringResource(R.string.sleep_coach_body_clock, clockText(bedtime)),
+                        style = NovilaTheme.typography.bodySmall,
+                        color = NovilaTheme.colors.onSurfaceVariant,
+                    )
+                }
             }
         }
         item(key = "routine") {
@@ -269,6 +277,7 @@ private fun coachState(
     preferences = preferences,
     active = active,
     plan = sleepCoachPlan(nights, preferences, now = LocalTime.of(20, 0)),
+    bodyClockBedtime = bodyClock(nights, PreviewData.today.date)?.bedtimeFor(8f),
 )
 
 @Preview(showBackground = true, heightDp = 1400)

@@ -4,6 +4,7 @@ import se.novila.exercise.LoadComparison
 import se.novila.exercise.TrainingLoad
 import se.novila.model.DayEntry
 import se.novila.model.Goals
+import se.novila.model.SleepDebt
 import se.novila.recovery.RecoveryStatus
 
 /**
@@ -16,6 +17,14 @@ sealed interface ReadinessSignal {
     /** Last night against the sleep goal: more than [SHORT_NIGHT_MARGIN] short pulls down, otherwise up. */
     data class Night(val hours: Float, val short: Boolean) : ReadinessSignal {
         override val effect: Int get() = if (short) -1 else 1
+    }
+
+    /**
+     * The last two weeks' nights add up to a notable sleep debt ([SleepDebt.notable]): it pulls down even after a good
+     * night, since one night doesn't pay it back. No debt says nothing, since last night already counts.
+     */
+    data class Debt(val minutes: Int) : ReadinessSignal {
+        override val effect: Int get() = -1
     }
 
     /** The watch's recovery against the user's own baseline. */
@@ -64,8 +73,8 @@ const val CALM_SIGNALS = 2
 const val READY_SIGNALS = 2
 
 /**
- * Today's readiness from last night ([day] and the sleep goal in [goals]), the watch's [recovery], the last seven
- * days' training [load] and whether the user logged [cycleSymptoms] today. What isn't known (no night logged, no
+ * Today's readiness from last night ([day] and the sleep goal in [goals]), the two weeks' [sleepDebt], the watch's
+ * [recovery], the last seven days' training [load] and whether the user logged [cycleSymptoms] today. What isn't known (no night logged, no
  * watch, too little training history, the cycle not followed) is left out, never counted as bad. Null when nothing is
  * known. Deterministic, so it is unit tested.
  */
@@ -75,11 +84,13 @@ fun readiness(
     recovery: RecoveryStatus = RecoveryStatus.Unknown,
     load: TrainingLoad? = null,
     cycleSymptoms: Boolean = false,
+    sleepDebt: SleepDebt? = null,
 ): Readiness? {
     val signals = buildList {
         if (day.sleepHours > 0f) {
             add(ReadinessSignal.Night(day.sleepHours, short = day.sleepHours < goals.sleepHours - SHORT_NIGHT_MARGIN))
         }
+        sleepDebt?.takeIf { it.notable }?.minutes?.let { add(ReadinessSignal.Debt(it)) }
         when (recovery) {
             RecoveryStatus.Low -> add(ReadinessSignal.Recovery(low = true))
             RecoveryStatus.Normal -> add(ReadinessSignal.Recovery(low = false))

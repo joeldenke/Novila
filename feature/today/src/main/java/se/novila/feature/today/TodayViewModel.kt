@@ -44,6 +44,7 @@ import se.novila.model.SleepAnalysis
 import se.novila.model.TrainingToday
 import se.novila.model.analyzeSleep
 import se.novila.model.discoveryProgress
+import se.novila.model.sleepDebt
 import se.novila.model.withDrink
 import se.novila.movement.MovementRepository
 import se.novila.movement.MovementState
@@ -179,6 +180,7 @@ class TodayViewModel(
             recovery = status,
             load = trainingLoad(week.history, week.days.associate { it.date to it.effort }, today),
             cycleSymptoms = body.cycle.enabled && body.cycle.log.on(today).symptoms.isNotEmpty(),
+            sleepDebt = sleepDebt(window, inputs.goals, today),
         )
         // One coach for all parts: the day's sleep, training and food weighed together.
         val coach = dailyCoach(
