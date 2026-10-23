@@ -38,12 +38,34 @@ class TrainingProgramGeneratorTest {
     }
 
     @Test fun `cardio rises by at most a tenth over the recent weekly average`() {
-        // 120 minutes a week of running.
-        val history = weekly(ExerciseType.Running, 60) + weekly(ExerciseType.Running, 60, dayOffset = 5)
+        // 120 minutes a week of cycling.
+        val history = weekly(ExerciseType.Cycling, 60) + weekly(ExerciseType.Cycling, 60, dayOffset = 5)
         val program = TrainingProgramGenerator.generate(history, today)
         assertEquals(130, program.cardioMinutes)
         val cardio = program.sessions.filter { it.type.kind == ExerciseKind.Cardio }
-        assertTrue(cardio.all { it.type == ExerciseType.Running })
+        assertTrue(cardio.all { it.type == ExerciseType.Cycling })
+    }
+
+    @Test fun `a running minute counts as two, as WHO counts vigorous cardio`() {
+        assertEquals(60, Exercise(ExerciseType.Running, monday, 30.minutes).moderateMinutes)
+        assertEquals(30, Exercise(ExerciseType.Walking, monday, 30.minutes).moderateMinutes)
+        assertEquals(30, Exercise(ExerciseType.Cycling, monday, 30.minutes).moderateMinutes)
+
+        // 80 minutes a week of running count as 160, above the guideline: a tenth more is 175, or about 88 minutes of
+        // running, spread over four days.
+        val running = weekly(ExerciseType.Running, 40) + weekly(ExerciseType.Running, 40, dayOffset = 5)
+        val program = TrainingProgramGenerator.generate(running, today)
+        assertEquals(175, TrainingProgramGenerator.summarize(running, monday).cardioTarget)
+        assertEquals(90, program.cardioMinutes)
+        val runs = program.sessions.filter { it.type.kind == ExerciseKind.Cardio }
+        assertEquals(List(4) { 20 }, runs.map { it.minutes })
+        assertTrue(runs.all { it.type == ExerciseType.Running })
+
+        // The same minutes of walking are below the guideline: three walks.
+        val walking = weekly(ExerciseType.Walking, 40) + weekly(ExerciseType.Walking, 40, dayOffset = 5)
+        val walks = TrainingProgramGenerator.generate(walking, today).sessions
+            .filter { it.type == ExerciseType.Walking }
+        assertEquals(List(3) { 30 }, walks.map { it.minutes })
     }
 
     @Test fun `from the WHO guideline the cardio is spread over four days`() {
@@ -55,9 +77,12 @@ class TrainingProgramGeneratorTest {
     }
 
     @Test fun `cardio never goes above the upper guideline`() {
-        val history = weekly(ExerciseType.Running, 500)
+        val history = weekly(ExerciseType.Cycling, 500)
         val program = TrainingProgramGenerator.generate(history, today)
         assertEquals(TrainingProgramGenerator.MAX_CARDIO_MINUTES, program.cardioMinutes)
+        // 300 moderate minutes are 150 of running, WHO's upper guideline for vigorous cardio.
+        val running = TrainingProgramGenerator.generate(weekly(ExerciseType.Running, 500), today)
+        assertEquals(TrainingProgramGenerator.MAX_CARDIO_MINUTES / 2, running.cardioMinutes)
     }
 
     @Test fun `strength sessions grow with the strength habit`() {

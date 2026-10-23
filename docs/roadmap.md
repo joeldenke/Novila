@@ -59,11 +59,14 @@ language model in the app, or data that leaves the app.
 - [x] **More rehab areas:** shoulder, neck, hip
 - [x] **Warm-up and cool-down** in workout mode, and the rest timer as a notification
 - [x] **Weekly review:** "3 of 4 sessions, next week …"
-- [ ] **Intensity, as WHO counts it:** WHO's advice is 150–300 minutes of moderate *or* 75–150 minutes of vigorous
-  activity a week, where a vigorous minute counts as two. `TrainingProgramGenerator` counts minutes only, so a runner
-  gets too little credit. Read the intensity from the session's kind and the user's RPE (already saved), without a
-  heart rate; heart rate zones refine it later (below). Like Fitbit's Active Zone Minutes and Garmin's intensity
-  minutes, deterministic and tested.
+- [x] **Intensity, as WHO counts it:** WHO's advice is 150–300 minutes of moderate *or* 75–150 minutes of vigorous
+  activity a week, where a vigorous minute counts as two. `TrainingProgramGenerator` counted minutes only, so a runner
+  got too little credit. Like Fitbit's Active Zone Minutes and Garmin's intensity minutes, deterministic and tested.
+  Done: `Intensity` on `ExerciseType` (running is vigorous; walking, cycling and swimming span both, so they count as
+  moderate, never more credit than is sure). The program and the coach plan the week in moderate minutes and turn
+  them into minutes of the user's favorite cardio, so a runner gets half the minutes, and the coach says why
+  (`CoachNote.VigorousCardio`). Novila only asks for effort after strength sessions, so RPE doesn't steer it; heart
+  rate zones refine it later (below).
 - [ ] **Advice by age in the coach:** WHO advises adults from 65 to do balance and functional training at least three
   days a week, against falls. The coach does not read the birth year yet. Add balance exercises (via `add-exercise`)
   and a rule in `CoachPlanner`, the same way the step goal already follows age.
@@ -261,7 +264,7 @@ Next, first what needs no approval and is used every day, then what needs the ow
     (recovery and rest days count). ← done
 21. Export and import as a local file **(ok)**: a backup without the cloud before users have much data to lose. ← done
 22. Intensity as WHO counts it: corrects something the app gets wrong today, since it says it follows WHO. Built on
-    the session's kind and RPE.
+    the session's kind. ← done
 23. Advice by age in the coach: balance and functional training from 65, with the exercises it needs.
 24. Sleep debt and chronotype: both build on the nights already there, and give `readiness` one more honest signal.
 25. Deload and plateaus in progression, and the weight's trend.

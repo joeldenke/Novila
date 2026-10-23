@@ -398,7 +398,8 @@
     <string name="coach_note_back">Skonsamt för ryggen: lugna bålövningar i stället för sådana som böjer eller svankar ryggen.</string>
     <string name="coach_note_quiet">Inga hopp, så det fungerar i lägenhet.</string>
     <string name="coach_note_equipment">Passen använder dina redskap (%1$s) där de tränar samma muskler, eftersom de kan bli tyngre när du blir starkare.</string>
-    <string name="coach_note_cardio_low">Programmet har %1$d minuter kondition. WHO rekommenderar minst 150 i veckan, så ta gärna raska promenader i vardagen också.</string>
+    <string name="coach_note_cardio_low">Programmets kondition räknas som %1$d minuter. WHO rekommenderar minst 150 i veckan, så ta gärna raska promenader i vardagen också.</string>
+    <string name="coach_note_cardio_vigorous">Din kondition har hög intensitet, så WHO räknar varje minut som två: programmets %1$d minuter räknas som %2$d.</string>
     <string name="coach_note_cardio_progression">Konditionen bygger på dina senaste pass och ökar med högst en tiondel i veckan.</string>
     <string name="coach_goal_rehab">Skonsam träning</string>
     <string name="exercise_rehab">Skonsamt pass</string>

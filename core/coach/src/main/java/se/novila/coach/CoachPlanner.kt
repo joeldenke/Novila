@@ -38,8 +38,12 @@ sealed interface CoachNote {
     /** The sessions use the user's own equipment, and pick it over bodyweight when it trains the same muscles. */
     data class UsesEquipment(val equipment: Set<Equipment>) : CoachNote
 
-    /** The week's cardio is below WHO's 150 minutes: everyday walks make up for it. */
+    /** The week's cardio, as WHO counts it in moderate [minutes], is below its 150: everyday walks make up for it. */
     data class CardioBelowGuideline(val minutes: Int) : CoachNote
+
+    /** The week's cardio is vigorous ([se.novila.exercise.Intensity]): its [minutes] count as [moderateMinutes]. */
+    data class VigorousCardio(val minutes: Int, val moderateMinutes: Int) : CoachNote
+
     data object CardioProgression : CoachNote
 
     /** Which rehab program and phase, and when to move on to the next one. */
@@ -127,7 +131,7 @@ object CoachPlanner {
         val cardioMinutes = if (cardioDays.isEmpty()) {
             0
         } else {
-            TrainingProgramGenerator.roundTo5(recent.cardioTarget / cardioDays.size.toDouble())
+            TrainingProgramGenerator.roundTo5(recent.cardioMinutes(recent.cardioTarget / cardioDays.size.toDouble()))
                 .coerceIn(MIN_CARDIO_MINUTES, max(MIN_CARDIO_MINUTES, preferences.sessionMinutes))
         }
         val mobilityMinutes = if (preferences.goal == CoachGoal.Mobility) {
@@ -148,6 +152,7 @@ object CoachPlanner {
             cardioDays.map { PlannedSession(it, recent.cardioType, cardioMinutes) } +
             mobilityDays.map { PlannedSession(it, ExerciseType.Mobility, mobilityMinutes) }
         val weeklyCardio = cardioMinutes * cardioDays.size
+        val weeklyModerate = weeklyCardio * recent.cardioType.intensity.moderateMinutes
         val adjusted = if (recovery == RecoveryStatus.Low || lighter) {
             sessions.map { it.loweredFor(today) }
         } else {
@@ -156,7 +161,7 @@ object CoachPlanner {
 
         return CoachPlan(
             program = TrainingProgram(weekStart, weeklyCardio, adjusted.sortedBy { it.day }),
-            notes = notes(preferences, recent.level, strengthCount, weeklyCardio, effort) +
+            notes = notes(preferences, recent.level, strengthCount, weeklyCardio, weeklyModerate, effort) +
                 when {
                     adjusted == sessions -> emptyList()
                     recovery == RecoveryStatus.Low -> listOf(CoachNote.Recovery)
@@ -430,6 +435,7 @@ object CoachPlanner {
         level: StrengthLevel,
         strengthDays: Int,
         weeklyCardio: Int,
+        weeklyModerate: Int,
         effort: EffortCheck?,
     ): List<CoachNote> = buildList {
         add(CoachNote.Goal(preferences.goal))
@@ -439,8 +445,9 @@ object CoachPlanner {
         if (preferences.focus.isNotEmpty()) add(CoachNote.Focus(preferences.focus))
         Consideration.entries.filter { it in preferences.considerations }.forEach { add(CoachNote.Considered(it)) }
         if (preferences.equipment.isNotEmpty()) add(CoachNote.UsesEquipment(preferences.equipment))
-        if (weeklyCardio < TrainingProgramGenerator.GUIDELINE_CARDIO_MINUTES) {
-            add(CoachNote.CardioBelowGuideline(weeklyCardio))
+        if (weeklyModerate > weeklyCardio) add(CoachNote.VigorousCardio(weeklyCardio, weeklyModerate))
+        if (weeklyModerate < TrainingProgramGenerator.GUIDELINE_CARDIO_MINUTES) {
+            add(CoachNote.CardioBelowGuideline(weeklyModerate))
         }
         if (weeklyCardio > 0) add(CoachNote.CardioProgression)
     }

@@ -14,15 +14,22 @@ data class PlannedSession(
     val exercises: List<PlannedExercise> = emptyList(),
 )
 
-/** The user's recent training, which a program builds on. [strengthPerWeek] is sessions a week. */
+/**
+ * The user's recent training, which a program builds on. [cardioTarget] is this week's cardio in moderate minutes, as
+ * WHO counts it ([Intensity]); [cardioMinutes] turns it into minutes of the user's favorite cardio. [strengthPerWeek]
+ * is sessions a week.
+ */
 data class RecentTraining(
     val cardioTarget: Int,
     val cardioType: ExerciseType,
     val strengthPerWeek: Double,
     val level: StrengthLevel,
-)
+) {
+    /** Minutes of [cardioType] for [moderateMinutes] of cardio as WHO counts it, e.g. half as many for running. */
+    fun cardioMinutes(moderateMinutes: Double): Double = moderateMinutes / cardioType.intensity.moderateMinutes
+}
 
-/** A week of workouts starting on Monday [weekStart], sorted by day. */
+/** A week of workouts starting on Monday [weekStart], sorted by day. [cardioMinutes] are minutes on the clock. */
 data class TrainingProgram(
     val weekStart: LocalDate,
     val cardioMinutes: Int,
@@ -31,9 +38,9 @@ data class TrainingProgram(
 
 /**
  * Builds a week's program from recent workouts, along WHO's guidelines for adults: 150–300 minutes of
- * moderate cardio and strength training on at least two days a week. It starts where the user is and
- * raises the cardio time by at most 10 % a week, so a beginner gets a gentle program and an active user
- * isn't held back. Strength days get concrete exercises from [StrengthSessions] at the user's level.
+ * moderate cardio (or half as much vigorous, see [Intensity]) and strength training on at least two days a week. It
+ * starts where the user is and raises the cardio by at most 10 % a week, so a beginner gets a gentle program and an
+ * active user isn't held back. Strength days get concrete exercises from [StrengthSessions] at the user's level.
  * When the body is still recovering ([RecoveryStatus.Low]), today's session alone is lighter, a day at a
  * time: the watch's resting heart rate and HRV are what the status comes from. Plain Kotlin, so it is
  * unit tested; the source of the workouts doesn't matter.
@@ -69,7 +76,7 @@ object TrainingProgramGenerator {
             StrengthLevel.Beginner -> 20
         }
 
-        val cardioMinutes = roundTo5(cardioTarget / cardioDays.size.toDouble())
+        val cardioMinutes = roundTo5(recent.cardioMinutes(cardioTarget / cardioDays.size.toDouble()))
         val sessions = cardioDays.map { PlannedSession(it, recent.cardioType, cardioMinutes) } +
             STRENGTH_DAYS.mapIndexed { i, day ->
                 PlannedSession(
@@ -87,7 +94,7 @@ object TrainingProgramGenerator {
 
         return TrainingProgram(
             weekStart = weekStart,
-            cardioMinutes = cardioTarget,
+            cardioMinutes = roundTo5(recent.cardioMinutes(cardioTarget.toDouble())),
             sessions = sessions.map { session ->
                 if (session.day == today.dayOfWeek) session.lowered(recovery) else session
             }.sortedBy { it.day },
@@ -120,13 +127,13 @@ object TrainingProgramGenerator {
     fun weekStart(today: LocalDate): LocalDate = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
 
     /**
-     * What the four whole weeks before [weekStart] say about the user: this week's cardio target (at most
-     * a tenth more than the recent average, within 90–300 minutes), their favorite cardio and strength level.
+     * What the four whole weeks before [weekStart] say about the user: this week's cardio target in moderate minutes
+     * (at most a tenth more than the recent average, within 90–300), their favorite cardio and strength level.
      */
     fun summarize(history: List<Exercise>, weekStart: LocalDate): RecentTraining {
         val recent = history.filter { it.date >= weekStart.minusWeeks(HISTORY_WEEKS) && it.date < weekStart }
         val weeklyCardio = recent.filter { it.type.kind == ExerciseKind.Cardio }
-            .sumOf { it.duration.inWholeMinutes } / HISTORY_WEEKS.toDouble()
+            .sumOf { it.moderateMinutes } / HISTORY_WEEKS.toDouble()
         val weeklyStrength = recent.count { it.type.kind == ExerciseKind.Strength } / HISTORY_WEEKS.toDouble()
         return RecentTraining(
             cardioTarget = roundTo5(weeklyCardio * PROGRESSION).coerceIn(MIN_CARDIO_MINUTES, MAX_CARDIO_MINUTES),

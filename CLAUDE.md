@@ -90,6 +90,8 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
     `MovementRepository` (det enda UI:t läser). Källa och cache väljs på ett ställe, i `AppGraph`.
   - `:core:exercise` – träningspass oberoende av källa: `Exercise`, `ExerciseSource` och `TrainingProgramGenerator`, som
     bygger veckans program (WHO:s råd: 150–300 min kondition och styrka två dagar, högst +10 % kondition per vecka).
+    Konditionen räknas som WHO räknar den (`Intensity`): en minut löpning är hög intensitet och räknas som två, allt
+    annat som måttlig, så appen aldrig ger mer kredit än den vet.
     `StrengthSessions` fyller styrkedagarna med övningar, set, repetitioner och vila efter nivå. `Workout` är passläget
     (uppvärmning, set, vila, nedvarvning och nedräkning). Timern körs i `WorkoutViewModel`, som också visar varje
     timed step som notis (`WorkoutNotifications`): nedräkningen tyst, och nästa set med ljud när tiden är slut.
