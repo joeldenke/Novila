@@ -4,7 +4,8 @@
 The site has a home page, the privacy policy and the terms of use, in English (at the root) and Swedish (under /sv).
 The home pages are written by hand in site/; the policy and the terms are made from docs/privacy-policy.md and
 docs/terms-of-use.md, the same texts as in the app, so they are only ever changed in one place. The fonts and the
-painted scenes are copied from the app, so the site looks like it.
+painted scenes are copied from the app, and the phones show the
+app's own screens from its screenshot references, so the site looks like the app.
 
     python3 tools/site/build_site.py
 
@@ -28,6 +29,16 @@ FONTS = ROOT / "core" / "designsystem" / "src" / "main" / "res" / "font"
 FONT_LICENSE = ROOT / "core" / "designsystem" / "src" / "main" / "assets" / "licenses" / "hanken_grotesk_ofl.txt"
 SCENES = ROOT / "feature" / "onboarding" / "src" / "main" / "res" / "drawable-nodpi"
 ICON = ROOT / "docs" / "play-icon.png"
+# The app's own screens in the phones, from the screenshot references CI renders and checks (English, phone size).
+SCREENS = {
+    "today": "feature/today/src/test/screenshots/se.novila.feature.today.TodayScreenKt.TodayScreenPreview.H1400dp.png",
+    "training": "feature/training/src/test/screenshots/"
+    "se.novila.feature.training.TrainingScreenKt.TrainingScreenPreview.H1600dp_WITH_BACKGROUND.png",
+    "sleep": "feature/sleep/src/test/screenshots/"
+    "se.novila.feature.sleep.SleepScreenKt.SleepScreenPreview.H1000dp_WITH_BACKGROUND.png",
+    "nutrition": "feature/nutrition/src/test/screenshots/"
+    "se.novila.feature.nutrition.NutritionScreenKt.NutritionScreenPreview.H1200dp_WITH_BACKGROUND.png",
+}
 
 LANGUAGES = {
     "en": {
@@ -214,6 +225,9 @@ def main():
     (OUT / "images").mkdir()
     for scene in ("welcome", "training", "sleep", "nutrition"):
         shutil.copy(SCENES / f"onboarding_scene_{scene}.webp", OUT / "images" / f"{scene}.webp")
+    (OUT / "screens").mkdir()
+    for name, source in SCREENS.items():
+        shutil.copy(ROOT / source, OUT / "screens" / f"{name}.png")
 
     # GitHub Pages serves it for every missing path, at any depth, so its links are written from the root.
     shutil.copy(SITE / "404.html", OUT / "404.html")

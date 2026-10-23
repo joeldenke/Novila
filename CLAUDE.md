@@ -552,14 +552,16 @@ där pluginet `firebase@firebase` inte alltid installeras.
   safety, Health apps declaration och Health Connect-behörigheterna. Ändras vad appen läser, sparar eller skickar,
   eller tillkommer en behörighet, uppdatera policyn, `HealthDataInfoActivity`s text och `docs/play-console.md` i
   samma PR. Text före en Health Connect-dialog ska nämna alla typer dialogen frågar om.
-- **Webbplatsen:** novila.app byggs av `tools/site/build_site.py` (bara Pythons standardbibliotek) till
-  `build/site`. Startsidorna skrivs för hand i `site/home.en.html` och `site/home.sv.html` och ska säga samma sak; ramen
-  är `site/layout.html` och stilen `site/style.css`, med appens färger (Skog & sol). Policyn och villkoren görs av
-  avsnitten `## English` och `## Svenska` i `docs/privacy-policy.md` och `docs/terms-of-use.md`, så de skrivs aldrig
-  in i `site/`. Typsnittet, scenerna och ikonen kopieras från appen. Adresserna (`PAGES` i byggskriptet) är publika
-  och står i Play Console; flytta aldrig en. Sajten följer appens regler för texter (*Inga medicinska påståenden*,
-  inga emojis, inga andra appar eller "bäst") och har inga kakor, analysverktyg, externa typsnitt eller skript.
-  Domänen och HTTPS ställs in under repots Settings → Pages, inte med en `CNAME`-fil.
+- **Webbplatsen:** novila.app byggs av `tools/site/build_site.py` (bara Pythons standardbibliotek) till `build/site`.
+  Startsidorna skrivs för hand i `site/home.en.html` och `site/home.sv.html` och ska säga samma sak; ramen är
+  `site/layout.html` och stilen `site/style.css`: stora rundade kort, ett budskap per kort, i appens färger (Skog &
+  sol). Policyn och villkoren görs av avsnitten `## English` och `## Svenska` i `docs/privacy-policy.md` och
+  `docs/terms-of-use.md`, så de skrivs aldrig in i `site/`. Typsnittet, scenerna och ikonen kopieras från appen, och
+  telefonerna visar appens egna skärmdumpsreferenser (`SCREENS` i byggskriptet), så sajten alltid visar appen som den
+  är. Adresserna (`PAGES` i byggskriptet) är publika och står i Play Console; flytta aldrig en. Sajten följer appens
+  regler för texter (*Inga medicinska påståenden*, inga emojis, inga andra appar eller "bäst") och har inga kakor,
+  analysverktyg, externa typsnitt eller skript. Domänen och HTTPS ställs in under repots Settings → Pages, inte med en
+  `CNAME`-fil.
 - **Wear OS:** `:wear` är en egen app (`se.novila.wear`, minSdk 30) med samma designspråk men utan flikar, navigation
   eller sparade data. Den får bara köra ett pass ur `StandaloneSession` och visa `Workout`-stegen; ingen Wearable Data
   Layer, ingen Health Connect och ingen lagring på klockan, eftersom det skulle ändra integritets- och Play-deklarationen.
