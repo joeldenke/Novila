@@ -51,7 +51,10 @@
     <string name="onboarding_goal_rehab">Din skonsamma träning är kvar som den är. Välj ett mål för att byta.</string>
     <string name="onboarding_time_title">Din tid</string>
     <string name="onboarding_days">Dagar i veckan</string>
-    <string name="onboarding_days_value">%1$d dagar</string>
+    <plurals name="onboarding_days_value">
+        <item quantity="one">%1$d dag</item>
+        <item quantity="other">%1$d dagar</item>
+    </plurals>
     <string name="onboarding_fewer_days">Färre dagar</string>
     <string name="onboarding_more_days">Fler dagar</string>
     <string name="onboarding_minutes">Minuter per pass</string>
@@ -71,8 +74,14 @@
 
     <string name="onboarding_ready_title">Din vecka är klar</string>
     <string name="onboarding_ready_title_named">Din vecka är klar, %1$s</string>
-    <string name="onboarding_ready_body">%1$s, %2$d dagar i veckan, cirka %3$d minuter per pass.</string>
-    <string name="onboarding_ready_body_rehab">Skonsam träning, %1$d dagar i veckan, cirka %2$d minuter per pass.</string>
+    <plurals name="onboarding_ready_body">
+        <item quantity="one">%1$s, %2$d dag i veckan, cirka %3$d minuter per pass.</item>
+        <item quantity="other">%1$s, %2$d dagar i veckan, cirka %3$d minuter per pass.</item>
+    </plurals>
+    <plurals name="onboarding_ready_body_rehab">
+        <item quantity="one">Skonsam träning, %1$d dag i veckan, cirka %2$d minuter per pass.</item>
+        <item quantity="other">Skonsam träning, %1$d dagar i veckan, cirka %2$d minuter per pass.</item>
+    </plurals>
     <string name="onboarding_ready_training">Ditt program finns under Träning</string>
     <string name="onboarding_ready_sleep">Logga nattens sömn i morgon bitti</string>
     <string name="onboarding_ready_nutrition">Börja med frukosten under Kost</string>

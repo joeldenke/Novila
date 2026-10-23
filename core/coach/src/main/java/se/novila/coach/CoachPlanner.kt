@@ -29,6 +29,9 @@ sealed interface CoachNote {
     data class Level(val level: StrengthLevel) : CoachNote
     data class Goal(val goal: CoachGoal) : CoachNote
     data object RestBetweenStrengthDays : CoachNote
+
+    /** One strength day a week: a good start, and WHO advises two when there is room. */
+    data object OneStrengthDay : CoachNote
     data class Focus(val areas: Set<BodyArea>) : CoachNote
     data class Considered(val consideration: Consideration) : CoachNote
 
@@ -98,14 +101,6 @@ object CoachPlanner {
     private const val MOBILITY_MINUTES = 15
     private const val MAX_SETS = 4
 
-    /** The training days for each number of days a week, spread out over the week. */
-    private val DAYS: Map<Int, List<DayOfWeek>> = mapOf(
-        3 to listOf(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY),
-        4 to listOf(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.THURSDAY, DayOfWeek.SATURDAY),
-        5 to listOf(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SUNDAY),
-        6 to DayOfWeek.entries.take(6),
-    )
-
     fun plan(
         preferences: CoachPreferences,
         history: List<Exercise>,
@@ -116,7 +111,7 @@ object CoachPlanner {
     ): CoachPlan {
         val weekStart = TrainingProgramGenerator.weekStart(today)
         val recent = TrainingProgramGenerator.summarize(history, weekStart)
-        val days = DAYS.getValue(preferences.daysPerWeek.coerceIn(CoachPreferences.MIN_DAYS, CoachPreferences.MAX_DAYS))
+        val days = preferences.trainingDays
         if (preferences.goal == CoachGoal.Rehab) {
             val check = CoachFeedback.rehab(feedback, preferences.rehabPhase, today)
             return rehab(preferences, days, weekStart, check)
@@ -141,13 +136,15 @@ object CoachPlanner {
             min(MOBILITY_MINUTES, preferences.sessionMinutes)
         }
 
-        val strengthSessions = mutableListOf<PlannedSession>()
-        strengthDays.forEachIndexed { index, day ->
-            val previous = strengthSessions.lastOrNull()?.exercises.orEmpty().map { it.exerciseId }.toSet()
-            val exercises = session(preferences, recent.level, index, previous, effort?.advice)
-            strengthSessions += PlannedSession(day, ExerciseType.Strength, sessionMinutes(exercises), exercises)
+        // Another suggestion steers away from the exercises the one before it had, wherever there are others. The
+        // suggestions before are worked out the same way, a few back, so each one differs from the one shown last.
+        val first = (preferences.variation - SUGGESTIONS_BACK).coerceAtLeast(0)
+        val before = (first until preferences.variation).fold(emptyList<Set<String>>()) { avoid, variation ->
+            strengthSessions(preferences.copy(variation = variation), strengthDays, recent.level, effort, avoid)
+                .map { session -> session.ids() }
         }
-        val sessions = strengthSessions +
+        val strength = strengthSessions(preferences, strengthDays, recent.level, effort, before)
+        val sessions = strength +
             cardioDays.map { PlannedSession(it, recent.cardioType, cardioMinutes) } +
             mobilityDays.map { PlannedSession(it, ExerciseType.Mobility, mobilityMinutes) }
         val weeklyCardio = cardioMinutes * cardioDays.size
@@ -167,6 +164,29 @@ object CoachPlanner {
                 },
         )
     }
+
+    /**
+     * A strength session on each of [days], each varied from the one before it. [avoid] are exercises to steer away
+     * from in each session, by its place in the week.
+     */
+    private fun strengthSessions(
+        preferences: CoachPreferences,
+        days: List<DayOfWeek>,
+        level: StrengthLevel,
+        effort: EffortCheck?,
+        avoid: List<Set<String>> = emptyList(),
+    ): List<PlannedSession> {
+        val sessions = mutableListOf<PlannedSession>()
+        days.forEachIndexed { index, day ->
+            val previous = sessions.lastOrNull()?.ids().orEmpty()
+            val skip = avoid.getOrNull(index).orEmpty()
+            val exercises = session(preferences, level, index, previous, effort?.advice, skip)
+            sessions += PlannedSession(day, ExerciseType.Strength, sessionMinutes(exercises), exercises)
+        }
+        return sessions
+    }
+
+    private fun PlannedSession.ids(): Set<String> = exercises.map { it.exerciseId }.toSet()
 
     /** [this] as today's session when the body is still recovering: one set less, and a lighter cardio. */
     private fun PlannedSession.loweredFor(today: LocalDate): PlannedSession {
@@ -240,7 +260,8 @@ object CoachPlanner {
 
     /** WHO's two strength days; three when strength is the goal and there is time for it. */
     private fun strengthDays(preferences: CoachPreferences): Int =
-        if (preferences.goal == CoachGoal.Strength && preferences.daysPerWeek >= 4) 3 else 2
+        (if (preferences.goal == CoachGoal.Strength && preferences.daysPerWeek >= 4) 3 else 2)
+            .coerceAtMost(preferences.daysPerWeek)
 
     private fun mobilityDays(preferences: CoachPreferences): Int = when {
         preferences.goal == CoachGoal.Mobility -> if (preferences.daysPerWeek >= 4) 2 else 1
@@ -280,6 +301,7 @@ object CoachPlanner {
         index: Int,
         previous: Set<String>,
         effort: EffortAdvice?,
+        avoid: Set<String> = emptySet(),
     ): List<PlannedExercise> {
         val candidates = CoachCatalog.exercises.filter {
             it.suits(preferences.considerations) &&
@@ -305,7 +327,8 @@ object CoachPlanner {
                 (if (exercise.equipment != null) EQUIPMENT_BONUS else 0.0) +
                 jitter.getValue(exercise.id) -
                 (if (chosen.any { it.pattern == exercise.pattern }) SAME_PATTERN_PENALTY else 0.0) -
-                (if (exercise.id in previous) REPEAT_PENALTY else 0.0)
+                (if (exercise.id in previous) REPEAT_PENALTY else 0.0) -
+                (if (exercise.id in avoid) AVOID_PENALTY else 0.0)
         }
 
         fun pick(exercise: CoachExercise) {
@@ -412,7 +435,7 @@ object CoachPlanner {
         add(CoachNote.Goal(preferences.goal))
         add(CoachNote.Level(level))
         effort?.let { add(CoachNote.Effort(it)) }
-        if (strengthDays > 1) add(CoachNote.RestBetweenStrengthDays)
+        if (strengthDays > 1) add(CoachNote.RestBetweenStrengthDays) else add(CoachNote.OneStrengthDay)
         if (preferences.focus.isNotEmpty()) add(CoachNote.Focus(preferences.focus))
         Consideration.entries.filter { it in preferences.considerations }.forEach { add(CoachNote.Considered(it)) }
         if (preferences.equipment.isNotEmpty()) add(CoachNote.UsesEquipment(preferences.equipment))
@@ -477,6 +500,12 @@ object CoachPlanner {
     private const val SECONDARY_DONE = 0.6
     private const val SAME_PATTERN_PENALTY = 1.5
     private const val REPEAT_PENALTY = 0.8
+
+    /** Enough to pick another exercise for the same pattern when there is one, for another suggestion. */
+    private const val AVOID_PENALTY = 2.0
+
+    /** How many suggestions back are worked out to know what the one shown last had. */
+    private const val SUGGESTIONS_BACK = 3
 
     /** Enough to pick a loaded exercise over a bodyweight one for the same muscles, never over a missing muscle. */
     private const val EQUIPMENT_BONUS = 0.4

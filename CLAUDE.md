@@ -116,10 +116,13 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
     `RecoverySource`, `RecoveryRepository` (bara i minnet) och `analyzeRecovery`, som jämför dagens värden med
     användarens egen baslinje (medianen av de senaste dagarna) och ger `RecoveryStatus`. Träning och coachen sänker
     dagens pass när läget är lågt.
-  - `:core:coach` – coachen, helt på enheten: `CoachPreferences` (mål, dagar, tid per pass, fokus, hänsyn,
-    redskap användaren har, rehabområde och fas; utan redskap blir passen kroppsvikt), `CoachCatalog`
+  - `:core:coach` – coachen, helt på enheten: `CoachPreferences` (mål, en till sex dagar i veckan, egna veckodagar
+    eller dagar som coachen sprider ut (`trainingDays`), tid per pass, fokus, hänsyn, redskap användaren har,
+    rehabområde och fas; utan redskap blir passen kroppsvikt), `CoachCatalog`
     (rörelsemönster, dosering och belastning per övning) och `CoachPlanner`, som
-    bygger veckans program ur svaren, senaste passen och övningsbiblioteket och förklarar valen (`CoachNote`). Målet
+    bygger veckans program ur svaren, senaste passen och övningsbiblioteket och förklarar valen (`CoachNote`).
+    Ett nytt förslag (`variation`) styr bort från övningarna i förslaget innan, där det finns andra; med en dag i
+    veckan blir det ett helt styrkepass och coachen säger vad WHO rekommenderar (`CoachNote.OneStrengthDay`). Målet
     `Rehab` ger ett handvalt, fasindelat program (knä, ländrygg, axel, nacke eller höft, fas 1–3) med smärtgräns och vårdråd.
     `CoachFeedback` läser svaren efter passen: ansträngning och smärta ändrar dosen (ett set mindre eller två
     repetitioner mer), och smärtan i rehabpassen ger ett förslag på fas (smärtmonitoreringsmodellen: högst 3 av 10 är
@@ -378,6 +381,9 @@ där pluginet `firebase@firebase` inte alltid installeras.
   (600 dp, storleksklassen *medium*) ligger flikarna i en `NovilaNavigationRail` i stället för bottenraden, och
   `ScreenList` centrerar innehållet på högst 720 dp. `NovilaEntries` lägger två till fyra rutor per rad efter bredden.
   Lägg en `@Preview` med `widthDp = 900` för nya startsidor. Följ skillen `adaptive`.
+- **Coachens inställningar:** `CoachScreen` är bara inställningar (mål, dagar och veckodagar, tid, fokus, redskap,
+  hänsyn och coachens skäl), öppnad från Träning och från *Mina mål*. Veckan och "Föreslå ett annat program" ligger
+  på veckans program (`TrainingProgramScreen`), där övningarna syns, med en väg till inställningarna.
 - **Mina mål:** allt appen planerar efter samlas på en skärm (`MyGoalsScreen`), som öppnas från profilen: dagliga mål,
   träningscoachen, sömncoachen, matpreferenserna och *Följ din cykel*, var och en med vad den står på och en rad dit den ändras. Samma
   skärmar öppnas från ingångarna på varje flik. Ny inställning som styr en plan läggs till här, inte som en egen rad i

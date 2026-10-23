@@ -49,11 +49,6 @@ class CoachViewModel(
         state.value?.let { coachStore.save(it.coach.preferences) }
     }
 
-    /** A new suggestion from the same answers, used right away. */
-    fun nextSuggestion() {
-        state.value?.let { coachStore.save(it.coach.preferences.nextVariation()) }
-    }
-
     /** Back to the standard program generated from recent workouts. */
     fun reset() {
         coachStore.clear()

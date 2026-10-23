@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.launch
@@ -488,7 +489,11 @@ private fun TimeCard(preferences: CoachPreferences, onPreferences: (CoachPrefere
     NovilaCard(title = stringResource(R.string.onboarding_time_title)) {
         NovilaStepper(
             title = stringResource(R.string.onboarding_days),
-            value = stringResource(R.string.onboarding_days_value, preferences.daysPerWeek),
+            value = pluralStringResource(
+                R.plurals.onboarding_days_value,
+                preferences.daysPerWeek,
+                preferences.daysPerWeek,
+            ),
             onDecrement = { onPreferences(preferences.withDays(preferences.daysPerWeek - 1)) },
             onIncrement = { onPreferences(preferences.withDays(preferences.daysPerWeek + 1)) },
             decrementDescription = stringResource(R.string.onboarding_fewer_days),
@@ -588,14 +593,16 @@ private fun ReadyPage(state: OnboardingUiState, parallax: () -> Float, contentPa
                     )
                     NovilaText(
                         if (preferences.goal == CoachGoal.Rehab) {
-                            stringResource(
-                                R.string.onboarding_ready_body_rehab,
+                            pluralStringResource(
+                                R.plurals.onboarding_ready_body_rehab,
+                                preferences.daysPerWeek,
                                 preferences.daysPerWeek,
                                 preferences.sessionMinutes,
                             )
                         } else {
-                            stringResource(
-                                R.string.onboarding_ready_body,
+                            pluralStringResource(
+                                R.plurals.onboarding_ready_body,
+                                preferences.daysPerWeek,
                                 stringResource(preferences.goal.label()),
                                 preferences.daysPerWeek,
                                 preferences.sessionMinutes,

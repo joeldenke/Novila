@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import se.novila.anatomy.Equipment
@@ -23,28 +25,27 @@ import se.novila.designsystem.component.NovilaChoiceChip
 import se.novila.designsystem.component.NovilaInsight
 import se.novila.designsystem.component.NovilaStepper
 import se.novila.designsystem.component.NovilaText
+import se.novila.designsystem.component.NovilaTextButton
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.training.R
 import se.novila.ui.common.ScreenList
-import se.novila.ui.preview.PreviewData
 import java.time.DayOfWeek
+import java.time.format.TextStyle
 import se.novila.ui.R as UiR
 
 /**
- * The training coach: the user's goal, time, focus and considerations in, the week the coach plans out,
- * with its reasons. Before the coach is set up the answers are only tried out, and [onCreate] makes the
- * plan the week's program; after that every change applies right away and [onSuggest] asks for another.
- * With the rehab goal, a rehab area and phase replace the focus areas.
+ * The training coach's settings, opened from the Training tab and from *My goals*: the user's goal, time and days,
+ * focus, equipment and considerations, with the coach's reasons for what they give. Before the coach is set up the
+ * answers are only tried out, and [onCreate] makes the plan the week's program; after that every change applies
+ * right away. The week itself, and another suggestion for it, are on the Training tab. With the rehab goal, a rehab
+ * area and phase replace the focus areas.
  */
 @Composable
 fun CoachScreen(
     coach: CoachUiState,
-    today: DayOfWeek,
     onChange: (CoachPreferences) -> Unit,
     onCreate: () -> Unit,
-    onSuggest: () -> Unit,
     onReset: () -> Unit,
-    onOpenExercise: (String) -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
@@ -82,7 +83,11 @@ fun CoachScreen(
             NovilaCard(title = stringResource(R.string.coach_time_title)) {
                 NovilaStepper(
                     title = stringResource(R.string.coach_days),
-                    value = stringResource(R.string.coach_days_value, preferences.daysPerWeek),
+                    value = pluralStringResource(
+                        R.plurals.coach_days_value,
+                        preferences.daysPerWeek,
+                        preferences.daysPerWeek,
+                    ),
                     onDecrement = { onChange(preferences.withDays(preferences.daysPerWeek - 1)) },
                     onIncrement = { onChange(preferences.withDays(preferences.daysPerWeek + 1)) },
                     decrementDescription = stringResource(R.string.coach_fewer_days),
@@ -90,6 +95,7 @@ fun CoachScreen(
                     role = training,
                     decrementEnabled = preferences.daysPerWeek > CoachPreferences.MIN_DAYS,
                 )
+                Weekdays(preferences, onChange)
                 NovilaStepper(
                     title = stringResource(R.string.coach_minutes),
                     value = stringResource(R.string.coach_minutes_value, preferences.sessionMinutes),
@@ -165,11 +171,6 @@ fun CoachScreen(
                     )
                 }
                 if (coach.active) {
-                    NovilaAccentButton(
-                        stringResource(R.string.coach_suggest),
-                        onClick = onSuggest,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
                     NovilaButton(
                         stringResource(R.string.coach_reset),
                         onClick = onReset,
@@ -184,14 +185,39 @@ fun CoachScreen(
                 }
             }
         }
-        item(key = "week") {
-            TrainingProgramCard(coach.plan.program, today)
-        }
-        coach.plan.program.sessions.filter { it.exercises.isNotEmpty() }.forEach { session ->
-            item(key = "strength-${session.day}") {
-                StrengthSessionCard(session = session, onOpenExercise = onOpenExercise, onStart = null, next = false)
-            }
-        }
+    }
+}
+
+/**
+ * The weekdays to train on: the ones the coach spread out, or the user's own once they tap a day. A new number of
+ * days, or the button, lets the coach spread them out again.
+ */
+@Composable
+private fun Weekdays(preferences: CoachPreferences, onChange: (CoachPreferences) -> Unit) {
+    val locale = LocalConfiguration.current.locales[0]
+    val chosen = preferences.trainingDays
+    NovilaText(stringResource(R.string.coach_weekdays_title), style = NovilaTheme.typography.labelLarge)
+    ChipRows(DayOfWeek.entries, columns = 4) { day, chipModifier ->
+        NovilaChoiceChip(
+            label = dayName(day, locale),
+            selected = day in chosen,
+            onClick = { onChange(preferences.toggle(day)) },
+            contentDescription = day.getDisplayName(TextStyle.FULL, locale),
+            modifier = chipModifier,
+        )
+    }
+    NovilaText(
+        stringResource(
+            if (preferences.days.isEmpty()) R.string.coach_weekdays_spread else R.string.coach_weekdays_own,
+        ),
+        style = NovilaTheme.typography.bodySmall,
+        color = NovilaTheme.colors.onSurfaceVariant,
+    )
+    if (preferences.days.isNotEmpty()) {
+        NovilaTextButton(
+            text = stringResource(R.string.coach_weekdays_spread_again),
+            onClick = { onChange(preferences.withSpreadDays()) },
+        )
     }
 }
 
@@ -261,25 +287,31 @@ private fun CoachScreenContent(coach: CoachUiState) {
     NovilaTheme {
         CoachScreen(
             coach = coach,
-            today = PreviewData.today.date.dayOfWeek,
             onChange = {},
             onCreate = {},
-            onSuggest = {},
             onReset = {},
-            onOpenExercise = {},
             contentPadding = PaddingValues(),
         )
     }
 }
 
-@Preview(showBackground = true, heightDp = 3200)
+@Preview(showBackground = true, heightDp = 2400)
 @Composable
 private fun CoachScreenPreview() = CoachScreenContent(TrainingPreviewData.coach)
+
+/** The user picked their own days: the coach can spread them out again. */
+@Preview(showBackground = true, heightDp = 2400)
+@Composable
+private fun CoachScreenOwnDaysPreview() = CoachScreenContent(
+    TrainingPreviewData.coach.let {
+        it.copy(preferences = it.preferences.toggle(DayOfWeek.SUNDAY).toggle(DayOfWeek.MONDAY))
+    },
+)
 
 @Preview(showBackground = true)
 @Composable
 private fun CoachScreenNewPreview() = CoachScreenContent(TrainingPreviewData.newCoach)
 
-@Preview(showBackground = true, heightDp = 2600)
+@Preview(showBackground = true, heightDp = 2000)
 @Composable
 private fun CoachScreenRehabPreview() = CoachScreenContent(TrainingPreviewData.rehabCoach)

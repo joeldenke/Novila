@@ -4,6 +4,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
 import se.novila.anatomy.Equipment
+import java.time.DayOfWeek
 
 class CoachPreferencesTest {
     @Test fun `preferences survive encoding`() {
@@ -77,9 +78,37 @@ class CoachPreferencesTest {
         )
     }
 
+    @Test fun `own days survive encoding, and answers from before own days are still read`() {
+        val own = CoachPreferences().toggle(DayOfWeek.SUNDAY)
+        assertEquals(own, CoachPreferencesCodec.decode(CoachPreferencesCodec.encode(own)))
+        assertEquals(
+            CoachPreferences(daysPerWeek = 2),
+            CoachPreferencesCodec.decode("c3;Health;2;30;;;0;Knee;1;"),
+        )
+    }
+
+    @Test fun `own days start from the spread days, and the count follows them`() {
+        val spread = CoachPreferences(daysPerWeek = 3)
+        assertEquals(listOf(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY), spread.trainingDays)
+        val own = spread.toggle(DayOfWeek.WEDNESDAY).toggle(DayOfWeek.SATURDAY)
+        assertEquals(listOf(DayOfWeek.MONDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY), own.trainingDays)
+        assertEquals(3, own.daysPerWeek)
+        assertEquals(2, own.toggle(DayOfWeek.MONDAY).daysPerWeek)
+        // The last day stays, and a seventh day is one too many.
+        val one = CoachPreferences(daysPerWeek = 1)
+        assertEquals(one, one.toggle(one.trainingDays.single()))
+        val six = CoachPreferences(daysPerWeek = 6)
+        assertEquals(six, six.toggle(DayOfWeek.SUNDAY))
+        // A new number of days is spread out again.
+        assertEquals(emptySet<DayOfWeek>(), own.withDays(4).days)
+        assertEquals(4, own.withDays(4).trainingDays.size)
+        assertEquals(spread.trainingDays, own.withSpreadDays().withDays(3).trainingDays)
+    }
+
     @Test fun `answers change one at a time`() {
         val preferences = CoachPreferences()
-        assertEquals(CoachPreferences.MIN_DAYS, preferences.withDays(1).daysPerWeek)
+        assertEquals(1, preferences.withDays(1).daysPerWeek)
+        assertEquals(CoachPreferences.MIN_DAYS, preferences.withDays(0).daysPerWeek)
         assertEquals(35, preferences.withMinutes(37).sessionMinutes)
         assertEquals(CoachPreferences.MAX_MINUTES, preferences.withMinutes(90).sessionMinutes)
         assertEquals(setOf(BodyArea.Legs), preferences.toggle(BodyArea.Legs).focus)
