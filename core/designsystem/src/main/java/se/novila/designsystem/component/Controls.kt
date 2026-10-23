@@ -127,7 +127,10 @@ fun NovilaSlider(
     )
 }
 
-/** Determinate progress, [progress] in 0f..1f. */
+/**
+ * Determinate progress, [progress] in 0f..1f. One continuous bar like the insight bars: no gap between the filled
+ * part and the track, and no stop dot at the end (Material 3's default).
+ */
 @Composable
 fun NovilaProgressBar(
     progress: Float,
@@ -139,6 +142,8 @@ fun NovilaProgressBar(
         modifier = modifier.fillMaxWidth(),
         color = role.color,
         trackColor = role.container,
+        gapSize = 0.dp,
+        drawStopIndicator = {},
     )
 }
 
