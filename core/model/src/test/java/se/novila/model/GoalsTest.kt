@@ -30,11 +30,18 @@ class GoalsTest {
 
     @Test fun `suggestions follow age and weight`() {
         assertEquals(Goals(), Goals.suggested(Profile(), 2026))
-        assertEquals(Goals(waterGlasses = 8), Goals.suggested(Profile(birthYear = 1990, weightKg = 70), 2026))
+        assertEquals(Goals(steps = 9000), Goals.suggested(Profile(birthYear = 1990, weightKg = 70), 2026))
         assertEquals(Goals(steps = 7000, sleepHours = 7.5f), Goals.suggested(Profile(birthYear = 1950), 2026))
         assertEquals(9f, Goals.suggested(Profile(birthYear = 2010), 2026).sleepHours)
         assertEquals(6, Goals.suggested(Profile(weightKg = 40), 2026).waterGlasses)
+        assertEquals(STEPS_GOAL.toInt(), Goals.suggested(Profile(weightKg = 70), 2026).steps)
         assertEquals(10, Goals.suggested(Profile(weightKg = 120), 2026).waterGlasses)
+    }
+
+    @Test fun `the step suggestion levels off with age`() {
+        assertEquals(9000, Goals.suggested(Profile(birthYear = 1967), 2026).steps)
+        assertEquals(7000, Goals.suggested(Profile(birthYear = 1966), 2026).steps)
+        assertEquals(9000, Goals.suggested(Profile(birthYear = 2010), 2026).steps)
     }
 
     @Test fun `a suggestion needs age or weight`() {

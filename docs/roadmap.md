@@ -143,8 +143,9 @@ language model in the app, or data that leaves the app.
   and tested, never a score without reasons. Done: `readiness` in `:core:coach` reads four signals that each pull
   down, up or neither, and counts them. Two down is a calm day, one down a day as planned, none down and two up a
   ready body. Today's coach says a calm day or a ready body with its reasons, and nothing unknown counts as bad.
-- [ ] **Step goals by age:** benefits level off around 6,000–8,000 steps a day from 60 and 8,000–10,000 below
-  (Paluch et al., Lancet 2022), a better basis for the suggested step goal.
+- [x] **Step goals by age:** benefits level off around 6,000–8,000 steps a day from 60 and 8,000–10,000 below
+  (Paluch et al., Lancet 2022), a better basis for the suggested step goal. Done: `Goals.suggested` suggests the middle
+  of each range (9,000 below 60, 7,000 from 60) and the general 8,000 without an age; the suggestion card says why.
 - [ ] **Cardio fitness (VO2max) from the watch** via Health Connect **(ok)**: a good long-term measure, a new data type
   in the Play declaration.
 - [x] **Achievements and streaks**, restrained and without rewarding overtraining. Done: `achievements` in
