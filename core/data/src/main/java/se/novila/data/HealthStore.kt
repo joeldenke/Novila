@@ -92,6 +92,10 @@ class HealthStore internal constructor(context: Context, scope: CoroutineScope, 
         fun lastDays(count: Int, today: LocalDate): List<DayEntry> =
             (0 until count).map { day(today.minusDays(it.toLong())) }
 
+        /** Every date with a saved day, in no particular order. */
+        fun dates(): Set<LocalDate> =
+            prefs.asMap().keys.mapNotNullTo(mutableSetOf()) { runCatching { LocalDate.parse(it.name) }.getOrNull() }
+
         /** Today and the six days before it. */
         fun week(today: LocalDate): Week = lastDays(count = 7, today = today).let { Week(it.first(), it.drop(1)) }
 

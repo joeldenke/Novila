@@ -38,6 +38,7 @@ fun InsightsCard(
     upcoming: List<DiscoveryProgress> = emptyList(),
     onOpenTrends: (() -> Unit)? = null,
     onOpenAll: (() -> Unit)? = null,
+    onOpenAchievements: (() -> Unit)? = null,
 ) {
     NovilaCard(title = stringResource(R.string.insights_title)) {
         val change = sleep.change
@@ -75,6 +76,9 @@ fun InsightsCard(
         }
         if (onOpenAll != null) {
             NovilaTextButton(text = stringResource(R.string.discoveries_open), onClick = onOpenAll)
+        }
+        if (onOpenAchievements != null) {
+            NovilaTextButton(text = stringResource(R.string.achievements_open), onClick = onOpenAchievements)
         }
     }
 }

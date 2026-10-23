@@ -90,4 +90,33 @@
     <string name="readiness_load_uniform">the days have been equally hard</string>
     <string name="readiness_load_lighter">this week has been lighter than usual</string>
     <string name="readiness_cycle_symptoms">you logged symptoms today</string>
+
+    <!-- Weeks in a row and milestones -->
+    <string name="achievements_title">Weeks and milestones</string>
+    <string name="achievements_open">Your weeks and milestones</string>
+    <string name="achievements_weeks_title">Weeks in a row</string>
+    <string name="achievements_weeks_body">A week counts when it reaches its mark. A missed day breaks nothing, and rest counts too.</string>
+    <string name="achievements_habit">%1$s: %2$s</string>
+    <string name="achievements_not_yet">starts when a week counts</string>
+    <string name="achievements_rule_sleep">Four nights near your sleep goal</string>
+    <string name="achievements_rule_training">Two days of training and two of rest</string>
+    <string name="achievements_rule_nutrition">Four days with a good nutrition score</string>
+    <string name="achievements_this_week">This week: %1$d of %2$d</string>
+    <string name="achievements_this_week_rest">This week: %1$d of %2$d, %3$d days of rest</string>
+    <string name="achievements_milestones_title">Milestones</string>
+    <string name="achievements_nights">Nights logged</string>
+    <string name="achievements_training_days">Days with training</string>
+    <string name="achievements_food_days">Days with food logged</string>
+    <string name="achievements_water_days">Days at your water goal</string>
+    <string name="achievements_count_of">%1$d of %2$d</string>
+    <string name="achievements_reached">Reached %1$d on %2$s</string>
+    <string name="achievements_count" translatable="false">%1$d</string>
+    <plurals name="achievements_run">
+        <item quantity="one">%d week in a row</item>
+        <item quantity="other">%d weeks in a row</item>
+    </plurals>
+    <plurals name="achievements_best">
+        <item quantity="one">Your longest run: %d week</item>
+        <item quantity="other">Your longest run: %d weeks</item>
+    </plurals>
 </resources>
