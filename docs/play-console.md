@@ -181,6 +181,114 @@ ingen `QUERY_ALL_PACKAGES` (bara `<queries>` för Health Connect), inga tillgän
   safety. Nämn att Health Connect behövs för steg, pass, nätter och återhämtning, men att allt går att logga själv.
 - Appen har ingen AI: planen och insikterna görs av regler som förklarar sig själva. Det kan stå på butikssidan.
 - Inga emojis i skärmdumpar eller texter (som i appen).
+- Nämn aldrig andra appar eller företag, och inga ord som "bäst" eller "nummer ett" (Plays metadata-policy).
+  Integriteten är skälet att välja Novila och står därför först efter inledningen.
+
+### Texterna
+
+Positioneringen: den lugna, privata vardagscoachen för hela kroppen, som förklarar varför och aldrig skickar dina
+data någonstans. Gränserna är 30 tecken för namnet, 80 för den korta och 4 000 för den långa beskrivningen. Ändras
+appen, ändra texterna i samma PR.
+
+#### Svenska (sv-SE)
+
+**Namn:** Novila: träning, sömn och kost
+
+**Kort beskrivning:** Lugn coach för träning, sömn och kost. Förklarar varför. Stannar i telefonen.
+
+**Lång beskrivning:**
+
+```text
+Novila är en lugn vardagscoach för hela kroppen. Träning, sömn och kost hänger ihop, så Novila ser dem tillsammans och säger vad som är nästa steg i dag, och varför.
+
+Allt stannar i telefonen
+Novila har inte ens behörighet att använda internet. Inget konto, ingen reklam och inga analysverktyg. Dina data finns bara på din telefon. Du kan spara en egen kopia och radera allt när du vill.
+
+Varje råd har ett skäl
+Novila har ingen AI. Planen, insikterna och dagsformen görs av tydliga regler som förklarar sig själva: varför dagens pass är lättare, vad som verkar hänga ihop med dina nätter och hur många nätter det bygger på. Ett samband är ett samband, aldrig ett bevis.
+
+Utan press
+Vanor räknas i hela veckor, inte i dagar, så en missad dag bryter ingenting. Mer träning är aldrig värt mer, och vilodagar räknas också. Inga röda siffror och inga sviter att förlora.
+
+Träning
+- Veckans program efter WHO:s råd om kondition och styrka, efter dina dagar, din tid och redskapen du har, eller bara kroppsvikt
+- Passläge med set, vila och nedräkning, också på din Wear OS-klocka
+- En ritad figur visar varje övning och musklerna som arbetar
+- Svårigheten ökar steg för steg när du klarar dina set
+- Skonsam träning i tre nivåer med fokus på knä, ländrygg, axel, nacke eller höft
+
+Sömn
+- Logga natten själv eller läs den från din klocka via Health Connect
+- Se hur regelbundet du sover och vad som verkar hänga ihop med dina nätter: sent kaffe, träning, mat och vatten
+- Korta andningsövningar för kvällen: lugn andning, boxandning och 4-7-8
+
+Kost
+- En kostpoäng byggd på Livsmedelsverkets kostråd, utan att räkna kalorier
+- Vatten och andra drycker, glas för glas
+- Fler än 40 recept efter din kosthållning och dina allergener, och plats för dina egna
+
+Mer
+- Dagsformen läser din natt, återhämtning och träningsbelastning och föreslår en lugn dag eller passet som planerat
+- Mens och träning, avslaget tills du slår på det: ett lättare pass de dagar du vill, aldrig förutsägelser om ägglossning
+- Widget på hemskärmen och en ruta i snabbinställningarna för ett glas vatten
+- Påminnelser som bara hörs när något fortfarande saknas
+- Svenska och engelska, stor text och TalkBack, surfplattor och vikbara telefoner
+
+Health Connect
+Steg, träningspass, nätter, vilopuls och HRV kan läsas från Health Connect, bara medan appen är öppen och bara det du har sagt ja till. Novila skriver inget dit och sparar inget därifrån. Allt går också att logga själv, så du behöver ingen klocka.
+
+Novila ger allmänna råd om träning, sömn och kost och är inte en medicinteknisk produkt. Kontakta vården vid smärta, skada eller besvär som inte går över.
+```
+
+#### English (en-US)
+
+**Name:** Novila: Fitness, Sleep, Food
+
+**Short description:** A calm coach for fitness, sleep and food. Explains why. Stays on your phone.
+
+**Full description:**
+
+```text
+Novila is a calm everyday coach for your whole body. Training, sleep and food are connected, so Novila looks at them together and tells you what to do next today, and why.
+
+Everything stays on your phone
+Novila doesn't even have permission to use the internet. No account, no ads and no analytics. Your data lives only on your phone. You can save your own copy and delete everything whenever you like.
+
+Every suggestion has a reason
+Novila has no AI. The plan, the insights and your readiness come from clear rules that explain themselves: why today's session is lighter, what seems to go with your nights and how many nights that is based on. A link is a link, never proof.
+
+No pressure
+Habits count in whole weeks, not days, so a missed day breaks nothing. More training is never worth more, and rest days count too. No red numbers and no streaks to lose.
+
+Training
+- A weekly programme following WHO guidance on cardio and strength, fitted to your days, your time and the equipment you have, or just bodyweight
+- Workout mode with sets, rests and countdowns, also on your Wear OS watch
+- A drawn figure shows every exercise and the muscles at work
+- Difficulty rises step by step as you complete your sets
+- Gentle training in three levels focused on the knee, lower back, shoulder, neck or hip
+
+Sleep
+- Log your night yourself or read it from your watch through Health Connect
+- See how regular your sleep is and what seems to go with your nights: late coffee, training, food and water
+- Short breathing exercises for the evening: calm breathing, box breathing and 4-7-8
+
+Food
+- A food score based on the Swedish Food Agency's dietary guidelines, without counting calories
+- Water and other drinks, glass by glass
+- More than 40 recipes matched to your diet and allergens, with room for your own
+
+More
+- Readiness reads your night, recovery and training load and suggests a calm day or the session as planned
+- Period and training, off until you turn it on: a lighter session on the days you want, never ovulation predictions
+- A home screen widget and a Quick Settings tile for a glass of water
+- Reminders that only appear when something is still missing
+- English and Swedish, large text and TalkBack, tablets and foldables
+
+Health Connect
+Steps, workouts, nights, resting heart rate and HRV can be read from Health Connect, only while the app is open and only what you have allowed. Novila writes nothing there and keeps nothing from it. You can also log everything yourself, so you don't need a watch.
+
+Novila gives general advice about training, sleep and food and is not a medical device. Talk to a healthcare professional about pain, injury or problems that don't go away.
+```
 
 ## GDPR, kort
 
