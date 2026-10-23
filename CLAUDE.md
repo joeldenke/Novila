@@ -562,6 +562,8 @@ där pluginet `firebase@firebase` inte alltid installeras.
   regler för texter (*Inga medicinska påståenden*, inga emojis, inga andra appar eller "bäst") och har inga kakor,
   analysverktyg, externa typsnitt eller skript. Domänen och HTTPS ställs in under repots Settings → Pages, inte med en
   `CNAME`-fil.
+  Google Play-knappen är text, inte en länk, tills appen finns i Play; gör den då till en länk till
+  `play.google.com/store/apps/details?id=se.novila` och byt "Snart på" i båda startsidorna.
 - **Wear OS:** `:wear` är en egen app (`se.novila.wear`, minSdk 30) med samma designspråk men utan flikar, navigation
   eller sparade data. Den får bara köra ett pass ur `StandaloneSession` och visa `Workout`-stegen; ingen Wearable Data
   Layer, ingen Health Connect och ingen lagring på klockan, eftersom det skulle ändra integritets- och Play-deklarationen.

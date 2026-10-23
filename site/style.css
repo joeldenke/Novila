@@ -275,7 +275,8 @@ h2 {
   font-size: clamp(2rem, 4.2vw, 2.75rem);
 }
 
-/* The Google Play button: a black pill like the store's own badge, without its logo. */
+/* The Google Play badge: a black pill like the store's own, without its logo. Until Novila is on Google Play it is
+   text, not a link; then it becomes <a class="play" href="https://play.google.com/store/apps/details?id=se.novila">. */
 
 .play {
   display: inline-flex;
@@ -293,7 +294,7 @@ h2 {
   transition: transform 0.2s ease;
 }
 
-.play:hover {
+a.play:hover {
   transform: translateY(-1px);
 }
 
