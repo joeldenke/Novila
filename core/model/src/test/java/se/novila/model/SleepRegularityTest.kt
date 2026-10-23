@@ -85,4 +85,47 @@ class SleepRegularityTest {
         assertNull(regularity.socialJetlagMinutes)
         assertFalse(regularity.notableJetlag)
     }
+
+    @Test fun `the body clock is the middle of the sleep on free days`() {
+        // Weekdays 23:00-07:00, free days 00:30-08:30: the same length, so no catch-up sleep.
+        val days = nights(28) { date ->
+            if (date.dayOfWeek in setOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)) {
+                LocalTime.of(0, 30) to LocalTime.of(8, 30)
+            } else {
+                steady
+            }
+        }
+        val clock = bodyClock(days, today)!!
+        assertEquals(LocalTime.of(4, 30), clock.midSleep)
+        assertEquals(8, clock.freeNights)
+        assertEquals(20, clock.workNights)
+        // Eight hours around 04:30 start at 00:30; seven and a half at 00:45.
+        assertEquals(LocalTime.of(0, 30), clock.bedtimeFor(8f))
+        assertEquals(LocalTime.of(0, 45), clock.bedtimeFor(7.5f))
+    }
+
+    @Test fun `catch-up sleep on free days is taken out of the body clock`() {
+        // Weekdays 00:00-06:00 (six hours), free days 00:00-10:00 (ten hours, middle 05:00).
+        val days = nights(28) { date ->
+            if (date.dayOfWeek in setOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)) {
+                LocalTime.MIDNIGHT to LocalTime.of(10, 0)
+            } else {
+                LocalTime.MIDNIGHT to LocalTime.of(6, 0)
+            }
+        }
+        // The week's average night is (5 * 6 + 2 * 10) / 7 hours; half of the extra on free days is catch-up.
+        val week = (5 * 360 + 2 * 600) / 7.0
+        val expected = (5 * 60 - (600 - week) / 2).toInt()
+        val clock = bodyClock(days, today)!!
+        assertEquals(LocalTime.of(expected / 60, expected % 60), clock.midSleep)
+    }
+
+    @Test fun `the body clock needs free and work nights with times`() {
+        // Only weekdays logged.
+        val weekdays = nights(28) { date ->
+            if (date.dayOfWeek in setOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)) null else steady
+        }
+        assertNull(bodyClock(weekdays, today))
+        assertNull(bodyClock(emptyList(), today))
+    }
 }

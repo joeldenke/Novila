@@ -84,6 +84,7 @@
     <string name="coach_ready_day">Kroppen verkar redo i dag: %1$s.</string>
     <string name="coach_reasons_and">%1$s och %2$s</string>
     <string name="readiness_night">du sov %1$s</string>
+    <string name="readiness_sleep_debt">du ligger ungefär %1$s efter med sömnen på två veckor</string>
     <string name="readiness_recovery_low">din vilopuls eller HRV avviker från det vanliga</string>
     <string name="readiness_recovery_normal">din återhämtning är normal</string>
     <string name="readiness_load_heavier">veckan är tyngre än vanligt</string>

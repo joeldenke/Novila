@@ -84,6 +84,7 @@
     <string name="coach_ready_day">Your body seems ready today: %1$s.</string>
     <string name="coach_reasons_and">%1$s and %2$s</string>
     <string name="readiness_night">you slept %1$s</string>
+    <string name="readiness_sleep_debt">you are about %1$s behind on sleep over two weeks</string>
     <string name="readiness_recovery_low">your resting heart rate or HRV is off your usual</string>
     <string name="readiness_recovery_normal">your recovery is normal</string>
     <string name="readiness_load_heavier">this week is heavier than usual</string>

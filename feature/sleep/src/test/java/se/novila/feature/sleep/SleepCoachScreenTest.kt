@@ -19,6 +19,7 @@ import se.novila.sleep.SleepCoachPreferences
 import se.novila.sleep.SleepCoachWeek
 import se.novila.sleep.WindDownStep
 import se.novila.sleep.sleepCoachPlan
+import java.time.LocalTime
 
 @RunWith(RobolectricTestRunner::class)
 class SleepCoachScreenTest {
@@ -33,6 +34,7 @@ class SleepCoachScreenTest {
         onStart: () -> Unit = {},
         onReset: () -> Unit = {},
         onOpenBreathing: () -> Unit = {},
+        bodyClockBedtime: LocalTime? = null,
     ) {
         composeRule.setContent {
             NovilaTheme {
@@ -41,6 +43,7 @@ class SleepCoachScreenTest {
                         preferences = preferences,
                         active = active,
                         plan = sleepCoachPlan(emptyList(), preferences),
+                        bodyClockBedtime = bodyClockBedtime,
                     ),
                     onChange = onChange,
                     onStart = onStart,
@@ -114,5 +117,15 @@ class SleepCoachScreenTest {
     @Test fun `the week count comes from the plan`() {
         val plan = sleepCoachPlan(emptyList(), defaults)
         assertEquals(SleepCoachWeek(nearGoal = 0, logged = 0), plan.week)
+    }
+
+    @Test fun `the goals say which bedtime suits the body clock, once the nights tell`() {
+        show(bodyClockBedtime = LocalTime.of(0, 15))
+        scrollTo("body clock suits a bedtime around", substring = true).assertExists()
+    }
+
+    @Test fun `without enough free days the goals say nothing about the body clock`() {
+        show()
+        composeRule.onNodeWithText("body clock", substring = true).assertDoesNotExist()
     }
 }

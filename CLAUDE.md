@@ -82,7 +82,7 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   (`HealthConnectExerciseSource`, träningspass) och `SleepSource` (`HealthConnectSleepSource`, nätter), behörigheterna i modulens manifest (`HEALTH_PERMISSIONS`, frågas i en
   dialog via `rememberHealthPermissionRequest`) och integritetsskärmen (`HealthDataInfoActivity`)
 - Ren Kotlin, utan Android (`novila.jvm.library`, testas på sekunder):
-  - `:core:model` – `DayEntry` (`DayEntryCodec`), cykeln (`Cycle.kt`: `CycleLog`, `cyclePhase`, se *Cykeln* under Regler), sömnens regelbundenhet (`sleepRegularity`: Sleep Regularity Index och social jetlag över fyra veckor), kost, drycker (`Drink`, se *Drycker* under Regler), dagens balans, insikter, dagens sista logg (`LatestLog`) och uppmuntran (`cheers`), `analyzeSleep` (se *Sömnens samband*
+  - `:core:model` – `DayEntry` (`DayEntryCodec`), cykeln (`Cycle.kt`: `CycleLog`, `cyclePhase`, se *Cykeln* under Regler), sömnens regelbundenhet (`sleepRegularity`: Sleep Regularity Index och social jetlag över fyra veckor), kroppsklockan (`bodyClock`: mitten av sömnen på lediga dagar minus det man sover ikapp, MSFsc, och läggtiden som passar sömnmålet; aldrig en typ), sömnskulden (`sleepDebt`: två veckor mot sömnmålet, den senaste veckan helt och veckan före till hälften), kost, drycker (`Drink`, se *Drycker* under Regler), dagens balans, insikter, dagens sista logg (`LatestLog`) och uppmuntran (`cheers`), `analyzeSleep` (se *Sömnens samband*
     under Regler), `History` (dagarna över en
     `HistoryRange` i perioder, plus lika många dagar före att jämföra med; Sömn och Kost läser den via `HealthStore`), `Profile`, `Goals` (egna mål för
     steg, sömn och vatten; balans, insikter och kostpoäng mäts mot dem) och `AppSettings` (`ThemeMode`)
@@ -135,7 +135,8 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
     sparas i `CoachStore`; är coachen inte inställd gäller `TrainingProgramGenerator`. Planen är alltid deterministisk
     och testad, och förklarar sig själv med `CoachNote`. Dagens gemensamma förslag för sömn, träning och kost är
     `dailyCoach` (`DailyCoach`, `CoachAdvice`), som väger delarna mot varandra och är deterministisk och enhetstestad.
-    Dagsformen (`readiness`, `Readiness`) läser natten, återhämtningen, träningsbelastningen och cykelns symtom som
+    Dagsformen (`readiness`, `Readiness`) läser natten, sömnskulden (från fyra timmar), återhämtningen,
+    träningsbelastningen och cykelns symtom som
     signaler som drar ner, upp eller inte alls, och räknar dem: två ner är en lugn dag, en ner en dag som planerat,
     ingen ner och två upp en kropp som verkar redo. Den visas aldrig som en poäng, bara med sina skäl i coachens
     mening på Idag (`CoachAdvice.CalmDay`, `ReadyDay`); det som inte är känt räknas aldrig som dåligt.

@@ -55,6 +55,7 @@
     <string name="sleep_coach_intro">Välj en läggtid att sträva mot och en vila innan läggning på kvällen. Novila tittar på dina egna nätter och föreslår vanor som brukar hjälpa sömnen. Allt stannar på telefonen.</string>
     <string name="sleep_coach_bedtime">Läggtidsmål</string>
     <string name="sleep_coach_wake_time">Vaknadmål</string>
+    <string name="sleep_coach_body_clock">Dina lediga dagar tyder på att en läggtid runt %1$s passar din kroppsklocka för ditt sömnmål.</string>
     <string name="sleep_coach_bedtime_title">När vill du ligga i sängen?</string>
     <string name="sleep_coach_wake_title">När vill du vakna?</string>
     <string name="sleep_coach_goal_value">%1$s till %2$s</string>
@@ -90,6 +91,14 @@
     <string name="sleep_breathing_body">Några lugna minuter före sänggåendet: lugn andning, boxandning eller 4-7-8.</string>
     <string name="sleep_coach_breathing">Lugn andning före sänggåendet</string>
     <string name="sleep_coach_tip_weekend_shift">Dina helgnätter ligger en timme eller mer senare än vardagarnas. Att gå upp inom en timme från vardagstiden, även på helgen, håller rytmen.</string>
+    <string name="sleep_need_title">Ditt sömnbehov</string>
+    <string name="sleep_need_debt_empty">Logga sömnen några nätter, så visar Novila om du ligger efter. %1$d av %2$d nätter de senaste två veckorna.</string>
+    <string name="sleep_need_no_debt">Ingen sömnskuld. De senaste två veckorna når ditt mål på %1$s per natt.</string>
+    <string name="sleep_need_debt">Ungefär %1$s efter ditt mål de senaste två veckorna, där den senaste veckan räknas mest.</string>
+    <string name="sleep_need_debt_notable">Ungefär %1$s efter ditt mål de senaste två veckorna, där den senaste veckan räknas mest. Några kvällar med tidigare läggdags tar igen det bättre än en lång sovmorgon.</string>
+    <string name="sleep_need_clock_empty">Logga när du lägger dig och vaknar några vardagar och helger, så visar Novila din kroppsklocka.</string>
+    <string name="sleep_need_clock">På lediga dagar ligger mitten av din sömn runt %1$s. För %2$s sömn passar en läggtid runt %3$s din kroppsklocka.</string>
+    <string name="sleep_need_footer">Från dina nätter eller din klocka. Kroppsklockan är mitten av sömnen på lediga dagar, när ingen väckarklocka bestämmer, minus den sömn du tar igen då.</string>
     <string name="sleep_regularity_title">Hur regelbundet du sover</string>
     <string name="sleep_regularity_empty">Logga när du lägger dig och vaknar några nätter i rad, så visar Novila hur regelbundet du sover. %1$d av %2$d nätter i rad.</string>
     <string name="sleep_regularity_steady">Jämnt. Dina nätter är ungefär likadana från den ena till den andra: %1$d av 100, över %2$d nätter i rad.</string>

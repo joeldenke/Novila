@@ -6,6 +6,7 @@ import org.junit.Test
 import se.novila.exercise.TrainingLoad
 import se.novila.model.DayEntry
 import se.novila.model.Goals
+import se.novila.model.SleepDebt
 import se.novila.recovery.RecoveryStatus
 import java.time.LocalDate
 
@@ -65,5 +66,18 @@ class ReadinessTest {
             listOf(ReadinessSignal.Load(uniform.comparison, uniform = true)),
             readiness(DayEntry(date), load = uniform)!!.reasons,
         )
+    }
+
+    @Test fun `a notable sleep debt pulls down even after a good night`() {
+        val debt = SleepDebt(minutes = 300, nights = 14)
+        val readiness = readiness(night(8f), Goals(sleepHours = 8f), RecoveryStatus.Low, sleepDebt = debt)!!
+        assertEquals(ReadinessLevel.Calm, readiness.level)
+        assertEquals(listOf(ReadinessSignal.Debt(300), ReadinessSignal.Recovery(low = true)), readiness.reasons)
+
+        // A small debt, or one not known yet, says nothing.
+        val small = readiness(night(8f), Goals(sleepHours = 8f), sleepDebt = SleepDebt(minutes = 60, nights = 14))!!
+        assertEquals(listOf(ReadinessSignal.Night(8f, short = false)), small.signals)
+        val unknown = readiness(night(8f), Goals(sleepHours = 8f), sleepDebt = SleepDebt(minutes = null, nights = 3))!!
+        assertEquals(listOf(ReadinessSignal.Night(8f, short = false)), unknown.signals)
     }
 }

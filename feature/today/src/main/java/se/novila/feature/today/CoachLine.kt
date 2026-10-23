@@ -76,6 +76,8 @@ private fun reasonsText(reasons: List<ReadinessSignal>): String =
 private fun reasonText(signal: ReadinessSignal): String = when (signal) {
     is ReadinessSignal.Night -> stringResource(R.string.readiness_night, hoursText(signal.hours))
 
+    is ReadinessSignal.Debt -> stringResource(R.string.readiness_sleep_debt, durationText(signal.minutes))
+
     is ReadinessSignal.Recovery -> stringResource(
         if (signal.low) R.string.readiness_recovery_low else R.string.readiness_recovery_normal,
     )

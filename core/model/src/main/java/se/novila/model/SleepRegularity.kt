@@ -72,11 +72,45 @@ fun sleepRegularity(days: List<DayEntry>, today: LocalDate): SleepRegularity {
 }
 
 /**
+ * The user's body clock from the nights before free days ([freeNights], Saturday and Sunday mornings) and before work
+ * days ([workNights]), over the last [REGULARITY_NIGHTS] nights: [midSleep] is the middle of the sleep on free days,
+ * when no alarm decides it, corrected for the sleep the work week builds up (MSFsc, Roenneberg et al. 2004). When free
+ * nights are longer than the week's average, half the difference is catch-up sleep, not the body clock.
+ */
+data class BodyClock(val midSleep: LocalTime, val freeNights: Int, val workNights: Int) {
+    /** The bedtime that puts [hours] of sleep around [midSleep], rounded to a quarter of an hour. */
+    fun bedtimeFor(hours: Float): LocalTime {
+        val minutes = (midSleep.hour * 60 + midSleep.minute - hours * 60 / 2).roundToInt()
+        val rounded = ((minutes.toDouble() / QUARTER).roundToInt() * QUARTER + MINUTES_PER_DAY) % MINUTES_PER_DAY
+        return LocalTime.of(rounded / 60, rounded % 60)
+    }
+}
+
+/**
+ * The body clock from the nights in [days] up to [today] with both a bedtime and a wake-up, or null with too few free
+ * or work nights. Deterministic, so it is unit tested.
+ */
+fun bodyClock(days: List<DayEntry>, today: LocalDate): BodyClock? {
+    val first = today.minusDays(REGULARITY_NIGHTS - 1)
+    val nights = days.filter { it.date in first..today }.mapNotNull { day -> day.sleepSpan()?.let { day.date to it } }
+    val (free, work) = nights.partition { it.first.dayOfWeek in WEEKEND_MORNINGS }
+    if (free.size < MIN_WEEKEND_NIGHTS || work.size < MIN_WEEKDAY_NIGHTS) return null
+    val freeLength = free.map { it.second.length }.average()
+    val workLength = work.map { it.second.length }.average()
+    val weekLength = (WORK_DAYS * workLength + FREE_DAYS * freeLength) / (WORK_DAYS + FREE_DAYS)
+    val catchUp = (freeLength - weekLength).coerceAtLeast(0.0) / 2
+    val middle = (free.map { it.second.middle }.average() - catchUp + NOON).roundToInt() % MINUTES_PER_DAY
+    return BodyClock(LocalTime.of(middle / 60, middle % 60), freeNights = free.size, workNights = work.size)
+}
+
+/**
  * A night as minutes into the day it belongs to, which runs from noon before to noon on the morning: asleep from
  * [start] to [end]. Noon to noon, so 23:30 and 00:30 are an hour apart and the night is one piece.
  */
 private class SleepSpan(val start: Int, val end: Int) {
     val middle: Double get() = (start + end) / 2.0
+
+    val length: Int get() = end - start
 
     /** The share of the day both nights spend in the same state, asleep or awake. */
     fun agreement(other: SleepSpan): Double {
@@ -115,6 +149,11 @@ private const val MIN_WEEKDAY_NIGHTS = 3
 
 /** The nights before a free day: Saturday and Sunday mornings. */
 private val WEEKEND_MORNINGS = setOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
+
+/** Five work days and two free days in a week, for the week's average night. */
+private const val WORK_DAYS = 5
+private const val FREE_DAYS = 2
+private const val QUARTER = 15
 
 private const val NOON = 12 * 60
 private const val MINUTES_PER_DAY = 24 * 60

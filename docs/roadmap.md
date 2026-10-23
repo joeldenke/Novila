@@ -92,12 +92,16 @@ language model in the app, or data that leaves the app.
 - [x] **Sleep from Health Connect** (`READ_SLEEP`) **(ok)**: the watch's night fills in Sleep and Today when the user
   has not logged it themselves, only in memory. The sleep reminder does not know about it (no background reading).
 - [x] **Sleep coach:** bedtime goal, evening routine and sleep hygiene (CBT-I-inspired)
-- [ ] **Sleep debt:** the last 14 nights against the sleep goal, recent nights weighing more ("you slept four hours
+- [x] **Sleep debt:** the last 14 nights against the sleep goal, recent nights weighing more ("you slept four hours
   short this week"), as a signal in `dailyCoach` and `readiness`. Like Oura and Rise. Built on nights already
-  logged or read.
-- [ ] **Chronotype and a bedtime window:** the sleep midpoint on free days, corrected for sleep debt (MSFsc,
+  logged or read. Done: `sleepDebt` in `:core:model` (the last week in full, the week before half, long nights pay
+  back, never below zero, unlogged nights unknown, nothing under five nights). Four hours or more is a reason for a
+  calmer day in `readiness` (`ReadinessSignal.Debt`), and *Your sleep need* in Sleep's trends shows it.
+- [x] **Chronotype and a bedtime window:** the sleep midpoint on free days, corrected for sleep debt (MSFsc,
   Roenneberg), from the nights `sleepRegularity` already reads, so the sleep coach suggests a bedtime that suits the
-  person rather than only a goal. Never a type label that sounds like a diagnosis.
+  person rather than only a goal. Never a type label that sounds like a diagnosis. Done: `bodyClock` in
+  `:core:model` (four weeks, at least two free and three work nights), shown as a time and a bedtime for the sleep
+  goal in *Your sleep need* and under the sleep coach's goals; no type, only times.
 - [ ] **Menopause as a sleep cause:** hot flashes and night sweats as a `SleepFactor`, tested like the other causes and,
   like the period, never turned into a tip. No prediction and no new permission, but a sensitive subject: decided by
   the owner.
@@ -270,6 +274,7 @@ Next, first what needs no approval and is used every day, then what needs the ow
     the session's kind. ← done
 23. Advice by age in the coach: balance and functional training from 65, with the exercises it needs. ← done
 24. Sleep debt and chronotype: both build on the nights already there, and give `readiness` one more honest signal.
+    ← done
 25. Deload and plateaus in progression, and the weight's trend.
 26. Steps over time **(ok)**: the cheapest change that needs approval, with the most use.
 27. Heart rate zones and writing sessions to Health Connect **(ok)**. Menopause as a sleep cause, when the owner

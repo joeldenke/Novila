@@ -16,6 +16,8 @@ import se.novila.data.GoalsStore
 import se.novila.data.HealthStore
 import se.novila.data.SleepCoachStore
 import se.novila.model.Goals
+import se.novila.model.REGULARITY_NIGHTS
+import se.novila.model.bodyClock
 import se.novila.sleep.COACH_NIGHTS
 import se.novila.sleep.SleepCoachPlan
 import se.novila.sleep.SleepCoachPreferences
@@ -24,13 +26,15 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 /**
- * The sleep coach screen: the answers, the plan they give from the user's own nights. Scoped to the coach entry,
- * so answers tried out before the coach is set up are forgotten when the user leaves it.
+ * The sleep coach screen: the answers, the plan they give from the user's own nights, and the bedtime that suits the
+ * user's body clock for their sleep goal ([bodyClockBedtime], null until the free days and work days say it). Scoped
+ * to the coach entry, so answers tried out before the coach is set up are forgotten when the user leaves it.
  */
 data class SleepCoachUiState(
     val preferences: SleepCoachPreferences,
     val active: Boolean,
     val plan: SleepCoachPlan,
+    val bodyClockBedtime: LocalTime? = null,
 )
 
 /** The Sleep coach, scoped to its entry. */
@@ -81,6 +85,8 @@ class SleepCoachViewModel(
         preferences = preferences,
         active = active,
         plan = sleepCoachPlan(days.lastDays(COACH_NIGHTS, today), preferences, goals, LocalTime.now()),
+        bodyClockBedtime = bodyClock(days.lastDays(REGULARITY_NIGHTS.toInt(), today), today)
+            ?.bedtimeFor(goals.sleepHours),
     )
 
     /** Called on resume so "today" and the evening's next step stay correct after midnight. */
