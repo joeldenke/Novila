@@ -57,6 +57,17 @@ class HealthStoreTest {
         assertEquals(8f, store.history(HistoryRange.Year, today)?.days?.single { it.date == spring }?.sleepHours)
     }
 
+    @Test fun `every saved date is listed, however old`() {
+        val store = HealthStore(context, stores.scope, stores.cipher)
+        val longAgo = LocalDate.of(2024, 1, 5)
+        store.update(longAgo) { it.withSleep(7f) }
+        store.update(today) { it.withSleep(8f) }
+
+        val days = store.days.await { it.day(today).sleepHours > 0f && it.day(longAgo).sleepHours > 0f }
+
+        assertEquals(setOf(longAgo, today), days.dates())
+    }
+
     @Test fun `saves apply in order, each to the day as the last one left it`() {
         val store = HealthStore(context, stores.scope, stores.cipher)
         repeat(3) { store.update(today) { it.withPortions(FoodGroup.Vegetables, 1) } }

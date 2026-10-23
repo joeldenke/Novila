@@ -90,4 +90,32 @@
     <string name="readiness_load_uniform">dagarna har varit lika tunga</string>
     <string name="readiness_load_lighter">veckan har varit lättare än vanligt</string>
     <string name="readiness_cycle_symptoms">du har loggat symtom i dag</string>
+
+    <!-- Weeks in a row and milestones -->
+    <string name="achievements_title">Veckor och milstolpar</string>
+    <string name="achievements_open">Dina veckor och milstolpar</string>
+    <string name="achievements_weeks_title">Veckor i rad</string>
+    <string name="achievements_weeks_body">En vecka räknas när den når sitt mått. En missad dag bryter inget, och vila räknas också.</string>
+    <string name="achievements_habit">%1$s: %2$s</string>
+    <string name="achievements_not_yet">börjar när en vecka räknas</string>
+    <string name="achievements_rule_sleep">Fyra nätter nära ditt sömnmål</string>
+    <string name="achievements_rule_training">Två dagar med träning och två med vila</string>
+    <string name="achievements_rule_nutrition">Fyra dagar med bra kostpoäng</string>
+    <string name="achievements_this_week">Den här veckan: %1$d av %2$d</string>
+    <string name="achievements_this_week_rest">Den här veckan: %1$d av %2$d, %3$d vilodagar</string>
+    <string name="achievements_milestones_title">Milstolpar</string>
+    <string name="achievements_nights">Loggade nätter</string>
+    <string name="achievements_training_days">Dagar med träning</string>
+    <string name="achievements_food_days">Dagar med loggad mat</string>
+    <string name="achievements_water_days">Dagar med vattenmålet nått</string>
+    <string name="achievements_count_of">%1$d av %2$d</string>
+    <string name="achievements_reached">Nådde %1$d den %2$s</string>
+    <plurals name="achievements_run">
+        <item quantity="one">%d vecka i rad</item>
+        <item quantity="other">%d veckor i rad</item>
+    </plurals>
+    <plurals name="achievements_best">
+        <item quantity="one">Din längsta svit: %d vecka</item>
+        <item quantity="other">Din längsta svit: %d veckor</item>
+    </plurals>
 </resources>
