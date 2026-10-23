@@ -224,6 +224,20 @@
         <item>Sänk den långsamt tills armarna är raka.</item>
     </string-array>
     <string name="move_barbell_row_tip">Håll ryggen still: behöver du gunga är stången för tung.</string>
+    <string name="move_single_leg_stand">Stå på ett ben</string>
+    <string-array name="move_single_leg_stand_steps">
+        <item>Stå rak bredvid en vägg eller en stolsrygg som du kan hålla i om du behöver.</item>
+        <item>Flytta vikten till ena foten och lyft det andra knät så högt som känns stadigt.</item>
+        <item>Stå still tiden ut och byt sedan ben.</item>
+    </string-array>
+    <string name="move_single_leg_stand_tip">Titta på en punkt rakt fram. När det blir lätt kan du hålla i dig mindre, eller blunda med stolen precis bredvid.</string>
+    <string name="move_single_leg_hinge">Enbent höftfällning</string>
+    <string-array name="move_single_leg_hinge_steps">
+        <item>Stå på ett ben med mjukt knä och en stol inom räckhåll.</item>
+        <item>Fäll framåt i höften medan det andra benet sträcks bakåt, med rak rygg.</item>
+        <item>Gå bara så långt du står stadigt och res dig sedan långsamt.</item>
+    </string-array>
+    <string name="move_single_leg_hinge_tip">Håll höfterna i samma höjd, som två strålkastare som lyser mot golvet.</string>
     <string name="move_figure_description">%1$s. Tränar %2$s.</string>
     <string name="dose_reps_per_side">%1$d × %2$d per sida</string>
     <string name="dose_rest">Vila %1$d s</string>
@@ -377,6 +391,7 @@
     <string name="coach_weekdays_spread">Coachen sprider ut dagarna över veckan. Tryck på en dag för att välja själv.</string>
     <string name="coach_weekdays_own">Dina egna dagar. Coachen lägger styrkepassen så långt isär som det går.</string>
     <string name="coach_weekdays_spread_again">Låt coachen sprida ut dem</string>
+    <string name="coach_note_balance">Från 65 år rekommenderar WHO balans- och styrketräning minst tre dagar i veckan, för att stå stadigt. Varje styrkepass börjar med en balansövning.</string>
     <string name="coach_note_one_strength">Ett styrkepass i veckan är en bra början. WHO rekommenderar två i veckan när du har utrymme för det.</string>
     <string name="program_coach_off">Programmet utgår från dina senaste pass. Ställ in coachen för att planera det efter ditt mål, din tid och dina egna dagar.</string>
     <string name="program_coach_on">Coachen planerar veckan efter dina svar. Vill du ha andra övningar? Be om ett annat program.</string>

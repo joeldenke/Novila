@@ -225,6 +225,20 @@
         <item>Lower it slowly until your arms are straight.</item>
     </string-array>
     <string name="move_barbell_row_tip">Keep your back still: if you need to swing, the bar is too heavy.</string>
+    <string name="move_single_leg_stand">Stand on one leg</string>
+    <string-array name="move_single_leg_stand_steps">
+        <item>Stand tall next to a wall or the back of a chair you can hold if you need to.</item>
+        <item>Shift your weight to one foot and lift the other knee as high as feels steady.</item>
+        <item>Stand still for the time, then switch legs.</item>
+    </string-array>
+    <string name="move_single_leg_stand_tip">Look at a point straight ahead. When it gets easy, hold on less, or close your eyes with the chair right beside you.</string>
+    <string name="move_single_leg_hinge">Single-leg hinge</string>
+    <string-array name="move_single_leg_hinge_steps">
+        <item>Stand on one leg with a soft knee, a chair within reach.</item>
+        <item>Hinge forward at the hip while the other leg reaches back, your back flat.</item>
+        <item>Go only as far as you stay steady, then stand up slowly.</item>
+    </string-array>
+    <string name="move_single_leg_hinge_tip">Keep your hips level, as if they were headlights pointing at the floor.</string>
     <string name="move_figure_description">%1$s. Works %2$s.</string>
     <string name="dose_reps" translatable="false">%1$d × %2$d</string>
     <string name="dose_reps_per_side">%1$d × %2$d per side</string>
@@ -383,6 +397,7 @@
     <string name="coach_weekdays_spread">The coach spreads the days over the week. Tap a day to choose your own.</string>
     <string name="coach_weekdays_own">Your own days. The coach puts the strength sessions as far apart as they can be.</string>
     <string name="coach_weekdays_spread_again">Let the coach spread them out</string>
+    <string name="coach_note_balance">From 65, WHO advises balance and strength training on at least three days a week, to stay steady on your feet. Each strength session starts with a balance exercise.</string>
     <string name="coach_note_one_strength">One strength session a week is a good start. WHO advises two a week when you have room for them.</string>
     <string name="program_coach_off">The program follows your recent workouts. Set up the coach to plan it from your goal, your time and your own days.</string>
     <string name="program_coach_on">The coach plans the week from your answers. Want other exercises? Ask for another program.</string>

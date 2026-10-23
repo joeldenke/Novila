@@ -44,6 +44,17 @@ class TrainingWeekTest {
         )
     }
 
+    @Test fun `the coach plans this week and the next one for the user's age`() {
+        val preferences = CoachPreferences(daysPerWeek = 4)
+        val week = trainingWeek(saved, SavedCoach(preferences), emptyList(), monday, age = 70)
+        assertEquals(CoachPlanner.plan(preferences, emptyList(), monday, age = 70).program, week.program)
+        assertEquals(
+            CoachPlanner.plan(preferences, emptyList(), monday.plusWeeks(1), age = 70).program,
+            week.nextProgram,
+        )
+        assertEquals(3, week.program.sessions.count { it.type == ExerciseType.Strength })
+    }
+
     @Test fun `this week's program stays the one that counts`() {
         val week = trainingWeek(saved, SavedCoach(null), emptyList(), monday)
         assertEquals(monday, week.program.weekStart)

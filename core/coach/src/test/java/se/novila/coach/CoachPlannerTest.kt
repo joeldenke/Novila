@@ -32,7 +32,8 @@ class CoachPlannerTest {
         preferences: CoachPreferences = CoachPreferences(),
         history: List<Exercise> = emptyList(),
         recovery: RecoveryStatus = RecoveryStatus.Unknown,
-    ) = CoachPlanner.plan(preferences, history, today, recovery = recovery)
+        age: Int? = null,
+    ) = CoachPlanner.plan(preferences, history, today, recovery = recovery, age = age)
 
     private val TrainingProgram.strength: List<PlannedSession>
         get() = sessions.filter { it.type == ExerciseType.Strength }
@@ -255,6 +256,32 @@ class CoachPlannerTest {
         val newcomer = plan(CoachPreferences(daysPerWeek = 3, sessionMinutes = 30))
         assertEquals(30, newcomer.program.cardioMinutes)
         assertTrue(newcomer.notes.contains(CoachNote.CardioBelowGuideline(30)))
+    }
+
+    @Test fun `from 65 there are three strength days, each starting with a balance exercise`() {
+        fun strength(plan: CoachPlan) = plan.program.sessions.filter { it.type == ExerciseType.Strength }
+        fun CoachPlan.balanceExercises() = strength(this).flatMap { it.exercises }
+            .filter { CoachCatalog.byId(it.exerciseId)!!.pattern == MovementPattern.Balance }
+
+        val older = plan(CoachPreferences(daysPerWeek = 4), age = CoachPlanner.BALANCE_AGE)
+        assertEquals(3, strength(older).size)
+        assertTrue(
+            strength(older).all {
+                CoachCatalog.byId(it.exercises.first().exerciseId)!!.pattern == MovementPattern.Balance
+            },
+        )
+        assertTrue(CoachNote.Balance in older.notes)
+        // A beginner stands on one leg; the hinge on one leg waits until strength training is a habit.
+        assertTrue(older.balanceExercises().all { it.exerciseId == "single_leg_stand" })
+
+        // Never more strength days than training days.
+        assertEquals(2, strength(plan(CoachPreferences(daysPerWeek = 2), age = 80)).size)
+
+        for (younger in listOf(plan(CoachPreferences(daysPerWeek = 4), age = CoachPlanner.BALANCE_AGE - 1), plan())) {
+            assertEquals(2, strength(younger).size)
+            assertTrue(younger.balanceExercises().isEmpty())
+            assertFalse(CoachNote.Balance in younger.notes)
+        }
     }
 
     @Test fun `running counts double towards WHO's guideline, the same minutes of walking don't`() {

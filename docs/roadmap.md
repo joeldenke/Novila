@@ -67,9 +67,12 @@ language model in the app, or data that leaves the app.
   them into minutes of the user's favorite cardio, so a runner gets half the minutes, and the coach says why
   (`CoachNote.VigorousCardio`). Novila only asks for effort after strength sessions, so RPE doesn't steer it; heart
   rate zones refine it later (below).
-- [ ] **Advice by age in the coach:** WHO advises adults from 65 to do balance and functional training at least three
-  days a week, against falls. The coach does not read the birth year yet. Add balance exercises (via `add-exercise`)
-  and a rule in `CoachPlanner`, the same way the step goal already follows age.
+- [x] **Advice by age in the coach:** WHO advises adults from 65 to do balance and functional training at least three
+  days a week, against falls. The coach did not read the birth year. Done: two balance exercises in the library
+  (`single_leg_stand`, and `single_leg_hinge` from the intermediate level), only chosen from 65
+  (`CoachPlanner.BALANCE_AGE`, the age from the profile's birth year). From 65 the coach plans three strength days when
+  the user trains on three days or more, each session starts with a balance exercise, and the coach says why
+  (`CoachNote.Balance`). Without the coach set up, the generated program stays as it was.
 - [ ] **Deload and plateaus in progression:** `Progression` only steps up. After a few weeks of rising load, suggest a
   lighter week, and when an exercise has stood still for three or four sessions, suggest another variant of the
   same movement. Built on `ExerciseLog` and `trainingLoad`.
@@ -265,7 +268,7 @@ Next, first what needs no approval and is used every day, then what needs the ow
 21. Export and import as a local file **(ok)**: a backup without the cloud before users have much data to lose. ← done
 22. Intensity as WHO counts it: corrects something the app gets wrong today, since it says it follows WHO. Built on
     the session's kind. ← done
-23. Advice by age in the coach: balance and functional training from 65, with the exercises it needs.
+23. Advice by age in the coach: balance and functional training from 65, with the exercises it needs. ← done
 24. Sleep debt and chronotype: both build on the nights already there, and give `readiness` one more honest signal.
 25. Deload and plateaus in progression, and the weight's trend.
 26. Steps over time **(ok)**: the cheapest change that needs approval, with the most use.

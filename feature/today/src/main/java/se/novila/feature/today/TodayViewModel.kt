@@ -38,6 +38,7 @@ import se.novila.model.DiscoveryProgress
 import se.novila.model.Drink
 import se.novila.model.DrinkKind
 import se.novila.model.Goals
+import se.novila.model.Profile
 import se.novila.model.SLEEP_WINDOW_NIGHTS
 import se.novila.model.SleepAnalysis
 import se.novila.model.TrainingToday
@@ -78,7 +79,7 @@ data class TodayUiState(
 private data class TodayInputs(
     val now: LocalDateTime,
     val days: SavedDays,
-    val name: String,
+    val profile: Profile,
     val goals: Goals,
     val watch: SleepState,
 )
@@ -114,7 +115,7 @@ class TodayViewModel(
                 profileStore.profile.filterNotNull(),
                 goalsStore.goals.filterNotNull(),
                 sleepRepository.state,
-            ) { now, days, profile, goals, watch -> TodayInputs(now, days, profile.name, goals, watch) },
+            ) { now, days, profile, goals, watch -> TodayInputs(now, days, profile, goals, watch) },
             coachStore.answers.filterNotNull(),
             exerciseRepository.state,
             combine(recoveryRepository.state, cycleStore.cycle.filterNotNull(), ::TodayBody),
@@ -129,7 +130,7 @@ class TodayViewModel(
         val answers = coachStore.answers.value ?: return null
         val sleepCoach = sleepCoachStore.answers.value ?: return null
         val cycle = cycleStore.cycle.value ?: return null
-        val inputs = TodayInputs(now.value, days, profile.name, goals, sleepRepository.state.value)
+        val inputs = TodayInputs(now.value, days, profile, goals, sleepRepository.state.value)
         val body = TodayBody(recoveryRepository.state.value, cycle)
         return read(inputs, answers, exerciseRepository.state.value, body, sleepCoach)
     }
@@ -168,6 +169,7 @@ class TodayViewModel(
             today,
             recovery = status,
             lighter = body.cycle.lighter(today),
+            age = inputs.profile.ageIn(today.year),
         )
         val training = week.trainingOn(today)
         // Today's readiness from last night, recovery, the training load and any cycle symptoms, with its reasons.
@@ -190,7 +192,7 @@ class TodayViewModel(
         return TodayUiState(
             week = days.week(today),
             hour = inputs.now.hour,
-            name = inputs.name,
+            name = inputs.profile.name,
             goals = inputs.goals,
             sleep = sleep,
             training = training,

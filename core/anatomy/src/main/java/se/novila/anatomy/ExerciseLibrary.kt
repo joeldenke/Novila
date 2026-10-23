@@ -557,6 +557,35 @@ object ExerciseLibrary {
         gear = Gear.Barbell,
     )
 
+    /** Balance: standing still on the left leg, the right knee lifted and the arms out a little for balance. */
+    val singleLegStand = ExerciseMotion(
+        id = "single_leg_stand",
+        movement = Movement(listOf(Keyframe(0f, ONE_LEG), Keyframe(1f, ONE_LEG))),
+        primary = setOf(MuscleGroup.Glutes, MuscleGroup.Calves),
+        secondary = setOf(MuscleGroup.Abs, MuscleGroup.Quads),
+        contacts = setOf(Landmark.LeftHeel, Landmark.LeftToe),
+        anchor = Landmark.LeftHeel,
+        camera = Camera(60f, pitch = 0f),
+    )
+
+    /** Balance and strength: hinging forward on the left leg, the right leg reaching back in line with the trunk. */
+    val singleLegHinge = ExerciseMotion(
+        id = "single_leg_hinge",
+        movement = Movement(
+            listOf(
+                Keyframe(0f, ONE_LEG),
+                Keyframe(0.45f, ONE_LEG_HINGE),
+                Keyframe(0.58f, ONE_LEG_HINGE),
+                Keyframe(1f, ONE_LEG),
+            ),
+        ),
+        primary = setOf(MuscleGroup.Hamstrings, MuscleGroup.Glutes),
+        secondary = setOf(MuscleGroup.LowerBack, MuscleGroup.Calves),
+        contacts = setOf(Landmark.LeftHeel, Landmark.LeftToe),
+        anchor = Landmark.LeftHeel,
+        camera = Camera(90f),
+    )
+
     val all: List<ExerciseMotion> = listOf(
         squat,
         pushUp,
@@ -588,6 +617,8 @@ object ExerciseLibrary {
         frontSquat,
         deadlift,
         barbellRow,
+        singleLegStand,
+        singleLegHinge,
     )
 
     fun byId(id: String): ExerciseMotion? = all.firstOrNull { it.id == id }
@@ -849,4 +880,27 @@ private val FRONT_SQUAT_BOTTOM = Pose.symmetric(
     arm = FRONT_RACK,
     lean = 25f,
     neck = -18f,
+)
+
+/** Standing on the left leg: the right knee lifted in front towards hip height, the arms a little out to the sides. */
+private val ONE_LEG = Pose(
+    leftLeg = LimbPose(bend = 5f),
+    rightLeg = LimbPose(raise = 70f, bend = 80f),
+    leftArm = LimbPose(spread = 25f),
+    rightArm = LimbPose(spread = 25f),
+    rightFoot = 30f,
+)
+
+/**
+ * Hinged forward on the left leg with a soft knee, the trunk and the right leg in one line towards the floor, the arms
+ * hanging straight down.
+ */
+private val ONE_LEG_HINGE = Pose(
+    lean = 65f,
+    neck = -20f,
+    leftLeg = LimbPose(raise = 75f, bend = 15f),
+    rightLeg = LimbPose(raise = 0f, bend = 5f),
+    leftArm = LimbPose(raise = 65f),
+    rightArm = LimbPose(raise = 65f),
+    rightFoot = 30f,
 )
