@@ -2,6 +2,8 @@ package se.novila.data
 
 import androidx.datastore.preferences.core.emptyPreferences
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import se.novila.coach.CoachPlanner
 import se.novila.coach.CoachPreferences
@@ -57,6 +59,17 @@ class TrainingWeekTest {
             .sumOf { it.minutes }
         assertEquals(TrainingToday(plannedMinutes = planned, doneMinutes = 25), training)
         assertEquals(0, week.trainingOn(monday.plusDays(1)).doneMinutes)
+    }
+
+    @Test fun `a day with only mobility is no training day for the reminder`() {
+        val week = trainingWeek(saved, SavedCoach(null), emptyList(), monday)
+        val wednesday = monday.plusDays(2)
+        assertEquals(
+            listOf(ExerciseType.Mobility),
+            week.program.sessions.filter { it.day == wednesday.dayOfWeek }.map { it.type },
+        )
+        assertFalse(week.hasSession(wednesday))
+        assertTrue(week.hasSession(monday))
     }
 
     @Test fun `the strength sessions build on what the user did last time`() {

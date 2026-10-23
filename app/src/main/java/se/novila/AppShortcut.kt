@@ -36,8 +36,15 @@ enum class AppShortcut(
     ;
 
     companion object {
-        /** The shortcut [intent] comes from, or null when the app was opened some other way. */
-        fun of(intent: Intent?): AppShortcut? = entries.firstOrNull { it.action == intent?.action }
+        /**
+         * The shortcut [intent] comes from, or null when the app was opened some other way. The recent apps screen
+         * reopens the app with the intent it was first started with, so a shortcut used then is not used again: one
+         * tap on "Log a glass of water" logs one glass.
+         */
+        fun of(intent: Intent?): AppShortcut? {
+            if (intent == null || (intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) != 0) return null
+            return entries.firstOrNull { it.action == intent.action }
+        }
 
         /**
          * Publishes the shortcuts as dynamic ones, so they always open this build's [MainActivity] (a static shortcut

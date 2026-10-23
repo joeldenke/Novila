@@ -94,7 +94,10 @@ object TrainingProgramGenerator {
         )
     }
 
-    /** [session] as today's when the body is still recovering: a little less cardio and a shorter strength session. */
+    /**
+     * [session] as today's when the body is still recovering: a little less cardio, and a shorter strength session
+     * with one set less of each exercise, so session mode does what the shorter time says.
+     */
     private fun PlannedSession.lowered(recovery: RecoveryStatus): PlannedSession =
         if (recovery != RecoveryStatus.Low) {
             this
@@ -106,6 +109,7 @@ object TrainingProgramGenerator {
 
                 ExerciseKind.Strength -> copy(
                     minutes = roundTo5(minutes * RECOVERY_STRENGTH_FACTOR).coerceAtLeast(RECOVERY_MIN_STRENGTH_MINUTES),
+                    exercises = exercises.map { it.copy(sets = (it.sets - 1).coerceAtLeast(1)) },
                 )
 
                 ExerciseKind.Mobility -> this

@@ -36,6 +36,7 @@ import se.novila.model.withPortions
 import se.novila.model.withTreats
 import se.novila.model.withoutLastDrink
 import se.novila.recipes.FoodPreferences
+import se.novila.recipes.RecipeBook
 import se.novila.recipes.RecipeSuggestions
 import se.novila.recipes.suggestRecipes
 import java.time.LocalDate
@@ -43,7 +44,8 @@ import java.time.LocalTime
 
 /**
  * The [history] over a week up to the shown day (today, or an earlier one the user went back to), [today],
- * the user's [goals] (water counts towards its own) and [foodPreferences], and the [hour] it is now.
+ * the user's [goals] (water counts towards its own), [foodPreferences] and own recipes ([book]), and the [hour] it is
+ * now.
  */
 data class NutritionUiState(
     val history: History,
@@ -51,12 +53,13 @@ data class NutritionUiState(
     val today: LocalDate,
     val foodPreferences: FoodPreferences,
     val hour: Int,
+    val book: RecipeBook = RecipeBook(),
 ) {
     /** The shown day, the last in the history. */
     val day: DayEntry get() = history.days.last()
 
-    /** Recipes for what the shown day is missing, now. */
-    val recipes: RecipeSuggestions = suggestRecipes(day, hour, foodPreferences, goals)
+    /** Recipes for what the shown day is missing, now: the same ones, in the same order, as the recipes screen. */
+    val recipes: RecipeSuggestions = suggestRecipes(day, hour, foodPreferences, goals, book)
 }
 
 /** The Nutrition tab, scoped to its entry. */
@@ -72,6 +75,12 @@ class NutritionViewModel(
     private val day = SelectedDay()
     private val hour = MutableStateFlow(LocalTime.now().hour)
 
+    private val food = combine(
+        foodPreferencesStore.preferences.filterNotNull(),
+        foodPreferencesStore.recipes.filterNotNull(),
+        ::Pair,
+    )
+
     /**
      * Whether the introduction was skipped, so the food preferences and the rest of the setup are missing: the tab
      * then shows one quiet card that finishes the setup. False until the settings are read, and after the intro.
@@ -80,22 +89,24 @@ class NutritionViewModel(
         .map { it?.setupIncomplete == true }
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
-    /** The history, the goals and the food preferences, or null before the stores' first reads. */
+    /** The history, the goals, the food preferences and own recipes, or null before the stores' first reads. */
     val state: StateFlow<NutritionUiState?> =
         combine(
             store.histories(day.dates, flowOf(HistoryRange.Week)),
             goalsStore.goals.filterNotNull(),
             day.today,
-            foodPreferencesStore.preferences.filterNotNull(),
+            food,
             hour,
-            ::NutritionUiState,
-        ).stateIn(viewModelScope, SharingStarted.Eagerly, initial())
+        ) { history, goals, today, (preferences, book), hour ->
+            NutritionUiState(history, goals, today, preferences, hour, book)
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, initial())
 
     private fun initial(): NutritionUiState? {
         val history = store.history(HistoryRange.Week, day.value) ?: return null
         val goals = goalsStore.goals.value ?: return null
         val preferences = foodPreferencesStore.preferences.value ?: return null
-        return NutritionUiState(history, goals, day.today.value, preferences, hour.value)
+        val book = foodPreferencesStore.recipes.value ?: return null
+        return NutritionUiState(history, goals, day.today.value, preferences, hour.value, book)
     }
 
     /**

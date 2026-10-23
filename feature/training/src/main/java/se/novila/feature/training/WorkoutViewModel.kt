@@ -49,7 +49,18 @@ class WorkoutViewModel(
 
     /** The session in progress, or null when the day has no strength session. */
     val state: StateFlow<WorkoutUiState?> = _state.asStateFlow()
+
+    private val _loaded = MutableStateFlow(false)
+
+    /**
+     * False until the week's program is read, so the screen draws nothing instead of saying the day has no session
+     * while the stores are still being read.
+     */
+    val loaded: StateFlow<Boolean> = _loaded.asStateFlow()
     private var timer: Job? = null
+
+    /** The finished session is saved, so a second tap on save never saves it twice. */
+    private var saved = false
 
     /** The rehab phase the session belongs to, or 0 when it isn't a rehab session. */
     private var rehabPhase = 0
@@ -64,10 +75,12 @@ class WorkoutViewModel(
     }
 
     private fun start(state: TrainingUiState, day: DayOfWeek) {
-        val session = state.program.sessions.firstOrNull { it.day == day && it.exercises.isNotEmpty() } ?: return
-        rehab = session.type == ExerciseType.Rehab
-        if (rehab && state.coach.active) rehabPhase = state.coach.preferences.rehabPhase
-        show(Workout.start(session, clock.now()))
+        state.program.sessions.firstOrNull { it.day == day && it.exercises.isNotEmpty() }?.let { session ->
+            rehab = session.type == ExerciseType.Rehab
+            if (rehab && state.coach.active) rehabPhase = state.coach.preferences.rehabPhase
+            show(Workout.start(session, clock.now()))
+        }
+        _loaded.value = true
     }
 
     /** The user finished a set or skipped a rest: they are acting, so nothing is announced. */
@@ -94,10 +107,13 @@ class WorkoutViewModel(
     /**
      * Saves a finished session as today's strength training, with what the user said about it, so next week's program
      * builds on it and the coach can adjust the dose. What they did of each exercise is remembered too, so the next
-     * session raises it a step at a time; a rehab session is dosed by pain instead, so it isn't.
+     * session raises it a step at a time; a rehab session is dosed by pain instead, so it isn't. The finished session
+     * stays on screen while the screen closes, instead of the screen saying there is no session.
      */
     fun finish() {
+        if (saved) return
         val state = _state.value ?: return
+        saved = true
         val workout = state.workout
         val now = clock.now()
         if (workout.isFinished) {
@@ -110,7 +126,6 @@ class WorkoutViewModel(
         }
         timer?.cancel()
         notifications.cancel()
-        _state.value = null
     }
 
     override fun onCleared() {
