@@ -1,0 +1,650 @@
+/* Novila's site in the app's design language, "Skog & sol", laid out as large rounded tiles: one idea per tile, a big
+   headline, and the picture bleeding into the tile's color. The colors are the app's palette (core/designsystem,
+   Color.kt): pine for training, lake for sleep, falu red for food, the night forest and the sun as the one accent. */
+
+@font-face {
+  font-family: "Hanken Grotesk";
+  src: url("fonts/hanken_grotesk_regular.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Hanken Grotesk";
+  src: url("fonts/hanken_grotesk_semibold.ttf") format("truetype");
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Hanken Grotesk";
+  src: url("fonts/hanken_grotesk_bold.ttf") format("truetype");
+  font-weight: 700;
+  font-display: swap;
+}
+
+:root {
+  --page: #f7f4ec;
+  --surface: #ffffff;
+  --outline: rgba(27, 30, 22, 0.1);
+  --text: #1b1e16;
+  --muted: #545a4c;
+  --link: #24533b;
+  --bar: rgba(247, 244, 236, 0.72);
+  --sun: #f2b705;
+  --on-sun: #2b2100;
+  --night: #111410;
+  --pine: #163724;
+  --lake: #0f2e4d;
+  --falu: #5e1a10;
+  --tile-radius: 28px;
+  --gap: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page: #0b0d0a;
+    --surface: #161a14;
+    --outline: rgba(236, 237, 230, 0.1);
+    --text: #ecede6;
+    --muted: #b1b6a8;
+    --link: #9bd1ae;
+    --bar: rgba(11, 13, 10, 0.72);
+    --sun: #f7c948;
+  }
+
+  .hero-scene,
+  .tile-image {
+    filter: saturate(0.85) brightness(0.85);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--text);
+  font-family: "Hanken Grotesk", system-ui, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--link);
+  text-underline-offset: 0.2em;
+}
+
+a:focus-visible {
+  outline: 3px solid var(--sun);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+p {
+  margin: 0;
+}
+
+.skip {
+  position: absolute;
+  left: -999px;
+}
+
+.skip:focus {
+  left: 16px;
+  top: 8px;
+  z-index: 2;
+  background: var(--surface);
+  padding: 8px 12px;
+}
+
+/* The bar on top: translucent and blurred, so the tiles slide under it. */
+
+.top {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--bar);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--outline);
+}
+
+.top-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  height: 52px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  text-decoration: none;
+}
+
+.brand img {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+}
+
+.language {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--gap);
+}
+
+/* Tiles */
+
+.tile {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: var(--gap);
+  padding: 56px 24px 0;
+  border-radius: var(--tile-radius);
+  text-align: center;
+}
+
+.tile-text {
+  max-width: 720px;
+  margin-bottom: 40px;
+}
+
+.eyebrow {
+  margin-bottom: 8px;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+h1,
+h2 {
+  margin: 0 0 16px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: clamp(2.75rem, 8vw, 5.25rem);
+}
+
+h2 {
+  font-size: clamp(2rem, 5.5vw, 3.5rem);
+}
+
+.sub {
+  font-size: clamp(1.125rem, 2.2vw, 1.375rem);
+  line-height: 1.4;
+  opacity: 0.85;
+  text-wrap: pretty;
+}
+
+/* The picture fills the tile's lower part and fades up into its color. */
+
+.tile-image {
+  display: block;
+  width: calc(100% + 48px);
+  max-width: none;
+  height: auto;
+  max-height: 560px;
+  object-fit: cover;
+  object-position: center 70%;
+  margin-top: auto;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 35%);
+  mask-image: linear-gradient(to bottom, transparent, #000 35%);
+}
+
+.tile-hero {
+  background: var(--surface);
+  padding-top: 64px;
+}
+
+.tile-light {
+  background: var(--surface);
+}
+
+.tile-night {
+  background: var(--night);
+  color: #ecede6;
+  padding-bottom: 56px;
+}
+
+.tile-night .eyebrow {
+  color: var(--sun);
+  opacity: 1;
+}
+
+.tile-pine {
+  background: var(--pine);
+  color: #cdebd6;
+}
+
+.tile-lake {
+  background: var(--lake);
+  color: #d6e5f8;
+}
+
+.tile-falu {
+  background: var(--falu);
+  color: #ffdad1;
+}
+
+.tile-pine h2,
+.tile-lake h2,
+.tile-falu h2 {
+  color: #ffffff;
+}
+
+.tile-row {
+  display: grid;
+  gap: var(--gap);
+  margin-bottom: var(--gap);
+}
+
+.tile-row .tile {
+  margin-bottom: 0;
+}
+
+.tile-row h2 {
+  font-size: clamp(2rem, 4.2vw, 2.75rem);
+}
+
+/* The Google Play badge: a black pill like the store's own, without its logo. Until Novila is on Google Play it is
+   text, not a link; then it becomes <a class="play" href="https://play.google.com/store/apps/details?id=se.novila">. */
+
+.play {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 28px;
+  padding: 10px 26px 11px;
+  border-radius: 14px;
+  background: #000000;
+  color: #ffffff;
+  line-height: 1.1;
+  text-align: left;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  transition: transform 0.2s ease;
+}
+
+a.play:hover {
+  transform: translateY(-1px);
+}
+
+.play-small {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.play-big {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* A Pixel: a slim black frame with round corners, the camera in a hole at the top and the buttons on the right. */
+
+.phone {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  padding: 9px;
+  border-radius: 46px;
+  background: #1d1f1c;
+  box-shadow:
+    inset 0 0 0 1.5px #3a3d38,
+    0 1px 2px rgba(0, 0, 0, 0.2),
+    0 30px 60px -20px rgba(0, 0, 0, 0.45);
+}
+
+.phone::before,
+.phone::after {
+  content: "";
+  position: absolute;
+  right: -3px;
+  width: 3px;
+  border-radius: 0 2px 2px 0;
+  background: #2c2e2a;
+}
+
+.phone::before {
+  top: 22%;
+  height: 7%;
+}
+
+.phone::after {
+  top: 33%;
+  height: 13%;
+}
+
+.phone-screen {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1078 / 2400;
+  padding-top: 7%;
+  border-radius: 37px;
+  background: #f7f4ec;
+}
+
+.phone-screen::before {
+  content: "";
+  position: absolute;
+  top: 2.4%;
+  left: 50%;
+  width: 4.5%;
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: #0a0a0a;
+}
+
+.phone-screen img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+.hero-stage {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: calc(100% + 48px);
+  margin-top: auto;
+  padding: 0 24px;
+}
+
+.hero-scene {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 72%;
+  object-fit: cover;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 40%);
+  mask-image: linear-gradient(to bottom, transparent, #000 40%);
+}
+
+.hero-stage .phone {
+  max-width: 320px;
+  margin-bottom: -120px;
+}
+
+.tile-hero {
+  padding-bottom: 0;
+}
+
+.tile-hero .hero-stage {
+  padding-bottom: 0;
+  margin-bottom: 0;
+  height: auto;
+}
+
+.gallery {
+  display: flex;
+  gap: 20px;
+  width: calc(100% + 48px);
+  margin-bottom: 56px;
+  padding: 8px 24px 24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.gallery::-webkit-scrollbar {
+  display: none;
+}
+
+.gallery figure {
+  flex: 0 0 72%;
+  max-width: 300px;
+  margin: 0 auto;
+  scroll-snap-align: center;
+}
+
+.gallery figcaption {
+  margin-top: 16px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* Facts in the night tile */
+
+.facts {
+  display: grid;
+  gap: 1px;
+  width: 100%;
+  max-width: 1000px;
+  overflow: hidden;
+  border-radius: 20px;
+  background: rgba(236, 237, 230, 0.12);
+  text-align: left;
+}
+
+.fact {
+  padding: 24px;
+  background: #1a1e18;
+  color: #b1b6a8;
+}
+
+.fact-title {
+  margin-bottom: 6px;
+  font-size: 1.1875rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: inherit;
+}
+
+.fact .fact-title {
+  color: #ecede6;
+}
+
+/* The small things */
+
+.details {
+  margin: 0 0 var(--gap);
+  padding: 56px 24px;
+  border-radius: var(--tile-radius);
+  background: var(--surface);
+}
+
+.details h2 {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.detail-grid {
+  display: grid;
+  gap: 32px 40px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.detail p:not(.fact-title) {
+  color: var(--muted);
+}
+
+.note {
+  display: grid;
+  gap: 12px;
+  max-width: 880px;
+  margin: 40px auto 0;
+  padding: 0 12px;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+/* Documents */
+
+.document {
+  max-width: 720px;
+  margin: 24px auto 48px;
+  padding: 0 4px;
+  line-height: 1.6;
+  font-size: 1.0625rem;
+}
+
+.document h1 {
+  font-size: clamp(2.25rem, 6vw, 3.5rem);
+  margin-bottom: 12px;
+}
+
+.document h2 {
+  font-size: 1.375rem;
+  letter-spacing: -0.01em;
+  margin: 36px 0 8px;
+  line-height: 1.25;
+}
+
+.document p {
+  margin-bottom: 12px;
+}
+
+.document code {
+  font-size: 0.9em;
+}
+
+/* Footer */
+
+.bottom {
+  max-width: 1200px;
+  margin: 24px auto 0;
+  padding: 24px 28px 48px;
+  border-top: 1px solid var(--outline);
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.bottom nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin-bottom: 12px;
+}
+
+.bottom a {
+  color: var(--muted);
+}
+
+/* Tiles rise into place once, as they scroll in. Browsers without scroll-driven animations show them as they are. */
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .tile .tile-text,
+    .facts,
+    .tile-image {
+      animation: rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (min-width: 760px) {
+  :root {
+    --gap: 16px;
+  }
+
+  main {
+    padding: var(--gap) 24px;
+  }
+
+  .tile {
+    padding: 80px 48px 0;
+  }
+
+  .tile-hero {
+    padding-top: 88px;
+  }
+
+  .tile-night {
+    padding-bottom: 80px;
+  }
+
+  .tile-image,
+  .hero-stage,
+  .gallery {
+    width: calc(100% + 96px);
+  }
+
+  .tile-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .tile-row .tile {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  .tile-row .tile-image {
+    width: calc(100% + 64px);
+  }
+
+  .facts {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .gallery {
+    justify-content: center;
+    overflow: visible;
+  }
+
+  .gallery figure {
+    flex: 0 1 280px;
+    margin: 0;
+  }
+
+  .details {
+    padding: 80px 48px;
+  }
+
+  .detail-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .hero-stage .phone {
+    max-width: 340px;
+  }
+}
