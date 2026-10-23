@@ -19,6 +19,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -48,7 +49,7 @@ internal fun storeScope() = CoroutineScope(SupervisorJob() + Dispatchers.IO)
  */
 internal class PreferencesStore(
     context: Context,
-    name: String,
+    val name: String,
     private val scope: CoroutineScope,
     cipher: DatastoreCipher,
 ) {
@@ -100,6 +101,15 @@ internal class PreferencesStore(
 
     fun edit(write: (MutablePreferences) -> Unit) {
         writes.trySend(write)
+    }
+
+    /** The saved preferences, once the first read is done. */
+    suspend fun read(): Preferences = latest.filterNotNull().first()
+
+    /** Replaces everything in the file with [values], in order with the other writes. */
+    fun replace(values: Preferences) = edit {
+        it.clear()
+        it += values
     }
 
     private companion object {

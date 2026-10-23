@@ -38,7 +38,9 @@ language model in the app, or data that leaves the app.
   week, four weeks or a year against the period before, with the watch's workouts counted once with Novila's own.
 - [x] **Own goals** for steps, sleep and water, with suggestions based on age and weight in the profile. Servings follow
   the Swedish Food Agency's dietary guidelines, which the nutrition score is built on.
-- [ ] **Export and import** as a local file, without the cloud **(ok)**
+- [x] **Export and import** as a local file, without the cloud **(ok)**. Done: Settings saves a copy of everything the
+  user has entered as JSON through the system file picker, and reads one back in place of what is there. No
+  permission, nothing sent, never Health Connect data; see *Export och import* in `docs/data-protection.md`.
 
 ### 2. Training
 - [x] **Log cardio sessions** ("I did it"), and read them from Health Connect (`ExerciseSessionRecord`) **(ok)**
@@ -225,7 +227,7 @@ Next, first what needs no approval and is used every day, then what needs the ow
     up possible. ← done
 20. Achievements and streaks: restrained, built on what the user already logs, and never rewarding overtraining
     (recovery and rest days count). ← done
-21. Export and import as a local file **(ok)**: a backup without the cloud before users have much data to lose.
+21. Export and import as a local file **(ok)**: a backup without the cloud before users have much data to lose. ← done
 22. Count reps with the camera **(ok)**: needs `CAMERA` and an on-device pose model, which changes the privacy policy
     and the Play declaration.
 23. iOS via Kotlin and Compose Multiplatform: last, when the Android app is complete. Moving the pure Kotlin modules to

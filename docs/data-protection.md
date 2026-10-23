@@ -64,3 +64,27 @@ Två saker görs **inte**, medvetet:
 - **Tink-nyckelringen** roteras inte. Den innehåller ingen data, den lämnar aldrig enheten, och den
   behövs för att de inställningar som överlever en radering fortfarande ska kunna läsas. Att rotera
   den skulle göra dem oläsbara utan att skydda något.
+
+## Export och import
+
+*Spara en kopia av mina data* och *Läs in en sparad kopia* i Inställningar (`DataExport` i `:core:data`) ger
+användaren en egen kopia, till exempel inför en ny telefon, eftersom ingen backup följer med (se `docs/backup.md`).
+
+- **Vad:** samma filer som *Radera data* tömmer (dagarna, båda coacherna med resultaten per övning, profil, mål,
+  matpreferenser med egna recept, mätningar och cykeln), utom påminnelserna, som hör till telefonen de är inställda på.
+  Appens inställningar (tema, introduktionen) ingår inte. Health Connect-data ingår aldrig: den sparas inte.
+- **Var:** användaren väljer fil i Androids filväljare (Storage Access Framework). Appen behöver ingen behörighet,
+  väljer aldrig mål och skickar inget.
+- **Format:** JSON (`ExportCodec`), läsbart för människor och andra appar (GDPR artikel 20): appens namn, filformatets
+  version (`format`), appens byggnummer (`version`), datumet och filerna med varje värde och dess typ, exakt som
+  appen sparar det.
+- **Okrypterad:** filen är hälsodata i klartext, eftersom användaren ska kunna läsa och flytta den. Appen säger det
+  bredvid knappen och i integritetspolicyn.
+- **Versioner:** varje värde har sin egen version (`DayEntryCodec`, `CoachPreferencesCodec` …), så en export från en
+  äldre app läses och migreras av samma kod som läser äldre data i telefonen. En export från ett senare bygge (högre
+  `version` eller `format`) vägras, eftersom den kan ha en version den här appen läser som tom.
+- **Import:** ersätter allt i de exporterade filerna med exakt det filen har; en fil som saknas i exporten töms. Filen
+  är okänd indata: högst 20 MB, bara kända filnamn, varje värde med rätt typ, och värdena läses sedan av storarnas
+  egna avkodare, som tål allt. Kan inte hela filen läsas ändras ingenting. Frågar först, eftersom det inte går att ångra.
+
+Testat i `DataExportTest` (export och import tillbaka, en äldre export som migreras, trasiga och för nya filer).

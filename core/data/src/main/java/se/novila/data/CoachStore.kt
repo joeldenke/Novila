@@ -23,7 +23,7 @@ import se.novila.exercise.ExerciseResult
 class CoachStore internal constructor(context: Context, scope: CoroutineScope, cipher: DatastoreCipher) {
     @Inject constructor(context: Context, cipher: DatastoreCipher) : this(context, storeScope(), cipher)
 
-    private val store = PreferencesStore(context, NAME, scope, cipher)
+    internal val store = PreferencesStore(context, NAME, scope, cipher)
 
     /** The saved answers, kept in memory. Null until the first read is done. */
     val answers: StateFlow<SavedCoach?> = store.snapshots { SavedCoach(CoachPreferencesCodec.decode(it[KEY])) }

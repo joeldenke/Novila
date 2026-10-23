@@ -21,7 +21,7 @@ import java.time.LocalDate
 class CycleStore internal constructor(context: Context, scope: CoroutineScope, cipher: DatastoreCipher) {
     @Inject constructor(context: Context, cipher: DatastoreCipher) : this(context, storeScope(), cipher)
 
-    private val store = PreferencesStore(context, NAME, scope, cipher)
+    internal val store = PreferencesStore(context, NAME, scope, cipher)
 
     /** Whether the user follows their cycle, and what they logged. Null until the first read is done. */
     val cycle: StateFlow<SavedCycle?> = store.snapshots { preferences ->

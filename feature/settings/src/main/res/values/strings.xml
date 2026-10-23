@@ -37,7 +37,18 @@
 
     <!-- Your data -->
     <string name="settings_data">Your data</string>
-    <string name="settings_data_body">Everything you log is saved on this phone only. Novila has no account and no cloud, so nothing can be restored once deleted.</string>
+    <string name="settings_data_body">Everything you log is saved on this phone only. Novila has no account and no cloud, so keep a copy of your own if you want to be able to bring it back.</string>
+    <string name="settings_export_data">Save a copy of my data</string>
+    <string name="settings_import_data">Read in a saved copy</string>
+    <string name="settings_export_body">The copy is a file you choose where to keep, with everything you have logged, your profile, goals, food preferences and both coaches. It is not encrypted, so keep it where only you can reach it. Reminders and the app\'s settings are not in it.</string>
+    <string name="settings_import_data_title">Replace your data with the copy?</string>
+    <string name="settings_import_data_body">Everything Novila has on this phone now is replaced with what the copy holds. This cannot be undone, so save a copy of what is here first if you want to keep it.</string>
+    <string name="settings_import_data_confirm">Choose the copy</string>
+    <string name="settings_exported">The copy is saved.</string>
+    <string name="settings_export_failed">The copy could not be saved. Try again, or choose another place.</string>
+    <string name="settings_imported">The copy is read in.</string>
+    <string name="settings_import_unreadable">That file is not a copy from Novila, or it is damaged. Nothing was changed.</string>
+    <string name="settings_import_too_new">The copy is from a newer version of Novila. Update the app and try again. Nothing was changed.</string>
     <string name="settings_delete_data">Delete all data</string>
     <string name="settings_delete_data_title">Delete all data?</string>
     <string name="settings_delete_data_body">Your profile and goals, your measurements, your logged sleep, food, drinks and workouts, your food preferences and both coaches\' answers are deleted from this phone. Your reminders are turned off. This cannot be undone. Data in Health Connect is not affected.</string>
@@ -67,14 +78,16 @@
     <string name="privacy_screen_title">Notifications, the widget and the tile</string>
     <string name="privacy_screen_body">Reminders you turn on show a short notification, and the widget, if you add it, shows today\'s balance, sleep, food and water on your home screen. The Quick Settings tile, if you add it, shows today\'s glasses of water, but not on the lock screen. Anyone who sees your phone can see them. You can turn reminders off and remove the widget and the tile at any time.</string>
     <string name="privacy_control_title">You decide</string>
-    <string name="privacy_control_body">You can see and change what you have logged in the app. Delete all data under Settings removes your health data from the phone at once, and uninstalling Novila removes all of it. No copy exists anywhere else, so there is nothing more for the developer to delete or hand over. Data in Health Connect is managed in Health Connect.</string>
+    <string name="privacy_control_body">You can see and change what you have logged in the app. Delete all data under Settings removes your health data from the phone at once, and uninstalling Novila removes all of it. No copy exists anywhere else, unless you saved one yourself (below), so there is nothing more for the developer to delete or hand over. Data in Health Connect is managed in Health Connect.</string>
+    <string name="privacy_copy_title">Your own copy</string>
+    <string name="privacy_copy_body">Under Settings you can save a copy of your data as a file, and read it in again, for example on a new phone. You choose where the file is saved with Android's own file picker, and Novila never sends it anywhere. The copy holds what you have entered in Novila, not what is read from Health Connect, and it is not encrypted, so keep it where only you can reach it. If you save it in a cloud service, that service's terms apply to the file. Reading a copy in replaces what Novila has on the phone.</string>
     <string name="privacy_google_title">Google Play and Android</string>
     <string name="privacy_google_body">Novila is installed through Google Play, and Health Connect is part of Android made by Google. They follow Google\'s privacy policy. If you share usage and diagnostics with Google, Google Play may give the developer crash reports, which do not contain what you log in Novila.</string>
     <string name="privacy_adults_title">For adults</string>
     <string name="privacy_adults_body">Novila is made for adults and is not directed at children.</string>
     <string name="privacy_contact_title">Questions and changes</string>
     <string name="privacy_contact_body">Questions about privacy go to the developer\'s contact address on Novila\'s page in Google Play. You can also complain to the Swedish Authority for Privacy Protection (IMY). If this policy changes, the new version comes with an app update, with its date below.</string>
-    <string name="privacy_updated">Updated 22 October 2026</string>
+    <string name="privacy_updated">Updated 23 October 2026</string>
 
     <!-- Licenses -->
     <string name="licenses_title">Open source licenses</string>

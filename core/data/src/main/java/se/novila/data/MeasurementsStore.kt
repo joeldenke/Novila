@@ -23,7 +23,7 @@ import java.time.LocalDate
 class MeasurementsStore internal constructor(context: Context, scope: CoroutineScope, cipher: DatastoreCipher) {
     @Inject constructor(context: Context, cipher: DatastoreCipher) : this(context, storeScope(), cipher)
 
-    private val store = PreferencesStore(context, NAME, scope, cipher)
+    internal val store = PreferencesStore(context, NAME, scope, cipher)
 
     /** Every logged day, newest first. Null until the first read is done. */
     val entries: StateFlow<List<MeasurementEntry>?> = store.snapshots { prefs -> read(prefs) }

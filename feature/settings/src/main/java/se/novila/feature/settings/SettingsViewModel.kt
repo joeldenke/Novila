@@ -1,19 +1,25 @@
 package se.novila.feature.settings
 
 import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import se.novila.data.CoachStore
 import se.novila.data.CycleStore
+import se.novila.data.DataExport
 import se.novila.data.FoodPreferencesStore
 import se.novila.data.GoalsStore
 import se.novila.data.HealthStore
+import se.novila.data.ImportResult
 import se.novila.data.MeasurementsStore
 import se.novila.data.ProfileStore
 import se.novila.data.RemindersStore
@@ -27,6 +33,9 @@ import se.novila.model.ThemeMode
 import se.novila.movement.MovementRepository
 import se.novila.movement.MovementState
 import se.novila.reminders.ReminderScheduler
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.io.InputStream
 import java.time.LocalDate
 
 /**
@@ -49,8 +58,14 @@ class SettingsViewModel(
     private val cycleStore: CycleStore,
     private val reminderScheduler: ReminderScheduler,
     private val movementRepository: MovementRepository,
+    private val dataExport: DataExport,
     private val context: Context,
 ) : ViewModel() {
+    private val transferred = MutableStateFlow<DataTransfer?>(null)
+
+    /** How the latest export or import went, or null before the user tried one. */
+    val transfer: StateFlow<DataTransfer?> = transferred
+
     /** The saved settings, or null before the store's first read. */
     val settings: StateFlow<AppSettings?> = settingsStore.settings
 
@@ -104,4 +119,60 @@ class SettingsViewModel(
         reminderScheduler.cancelAll()
         deleteLegacyPreferences(context)
     }
+
+    /** Writes the export to [uri], the file the user created in the system's file picker. */
+    fun exportTo(uri: Uri) {
+        viewModelScope.launch {
+            val written = try {
+                val text = dataExport.export(LocalDate.now(), version.code)
+                withContext(Dispatchers.IO) {
+                    context.contentResolver.openOutputStream(uri, "wt")?.use { it.write(text.encodeToByteArray()) }
+                } != null
+            } catch (e: IOException) {
+                false
+            } catch (e: SecurityException) {
+                false
+            }
+            transferred.value = if (written) DataTransfer.Exported else DataTransfer.ExportFailed
+        }
+    }
+
+    /**
+     * Replaces the data with the export in [uri], the file the user chose. A file that isn't an export, or is
+     * larger than one can be, changes nothing.
+     */
+    fun importFrom(uri: Uri) {
+        viewModelScope.launch {
+            val text = try {
+                withContext(Dispatchers.IO) { context.contentResolver.openInputStream(uri)?.use(::readExport) }
+            } catch (e: IOException) {
+                null
+            } catch (e: SecurityException) {
+                null
+            }
+            transferred.value = when (text?.let { dataExport.restore(it, version.code) }) {
+                ImportResult.Imported -> DataTransfer.Imported
+                ImportResult.TooNew -> DataTransfer.ImportTooNew
+                ImportResult.Unreadable, null -> DataTransfer.ImportUnreadable
+            }
+        }
+    }
 }
+
+/** How the latest export or import went, for the line under the buttons. */
+enum class DataTransfer { Exported, ExportFailed, Imported, ImportUnreadable, ImportTooNew }
+
+/** The text of an export, or null when it is larger than [DataExport.MAX_BYTES], which no export is. */
+private fun readExport(input: InputStream): String? {
+    val bytes = ByteArrayOutputStream()
+    val buffer = ByteArray(BUFFER_BYTES)
+    while (true) {
+        val read = input.read(buffer)
+        if (read < 0) break
+        bytes.write(buffer, 0, read)
+        if (bytes.size() > DataExport.MAX_BYTES) return null
+    }
+    return bytes.toByteArray().decodeToString()
+}
+
+private const val BUFFER_BYTES = 64 * 1024

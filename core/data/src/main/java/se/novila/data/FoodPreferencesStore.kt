@@ -24,7 +24,7 @@ import se.novila.recipes.RecipeBookCodec
 class FoodPreferencesStore internal constructor(context: Context, scope: CoroutineScope, cipher: DatastoreCipher) {
     @Inject constructor(context: Context, cipher: DatastoreCipher) : this(context, storeScope(), cipher)
 
-    private val store = PreferencesStore(context, NAME, scope, cipher)
+    internal val store = PreferencesStore(context, NAME, scope, cipher)
 
     /** The saved preferences, the defaults where nothing is saved. Null until the first read is done. */
     val preferences: StateFlow<FoodPreferences?> =

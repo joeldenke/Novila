@@ -60,6 +60,7 @@ import se.novila.model.Reminder
 import se.novila.navigation.Navigator
 import se.novila.navigation.SharedScreen
 import se.novila.navigation.sharedScreen
+import java.time.LocalDate
 import se.novila.healthconnect.R as HealthConnectR
 import se.novila.ui.R as UiR
 
@@ -124,6 +125,15 @@ fun EntryProviderScope<NavKey>.settingsEntries(
         val movement by viewModel.movement.collectAsStateWithLifecycle()
         val context = LocalContext.current
         val connectHealth = rememberHealthPermissionRequest(viewModel::onMovementPermissionsResult)
+        val transfer by viewModel.transfer.collectAsStateWithLifecycle()
+        // The system's file picker: the user chooses where the copy goes and which file comes back, so no permission
+        // is needed and nothing is sent anywhere.
+        val exportFile = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument(EXPORT_TYPE)) { uri ->
+            uri?.let(viewModel::exportTo)
+        }
+        val importFile = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+            uri?.let(viewModel::importFrom)
+        }
         SettingsScreen(
             settings = settings,
             profile = profile,
@@ -146,9 +156,12 @@ fun EntryProviderScope<NavKey>.settingsEntries(
                 onOpenPrivacy = { navigator.navigate(PrivacyPolicyRoute) },
                 onOpenLicenses = { navigator.navigate(LicensesRoute) },
                 onDeleteData = viewModel::deleteAllData,
+                onExportData = { exportFile.launch(exportFileName(LocalDate.now())) },
+                onImportData = { importFile.launch(IMPORT_TYPES) },
                 onShowIntro = viewModel::showIntro,
             ),
             contentPadding = contentPadding,
+            transfer = transfer,
         )
     }
     entry<MyGoalsRoute> {
@@ -323,3 +336,12 @@ private fun openLanguageSettings(context: Context) {
         Log.w("Settings", "No per-app language settings", e)
     }
 }
+
+/** The export's file type. */
+private const val EXPORT_TYPE = "application/json"
+
+/** What the import offers: JSON, and the types some file apps give a `.json` file they don't know. */
+private val IMPORT_TYPES = arrayOf(EXPORT_TYPE, "application/octet-stream", "text/plain")
+
+/** "novila-2026-10-23.json": the date tells copies apart. */
+private fun exportFileName(date: LocalDate) = "novila-$date.json"
