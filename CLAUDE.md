@@ -407,7 +407,7 @@ där pluginet `firebase@firebase` inte alltid installeras.
   skärmar öppnas från ingångarna på varje flik. Ny inställning som styr en plan läggs till här, inte som en egen rad i
   Inställningar, som bara har det som gäller appen.
 - **Profil:** `ProfileScreen` är en sida för personen: avatar (`NovilaAvatar`, initialer på granen), namn, födelseår
-  och längd, kroppsmåtten (senaste värdena, loggas per dag i ett sheet, historik med viktkurva) och raden till
+  och längd, kroppsmåtten (senaste värdena, loggas per dag i ett sheet, historik med viktens trend, `weightTrend` i `:core:model`: ett glidande medel där varje vägning flyttar trenden en tiondel per dag sedan den förra, sagt neutralt och aldrig som ett mål) och raden till
   *Mina mål*. Vikten skrivs bara via måtten; profilens vikt följer den senaste mätningen. Inställningar har en rad dit.
 - **Målade scener:** introduktionens scener är målade bilder i samma nordiska stil (falröd stuga, björk, gran, sjö,
   midsommarljus), WebP i featurens `drawable-nodpi`, beskurna till 1,4:1, högst cirka 1120 px breda och helst under 200 kB. De visas bara via

@@ -23,12 +23,18 @@ import se.novila.model.MeasurementEntry
 import se.novila.model.MeasurementForm
 import se.novila.model.NumberInput
 import se.novila.model.Profile
+import se.novila.model.WeightDirection
+import se.novila.model.WeightTrend
 import se.novila.model.on
+import se.novila.model.weightTrend
 import se.novila.ui.common.DayPicker
+import se.novila.ui.common.decimalText
 import se.novila.ui.common.longDateText
 import se.novila.ui.common.shortDateLabels
 import se.novila.ui.preview.PreviewData
 import java.time.LocalDate
+import kotlin.math.abs
+import kotlin.math.roundToInt
 import se.novila.ui.R as UiR
 
 /**
@@ -178,14 +184,23 @@ private fun LogFields(
     }
 }
 
-/** What has been measured, newest first: the weight over the logged days, and one row per day with all four. */
+/**
+ * What has been measured, newest first: the weight's trend over the logged days ([weightTrend]) in neutral words, and
+ * one row per day with all four.
+ */
 @Composable
 internal fun MeasurementsHistoryCard(entries: List<MeasurementEntry>) {
     NovilaCard(title = stringResource(R.string.measure_history)) {
-        val weights = remember(entries) {
-            entries.mapNotNull { entry -> entry.measurements.weightKg?.let { entry.date to it } }.sortedBy { it.first }
+        val trend = remember(entries) { weightTrend(entries) }
+        if (trend != null) {
+            WeightChart(trend.points)
+            NovilaText(trendText(trend), style = NovilaTheme.typography.bodyMedium)
+            NovilaText(
+                stringResource(R.string.measure_trend_footer),
+                style = NovilaTheme.typography.bodySmall,
+                color = NovilaTheme.colors.onSurfaceVariant,
+            )
         }
-        if (weights.size >= 2) WeightChart(weights)
         if (entries.isEmpty()) {
             NovilaText(
                 stringResource(R.string.measure_history_empty),
@@ -198,9 +213,25 @@ internal fun MeasurementsHistoryCard(entries: List<MeasurementEntry>) {
     }
 }
 
-/** The weight of each logged day as a curve, with air above and below so a flat history stays a line in the middle. */
+/** The weight's trend in words: where it is, and which way it has moved over the last weeks, never as a goal. */
 @Composable
-private fun WeightChart(weights: List<Pair<LocalDate, Int>>) {
+private fun trendText(trend: WeightTrend): String {
+    val kg = decimalText(trend.latestKg)
+    val change = decimalText(abs(trend.weeklyChangeKg ?: 0.0))
+    return when (trend.direction) {
+        null -> stringResource(R.string.measure_trend, kg)
+        WeightDirection.Steady -> stringResource(R.string.measure_trend_steady, kg, trend.weeks)
+        WeightDirection.Lower -> stringResource(R.string.measure_trend_lower, kg, change, trend.weeks)
+        WeightDirection.Higher -> stringResource(R.string.measure_trend_higher, kg, change, trend.weeks)
+    }
+}
+
+/**
+ * The weight's trend on each day weighed as a curve, with air above and below so a flat history stays a line in the
+ * middle.
+ */
+@Composable
+private fun WeightChart(weights: List<Pair<LocalDate, Double>>) {
     val values = weights.map { it.second.toFloat() }
     val lowest = values.min()
     val highest = values.max()
@@ -210,7 +241,11 @@ private fun WeightChart(weights: List<Pair<LocalDate, Int>>) {
         labels = shortDateLabels(weights.map { it.first }),
         valueRange = (lowest - pad)..(highest + pad),
         role = NovilaTheme.pillars.training,
-        contentDescription = stringResource(R.string.measure_chart_description, lowest.toInt(), highest.toInt()),
+        contentDescription = stringResource(
+            R.string.measure_chart_description,
+            lowest.roundToInt(),
+            highest.roundToInt(),
+        ),
     )
 }
 

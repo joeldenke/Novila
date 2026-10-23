@@ -132,8 +132,11 @@ language model in the app, or data that leaves the app.
 
 ### 5. Body and mood
 - [x] **Weight and measurements over time** (the profile only has one value)
-- [ ] **The weight's trend:** a smoothed moving average over the measurements, so daily swings in fluid don't steer the
-  impression (like Happy Scale and MacroFactor). Neutral wording, never a weight loss goal.
+- [x] **The weight's trend:** a smoothed moving average over the measurements, so daily swings in fluid don't steer the
+  impression (like Happy Scale and MacroFactor). Neutral wording, never a weight loss goal. Done: `weightTrend` in
+  `:core:model` (each weigh-in moves the trend a tenth of the way per day since the last, however often the user
+  weighs in), drawn as the curve in the profile's history with one line: where the trend is and whether it is about
+  the same, lower or higher a week over the last two to four weeks. The days below still show what the scale said.
 - [x] ~~**Extended mood:** energy, stress and a journal line~~ Removed from Today in October 2026, together with mood:
   their purpose was unclear to the owner. The saved fields remain in `DayEntry`.
 - [x] **Recovery:** resting heart rate and HRV from the watch **(ok)**, which can lower the session's intensity. A card on
@@ -280,7 +283,7 @@ Next, first what needs no approval and is used every day, then what needs the ow
 23. Advice by age in the coach: balance and functional training from 65, with the exercises it needs. ← done
 24. Sleep debt and chronotype: both build on the nights already there, and give `readiness` one more honest signal.
     ← done
-25. Deload and plateaus in progression, and the weight's trend. ← deload and plateaus done
+25. Deload and plateaus in progression, and the weight's trend. ← done
 26. Steps over time **(ok)**: the cheapest change that needs approval, with the most use.
 27. Heart rate zones and writing sessions to Health Connect **(ok)**. Menopause as a sleep cause, when the owner
     decides.

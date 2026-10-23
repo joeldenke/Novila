@@ -178,7 +178,12 @@
     <string name="measure_neck_error">Ange en nacke mellan %1$d och %2$d cm.</string>
     <string name="measure_hips_error">Ange höfter mellan %1$d och %2$d cm.</string>
     <string name="measure_save">Spara</string>
-    <string name="measure_chart_description">Vikt över tid, från %1$d till %2$d kilo.</string>
+    <string name="measure_chart_description">Viktens trend över tid, från %1$d till %2$d kilo.</string>
+    <string name="measure_trend">Viktens trend är %1$s kg.</string>
+    <string name="measure_trend_steady">Viktens trend är %1$s kg, ungefär densamma de senaste %2$d veckorna.</string>
+    <string name="measure_trend_lower">Viktens trend är %1$s kg, ungefär %2$s kg lägre per vecka de senaste %3$d veckorna.</string>
+    <string name="measure_trend_higher">Viktens trend är %1$s kg, ungefär %2$s kg högre per vecka de senaste %3$d veckorna.</string>
+    <string name="measure_trend_footer">Linjen är ett glidande medel av dina vägningar, så en dags svängning i vätska och mat rör den knappt. Dagarna nedan visar vad vågen visade.</string>
     <string name="measure_privacy">Allt du mäter sparas bara i den här telefonen och kräver inget konto. Den senaste vikten blir profilens vikt, så målen följer vågen. Raderar du all data under Inställningar raderas det också.</string>
 
     <!-- Påminnelser -->
