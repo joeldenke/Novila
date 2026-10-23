@@ -28,6 +28,12 @@ och i Play Console i samma PR/release.** Typiska utlösare: en ny Health Connect
 - Policyn hänvisar till utvecklarens kontaktadress i Play. Fyll i *Developer contact → Email* i Play Console; det är
   den adressen användare skriver till.
 
+## Användarvillkor
+
+Play kräver inga användarvillkor för en gratis app utan konto, och Play Console har inget fält för dem. De finns ändå
+i appen (Inställningar → *Användarvillkor*, `TermsScreen`) och som publik text i `docs/terms-of-use.md`, att publicera
+bredvid integritetspolicyn om en adress behövs. Inget i dem ändrar svaren nedan.
+
 ## App content: svar
 
 | Fråga | Svar | Varför |
