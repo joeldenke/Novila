@@ -45,9 +45,12 @@ class WaterTileService : TileService() {
     private fun logGlass() {
         val store = widgetGraph.healthStore
         val today = LocalDate.now()
-        val before = store.days.value?.day(today)?.drinks?.size
+        val known = store.days.value?.day(today)?.drinks?.size
         store.update(today) { it.withGlassOfWater(LocalTime.now()) }
         scope.launch {
+            // Tapped before the app had read its days (the tile can start without the app): the first read comes
+            // before the glass is saved, since a store reads before it writes.
+            val before = known ?: store.days.filterNotNull().first().day(today).drinks.size
             // Shown once the save is done; a full day saves nothing, and then the tile shows the day as it is.
             val saved = withTimeoutOrNull(SAVE_WAIT_MILLIS) {
                 store.days.filterNotNull().first { it.day(today).drinks.size != before }

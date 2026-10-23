@@ -21,7 +21,15 @@ class Navigator(val state: NavigationState) {
                     while (stack.size > index) stack.removeLastOrNull()
                 }
             }
-            state.backStacks[state.topLevelRoute]?.add(route)
+            val stack = state.backStacks[state.topLevelRoute] ?: return
+            // Already open in this tab (a second tap on a tile while its screen slides in): back to it instead of
+            // opening it twice, since the same key twice in one back stack clashes in NavDisplay.
+            val open = stack.indexOf(route)
+            if (open >= 0) {
+                while (stack.size > open + 1) stack.removeLastOrNull()
+            } else {
+                stack.add(route)
+            }
         }
     }
 

@@ -84,6 +84,14 @@ class TrainingProgramGeneratorTest {
         assertEquals(15, program.sessions.first { it.day == DayOfWeek.WEDNESDAY }.minutes)
     }
 
+    @Test fun `low recovery takes a set off each of today's exercises, so the session is as short as it says`() {
+        fun thursday(program: TrainingProgram) = program.sessions.first { it.day == DayOfWeek.THURSDAY }
+        val plain = thursday(TrainingProgramGenerator.generate(emptyList(), today))
+        val low = thursday(TrainingProgramGenerator.generate(emptyList(), today, RecoveryStatus.Low))
+        assertEquals(plain.exercises.map { it.exerciseId }, low.exercises.map { it.exerciseId })
+        assertEquals(plain.exercises.map { (it.sets - 1).coerceAtLeast(1) }, low.exercises.map { it.sets })
+    }
+
     @Test fun `low recovery lightens today's cardio and leaves the other days alone`() {
         val tuesday = monday.plusDays(1)
         val program = TrainingProgramGenerator.generate(emptyList(), tuesday, RecoveryStatus.Low)

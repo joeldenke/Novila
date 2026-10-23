@@ -49,6 +49,21 @@ class NavigatorTest {
         assertEquals(listOf(Idag), navigator.state.backStacks[Idag]?.toList())
     }
 
+    @Test fun `a screen opened twice in a row is opened once`() {
+        val navigator = navigator()
+        navigator.navigate(Settings)
+        navigator.navigate(Settings)
+        assertEquals(listOf(Idag, Settings), navigator.state.backStacks[Idag]?.toList())
+    }
+
+    @Test fun `a screen already open further back in the tab is gone back to`() {
+        val navigator = navigator()
+        navigator.navigate(Settings)
+        navigator.navigate(Reminders)
+        navigator.navigate(Settings)
+        assertEquals(listOf(Idag, Settings), navigator.state.backStacks[Idag]?.toList())
+    }
+
     @Test fun `goBack at a tab's root returns to the start tab instead of leaving the app`() {
         val navigator = navigator()
         navigator.navigate(Training)

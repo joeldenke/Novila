@@ -22,6 +22,13 @@ class AppShortcutTest {
         assertNull(AppShortcut.of(null))
     }
 
+    @Test fun `reopening the app from recent apps doesn't use the shortcut again`() {
+        AppShortcut.entries.forEach { shortcut ->
+            val fromRecents = Intent(shortcut.action).addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY)
+            assertNull(AppShortcut.of(fromRecents))
+        }
+    }
+
     @Test fun `the shortcuts are published, and open this build's main activity`() {
         AppShortcut.publish(context)
 

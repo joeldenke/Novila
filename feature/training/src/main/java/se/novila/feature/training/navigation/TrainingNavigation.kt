@@ -214,6 +214,8 @@ fun EntryProviderScope<NavKey>.trainingEntries(navigator: Navigator, contentPadd
             create(route.dayOfWeek)
         }
         val state by viewModel.state.collectAsStateWithLifecycle()
+        // Nothing to show until the week's program is read, a moment at app start.
+        if (!viewModel.loaded.collectAsStateWithLifecycle().value) return@entry
         WorkoutScreen(
             state = state,
             onNext = viewModel::next,

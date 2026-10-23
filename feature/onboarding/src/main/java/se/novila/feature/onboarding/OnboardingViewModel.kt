@@ -126,14 +126,19 @@ class OnboardingViewModel(
     }
 
     /**
-     * Leaves the whole intro without saving anything: the app opens with no name, no goals and no coach answers, and
-     * remembers that the setup is unfinished, so Settings and the tabs can lead back here. What was typed is
-     * forgotten, the same way as after finishing.
+     * Leaves the whole intro without saving anything. The first time, the app opens with no name, no goals and no coach
+     * answers, and remembers that the setup is unfinished, so Settings and the tabs can lead back here. A setup that
+     * was finished before (the coach has its answers, which finishing always saves) stays finished, so looking at the
+     * intro again from Settings never asks for it again. What was typed is forgotten, the same way as after finishing.
      */
     fun skip() {
         typedName.value = null
         chosen.value = null
-        settingsStore.skipOnboarding()
+        if (coachStore.answers.value?.preferences != null) {
+            settingsStore.finishOnboarding()
+        } else {
+            settingsStore.skipOnboarding()
+        }
     }
 }
 

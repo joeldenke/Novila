@@ -35,8 +35,11 @@ class TrainingWeek(
     val program: TrainingProgram,
     val nextProgram: TrainingProgram,
 ) {
-    /** Whether the program has a session on [date]'s weekday. */
-    fun hasSession(date: LocalDate): Boolean = program.sessions.any { it.day == date.dayOfWeek }
+    /**
+     * Whether the program has a session on [date]'s weekday that the user can do and log: mobility is done in their
+     * own time, so a day with only mobility is no training day, as on Today's checklist ([trainingOn]).
+     */
+    fun hasSession(date: LocalDate): Boolean = trainingOn(date).plannedMinutes > 0
 
     /**
      * [date]'s training for Today's checklist: the minutes planned that the user can log (mobility is done in their
