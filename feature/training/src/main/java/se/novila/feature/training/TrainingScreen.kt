@@ -64,7 +64,17 @@ fun TrainingScreen(
     val plan = remember(state) { state.todayPlan() }
     var loggingCycle by rememberSaveable(openCycleSheet) { mutableStateOf(openCycleSheet) }
     val cycle = state.cycle
-    ScreenList(contentPadding = contentPadding, modifier = modifier) {
+    val connected = movement is MovementState.Connected
+    ScreenList(
+        contentPadding = contentPadding,
+        modifier = modifier,
+        aside = {
+            item(key = "entries") {
+                NovilaReveal(order = 2) { NovilaEntries(trainingHubEntries(state, actions)) }
+            }
+            if (!connected) healthData(movement, recovery, exercise, state, actions)
+        },
+    ) {
         setupHint(setupIncomplete, actions.onCompleteSetup)
         item(key = "overview") {
             NovilaReveal(order = 0) {
@@ -85,7 +95,6 @@ fun TrainingScreen(
                 NovilaReveal(order = 1) { LighterSessionCard(onChoose = actions.cycle.onChooseSession) }
             }
         }
-        val connected = movement is MovementState.Connected
         // Connected, the watch's numbers belong with today's plan; until then the card waits at the bottom.
         if (connected) healthData(movement, recovery, exercise, state, actions)
         item(key = "log") {
@@ -110,10 +119,6 @@ fun TrainingScreen(
                 }
             }
         }
-        item(key = "entries") {
-            NovilaReveal(order = 2) { NovilaEntries(trainingHubEntries(state, actions)) }
-        }
-        if (!connected) healthData(movement, recovery, exercise, state, actions)
     }
     if (loggingCycle && cycle != null) {
         NovilaBottomSheet(title = stringResource(R.string.cycle_sheet_title), onDismiss = { loggingCycle = false }) {
