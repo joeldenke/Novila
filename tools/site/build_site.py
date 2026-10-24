@@ -29,7 +29,7 @@ FONTS = ROOT / "core" / "designsystem" / "src" / "main" / "res" / "font"
 FONT_LICENSE = ROOT / "core" / "designsystem" / "src" / "main" / "assets" / "licenses" / "hanken_grotesk_ofl.txt"
 ICON = ROOT / "docs" / "play-icon.png"
 # The app's own screens in the devices, from the screenshot references CI renders and checks (English; phone size, and
-# 900 dp wide for the tablet and the foldable).
+# a landscape tablet and an unfolded phone for the tablet and the foldable).
 SCREENS = {
     "today": "feature/today/src/test/screenshots/se.novila.feature.today.TodayScreenKt.TodayScreenPreview.H1400dp.png",
     "training": "feature/training/src/test/screenshots/"
@@ -39,9 +39,9 @@ SCREENS = {
     "nutrition": "feature/nutrition/src/test/screenshots/"
     "se.novila.feature.nutrition.NutritionScreenKt.NutritionScreenPreview.H1200dp_WITH_BACKGROUND.png",
     "tablet": "feature/today/src/test/screenshots/"
-    "se.novila.feature.today.TodayScreenKt.TodayScreenTabletPreview.W900dp_H1000dp.png",
+    "se.novila.feature.today.TodayScreenKt.TodayScreenLandscapePreview.W1200dp_H800dp.png",
     "foldable": "feature/training/src/test/screenshots/"
-    "se.novila.feature.training.TrainingScreenKt.TrainingScreenTabletPreview.W900dp_H1200dp_WITH_BACKGROUND.png",
+    "se.novila.feature.training.TrainingScreenKt.TrainingScreenFoldablePreview.W852dp_H880dp_WITH_BACKGROUND.png",
 }
 
 LANGUAGES = {

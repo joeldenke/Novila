@@ -601,7 +601,7 @@ där pluginet `firebase@firebase` inte alltid installeras.
   sol). Policyn och villkoren görs av avsnitten `## English` och `## Svenska` i `docs/privacy-policy.md` och
   `docs/terms-of-use.md`, så de skrivs aldrig in i `site/`. Typsnittet och ikonen kopieras från appen, scenerna
   är sajtens egna (`site/images`), och telefonerna, surfplattan och den vikbara visar appens egna
-  skärmdumpsreferenser (`SCREENS` i byggskriptet, 900 dp breda för de stora skärmarna), så sajten alltid visar appen
+  skärmdumpsreferenser (`SCREENS` i byggskriptet; surfplattan och den vikbara visar previews för en liggande surfplatta och en uppfälld vikbar), så sajten alltid visar appen
   som den är. Adresserna (`PAGES` i byggskriptet) är publika och står i Play Console; flytta aldrig en. Sajten följer appens
   regler för texter (*Inga medicinska påståenden*, inga emojis, inga andra appar eller "bäst") och har inga kakor,
   analysverktyg, externa typsnitt eller skript. Domänen och HTTPS ställs in under repots Settings → Pages, inte med en

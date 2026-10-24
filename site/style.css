@@ -634,12 +634,10 @@ a.play:hover {
 
 .tablet-screen {
   aspect-ratio: 3 / 2;
-  padding-top: 2%;
 }
 
 .foldable-screen {
-  aspect-ratio: 6 / 5;
-  padding-top: 3%;
+  aspect-ratio: 852 / 880;
   border-radius: 17px;
 }
 
