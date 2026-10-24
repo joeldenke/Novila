@@ -102,8 +102,8 @@ class MeasurementsCardsTest {
         composeRule.setContent { NovilaTheme { MeasurementsHistoryCard(sampleMeasurements) } }
 
         // Weighed 76, 75, 74 and 73 kg over three weeks: the running average trails the scale a little, while the
-        // weekly change is the line through the weigh-ins, a kilo a week.
-        composeRule.onNodeWithText("Your weight's trend is 73.8 kg, about 1 kg a week lower over the last 3 weeks.")
+        // weekly change is the least squares line through the weigh-ins (23, 16, 7 and 0 days ago), 0.9 kg a week.
+        composeRule.onNodeWithText("Your weight's trend is 73.8 kg, about 0.9 kg a week lower over the last 3 weeks.")
             .assertExists()
         composeRule.onNodeWithText("running average", substring = true).assertExists()
     }
