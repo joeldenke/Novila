@@ -122,6 +122,9 @@ fun EntryProviderScope<NavKey>.settingsEntries(
         val profile = viewModel.profile.collectAsStateWithLifecycle().value ?: return@entry
         val movement by viewModel.movement.collectAsStateWithLifecycle()
         val context = LocalContext.current
+        // Read in composition, so a language change gives the page in the new language.
+        val privacyUrl = stringResource(R.string.privacy_url)
+        val termsUrl = stringResource(R.string.terms_url)
         val connectHealth = rememberHealthPermissionRequest(viewModel::onMovementPermissionsResult)
         val transfer by viewModel.transfer.collectAsStateWithLifecycle()
         // The system's file picker: the user chooses where the copy goes and which file comes back, so no permission
@@ -151,8 +154,8 @@ fun EntryProviderScope<NavKey>.settingsEntries(
                 onInstallHealth = { HealthConnectSource.openInstall(context) },
                 onOpenHealthInfo = { navigator.navigate(HealthDataRoute) },
                 onOpenDisclaimer = { navigator.navigate(DisclaimerRoute) },
-                onOpenPrivacy = { openWebPage(context, context.getString(R.string.privacy_url)) },
-                onOpenTerms = { openWebPage(context, context.getString(R.string.terms_url)) },
+                onOpenPrivacy = { openWebPage(context, privacyUrl) },
+                onOpenTerms = { openWebPage(context, termsUrl) },
                 onOpenLicenses = { navigator.navigate(LicensesRoute) },
                 onDeleteData = viewModel::deleteAllData,
                 onExportData = { exportFile.launch(exportFileName(LocalDate.now())) },

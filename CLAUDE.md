@@ -282,6 +282,9 @@ Misstag som redan har gjorts i det här repot. Gör dem inte igen.
   direkt i modulen. Build-jobbet kompilerar nu även release (`:app:compileReleaseKotlin`, utan R8).
 - **Apostrofer i strängar:** en oescapad `'` i `strings.xml` (t.ex. "Android's") får aapt att vägra hela filen med
   bara "Can not extract resource", utan strängen (#104). Skriv `\'`. `ArchitectureTest` hittar dem.
+- **Resurser via `LocalContext`:** läs aldrig strängar med `LocalContext.current.getString(...)` i en composable,
+  inte heller i en callback (lint `LocalContextGetResourceValueCall`, #124): ett språkbyte ger då gammal text.
+  Läs dem med `stringResource` i kompositionen och ge värdet till callbacken.
 - **Spotless och Isolated Projects:** ge Spotless filträd (`fileTree(...)`) som `target`, aldrig glob-strängar som
   `"**/*.kt"`. För en glob slår Spotless upp varje undermoduls `build`-katalog, och då fallerar bygget med
   "cannot access 'Project.layout' functionality on subprojects". Isolated Projects stoppar sådant i varje bygge.

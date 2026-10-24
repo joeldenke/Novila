@@ -31,6 +31,10 @@
     <!-- Keep resources tidy. -->
     <issue id="UnusedResources" severity="error" />
 
+    <!-- Strings in Compose come from stringResource, never LocalContext.current.getString, which misses a
+         language or configuration change (#124). -->
+    <issue id="LocalContextGetResourceValueCall" severity="error" />
+
     <!-- Dependency versions are managed by Dependabot, not lint. -->
     <issue id="GradleDependency" severity="ignore" />
     <issue id="AndroidGradlePluginVersion" severity="ignore" />
