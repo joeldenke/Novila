@@ -26,6 +26,7 @@ import se.novila.anatomy.MuscleGroup
 import se.novila.designsystem.component.NovilaAccentButton
 import se.novila.designsystem.component.NovilaButton
 import se.novila.designsystem.component.NovilaCard
+import se.novila.designsystem.component.NovilaColumns
 import se.novila.designsystem.component.NovilaScaffold
 import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
@@ -254,10 +255,13 @@ fun StrengthSessionCard(
             style = NovilaTheme.typography.bodyMedium,
             color = NovilaTheme.colors.onSurfaceVariant,
         )
-        session.exercises.forEach { planned ->
-            ExerciseLibrary.byId(planned.exerciseId)?.let { motion ->
-                PlannedExerciseRow(motion, planned, onOpenExercise)
-            }
+        // Two columns on a wide card, so the figures stay small.
+        val planned = session.exercises.mapNotNull { planned ->
+            ExerciseLibrary.byId(planned.exerciseId)?.let { it to planned }
+        }
+        NovilaColumns(planned.size) { index ->
+            val (motion, exercise) = planned[index]
+            PlannedExerciseRow(motion, exercise, onOpenExercise)
         }
         val start = stringResource(R.string.workout_start)
         when {

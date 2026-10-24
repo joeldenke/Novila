@@ -1,5 +1,11 @@
 package se.novila.designsystem.component
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -15,6 +21,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import se.novila.designsystem.theme.NovilaTheme
 
 /**
  * A vertical fold or hinge across the window, from the window's left edge to its right edge. On an unfolded phone
@@ -56,3 +63,26 @@ fun Modifier.novilaActionWidth(): Modifier = this
     .wrapContentWidth(Alignment.End)
     .widthIn(max = NovilaMaxButtonWidth)
     .fillMaxWidth()
+
+/** A card this wide lays a list out in two columns, so each item keeps about a phone's width. */
+private val TwoColumnsWidth = 560.dp
+
+/**
+ * [count] items, each drawn by [item]: one column on a phone, and two side by side on a card wider than
+ * [TwoColumnsWidth], in reading order row by row.
+ */
+@Composable
+fun NovilaColumns(count: Int, modifier: Modifier = Modifier, item: @Composable (index: Int) -> Unit) {
+    BoxWithConstraints(modifier.fillMaxWidth()) {
+        val spacing = NovilaTheme.spacing
+        val columns = if (maxWidth >= TwoColumnsWidth) 2 else 1
+        Column(verticalArrangement = Arrangement.spacedBy(spacing.s)) {
+            (0 until count).chunked(columns).forEach { row ->
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(spacing.l)) {
+                    row.forEach { Box(Modifier.weight(1f)) { item(it) } }
+                    if (row.size < columns) Spacer(Modifier.weight(1f))
+                }
+            }
+        }
+    }
+}

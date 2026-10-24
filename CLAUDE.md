@@ -405,7 +405,8 @@ där pluginet `firebase@firebase` inte alltid installeras.
   `material3-adaptive`), så inget kort ligger över det. Byggarna vet genom `ScreenListScope.twoPanes` var de är, så
   ett kort kan flytta till stödrutan eller bara visas där det får plats (dagens övningar på Träning). Knappar dras
   aldrig ut: huvudknappar på breda kort tar `Modifier.novilaActionWidth()` (hela bredden på en telefon, annars högst
-  `NovilaMaxButtonWidth` vid slutet), och *Din dag* blir rutor sida vid sida på ett brett kort (`NovilaTaskList`).
+  `NovilaMaxButtonWidth` vid slutet), *Din dag* blir rutor sida vid sida på ett brett kort (`NovilaTaskList`) och listor som
+  passets övningar två spalter (`NovilaColumns`).
   `NovilaEntries` lägger två till fyra rutor per rad efter bredden. Lägg previews för nya startsidor med
   `widthDp = 900`, en liggande surfplatta (`widthDp = 1200, heightDp = 800`) och en uppfälld vikbar
   (`widthDp = 852` i `NovilaUnfolded`). Följ skillen `adaptive`.
