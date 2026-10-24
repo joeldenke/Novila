@@ -77,7 +77,15 @@ fun SleepScreen(
 ) {
     val isToday = day.date == today
     var logging by rememberSaveable(openSheet) { mutableStateOf(openSheet) }
-    ScreenList(contentPadding = contentPadding, modifier = modifier) {
+    ScreenList(
+        contentPadding = contentPadding,
+        modifier = modifier,
+        aside = {
+            item(key = "entries") {
+                NovilaReveal(order = 2) { NovilaEntries(sleepHubEntries(history, coach, actions)) }
+            }
+        },
+    ) {
         item(key = "day") { DayPicker(day.date, today, actions.onSelectDay, NovilaTheme.pillars.sleep) }
         item(key = "night") {
             NovilaReveal(order = 0) {
@@ -86,9 +94,6 @@ fun SleepScreen(
         }
         if (watch is SleepState.NeedsPermission) {
             item(key = "watch") { NovilaReveal(order = 1) { WatchCard(watch, actions) } }
-        }
-        item(key = "entries") {
-            NovilaReveal(order = 2) { NovilaEntries(sleepHubEntries(history, coach, actions)) }
         }
     }
     if (logging) {

@@ -406,7 +406,10 @@ där pluginet `firebase@firebase` inte alltid installeras.
   det. Lägg en `@Preview` med `NovilaEntryLayout.Rows` för nya startsidor.
 - **Adaptiv layout:** appen ska fungera på surfplattor, vikbara och i liggande läge. Från `NovilaRailMinWidth`
   (600 dp, storleksklassen *medium*) ligger flikarna i en `NovilaNavigationRail` i stället för bottenraden, och
-  `ScreenList` centrerar innehållet på högst 720 dp. `NovilaEntries` lägger två till fyra rutor per rad efter bredden.
+  `ScreenList` centrerar innehållet på högst 640 dp. Flikarnas startsidor ger det som stöder översikten (ingångarna,
+  insikterna) till `ScreenList(aside = …)`: på en telefon följer det efter i samma lista, och från 700 dp bredd blir
+  det en egen ruta bredvid (*supporting pane*), två rutor på högst 1040 dp tillsammans, så inga kort eller knappar
+  dras ut över skärmen. `NovilaEntries` lägger två till fyra rutor per rad efter bredden.
   Lägg en `@Preview` med `widthDp = 900` för nya startsidor. Följ skillen `adaptive`.
 - **Coachens inställningar:** `CoachScreen` är bara inställningar (mål, dagar och veckodagar, tid, fokus, redskap,
   hänsyn och coachens skäl), öppnad från Träning och från *Mina mål*. Veckan och "Föreslå ett annat program" ligger
