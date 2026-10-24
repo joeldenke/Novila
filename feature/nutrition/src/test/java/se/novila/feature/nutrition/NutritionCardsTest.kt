@@ -48,8 +48,9 @@ class NutritionCardsTest {
         composeRule.onNodeWithText("One serving is about a handful, or 100 g. Potatoes don't count.").assertExists()
         composeRule.onNodeWithText("One serving is a meal: breakfast, lunch or dinner.").assertExists()
         composeRule.onNodeWithText(
-            "One serving is about 100 g fish or poultry, an egg, or a handful of beans or lentils.",
+            "One serving is about 100 g poultry, an egg, or a handful of beans or lentils.",
         ).assertExists()
+        composeRule.onNodeWithText("fish two to three times a week", substring = true).assertExists()
         composeRule.onNodeWithText("Beef, pork, lamb, sausage", substring = true).assertExists()
         composeRule.onNodeWithText("One serving is a slice of whole grain bread or a portion of pasta, rice or oats.")
             .assertExists()
