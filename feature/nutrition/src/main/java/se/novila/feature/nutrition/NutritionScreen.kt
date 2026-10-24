@@ -59,9 +59,9 @@ enum class NutritionSheet { Food, Drinks }
  * missing, chosen for [foodPreferences], the scores over time from the [history] (a week up to the shown day) and the
  * food preferences. Food ([onLogMeal], [onPortions], [onTreats], [onRedMeat]) and drinks ([drinkActions]) are
  * logged in a sheet ([NutritionSheet]), [openSheet] at first, each with the [quickPicks] to log again with one tap
- * and a star that keeps a meal first ([onToggleFavorite]). [today] is the day it really is: the user can go back to an earlier day
- * ([onSelectDay]) and fill in what was forgotten. When the introduction was skipped ([setupIncomplete]), a quiet card
- * under the day picker leads to finishing the setup ([onCompleteSetup]).
+ * and a star that keeps a meal first ([onToggleFavorite]). [today] is the day it really is: the user can go back to
+ * an earlier day ([onSelectDay]) and fill in what was forgotten. When the introduction was skipped
+ * ([setupIncomplete]), a quiet card under the day picker leads to finishing the setup ([onCompleteSetup]).
  */
 @Composable
 fun NutritionScreen(
