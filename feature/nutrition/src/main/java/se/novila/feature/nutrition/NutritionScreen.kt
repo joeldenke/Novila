@@ -89,7 +89,19 @@ fun NutritionScreen(
 ) {
     val isToday = day.date == today
     var sheet by rememberSaveable(openSheet) { mutableStateOf(openSheet) }
-    ScreenList(contentPadding = contentPadding, modifier = modifier) {
+    ScreenList(
+        contentPadding = contentPadding,
+        modifier = modifier,
+        aside = {
+            item(key = "entries") {
+                NovilaReveal(order = 2) {
+                    // Recipes are for today only.
+                    val recipesToday = recipes.takeIf { isToday }
+                    NovilaEntries(nutritionHubEntries(history, goals, recipesToday, foodPreferences, navigation))
+                }
+            }
+        },
+    ) {
         item(key = "day") { DayPicker(day.date, today, onSelectDay, NovilaTheme.pillars.nutrition) }
         setupHint(setupIncomplete, onCompleteSetup)
         item(key = "score") {
@@ -103,13 +115,6 @@ fun NutritionScreen(
                     onWater = { drinkActions.onAdd(DrinkKind.Water, DrinkKind.Water.defaultMl) },
                     onDrink = { sheet = NutritionSheet.Drinks },
                 )
-            }
-        }
-        item(key = "entries") {
-            NovilaReveal(order = 2) {
-                // Recipes are for today only.
-                val recipesToday = recipes.takeIf { isToday }
-                NovilaEntries(nutritionHubEntries(history, goals, recipesToday, foodPreferences, navigation))
             }
         }
     }
