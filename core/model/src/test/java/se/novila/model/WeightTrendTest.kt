@@ -2,6 +2,7 @@ package se.novila.model
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.time.LocalDate
 
@@ -41,12 +42,17 @@ class WeightTrendTest {
         val falling = weightTrend(weighIns(28L to 78, 21L to 77, 14L to 76, 7L to 75, 0L to 74))!!
         assertEquals(4, falling.weeks)
         assertEquals(WeightDirection.Lower, falling.direction)
-        val points = falling.points
-        assertEquals((points.last().second - points.first().second) / 4, falling.weeklyChangeKg!!, 1e-9)
+        // The line through the weigh-ins, not the lagging average: exactly a kilo a week.
+        assertEquals(-1.0, falling.weeklyChangeKg!!, 1e-9)
 
         val rising = weightTrend(weighIns(14L to 70, 7L to 71, 0L to 72))!!
         assertEquals(2, rising.weeks)
         assertEquals(WeightDirection.Higher, rising.direction)
+
+        // A change that has just begun: the line sees it in full, while the trend still lags behind.
+        val days = (21L downTo 7L).map { it to 80 } + (6L downTo 0L).map { it to 79 }
+        val begun = weightTrend(weighIns(*days.toTypedArray()))!!
+        assertTrue(begun.weeklyChangeKg!! < -0.3)
 
         // Weigh-ins older than four weeks don't count for the change.
         val old = weightTrend(weighIns(60L to 90, 0L to 74))!!

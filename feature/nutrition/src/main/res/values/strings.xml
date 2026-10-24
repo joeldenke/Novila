@@ -15,6 +15,8 @@
     <string name="nutrition_done_body">Every food group has reached its daily goal.</string>
     <string name="nutrition_treat_penalty">Sweets and snacks: −%1$d points today. One a day is free.</string>
     <string name="nutrition_treat_penalty_day">Sweets and snacks: −%1$d points that day. One a day is free.</string>
+    <string name="nutrition_red_meat_penalty">Red meat and charcuterie: −%1$d points today. One a day is free.</string>
+    <string name="nutrition_red_meat_penalty_day">Red meat and charcuterie: −%1$d points that day. One a day is free.</string>
     <string name="nutrition_about">Weighted after the Swedish Food Agency\'s dietary advice: vegetables and fruit count the most.</string>
     <string name="nutrition_log_food">Log food</string>
     <string name="nutrition_log_water">+%1$s water</string>
@@ -34,10 +36,12 @@
     <string name="food_protein">Protein</string>
     <string name="food_whole_grain">Whole grain</string>
     <string name="food_treats">Sweets &amp; snacks</string>
+    <string name="food_red_meat">Red meat &amp; charcuterie</string>
     <string name="food_progress">%1$d of %2$d</string>
     <string name="serving_vegetables">One serving is about a handful, or 100 g. Potatoes don\'t count.</string>
     <string name="serving_meals">One serving is a meal: breakfast, lunch or dinner.</string>
-    <string name="serving_protein">One serving is about 100 g fish, poultry or meat, an egg, or a handful of beans or lentils.</string>
+    <string name="serving_protein">One serving is about 100 g fish or poultry, an egg, or a handful of beans or lentils.</string>
+    <string name="serving_red_meat">Beef, pork, lamb, sausage, ham and the like. Counts as half a serving of protein: the advice is at most 350 g a week, and fish, beans or poultry more often.</string>
     <string name="serving_whole_grain">One serving is a slice of whole grain bread or a portion of pasta, rice or oats.</string>
     <string name="serving_water">One serving is a glass, about 2 dl.</string>
     <string name="food_treats_value">%1$d today</string>

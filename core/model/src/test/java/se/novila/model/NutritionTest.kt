@@ -51,4 +51,21 @@ class NutritionTest {
         assertEquals(NextPortion(FoodGroup.Water, 2), almost.nextPortion())
         assertNull(almost.withPortions(FoodGroup.Water, WATER_GOAL).nextPortion())
     }
+
+    @Test fun `red meat counts as half a protein portion and costs points beyond one a day`() {
+        // Three protein portions of fish, beans or eggs fill the group; three of red meat count as one and a half.
+        val fish = DayEntry(date, food = FoodLog(protein = 3)).nutritionScore()!!
+        val meat = DayEntry(date, food = FoodLog(redMeat = 3)).nutritionScore()!!
+        assertEquals(20, fish.total)
+        assertEquals(10, meat.parts.single { it.group == FoodGroup.Protein }.points.toInt())
+        // Two portions beyond the free one cost five points each.
+        assertEquals(10, meat.redMeatPenalty)
+        assertEquals(0, meat.total)
+        // One a day costs nothing.
+        val one = DayEntry(date, food = FoodLog(protein = 2, redMeat = 1)).nutritionScore()!!
+        assertEquals(0, one.redMeatPenalty)
+        assertEquals(17, one.total)
+        // Red meat alone counts as something logged.
+        assertEquals(0, DayEntry(date, food = FoodLog(redMeat = 1)).nutritionScore()?.redMeatPenalty)
+    }
 }

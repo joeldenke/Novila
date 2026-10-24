@@ -3,6 +3,7 @@ package se.novila.recipes
 import se.novila.model.DayEntry
 import se.novila.model.FoodGroup
 import se.novila.model.withPortions
+import se.novila.model.withRedMeat
 
 /** When in the day a recipe is eaten. Breakfast and main meals count as a meal; a snack does not. */
 enum class MealSlot(val isMeal: Boolean) {
@@ -55,6 +56,7 @@ enum class RecipeTime {
  * - [diet]: the least strict diet that may eat it. A recipe fits a user when its diet is the same as or stricter than
  *   the user's ([Diet] is ordered from most to least inclusive), so a vegan recipe fits everyone.
  * - [minutes]: preparation and cooking time, used for [RecipeTime] and the user's time limit.
+ * - [redMeat]: portions of red meat or charcuterie (any recipe with [FoodKind.Meat]), counted apart from [protein].
  * - [vegetables], [protein] and [wholeGrain]: portions one serving gives in the nutrition score's groups (vegetables
  *   at about 100 g, potatoes are not vegetables in the dietary advice). [portions] adds meals from [slot]; water is
  *   always 0.
@@ -81,6 +83,7 @@ enum class Recipe(
     val wholeGrain: Int,
     val allergens: Set<Allergen>,
     val kinds: Set<FoodKind>,
+    val redMeat: Int = 0,
 ) {
     OvernightOats(
         MealSlot.Breakfast,
@@ -297,10 +300,11 @@ enum class Recipe(
         Diet.Everything,
         minutes = 30,
         vegetables = 2,
-        protein = 1,
+        protein = 0,
         wholeGrain = 0,
         allergens = setOf(Allergen.Gluten, Allergen.Eggs, Allergen.Milk),
         kinds = setOf(FoodKind.Meat, FoodKind.Potatoes, FoodKind.Dairy, FoodKind.Eggs, FoodKind.Grains),
+        redMeat = 1,
     ),
     FalafelWithCouscous(
         MealSlot.Main,
@@ -351,6 +355,7 @@ enum class Recipe(
         wholeGrain = 1,
         allergens = setOf(Allergen.Gluten, Allergen.Mustard),
         kinds = setOf(FoodKind.Legumes, FoodKind.Meat, FoodKind.Vegetables, FoodKind.Grains, FoodKind.Fats),
+        redMeat = 1,
     ),
     RootVegetableLentilSoup(
         MealSlot.Main,
@@ -437,20 +442,22 @@ enum class Recipe(
         Diet.Everything,
         minutes = 45,
         vegetables = 2,
-        protein = 1,
+        protein = 0,
         wholeGrain = 0,
         allergens = setOf(Allergen.Celery),
         kinds = setOf(FoodKind.Meat, FoodKind.Vegetables, FoodKind.Potatoes, FoodKind.Fats),
+        redMeat = 1,
     ),
     MinuteSteakWithTomatoSalad(
         MealSlot.Main,
         Diet.Everything,
         minutes = 15,
         vegetables = 2,
-        protein = 1,
+        protein = 0,
         wholeGrain = 0,
         allergens = emptySet(),
         kinds = setOf(FoodKind.Meat, FoodKind.Vegetables, FoodKind.Fats),
+        redMeat = 1,
     ),
     RiceNoodlesWithPrawns(
         MealSlot.Main,
@@ -581,6 +588,7 @@ enum class Recipe(
     val time: RecipeTime get() = RecipeTime.of(minutes)
 }
 
-/** The day with one serving of [recipe] logged: its portions added to each food group. */
+/** The day with one serving of [recipe] logged: its portions added to each food group, and its red meat. */
 fun DayEntry.withRecipe(recipe: Recipe): DayEntry =
     FoodGroup.entries.fold(this) { day, group -> day.withPortions(group, recipe.portions(group)) }
+        .withRedMeat(recipe.redMeat)

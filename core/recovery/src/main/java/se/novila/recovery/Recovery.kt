@@ -1,6 +1,9 @@
 package se.novila.recovery
 
+import se.novila.science.Baseline
+import se.novila.science.baseline
 import java.time.LocalDate
+import kotlin.math.ln
 
 /**
  * What a watch recorded about the body's recovery on one day: [restingHeartRate] in beats per minute and heart
@@ -54,13 +57,20 @@ fun recoveryDays(resting: Map<LocalDate, Int>, hrv: Map<LocalDate, Long>): List<
     }
 
 /**
- * How the body has recovered, from the watch's [days] up to [today]: [RecoveryStatus.Low] when the latest day
- * is clearly worse than the user's own recent baseline, so the training plan can suggest an easier session
- * ([analyzeRecovery]'s result is what lowers the dose). Each metric is judged on its own and needs
- * [MIN_BASELINE_DAYS] earlier days to compare with; without that, or when the latest reading is older than
- * [STALE_DAYS] days, the status is [RecoveryStatus.Unknown]:
- * - Resting heart rate: [ELEVATED_BPM] or more above the baseline's median.
- * - HRV: less than [LOW_HRV_PERCENT] percent of the baseline's median.
+ * How the body has recovered, from the watch's [days] up to [today]: [RecoveryStatus.Low] when the last few days are
+ * clearly worse than the user's own normal, so the training plan can suggest an easier session ([analyzeRecovery]'s
+ * result is what lowers the dose). This follows how heart rate variability is read in sports science (Plews et al.
+ * 2013, Buchheit 2014):
+ * - The current value is the mean of the last [RECENT_DAYS] days, not one morning, since a single reading swings
+ *   10–20 % from day to day.
+ * - HRV (RMSSD) is skewed, so it is compared as ln(RMSSD).
+ * - The normal is the user's own [Baseline] over the [BASELINE_DAYS] days before those, which don't overlap with them,
+ *   and a value is worse when it is more than one of the user's own standard deviations out (at least
+ *   [MIN_LN_HRV_SPREAD] for HRV and [MIN_BPM_SPREAD] beats for the resting heart rate, so a baseline that hardly
+ *   varied doesn't call every small change unusual).
+ *
+ * Each metric is judged on its own and needs [MIN_BASELINE_DAYS] baseline days; without that, or when the latest
+ * reading is older than [STALE_DAYS] days, the status is [RecoveryStatus.Unknown].
  *
  * Only earlier days that are [comparable] with the latest one form the baseline. For a user who follows their cycle,
  * that is the days in the same half of it: resting heart rate normally rises a few beats and HRV falls in the late
@@ -76,17 +86,19 @@ fun analyzeRecovery(
     val measured = days.filter { it.date <= today && !it.isEmpty }.sortedBy { it.date }
     val current = measured.lastOrNull() ?: return RecoveryStatus.Unknown
     if (current.date < today.minusDays(STALE_DAYS)) return RecoveryStatus.Unknown
-    val baseline = measured.filter {
-        it.date >= current.date.minusDays(BASELINE_DAYS) && it.date < current.date && comparable(it.date, current.date)
+    val recentFrom = current.date.minusDays(RECENT_DAYS - 1)
+    val recent = measured.filter { it.date >= recentFrom }
+    val earlier = measured.filter {
+        it.date < recentFrom && it.date >= recentFrom.minusDays(BASELINE_DAYS) && comparable(it.date, current.date)
     }
-    val resting = impaired(
-        current = current.restingHeartRate?.toDouble(),
-        baseline = baseline.mapNotNull { it.restingHeartRate }.map(Int::toDouble),
-    ) { value, median -> value >= median + ELEVATED_BPM }
-    val hrv = impaired(
-        current = current.hrvMillis?.toDouble(),
-        baseline = baseline.mapNotNull { it.hrvMillis }.map(Long::toDouble),
-    ) { value, median -> value * 100 < median * LOW_HRV_PERCENT }
+    val resting = judge(
+        recent = recent.mapNotNull { it.restingHeartRate?.toDouble() },
+        earlier = earlier.mapNotNull { it.restingHeartRate?.toDouble() },
+    ) { value, normal -> normal.isAbove(value, minSpread = MIN_BPM_SPREAD) }
+    val hrv = judge(
+        recent = recent.mapNotNull { it.hrvMillis?.takeIf { ms -> ms > 0 }?.let { ms -> ln(ms.toDouble()) } },
+        earlier = earlier.mapNotNull { it.hrvMillis?.takeIf { ms -> ms > 0 }?.let { ms -> ln(ms.toDouble()) } },
+    ) { value, normal -> normal.isBelow(value, minSpread = MIN_LN_HRV_SPREAD) }
     val judgements = listOfNotNull(resting, hrv)
     return when {
         judgements.isEmpty() -> RecoveryStatus.Unknown
@@ -95,26 +107,30 @@ fun analyzeRecovery(
     }
 }
 
-/** Whether [current] is worse than the median of [baseline], or null when there is nothing to judge yet. */
-private fun impaired(current: Double?, baseline: List<Double>, worse: (Double, Double) -> Boolean): Boolean? {
-    if (current == null || baseline.size < MIN_BASELINE_DAYS) return null
-    return worse(current, median(baseline))
+/**
+ * Whether the mean of the [recent] values is worse than the [earlier] ones' baseline, or null when there is nothing
+ * recent or too little to compare with.
+ */
+private fun judge(recent: List<Double>, earlier: List<Double>, worse: (Double, Baseline) -> Boolean): Boolean? {
+    if (recent.isEmpty()) return null
+    val normal = baseline(earlier, minCount = MIN_BASELINE_DAYS) ?: return null
+    return worse(recent.average(), normal)
 }
-
-/** The middle of sorted [values], the higher of the two middles for an even count. */
-private fun median(values: List<Double>): Double = values.sorted()[values.size / 2]
 
 /** A watch that hasn't synced for [STALE_DAYS] days says nothing about today. */
 private const val STALE_DAYS = 2L
 
-/** The days before the latest one that form the baseline to compare it with. */
-private const val BASELINE_DAYS = 7L
+/** The days averaged for the current value: the latest reading and the two before it. */
+const val RECENT_DAYS = 3L
+
+/** The days before the recent ones that form the baseline: the rest of the two weeks Health Connect gives. */
+const val BASELINE_DAYS = 11L
 
 /** How many baseline days each metric needs before it can be judged at all. */
-private const val MIN_BASELINE_DAYS = 3
+const val MIN_BASELINE_DAYS = 4
 
-/** Resting heart rate this much above the baseline's median is worse. */
-private const val ELEVATED_BPM = 5
+/** The smallest spread of the resting heart rate, in beats per minute. */
+const val MIN_BPM_SPREAD = 2.0
 
-/** HRV below this share of the baseline's median (percent) is worse. */
-private const val LOW_HRV_PERCENT = 80
+/** The smallest spread of ln(RMSSD): about 7 %, near what a watch measures from one morning to the next. */
+const val MIN_LN_HRV_SPREAD = 0.07

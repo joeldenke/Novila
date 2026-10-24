@@ -7,11 +7,14 @@ import java.time.LocalDate
 class RecoveryAnalysisTest {
     private val today = LocalDate.of(2026, 10, 15)
 
-    /** Seven days of a steady resting heart rate of 50 and HRV of 50 ms before [latest]. */
-    private fun baseline(latest: (Int, Long) -> RecoveryDay): List<RecoveryDay> =
-        (1L..7L).map { daysAgo ->
-            RecoveryDay(today.minusDays(daysAgo), restingHeartRate = 50, hrvMillis = 50)
-        } + latest(50, 50)
+    /**
+     * Two weeks of readings: a steady resting heart rate of 50 and HRV of 50 ms in the baseline (3 to 13 days ago),
+     * and [recent] for the last three days (2 days ago, yesterday, today).
+     */
+    private fun days(recent: (daysAgo: Long) -> RecoveryDay = { steady(it) }): List<RecoveryDay> =
+        (3L..13L).map { steady(it) } + (2L downTo 0L).map(recent)
+
+    private fun steady(daysAgo: Long) = RecoveryDay(today.minusDays(daysAgo), restingHeartRate = 50, hrvMillis = 50)
 
     @Test fun `no readings is unknown`() {
         assertEquals(RecoveryStatus.Unknown, analyzeRecovery(emptyList(), today))
@@ -19,67 +22,71 @@ class RecoveryAnalysisTest {
     }
 
     @Test fun `steady values are normal`() {
-        val days = baseline { resting, hrv -> RecoveryDay(today, restingHeartRate = resting, hrvMillis = hrv) }
-        assertEquals(RecoveryStatus.Normal, analyzeRecovery(days, today))
+        assertEquals(RecoveryStatus.Normal, analyzeRecovery(days(), today))
     }
 
-    @Test fun `a resting heart rate clearly above the baseline is low`() {
-        val days = baseline { _, hrv -> RecoveryDay(today, restingHeartRate = 55, hrvMillis = hrv) }
+    @Test fun `a resting heart rate above the normal range for some days is low`() {
+        val days = days { RecoveryDay(today.minusDays(it), restingHeartRate = 53, hrvMillis = 50) }
         assertEquals(RecoveryStatus.Low, analyzeRecovery(days, today))
     }
 
-    @Test fun `a resting heart rate just under the threshold is still normal`() {
-        val days = baseline { _, hrv -> RecoveryDay(today, restingHeartRate = 54, hrvMillis = hrv) }
+    @Test fun `a resting heart rate within the smallest spread is still normal`() {
+        val days = days { RecoveryDay(today.minusDays(it), restingHeartRate = 52, hrvMillis = 50) }
         assertEquals(RecoveryStatus.Normal, analyzeRecovery(days, today))
     }
 
-    @Test fun `an HRV clearly below the baseline is low`() {
-        val days = baseline { resting, _ -> RecoveryDay(today, restingHeartRate = resting, hrvMillis = 39) }
-        assertEquals(RecoveryStatus.Low, analyzeRecovery(days, today))
+    @Test fun `one odd morning doesn't decide, the last days together do`() {
+        val days = days { daysAgo ->
+            if (daysAgo == 0L) RecoveryDay(today, restingHeartRate = 55, hrvMillis = 45) else steady(daysAgo)
+        }
+        assertEquals(RecoveryStatus.Normal, analyzeRecovery(days, today))
     }
 
-    @Test fun `an HRV at eighty percent of the baseline is still normal`() {
-        val days = baseline { resting, _ -> RecoveryDay(today, restingHeartRate = resting, hrvMillis = 40) }
-        assertEquals(RecoveryStatus.Normal, analyzeRecovery(days, today))
+    @Test fun `an HRV below the normal range is low, compared as ln(RMSSD)`() {
+        // 50 ms times e^-0.07 is about 46.6 ms.
+        val low = days { RecoveryDay(today.minusDays(it), restingHeartRate = 50, hrvMillis = 46) }
+        assertEquals(RecoveryStatus.Low, analyzeRecovery(low, today))
+        val normal = days { RecoveryDay(today.minusDays(it), restingHeartRate = 50, hrvMillis = 47) }
+        assertEquals(RecoveryStatus.Normal, analyzeRecovery(normal, today))
+    }
+
+    @Test fun `the normal range is the user's own spread`() {
+        // A baseline that varies between 40 and 60 ms: 44 ms for three days is within it.
+        val varied = (3L..13L).map { daysAgo ->
+            RecoveryDay(today.minusDays(daysAgo), restingHeartRate = 50, hrvMillis = if (daysAgo % 2 == 0L) 40 else 60)
+        }
+        val recent = (2L downTo 0L).map { RecoveryDay(today.minusDays(it), restingHeartRate = 50, hrvMillis = 44) }
+        assertEquals(RecoveryStatus.Normal, analyzeRecovery(varied + recent, today))
+        // The same 44 ms against a steady 50 is low.
+        assertEquals(
+            RecoveryStatus.Low,
+            analyzeRecovery(days { RecoveryDay(today.minusDays(it), restingHeartRate = 50, hrvMillis = 44) }, today),
+        )
     }
 
     @Test fun `one bad metric is enough for low`() {
-        val days = baseline { _, _ -> RecoveryDay(today, restingHeartRate = 60, hrvMillis = 30) }
+        val days = days { RecoveryDay(today.minusDays(it), restingHeartRate = 50, hrvMillis = 30) }
         assertEquals(RecoveryStatus.Low, analyzeRecovery(days, today))
     }
 
-    @Test fun `the baseline is the median, so one odd day doesn't decide`() {
-        val days = (1L..6L).map { daysAgo ->
-            RecoveryDay(today.minusDays(daysAgo), restingHeartRate = 50, hrvMillis = 50)
-        } + RecoveryDay(today.minusDays(7), restingHeartRate = 80, hrvMillis = 10) +
-            RecoveryDay(today, restingHeartRate = 54, hrvMillis = 45)
-        assertEquals(RecoveryStatus.Normal, analyzeRecovery(days, today))
-    }
-
     @Test fun `a metric without enough baseline days is not judged`() {
-        val days = (1L..2L).map { daysAgo ->
-            RecoveryDay(today.minusDays(daysAgo), restingHeartRate = 50, hrvMillis = 50)
-        } + RecoveryDay(today, restingHeartRate = 70, hrvMillis = 20)
+        val days = (3L..5L).map { steady(it) } + RecoveryDay(today, restingHeartRate = 70, hrvMillis = 20)
         assertEquals(RecoveryStatus.Unknown, analyzeRecovery(days, today))
     }
 
     @Test fun `one metric with a baseline is enough to judge the day`() {
-        val days = (1L..4L).map { daysAgo -> RecoveryDay(today.minusDays(daysAgo), hrvMillis = 50) } +
+        val days = (3L..7L).map { RecoveryDay(today.minusDays(it), hrvMillis = 50) } +
             RecoveryDay(today, hrvMillis = 30)
         assertEquals(RecoveryStatus.Low, analyzeRecovery(days, today))
     }
 
     @Test fun `a latest reading older than two days is stale`() {
-        val days = (3L..9L).map { daysAgo ->
-            RecoveryDay(today.minusDays(daysAgo), restingHeartRate = 50, hrvMillis = 50)
-        }
+        val days = (3L..13L).map { steady(it) }
         assertEquals(RecoveryStatus.Unknown, analyzeRecovery(days, today))
     }
 
     @Test fun `readings after today are ignored`() {
-        val days = (1L..7L).map { daysAgo ->
-            RecoveryDay(today.minusDays(daysAgo), restingHeartRate = 50, hrvMillis = 50)
-        } + RecoveryDay(today.plusDays(1), restingHeartRate = 90, hrvMillis = 10)
+        val days = days() + RecoveryDay(today.plusDays(1), restingHeartRate = 90, hrvMillis = 10)
         assertEquals(RecoveryStatus.Normal, analyzeRecovery(days, today))
     }
 
@@ -102,22 +109,22 @@ class RecoveryAnalysisTest {
     @Test fun `only comparable days form the baseline, and too few of them say nothing`() {
         // From [lateFrom] on the days are in the late half of the cycle, with a few beats more and a lower HRV; the
         // days before are in the early half.
-        fun days(lateFrom: Long) = (0L..7L).map { daysAgo ->
+        fun days(lateFrom: Long) = (0L..13L).map { daysAgo ->
             if (daysAgo <= lateFrom) {
                 RecoveryDay(today.minusDays(daysAgo), restingHeartRate = 56, hrvMillis = 38)
             } else {
-                RecoveryDay(today.minusDays(daysAgo), restingHeartRate = 50, hrvMillis = 50)
+                steady(daysAgo)
             }
         }
         fun sameHalf(lateFrom: Long) = { earlier: LocalDate, latest: LocalDate ->
             val late = today.minusDays(lateFrom)
             (earlier >= late) == (latest >= late)
         }
-        // Against the whole week the late half looks like poor recovery.
-        assertEquals(RecoveryStatus.Low, analyzeRecovery(days(lateFrom = 2), today))
-        // Against its own half there are only two days to compare with, so nothing is judged.
-        assertEquals(RecoveryStatus.Unknown, analyzeRecovery(days(lateFrom = 2), today, sameHalf(lateFrom = 2)))
-        // With four late days before it, the same reading is normal for that half.
-        assertEquals(RecoveryStatus.Normal, analyzeRecovery(days(lateFrom = 4), today, sameHalf(lateFrom = 4)))
+        // Against the whole two weeks the late half looks like poor recovery.
+        assertEquals(RecoveryStatus.Low, analyzeRecovery(days(lateFrom = 4), today))
+        // Against its own half there are only two days before the recent ones, so nothing is judged.
+        assertEquals(RecoveryStatus.Unknown, analyzeRecovery(days(lateFrom = 4), today, sameHalf(lateFrom = 4)))
+        // With six late days before the recent ones, the same readings are normal for that half.
+        assertEquals(RecoveryStatus.Normal, analyzeRecovery(days(lateFrom = 8), today, sameHalf(lateFrom = 8)))
     }
 }

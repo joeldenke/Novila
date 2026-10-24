@@ -10,7 +10,8 @@ class DailyBalanceTest {
 
     @Test fun `balance weighs sleep and nutrition equally without movement`() {
         assertEquals(0, DayEntry(date).balance(steps = null))
-        assertEquals(50, DayEntry(date, sleepHours = SLEEP_GOAL_HOURS).balance(steps = null))
+        // A full night and nothing eaten yet: a quarter, since one part can't make up for another.
+        assertEquals(25, DayEntry(date, sleepHours = SLEEP_GOAL_HOURS).balance(steps = null))
         val day = DayEntry(date, drinks = glassesOfWater(WATER_GOAL), sleepHours = 11f, food = allFood)
         assertEquals(100, day.balance(null))
     }
@@ -18,8 +19,8 @@ class DailyBalanceTest {
     @Test fun `movement counts as a third part once it is known`() {
         val day = DayEntry(date, drinks = glassesOfWater(WATER_GOAL), sleepHours = SLEEP_GOAL_HOURS, food = allFood)
         assertEquals(100, day.balance(steps = STEPS_GOAL))
-        assertEquals(83, day.balance(steps = STEPS_GOAL / 2))
-        assertEquals(67, day.balance(steps = 0))
+        assertEquals(81, day.balance(steps = STEPS_GOAL / 2))
+        assertEquals(44, day.balance(steps = 0))
     }
 
     @Test fun `greeting follows the time of day`() {
