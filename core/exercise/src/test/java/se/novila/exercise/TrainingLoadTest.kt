@@ -34,6 +34,13 @@ class TrainingLoadTest {
         assertEquals(1, load.rated)
     }
 
+    @Test fun `cardio logged with an effort counts with it, and is rated`() {
+        val run = Exercise(ExerciseType.Running, today.minusDays(1), 30.minutes, effort = 8)
+        val load = trainingLoad(listOf(run, walk(daysAgo = 2)), emptyMap(), today)!!
+        assertEquals(30 * 8 + 30 * assumedEffort(ExerciseKind.Cardio), load.week)
+        assertEquals(1, load.rated)
+    }
+
     @Test fun `the effort after a strength session doesn't rate a walk the same day`() {
         val load = trainingLoad(listOf(walk(daysAgo = 0)), mapOf(today to 9), today)!!
         assertEquals(30 * assumedEffort(ExerciseKind.Cardio), load.week)

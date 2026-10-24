@@ -2,6 +2,7 @@ package se.novila.model
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.time.LocalDate
 
@@ -67,5 +68,18 @@ class NutritionTest {
         assertEquals(17, one.total)
         // Red meat alone counts as something logged.
         assertEquals(0, DayEntry(date, food = FoodLog(redMeat = 1)).nutritionScore()?.redMeatPenalty)
+    }
+
+    @Test fun `fish counts as protein in full and is counted over the week`() {
+        val fish = DayEntry(date, food = FoodLog(fish = 3)).nutritionScore()!!
+        assertEquals(20, fish.total)
+        // With the protein filled by fish, the next step is another group.
+        val fed = DayEntry(date, food = FoodLog(meals = 3, fish = 3))
+        assertEquals(FoodGroup.Vegetables, fed.nextPortion()?.group)
+        // Fish on two of the last seven days; the one eight days ago doesn't count.
+        val days = listOf(0L, 3L, 8L).map { DayEntry(date.minusDays(it), food = FoodLog(fish = 1)) } +
+            DayEntry(date.minusDays(1), food = FoodLog(protein = 2))
+        assertEquals(2, fishDaysThisWeek(days, date))
+        assertTrue(fishDaysThisWeek(days, date) >= FISH_TIMES_A_WEEK)
     }
 }

@@ -29,4 +29,17 @@ class TrainingHistoryTest {
         assertEquals(listOf(strength, walk, ride), TrainingHistory.merge(listOf(ride, strength), listOf(walk)))
         assertEquals(0, TrainingHistory.minutes(listOf(strength), emptyList(), monday, ExerciseKind.Cardio))
     }
+
+    @Test fun `the watch's recording keeps the effort the user gave for the same walk`() {
+        val logged = listOf(
+            Exercise(ExerciseType.Walking, monday, 20.minutes, effort = 3),
+            Exercise(ExerciseType.Walking, monday, 10.minutes, effort = 6),
+        )
+        val recorded = listOf(Exercise(ExerciseType.Walking, monday, 34.minutes))
+        // Weighted by minutes: (20 × 3 + 10 × 6) / 30 = 4.
+        assertEquals(listOf(recorded.single().copy(effort = 4)), TrainingHistory.merge(logged, recorded))
+        // Without an effort, the recording stays as it was.
+        val unrated = listOf(Exercise(ExerciseType.Walking, monday, 30.minutes))
+        assertEquals(recorded, TrainingHistory.merge(unrated, recorded))
+    }
 }

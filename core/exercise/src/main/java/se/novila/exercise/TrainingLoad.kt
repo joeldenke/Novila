@@ -15,9 +15,9 @@ enum class LoadComparison { Lighter, Usual, Heavier, Unknown }
  * until the history reaches that far): seven times the exponentially weighted average day (Williams et al. 2017), so
  * recent weeks weigh most and an old week fades out instead of dropping off all at once. The usual weeks never
  * include the current one, so a hard week can't raise its own yardstick, and [monotony] the days' mean load over
- * their standard deviation (null with fewer than [MIN_SESSIONS_FOR_MONOTONY] sessions). [strain] is the week times its monotony. [sessions] were trained
- * in the week, [rated] of them with the user's own effort; the others count with a moderate effort for their kind
- * ([assumedEffort]).
+ * their standard deviation (null with fewer than [MIN_SESSIONS_FOR_MONOTONY] sessions). [strain] is the week times
+ * its monotony. [sessions] were trained in the week, [rated] of them with the user's own effort (after a strength
+ * session, or with cardio logged by hand); the others count with a moderate effort for their kind ([assumedEffort]).
  *
  * The ratio of the week to the usual (acute to chronic, ACWR) is debated as a predictor of injury, so it only gives
  * calm guidance ([comparison]: "heavier than usual"), never a warning.
@@ -75,13 +75,13 @@ fun trainingLoad(history: List<Exercise>, efforts: Map<LocalDate, Int>, today: L
         usualWeek = usual.toInt().takeIf { reachesBack },
         monotony = monotony(days).takeIf { week.size >= MIN_SESSIONS_FOR_MONOTONY },
         sessions = week.size,
-        rated = week.count { it.type.kind == ExerciseKind.Strength && (efforts[it.date] ?: 0) > 0 },
+        rated = week.count { ownEffort(it, efforts) != null },
     )
 }
 
 /**
- * The effort a session counts with: the user's own for a strength session, otherwise a moderate one for its kind
- * on the CR10 scale, since Novila only asks after strength sessions.
+ * The effort a session counts with: the user's own when they gave one (with the session, or for the day's strength
+ * session), otherwise a moderate one for its kind on the CR10 scale.
  */
 fun assumedEffort(kind: ExerciseKind): Int = when (kind) {
     ExerciseKind.Strength -> 5
@@ -89,10 +89,12 @@ fun assumedEffort(kind: ExerciseKind): Int = when (kind) {
     ExerciseKind.Mobility -> 2
 }
 
-private fun effortOf(exercise: Exercise, efforts: Map<LocalDate, Int>): Int {
-    val own = efforts[exercise.date]?.takeIf { it > 0 && exercise.type.kind == ExerciseKind.Strength }
-    return own ?: assumedEffort(exercise.type.kind)
-}
+private fun effortOf(exercise: Exercise, efforts: Map<LocalDate, Int>): Int =
+    ownEffort(exercise, efforts) ?: assumedEffort(exercise.type.kind)
+
+/** The effort the user gave for [exercise], or null. The day's effort only ever rates its strength session. */
+private fun ownEffort(exercise: Exercise, efforts: Map<LocalDate, Int>): Int? = exercise.effort?.takeIf { it > 0 }
+    ?: efforts[exercise.date]?.takeIf { it > 0 && exercise.type.kind == ExerciseKind.Strength }
 
 /** Mean over the (population) standard deviation; days that are all the same count as very uniform. */
 private fun monotony(days: List<Double>): Double {

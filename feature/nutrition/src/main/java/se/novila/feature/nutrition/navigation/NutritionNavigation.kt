@@ -67,6 +67,7 @@ fun EntryProviderScope<NavKey>.nutritionEntries(
             onPortions = viewModel::changePortions,
             onTreats = viewModel::changeTreats,
             onRedMeat = viewModel::changeRedMeat,
+            onFish = viewModel::changeFish,
             onLogMeal = viewModel::logMeal,
             drinkActions = DrinkActions(onAdd = viewModel::addDrink, onUndo = viewModel::removeLastDrink),
             contentPadding = contentPadding,

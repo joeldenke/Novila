@@ -469,6 +469,8 @@
     <string name="cardio_log">Jag gjorde det</string>
     <string name="cardio_log_more">Logga ett till</string>
     <string name="cardio_undo">Ångra</string>
+    <string name="cardio_effort_title">Hur ansträngande var det?</string>
+    <string name="cardio_effort_hint">Valfritt. Dra i reglaget, så räknar veckans träningsbelastning passet som det var.</string>
 
     <!-- Veckan i överblick på Träning -->
     <string name="overview_title">Den här veckan</string>

@@ -13,12 +13,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import se.novila.data.cardioType
 import se.novila.data.exerciseType
 import se.novila.designsystem.component.NovilaButton
 import se.novila.designsystem.component.NovilaCard
 import se.novila.designsystem.component.NovilaChoiceChip
+import se.novila.designsystem.component.NovilaSlider
 import se.novila.designsystem.component.NovilaStepper
 import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
@@ -26,6 +29,8 @@ import se.novila.exercise.PlannedSession
 import se.novila.feature.training.R
 import se.novila.model.CardioLog
 import se.novila.model.CardioType
+import se.novila.model.MAX_EFFORT
+import kotlin.math.roundToInt
 import se.novila.ui.R as UiR
 
 private const val MINUTES_STEP = 5
@@ -34,8 +39,10 @@ private const val DEFAULT_MINUTES = 30
 
 /**
  * Today's cardio: "I did it" logs a walk, run, ride or swim, so the program builds on it. Starts from today's planned
- * cardio, when there is one. What a watch recorded through Health Connect is shown too, so the same walk isn't logged
- * twice (and if it is, the program counts it once).
+ * cardio, when there is one. How hard it was (RPE, Borg CR10) is optional, on a slider that stays unanswered until it
+ * is touched; with it the training load counts the session as it was instead of as a moderate one. What a watch
+ * recorded through Health Connect is shown too, so the same walk isn't logged twice (and if it is, the program counts
+ * it once, with the effort given here).
  */
 @Composable
 fun CardioCard(
@@ -48,6 +55,7 @@ fun CardioCard(
     val training = NovilaTheme.pillars.training
     var type by rememberSaveable(planned) { mutableStateOf(planned?.type?.cardioType ?: CardioType.Walking) }
     var minutes by rememberSaveable(planned) { mutableIntStateOf(planned?.minutes ?: DEFAULT_MINUTES) }
+    var effort by rememberSaveable(planned) { mutableStateOf<Int?>(null) }
     NovilaCard(
         title = stringResource(R.string.cardio_title),
         icon = painterResource(UiR.drawable.ic_training),
@@ -80,6 +88,7 @@ fun CardioCard(
             decrementEnabled = minutes > MINUTES_STEP,
             incrementEnabled = minutes < MAX_MINUTES,
         )
+        Effort(effort, onEffort = { effort = it })
         Row(horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.m)) {
             if (today.logged.isNotEmpty()) {
                 NovilaButton(
@@ -91,12 +100,36 @@ fun CardioCard(
             }
             NovilaButton(
                 text = stringResource(if (today.logged.isEmpty()) R.string.cardio_log else R.string.cardio_log_more),
-                onClick = { onLog(CardioLog(type, minutes)) },
+                onClick = {
+                    onLog(CardioLog(type, minutes, effort))
+                    effort = null
+                },
                 role = training,
                 modifier = Modifier.weight(1f),
             )
         }
     }
+}
+
+/** How hard the session was, optional: a slider that says "not answered" until it is touched. */
+@Composable
+private fun Effort(effort: Int?, onEffort: (Int) -> Unit) {
+    val title = stringResource(R.string.cardio_effort_title)
+    NovilaText(title, style = NovilaTheme.typography.titleSmall)
+    NovilaText(
+        effort?.let { stringResource(R.string.workout_scale_value, it, effortLabel(it)) }
+            ?: stringResource(R.string.cardio_effort_hint),
+        style = NovilaTheme.typography.bodyMedium,
+        color = if (effort != null) NovilaTheme.pillars.training.color else NovilaTheme.colors.onSurfaceVariant,
+    )
+    NovilaSlider(
+        value = (effort ?: 1).toFloat(),
+        onValueChange = { onEffort(it.roundToInt()) },
+        valueRange = 1f..MAX_EFFORT.toFloat(),
+        steps = MAX_EFFORT - 2,
+        role = NovilaTheme.pillars.training,
+        modifier = Modifier.semantics { contentDescription = title },
+    )
 }
 
 @Composable

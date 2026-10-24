@@ -122,8 +122,10 @@ fun trainingMinutesByDate(days: List<DayEntry>, recorded: List<Exercise>): Map<L
         .mapValues { (_, done) -> done.sumOf { it.duration.inWholeMinutes }.toInt() }
 
 private fun ownExercises(day: DayEntry): List<Exercise> = buildList {
-    if (day.strengthMinutes > 0) add(Exercise(ExerciseType.Strength, day.date, day.strengthMinutes.minutes))
-    day.cardio.forEach { add(Exercise(it.type.exerciseType, day.date, it.minutes.minutes)) }
+    if (day.strengthMinutes > 0) {
+        add(Exercise(ExerciseType.Strength, day.date, day.strengthMinutes.minutes, day.effort.takeIf { it > 0 }))
+    }
+    day.cardio.forEach { add(Exercise(it.type.exerciseType, day.date, it.minutes.minutes, it.effort)) }
 }
 
 private fun feedback(day: DayEntry): SessionFeedback? {

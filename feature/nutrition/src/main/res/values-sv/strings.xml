@@ -13,6 +13,7 @@
     <string name="nutrition_done_body">Varje livsmedelsgrupp har nått sitt dagsmål.</string>
     <string name="nutrition_treat_penalty">Sött och snacks: −%1$d poäng i dag. Ett per dag är fritt.</string>
     <string name="nutrition_treat_penalty_day">Sött och snacks: −%1$d poäng den dagen. Ett per dag är fritt.</string>
+    <string name="nutrition_fish_week">Dagar med fisk den här veckan</string>
     <string name="nutrition_red_meat_penalty">Rött kött och chark: −%1$d poäng i dag. En portion per dag är fri.</string>
     <string name="nutrition_red_meat_penalty_day">Rött kött och chark: −%1$d poäng den dagen. En portion per dag är fri.</string>
     <string name="nutrition_about">Viktat efter Livsmedelsverkets kostråd: grönsaker och frukt väger tyngst.</string>
@@ -35,10 +36,12 @@
     <string name="food_whole_grain">Fullkorn</string>
     <string name="food_treats">Sött &amp; snacks</string>
     <string name="food_red_meat">Rött kött &amp; chark</string>
+    <string name="food_fish">Fisk &amp; skaldjur</string>
     <string name="food_progress">%1$d av %2$d</string>
     <string name="serving_vegetables">En portion är ungefär en näve, eller 100 g. Potatis räknas inte.</string>
     <string name="serving_meals">En portion är en måltid: frukost, lunch eller middag.</string>
-    <string name="serving_protein">En portion är ungefär 100 g fisk eller fågel, ett ägg, eller en näve bönor eller linser.</string>
+    <string name="serving_protein">En portion är ungefär 100 g fågel, ett ägg, eller en näve bönor eller linser.</string>
+    <string name="serving_fish">En portion är ungefär 100 g fisk eller skaldjur. Rådet är fisk två till tre gånger i veckan.</string>
     <string name="serving_red_meat">Nöt, fläsk, lamm, korv, skinka och liknande. Räknas som en halv portion protein: rådet är högst 350 g i veckan, och fisk, bönor eller fågel oftare.</string>
     <string name="serving_whole_grain">En portion är en skiva fullkornsbröd eller en portion pasta, ris eller gryn.</string>
     <string name="serving_water">En portion är ett glas, ungefär 2 dl.</string>
