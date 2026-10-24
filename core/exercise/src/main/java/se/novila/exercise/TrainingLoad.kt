@@ -14,8 +14,8 @@ enum class LoadComparison { Lighter, Usual, Heavier, Unknown }
  * summed per day. [week] is the seven days' load, [usualWeek] the usual week of the [USUAL_WEEKS] weeks before (null
  * until the history reaches that far): seven times the exponentially weighted average day (Williams et al. 2017), so
  * recent weeks weigh most and an old week fades out instead of dropping off all at once. The usual weeks never
- * include the current one, so a hard week can't raise its own yardstick, and [monotony] the days' mean load over their standard deviation (null with
- * fewer than [MIN_SESSIONS_FOR_MONOTONY] sessions). [strain] is the week times its monotony. [sessions] were trained
+ * include the current one, so a hard week can't raise its own yardstick, and [monotony] the days' mean load over
+ * their standard deviation (null with fewer than [MIN_SESSIONS_FOR_MONOTONY] sessions). [strain] is the week times its monotony. [sessions] were trained
  * in the week, [rated] of them with the user's own effort; the others count with a moderate effort for their kind
  * ([assumedEffort]).
  *

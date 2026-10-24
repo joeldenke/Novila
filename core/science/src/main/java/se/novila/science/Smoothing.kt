@@ -23,7 +23,7 @@ fun ewma(values: List<Double>, factor: Double, seed: Double? = null): Double? {
     return values.fold(seed ?: values.average()) { average, value -> average + factor * (value - average) }
 }
 
-/** How much something [age] days old still counts when its weight halves every [halfLife] days: 0.5^(age / halfLife). */
+/** How much something [age] days old counts when its weight halves every [halfLife] days: 0.5^(age / halfLife). */
 fun decayWeight(age: Double, halfLife: Double): Double {
     require(halfLife > 0) { "The half-life must be positive: $halfLife" }
     return 0.5.pow(age / halfLife)

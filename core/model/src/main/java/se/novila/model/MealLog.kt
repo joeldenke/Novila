@@ -18,9 +18,9 @@ data class MealLog(
 /**
  * One meal written in the user's own words, "Breakfast: porridge, berries", as the food groups it fills in: the meal
  * name before the colon counts as one [FoodGroup.Meals], and each recognized food as one portion of its group. Sweets
- * become treats, and red meat and charcuterie a portion of [FoodLog.redMeat]. Both of the app's languages are understood, the same food written twice is one portion, and a word
- * outside the dictionary is reported in [MealLog.unknown] so the user can see what was left out and add it with the
- * steppers instead.
+ * become treats, and red meat and charcuterie a portion of [FoodLog.redMeat]. Both of the app's languages are
+ * understood, the same food written twice is one portion, and a word outside the dictionary is reported in
+ * [MealLog.unknown] so the user can see what was left out and add it with the steppers instead.
  */
 fun parseMeal(text: String): MealLog {
     val named = text.indexOf(':').takeIf { it >= 0 && text.substring(0, it).trim().lowercase() in MEAL_NAMES }
