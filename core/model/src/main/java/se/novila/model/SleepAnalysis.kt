@@ -1,7 +1,14 @@
 package se.novila.model
 
+import se.novila.science.Observation
+import se.novila.science.TTest
+import se.novila.science.adjustedTest
+import se.novila.science.benjaminiHochberg
+import se.novila.science.isNoticeable
+import se.novila.science.standardDeviation
+import java.time.DayOfWeek
 import kotlin.math.abs
-import kotlin.math.sqrt
+import kotlin.math.sign
 
 /**
  * Something that may affect a night's sleep: what the user did the day before (from that day's logs), or what they
@@ -46,7 +53,8 @@ enum class SleepOutcome(
 /**
  * Nights after [driver] against nights without it, in the user's own logs: [withAverage] over [withNights] nights and
  * [withoutAverage] over [withoutNights]. [difference] is with minus without, in hours or quality steps. [strength] is
- * Welch's t, so a larger, steadier difference over more nights ranks first.
+ * the t of the difference once nights before free days are accounted for, so a larger, steadier difference over more
+ * nights ranks first.
  */
 data class SleepLink(
     val driver: SleepDriver,
@@ -107,8 +115,18 @@ const val SLEEP_WINDOW_NIGHTS = 90
 /** Bedtimes that vary by an hour or more (standard deviation) are worth a word. */
 const val IRREGULAR_BEDTIME_MINUTES = 60
 
-/** |t| of at least 2 is roughly the 5 % level for the sample sizes here: unlikely to be chance alone. */
-internal const val MIN_STRENGTH = 2.0
+/**
+ * The false discovery rate the links are kept at (Benjamini–Hochberg): every habit is compared with both how long and
+ * how well the user slept, about twenty comparisons at once, so on average at most one link in ten shown is chance.
+ */
+const val FALSE_DISCOVERY_RATE = 0.10
+
+/**
+ * A link that was shown yesterday stays while its q is at most this, so a link near the threshold doesn't come and go
+ * from one day to the next (hysteresis): it takes more to show a link than to keep it.
+ */
+const val KEEP_DISCOVERY_RATE = 0.20
+
 private const val DAYS_PER_WEEK = 7
 
 /** A week's change in a driver counts from two days more (or fewer) out of seven. */
@@ -121,10 +139,16 @@ private const val MIN_DRIVER_CHANGE = 2
  * unknown, not a day without training. At most [limit] links, the strongest first and one per driver.
  */
 fun analyzeSleep(days: List<DayEntry>, goals: Goals = Goals(), limit: Int = 3): SleepAnalysis {
-    val nights = days.zipWithNext { before, night -> Night(night, before) }.takeLast(SLEEP_WINDOW_NIGHTS)
-    val allLinks = SleepOutcome.entries.flatMap { outcome ->
-        SleepDriver.entries.mapNotNull { driver -> link(nights, driver, outcome, goals) }
-    }
+    val nights = nightsOf(days)
+    // Yesterday's window, so a link that was shown then needs less to stay (KEEP_DISCOVERY_RATE).
+    val shownYesterday = candidates(nightsOf(days.dropLast(1)), goals)
+        .filter { it.q <= FALSE_DISCOVERY_RATE }
+        .map { it.link.driver to it.link.outcome }
+        .toSet()
+    val allLinks = candidates(nights, goals).filter { candidate ->
+        val key = candidate.link.driver to candidate.link.outcome
+        candidate.q <= FALSE_DISCOVERY_RATE || (key in shownYesterday && candidate.q <= KEEP_DISCOVERY_RATE)
+    }.map { it.link }
     return SleepAnalysis(
         change = change(nights, allLinks, goals),
         // The strongest link per driver, so one habit doesn't take two places (hours and quality).
@@ -136,7 +160,19 @@ fun analyzeSleep(days: List<DayEntry>, goals: Goals = Goals(), limit: Int = 3): 
     )
 }
 
-private class Night(val night: DayEntry, val dayBefore: DayEntry)
+/** Each candidate link's q over [days], by driver and outcome, so the thresholds can be tested. */
+internal fun linkQValues(days: List<DayEntry>, goals: Goals = Goals()): Map<Pair<SleepDriver, SleepOutcome>, Double> =
+    candidates(nightsOf(days), goals).associate { (it.link.driver to it.link.outcome) to it.q }
+
+private fun nightsOf(days: List<DayEntry>): List<Night> =
+    days.zipWithNext { before, night -> Night(night, before) }.takeLast(SLEEP_WINDOW_NIGHTS)
+
+private class Night(val night: DayEntry, val dayBefore: DayEntry) {
+    /** A night before a free day (Saturday or Sunday morning), when no alarm cuts it short. */
+    val beforeFreeDay: Boolean get() = night.date.dayOfWeek in FREE_MORNINGS
+}
+
+private val FREE_MORNINGS = setOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
 
 /** The night's value for [outcome], or null when it wasn't logged. */
 private fun Night.value(outcome: SleepOutcome): Double? = when (outcome) {
@@ -177,46 +213,54 @@ private fun Night.lateCaffeine(detailed: Boolean): Boolean? = when {
 private fun Night.factor(factor: SleepFactor, detailed: Boolean): Boolean? =
     if (detailed) factor in night.sleepFactors else null
 
+/** A possible link and its Benjamini–Hochberg [q] among every comparison made over the same nights. */
+private class Candidate(val link: SleepLink, val q: Double)
+
 /**
- * Nights with [driver] against nights without, by Welch's t-test (unequal variances, as the groups rarely match):
- * a link needs [MIN_NIGHTS] on each side, a difference the user would notice ([SleepOutcome.noticeable]) and
- * |t| ≥ [MIN_STRENGTH].
+ * Every driver against every outcome over [nights]. Each comparison with [MIN_NIGHTS] on each side is a test, and
+ * all of them are adjusted together ([benjaminiHochberg]), since twenty habits tested at once will always turn up a
+ * few by chance. Of those, the candidates are the ones with a difference the user would notice, both as measured and
+ * once the weekend is accounted for.
  */
-private fun link(nights: List<Night>, driver: SleepDriver, outcome: SleepOutcome, goals: Goals): SleepLink? {
-    val with = mutableListOf<Double>()
-    val without = mutableListOf<Double>()
-    nights.forEach { night ->
-        val value = night.value(outcome) ?: return@forEach
-        when (night.has(driver, goals)) {
-            true -> with += value
-            false -> without += value
-            null -> Unit
-        }
+private fun candidates(nights: List<Night>, goals: Goals): List<Candidate> {
+    val tests = SleepOutcome.entries.flatMap { outcome ->
+        SleepDriver.entries.mapNotNull { driver -> compare(nights, driver, outcome, goals) }
     }
-    if (with.size < MIN_NIGHTS || without.size < MIN_NIGHTS) return null
-    val difference = with.average() - without.average()
-    if (abs(difference) < outcome.noticeable) return null
-    val t = welchT(with, without)
-    if (abs(t) < MIN_STRENGTH) return null
-    return SleepLink(driver, outcome, with.average(), without.average(), with.size, without.size, t)
+    val q = benjaminiHochberg(tests.map { it.second.p })
+    return tests.indices.mapNotNull { i ->
+        val (link, test) = tests[i]
+        val noticeable = link.outcome.noticeable
+        val agrees = abs(link.difference) >= noticeable && test.isNoticeable(noticeable) &&
+            sign(link.difference) == sign(test.estimate)
+        if (agrees) Candidate(link, q[i]) else null
+    }
 }
 
 /**
- * Welch's t for the difference between the means of [a] and [b]. Groups that don't vary at all (the same hours every
- * night) still differ: their spread is taken as a quarter of the smallest noticeable step, never zero.
+ * Nights with [driver] against nights without, adjusted for the nights before free days ([adjustedTest]): Friday's
+ * alcohol and Saturday's lie-in would otherwise read as alcohol making the night longer. Needs [MIN_NIGHTS] on each
+ * side. The link's averages are the nights as they were; its [SleepLink.strength] is the adjusted t.
  */
-internal fun welchT(a: List<Double>, b: List<Double>): Double {
-    val error = sqrt(variance(a) / a.size + variance(b) / b.size).coerceAtLeast(MIN_STANDARD_ERROR)
-    return (a.average() - b.average()) / error
+private fun compare(
+    nights: List<Night>,
+    driver: SleepDriver,
+    outcome: SleepOutcome,
+    goals: Goals,
+): Pair<SleepLink, TTest>? {
+    val observations = nights.mapNotNull { night ->
+        val value = night.value(outcome) ?: return@mapNotNull null
+        val has = night.has(driver, goals) ?: return@mapNotNull null
+        Observation(value, exposed = has, stratum = night.beforeFreeDay)
+    }
+    val with = observations.filter { it.exposed }.map { it.value }
+    val without = observations.filterNot { it.exposed }.map { it.value }
+    if (with.size < MIN_NIGHTS || without.size < MIN_NIGHTS) return null
+    val test = adjustedTest(observations, MIN_STANDARD_ERROR) ?: return null
+    return SleepLink(driver, outcome, with.average(), without.average(), with.size, without.size, test.t) to test
 }
 
-private const val MIN_STANDARD_ERROR = 0.05
-
-/** Sample variance (n − 1). */
-private fun variance(values: List<Double>): Double {
-    val mean = values.average()
-    return values.sumOf { (it - mean) * (it - mean) } / (values.size - 1)
-}
+/** Groups that don't vary at all still differ: their spread is taken as a quarter of the smallest noticeable step. */
+internal const val MIN_STANDARD_ERROR = 0.05
 
 /**
  * The last seven nights against the seven before, for each outcome with [MIN_NIGHTS] logged nights in both weeks.
@@ -262,7 +306,7 @@ private fun bedtimeSpread(nights: List<Night>): BedtimeSpread? {
         night.night.bedtime?.let { (it.hour * 60 + it.minute - NOON + MINUTES_PER_DAY) % MINUTES_PER_DAY }
     }.map { it.toDouble() }
     if (minutes.size < 5) return null
-    val spread = sqrt(variance(minutes)).toInt()
+    val spread = standardDeviation(minutes).toInt()
     return BedtimeSpread(spread, minutes.size).takeIf { spread >= IRREGULAR_BEDTIME_MINUTES }
 }
 

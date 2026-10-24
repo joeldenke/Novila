@@ -27,7 +27,7 @@ class CombinedInsightsTest {
         val connection = connections(days).filterIsInstance<TrainingAfterSleep>().single()
         assertEquals(30.0, connection.difference, 3.0)
         assertTrue(connection.withDays >= MIN_NIGHTS && connection.withoutDays >= MIN_NIGHTS)
-        assertTrue(connection.strength >= MIN_STRENGTH)
+        assertTrue(connection.strength >= 2.0)
     }
 
     @Test fun `too few days on one side says nothing`() {

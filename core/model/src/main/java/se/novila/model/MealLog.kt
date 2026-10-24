@@ -1,24 +1,26 @@
 package se.novila.model
 
 /**
- * What a free-text meal translates into: one portion per recognized word ([portions] per group, [treats] for sweets),
- * and the words that were not recognized ([unknown]), listed rather than guessed at.
+ * What a free-text meal translates into: one portion per recognized word ([portions] per group, [treats] for sweets,
+ * [redMeat] for red meat and charcuterie), and the words that were not recognized ([unknown]), listed rather than
+ * guessed at.
  */
 data class MealLog(
     val portions: Map<FoodGroup, Int> = emptyMap(),
     val treats: Int = 0,
     val unknown: List<String> = emptyList(),
+    val redMeat: Int = 0,
 ) {
     /** Nothing in the text filled in a group, so logging it would change nothing. */
-    val isEmpty: Boolean get() = portions.isEmpty() && treats == 0
+    val isEmpty: Boolean get() = portions.isEmpty() && treats == 0 && redMeat == 0
 }
 
 /**
  * One meal written in the user's own words, "Breakfast: porridge, berries", as the food groups it fills in: the meal
  * name before the colon counts as one [FoodGroup.Meals], and each recognized food as one portion of its group. Sweets
- * become treats. Both of the app's languages are understood, the same food written twice is one portion, and a word
- * outside the dictionary is reported in [MealLog.unknown] so the user can see what was left out and add it with the
- * steppers instead.
+ * become treats, and red meat and charcuterie a portion of [FoodLog.redMeat]. Both of the app's languages are
+ * understood, the same food written twice is one portion, and a word outside the dictionary is reported in
+ * [MealLog.unknown] so the user can see what was left out and add it with the steppers instead.
  */
 fun parseMeal(text: String): MealLog {
     val named = text.indexOf(':').takeIf { it >= 0 && text.substring(0, it).trim().lowercase() in MEAL_NAMES }
@@ -26,6 +28,7 @@ fun parseMeal(text: String): MealLog {
     val portions = mutableMapOf<FoodGroup, Int>()
     if (named != null) portions[FoodGroup.Meals] = 1
     var treats = 0
+    var redMeat = 0
     val unknown = mutableListOf<String>()
     val counted = mutableSetOf<String>()
     for (word in foodWords(foods)) {
@@ -34,16 +37,21 @@ fun parseMeal(text: String): MealLog {
         when {
             group != null -> portions[group] = (portions[group] ?: 0) + 1
             isSweet(word) -> treats++
+            isRedMeat(word) -> redMeat++
             else -> unknown += word
         }
     }
-    return MealLog(portions, treats, unknown)
+    return MealLog(portions, treats, unknown, redMeat)
 }
 
-/** Adds a parsed [meal] to the day: its portions on top of what is already logged, its sweets on top of the treats. */
+/**
+ * Adds a parsed [meal] to the day: its portions on top of what is already logged, its sweets on top of the treats and
+ * its red meat on top of the red meat.
+ */
 fun DayEntry.withMeal(meal: MealLog): DayEntry = meal.portions.entries
     .fold(this) { day, (group, portions) -> day.withPortions(group, portions) }
     .withTreats(meal.treats)
+    .withRedMeat(meal.redMeat)
 
 /** The food group [word] (lowercased, as [foodWords] gives it) belongs to in the dictionary, or null. */
 fun foodGroupOf(word: String): FoodGroup? = FOODS[word]
@@ -51,8 +59,11 @@ fun foodGroupOf(word: String): FoodGroup? = FOODS[word]
 /** Whether [word] (lowercased) is a sweet or a snack, which counts as a treat. */
 fun isSweet(word: String): Boolean = word in SWEETS
 
+/** Whether [word] (lowercased) is red meat or charcuterie, which is logged apart from the other protein. */
+fun isRedMeat(word: String): Boolean = word in RED_MEAT
+
 /** Every food and sweet the dictionary knows, in both of the app's languages. */
-val knownFoods: Set<String> get() = FOODS.keys + SWEETS
+val knownFoods: Set<String> get() = FOODS.keys + SWEETS + RED_MEAT
 
 /** The words of a meal, lowercased and split on whitespace and punctuation, with "and"/"och" dropped as filler. */
 fun foodWords(text: String): List<String> = text
@@ -87,11 +98,11 @@ private val FOODS: Map<String, FoodGroup> = sequenceOf(
         "tomat", "tomater", "vattenmelon", "zucchini",
     ),
     FoodGroup.Protein to listOf(
-        "biff", "baljväxt", "baljväxter", "beef", "böna", "bönor", "beans", "chicken", "chickpea", "chickpeas",
-        "egg", "eggs", "fisk", "fish", "fläsk", "herring", "humus", "hummus", "kalv", "kalkon", "kyckling",
-        "kött", "lamb", "lamm", "lax", "lentil", "lentils", "linser", "makrill", "mackerel", "meat", "nötkött",
-        "pork", "prawns", "quorn", "räkor", "salmon", "sardiner", "sardines", "seitan", "sill", "shrimp",
-        "tempeh", "tofu", "tonfisk", "tuna", "turkey", "veal", "ägg",
+        "baljväxt", "baljväxter", "böna", "bönor", "beans", "chicken", "chickpea", "chickpeas",
+        "egg", "eggs", "fisk", "fish", "herring", "humus", "hummus", "kalkon", "kyckling",
+        "lax", "lentil", "lentils", "linser", "makrill", "mackerel",
+        "prawns", "quorn", "räkor", "salmon", "sardiner", "sardines", "seitan", "sill", "shrimp",
+        "tempeh", "tofu", "tonfisk", "tuna", "turkey", "ägg",
     ),
     FoodGroup.WholeGrain to listOf(
         "barley", "bread", "bröd", "bulgur", "crispbread", "gryn", "grain", "granola", "gröt", "havregryn",
@@ -100,6 +111,13 @@ private val FOODS: Map<String, FoodGroup> = sequenceOf(
     ),
     FoodGroup.Water to listOf("kranvatten", "mineralvatten", "vatten", "water"),
 ).flatMap { (group, names) -> names.map { it to group } }.toMap()
+
+/** Red meat and charcuterie: counted apart from the other protein ([FoodLog.redMeat]). */
+private val RED_MEAT = setOf(
+    "bacon", "beef", "biff", "burger", "chorizo", "falukorv", "fläsk", "fläskfilé", "ham", "hamburgare", "hamburger",
+    "kalv", "korv", "kött", "köttbullar", "lamb", "lamm", "meat", "meatballs", "nötkött", "pastrami", "pork",
+    "prinskorv", "salami", "sausage", "sausages", "skinka", "steak", "veal", "vilt", "älg",
+)
 
 /** Sweets and snacks: one a day is free, each one after that costs points. */
 private val SWEETS = setOf(

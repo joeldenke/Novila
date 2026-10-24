@@ -24,7 +24,7 @@ class DayEntryTest {
             .withCardio(CardioLog(CardioType.Running, 20))
             .withFeedback(effort = 7, pain = 0, phase = 2)
         assertEquals(entry, DayEntryCodec.decode(date, DayEntryCodec.encode(entry)))
-        assertEquals("v7;;0.0;0;0;0;0;0;0;25;Walking:30,Running:20;7;0;2;;;0;;0;0;;", DayEntryCodec.encode(entry))
+        assertEquals("v8;;0.0;0;0;0;0;0;0;25;Walking:30,Running:20;7;0;2;;;0;;0;0;;;0", DayEntryCodec.encode(entry))
         val empty = DayEntry(date)
         assertEquals(empty, DayEntryCodec.decode(date, DayEntryCodec.encode(empty)))
     }
@@ -33,7 +33,7 @@ class DayEntryTest {
         val entry = DayEntry(date).withEnergy(4).withStress(2).withDiary("Long walk; legs heavy")
         assertEquals("Long walk, legs heavy", entry.diary)
         assertEquals(entry, DayEntryCodec.decode(date, DayEntryCodec.encode(entry)))
-        assertEquals("v7;;0.0;0;0;0;0;0;0;0;;0;;0;;;0;;4;2;Long walk, legs heavy;", DayEntryCodec.encode(entry))
+        assertEquals("v8;;0.0;0;0;0;0;0;0;0;;0;;0;;;0;;4;2;Long walk, legs heavy;;0", DayEntryCodec.encode(entry))
     }
 
     @Test fun `codec round-trips the night with its times, quality and factors`() {
@@ -44,7 +44,7 @@ class DayEntryTest {
             .withSleepFactor(SleepFactor.LateCaffeine, on = true)
         assertEquals(entry, DayEntryCodec.decode(date, DayEntryCodec.encode(entry)))
         assertEquals(
-            "v7;;7.5;0;0;0;0;0;0;0;;0;;0;1395;405;4;LateCaffeine,Screens;0;0;;",
+            "v8;;7.5;0;0;0;0;0;0;0;;0;;0;1395;405;4;LateCaffeine,Screens;0;0;;;0",
             DayEntryCodec.encode(entry),
         )
     }
@@ -52,7 +52,7 @@ class DayEntryTest {
     @Test fun `a period is kept with the other factors in the same version`() {
         val entry = DayEntry(date).withSleepQuality(2).withSleepFactor(SleepFactor.Period, on = true)
         assertEquals(entry, DayEntryCodec.decode(date, DayEntryCodec.encode(entry)))
-        assertEquals("v7;;0.0;0;0;0;0;0;0;0;;0;;0;;;2;Period;0;0;;", DayEntryCodec.encode(entry))
+        assertEquals("v8;;0.0;0;0;0;0;0;0;0;;0;;0;;;2;Period;0;0;;;0", DayEntryCodec.encode(entry))
     }
 
     @Test fun `codec round-trips drinks with and without a time`() {
@@ -60,7 +60,16 @@ class DayEntryTest {
             .withDrink(Drink(DrinkKind.Coffee, 150, LocalTime.of(8, 10)))
             .withDrink(Drink(DrinkKind.Water, 500))
         assertEquals(entry, DayEntryCodec.decode(date, DayEntryCodec.encode(entry)))
-        assertEquals("v7;;0.0;0;0;0;0;0;0;0;;0;;0;;;0;;0;0;;Coffee:150:490,Water:500:", DayEntryCodec.encode(entry))
+        assertEquals("v8;;0.0;0;0;0;0;0;0;0;;0;;0;;;0;;0;0;;Coffee:150:490,Water:500:;0", DayEntryCodec.encode(entry))
+    }
+
+    @Test fun `v8 keeps red meat apart from protein, and v7 reads it as none`() {
+        val entry = DayEntry(date, food = FoodLog(protein = 2, redMeat = 1))
+        assertEquals(entry, DayEntryCodec.decode(date, DayEntryCodec.encode(entry)))
+        assertEquals("v8;;0.0;0;0;0;2;0;0;0;;0;;0;;;0;;0;0;;;1", DayEntryCodec.encode(entry))
+        val v7 = DayEntryCodec.decode(date, "v7;;0.0;0;0;0;3;0;0;0;;0;;0;;;0;;0;0;;Water:250:")
+        assertEquals(FoodLog(protein = 3), v7.food)
+        assertEquals(listOf(Drink(DrinkKind.Water, 250)), v7.drinks)
     }
 
     @Test fun `unknown and unreadable drinks are skipped, and an unreadable time is unknown`() {
