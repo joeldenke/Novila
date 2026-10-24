@@ -4,6 +4,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -170,11 +171,32 @@ class SleepAnalysisTest {
         assertEquals(29, analyzeSleep(days(30) { _, date -> DayEntry(date, sleepHours = 7f) }).nightsLogged)
     }
 
-    @Test fun `welch t grows with the difference and the nights behind it`() {
-        val a = listOf(8.0, 8.25, 7.75, 8.0)
-        val b = listOf(7.0, 7.25, 6.75, 7.0)
-        assertTrue(welchT(a, b) > 5)
-        assertTrue(welchT(a + a, b + b) > welchT(a, b))
-        assertEquals(0.0, welchT(a, a), 1e-9)
+    @Test fun `a habit of the weekend is not credited with the weekend's lie-in`() {
+        // Alcohol only on Friday and Saturday evenings, and two more hours of sleep on Saturday and Sunday mornings,
+        // with or without it. Within the weekend alcohol changes nothing, so there is no link.
+        val days = days(84) { i, date ->
+            val freeMorning = date.dayOfWeek == DayOfWeek.SATURDAY || date.dayOfWeek == DayOfWeek.SUNDAY
+            val alcohol = date.dayOfWeek == DayOfWeek.SATURDAY || (date.dayOfWeek == DayOfWeek.SUNDAY && i % 14 < 7)
+            DayEntry(date)
+                .copy(sleepHours = (if (freeMorning) 9f else 7f) + wobble(i))
+                .withSleepQuality(3)
+                .withSleepFactor(SleepFactor.Alcohol, alcohol)
+        }
+        assertTrue(analyzeSleep(days, limit = 10).links.none { it.driver == SleepDriver.Alcohol })
+    }
+
+    @Test fun `a link that was shown yesterday is kept at a looser threshold`() {
+        // Forty minutes more after eating well, then a short last night that weakens the link.
+        val days = days(30) { i, date ->
+            val ateWellBefore = (i - 1) % 2 == 0
+            val hours = if (i == 29) 5f else (if (ateWellBefore) 7.6f else 7f) + wobble(i) * 2
+            DayEntry(date, drinks = glassesOfWater(8), food = if (i % 2 == 0) good else poor).copy(sleepHours = hours)
+        }
+        val key = SleepDriver.AteWell to SleepOutcome.Hours
+        val today = linkQValues(days).getValue(key)
+        val yesterday = linkQValues(days.dropLast(1)).getValue(key)
+        assertTrue(yesterday <= FALSE_DISCOVERY_RATE)
+        assertTrue(today > FALSE_DISCOVERY_RATE && today <= KEEP_DISCOVERY_RATE)
+        assertTrue(analyzeSleep(days).links.any { it.driver == SleepDriver.AteWell })
     }
 }

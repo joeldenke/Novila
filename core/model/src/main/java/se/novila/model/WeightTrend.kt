@@ -1,5 +1,6 @@
 package se.novila.model
 
+import se.novila.science.linearTrend
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import kotlin.math.abs
@@ -35,8 +36,10 @@ data class WeightTrend(
  * The trend of the weights in [entries] (any order), or null with fewer than two weigh-ins. Each weigh-in moves the
  * trend a tenth of the way towards it per day since the last one, so a gap counts as the days it was, however
  * often the user steps on the scale (an exponentially weighted moving average, as in The Hacker's Diet). The weekly
- * change compares the latest trend with the trend at the earliest weigh-in [MIN_TREND_DAYS] to [TREND_DAYS] days
- * before, the longest stretch there is, so one day moves it the least.
+ * change is the slope of the least squares line through the weigh-ins of the last [TREND_DAYS] days, once they span
+ * at least [MIN_TREND_DAYS]: a moving average lags behind, so the difference between two of its points understates a
+ * change that has just begun, while the line through the weigh-ins themselves doesn't, and every weigh-in counts, so
+ * one day moves it the least.
  * Deterministic, so it is unit tested.
  */
 fun weightTrend(entries: Iterable<MeasurementEntry>): WeightTrend? {
@@ -51,14 +54,18 @@ fun weightTrend(entries: Iterable<MeasurementEntry>): WeightTrend? {
         previous = date
         date to trend
     }
-    val (lastDate, lastTrend) = points.last()
-    val earlier = points.firstOrNull { (date, _) ->
-        ChronoUnit.DAYS.between(date, lastDate) in MIN_TREND_DAYS..TREND_DAYS
+    val lastDate = weights.last().first
+    val recent = weights.filter { (date, _) -> ChronoUnit.DAYS.between(date, lastDate) <= TREND_DAYS }
+    val days = ChronoUnit.DAYS.between(recent.first().first, lastDate).takeIf { it >= MIN_TREND_DAYS }
+    val line = days?.let {
+        linearTrend(
+            x = recent.map { (date, _) -> ChronoUnit.DAYS.between(lastDate, date).toDouble() },
+            y = recent.map { (_, kg) -> kg.toDouble() },
+        )
     }
-    val days = earlier?.let { ChronoUnit.DAYS.between(it.first, lastDate) }
     return WeightTrend(
         points = points,
-        weeklyChangeKg = earlier?.let { (lastTrend - it.second) / days!! * DAYS_PER_WEEK },
+        weeklyChangeKg = line?.let { it.slope * DAYS_PER_WEEK },
         weeks = ((days ?: 0L) / DAYS_PER_WEEK).toInt(),
     )
 }

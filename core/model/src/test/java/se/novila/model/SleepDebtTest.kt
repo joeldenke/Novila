@@ -23,20 +23,29 @@ class SleepDebtTest {
         assertFalse(debt.notable)
     }
 
-    @Test fun `the last week counts in full and the week before it half`() {
-        // An hour short every night: seven hours this week and three and a half the week before.
+    /** The weight of a night [ago] days back: half after a week. */
+    private fun weight(ago: Long) = Math.pow(0.5, ago / 7.0)
+
+    @Test fun `older nights fade, half after a week`() {
+        // An hour short every night.
         val debt = sleepDebt(nights { 7f }, goals, today)
-        assertEquals((7 + 3.5) * 60, debt.minutes!!.toDouble(), 0.0)
+        assertEquals((0L..13L).sumOf { 60 * weight(it) }, debt.minutes!!.toDouble(), 1.0)
         assertTrue(debt.notable)
 
-        // The same short nights, but only the week before: half as much.
+        // A night a week ago counts half as much as last night.
+        val lastNight = sleepDebt(nights { ago -> if (ago == 0L) 4f else 8f }, goals, today)
+        val weekAgo = sleepDebt(nights { ago -> if (ago == 7L) 4f else 8f }, goals, today)
+        assertEquals(240, lastNight.minutes)
+        assertEquals(120, weekAgo.minutes)
+
+        // The same short nights, but only the week before: well under half.
         val earlier = sleepDebt(nights { ago -> if (ago >= 7) 7f else 8f }, goals, today)
-        assertEquals(210, earlier.minutes)
+        assertEquals((7L..13L).sumOf { 60 * weight(it) }, earlier.minutes!!.toDouble(), 1.0)
         assertFalse(earlier.notable)
     }
 
-    @Test fun `long nights pay back, but the debt never goes below zero`() {
-        // Two hours short on two nights, two hours extra on two others this week.
+    @Test fun `long nights pay back half their extra time, and the debt never goes below zero`() {
+        // Two hours short on two nights, two hours extra on the two nights after them.
         val paid = sleepDebt(
             nights { ago ->
                 when (ago) {
@@ -48,7 +57,9 @@ class SleepDebtTest {
             goals,
             today,
         )
-        assertEquals(0, paid.minutes)
+        val expected = 120 * (weight(2) + weight(3)) - 0.5 * 120 * (weight(0) + weight(1))
+        assertEquals(expected, paid.minutes!!.toDouble(), 1.0)
+        assertTrue(paid.minutes!! > 0)
         assertEquals(0, sleepDebt(nights { 9f }, goals, today).minutes)
     }
 
@@ -61,7 +72,7 @@ class SleepDebtTest {
 
         // Five logged, the rest unknown: only the logged nights count.
         val five = sleepDebt(nights { ago -> if (ago < 5) 7f else null }, goals, today)
-        assertEquals(5 * 60, five.minutes)
+        assertEquals((0L..4L).sumOf { 60 * weight(it) }, five.minutes!!.toDouble(), 1.0)
     }
 
     @Test fun `nights outside the two weeks don't count`() {

@@ -1,16 +1,20 @@
 package se.novila.exercise
 
+import se.novila.science.ewma
+import se.novila.science.ewmaFactor
+import se.novila.science.populationStandardDeviation
 import java.time.LocalDate
 import kotlin.math.roundToInt
-import kotlin.math.sqrt
 
 /** This week against the user's usual: lighter, about the same, heavier, or not known yet. */
 enum class LoadComparison { Lighter, Usual, Heavier, Unknown }
 
 /**
  * The training load of the last seven days (session RPE, Foster): each session's effort (RPE 1–10) times its minutes,
- * summed per day. [week] is the seven days' load, [usualWeek] the average week of the [USUAL_WEEKS] weeks before (null
- * until the history reaches that far), and [monotony] the days' mean load over their standard deviation (null with
+ * summed per day. [week] is the seven days' load, [usualWeek] the usual week of the [USUAL_WEEKS] weeks before (null
+ * until the history reaches that far): seven times the exponentially weighted average day (Williams et al. 2017), so
+ * recent weeks weigh most and an old week fades out instead of dropping off all at once. The usual weeks never
+ * include the current one, so a hard week can't raise its own yardstick, and [monotony] the days' mean load over their standard deviation (null with
  * fewer than [MIN_SESSIONS_FOR_MONOTONY] sessions). [strain] is the week times its monotony. [sessions] were trained
  * in the week, [rated] of them with the user's own effort; the others count with a moderate effort for their kind
  * ([assumedEffort]).
@@ -61,7 +65,11 @@ fun trainingLoad(history: List<Exercise>, efforts: Map<LocalDate, Int>, today: L
     val usualStart = weekStart.minusWeeks(USUAL_WEEKS)
     // The usual is only known once the history reaches back to the weeks it averages.
     val reachesBack = history.any { it.date < weekStart.minusWeeks(USUAL_WEEKS - 1) }
-    val usual = history.filter { it.date >= usualStart && it.date < weekStart }.sumOf(load) / USUAL_WEEKS
+    val usualDays = (0 until USUAL_WEEKS * DAYS_PER_WEEK).map { offset ->
+        val date = usualStart.plusDays(offset)
+        history.filter { it.date == date }.sumOf(load).toDouble()
+    }
+    val usual = (ewma(usualDays, ewmaFactor(usualDays.size)) ?: 0.0) * DAYS_PER_WEEK
     return TrainingLoad(
         week = days.sum().roundToInt(),
         usualWeek = usual.toInt().takeIf { reachesBack },
@@ -88,9 +96,8 @@ private fun effortOf(exercise: Exercise, efforts: Map<LocalDate, Int>): Int {
 
 /** Mean over the (population) standard deviation; days that are all the same count as very uniform. */
 private fun monotony(days: List<Double>): Double {
-    val mean = days.average()
-    val spread = sqrt(days.sumOf { (it - mean) * (it - mean) } / days.size)
-    return if (spread == 0.0) MAX_MONOTONY else (mean / spread).coerceAtMost(MAX_MONOTONY)
+    val spread = populationStandardDeviation(days)
+    return if (spread == 0.0) MAX_MONOTONY else (days.average() / spread).coerceAtMost(MAX_MONOTONY)
 }
 
 private const val DAYS_PER_WEEK = 7L

@@ -137,9 +137,14 @@ const val REGULARITY_NIGHTS = 28L
 /** Pairs of nights in a row before the index says anything. */
 const val MIN_REGULARITY_PAIRS = 5
 
-/** An index of 80 or more is steady and under 60 irregular, roughly the best and worst fifths in studies. */
+/**
+ * An index of 80 or more is steady, about the middle of the UK Biobank's 61,000 adults or better (median 81), and under
+ * 72 irregular, their least regular fifth (under 71.6), where the risk of dying early was clearly higher (Windred et
+ * al. 2024). Novila's index comes from logged bedtimes and wake-ups rather than a wrist sensor, so it misses naps and
+ * time awake in the night and reads somewhat higher; the bands are meant as a rough guide, not a diagnosis.
+ */
 const val STEADY_INDEX = 80
-const val FAIRLY_STEADY_INDEX = 60
+const val FAIRLY_STEADY_INDEX = 72
 
 /** A weekend shift of an hour or more is worth a word. */
 const val NOTABLE_JETLAG_MINUTES = 60

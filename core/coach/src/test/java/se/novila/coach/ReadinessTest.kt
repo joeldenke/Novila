@@ -60,6 +60,25 @@ class ReadinessTest {
         assertEquals(listOf(ReadinessSignal.Recovery(low = true), ReadinessSignal.CycleSymptoms), readiness.reasons)
     }
 
+    @Test fun `a short night and the sleep debt are one part, not two`() {
+        val debt = SleepDebt(minutes = 300, nights = 14)
+        val readiness = readiness(night(5.5f), Goals(sleepHours = 8f), sleepDebt = debt)!!
+        assertEquals(ReadinessLevel.Steady, readiness.level)
+        assertEquals(listOf(ReadinessSignal.Night(5.5f, short = true), ReadinessSignal.Debt(300)), readiness.reasons)
+        // A second part that pulls down makes it a calm day.
+        assertEquals(
+            ReadinessLevel.Calm,
+            readiness(night(5.5f), Goals(sleepHours = 8f), load = heavy, sleepDebt = debt)!!.level,
+        )
+    }
+
+    @Test fun `a good night with a sleep debt doesn't count sleep as ready`() {
+        val debt = SleepDebt(minutes = 300, nights = 14)
+        val readiness = readiness(night(8f), Goals(sleepHours = 8f), RecoveryStatus.Normal, usual, sleepDebt = debt)!!
+        // Sleep pulls down through the debt, recovery up: a day as planned, not a ready one.
+        assertEquals(ReadinessLevel.Steady, readiness.level)
+    }
+
     @Test fun `a uniform week pulls down even without a usual week`() {
         val uniform = usual.copy(usualWeek = null, monotony = 4.0)
         assertEquals(
