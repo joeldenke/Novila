@@ -100,7 +100,17 @@ fun TodayScreen(
         onOpenNutrition = onOpenNutrition,
         onAddWater = onAddWater,
     )
-    ScreenList(contentPadding = contentPadding, modifier = modifier) {
+    ScreenList(
+        contentPadding = contentPadding,
+        modifier = modifier,
+        aside = {
+            item(key = "insights") {
+                NovilaReveal(order = 3) {
+                    InsightsCard(insights, sleep, upcoming, onOpenTrends, onOpenDiscoveries, onOpenAchievements)
+                }
+            }
+        },
+    ) {
         item(key = "header") { NovilaReveal(order = 0) { Header(today, greetingFor(hour), name, onOpenSettings) } }
         setupHint(setupIncomplete, onCompleteSetup)
         item(key = "balance") {
@@ -109,11 +119,6 @@ fun TodayScreen(
             }
         }
         item(key = "checklist") { NovilaReveal(order = 2) { DayChecklistCard(checklist, actions, coach) } }
-        item(key = "insights") {
-            NovilaReveal(order = 3) {
-                InsightsCard(insights, sleep, upcoming, onOpenTrends, onOpenDiscoveries, onOpenAchievements)
-            }
-        }
     }
 }
 
@@ -239,6 +244,11 @@ private fun TodayScreenContent(
 @Preview(heightDp = 1400)
 @Composable
 private fun TodayScreenPreview() = TodayScreenContent()
+
+/** A tablet or an unfolded phone: the day on one side, the insights next to it. */
+@Preview(widthDp = 900, heightDp = 1000)
+@Composable
+private fun TodayScreenTabletPreview() = TodayScreenContent()
 
 /** A short night and a heavy week: the coach suggests a calm day and says why. */
 @Preview(heightDp = 1400)
