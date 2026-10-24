@@ -599,9 +599,10 @@ där pluginet `firebase@firebase` inte alltid installeras.
   Startsidorna skrivs för hand i `site/home.en.html` och `site/home.sv.html` och ska säga samma sak; ramen är
   `site/layout.html` och stilen `site/style.css`: stora rundade kort, ett budskap per kort, i appens färger (Skog &
   sol). Policyn och villkoren görs av avsnitten `## English` och `## Svenska` i `docs/privacy-policy.md` och
-  `docs/terms-of-use.md`, så de skrivs aldrig in i `site/`. Typsnittet, scenerna och ikonen kopieras från appen, och
-  telefonerna visar appens egna skärmdumpsreferenser (`SCREENS` i byggskriptet), så sajten alltid visar appen som den
-  är. Adresserna (`PAGES` i byggskriptet) är publika och står i Play Console; flytta aldrig en. Sajten följer appens
+  `docs/terms-of-use.md`, så de skrivs aldrig in i `site/`. Typsnittet och ikonen kopieras från appen, scenerna
+  är sajtens egna (`site/images`), och telefonerna, surfplattan och den vikbara visar appens egna
+  skärmdumpsreferenser (`SCREENS` i byggskriptet; surfplattan och den vikbara visar previews för en liggande surfplatta och en uppfälld vikbar), så sajten alltid visar appen
+  som den är. Adresserna (`PAGES` i byggskriptet) är publika och står i Play Console; flytta aldrig en. Sajten följer appens
   regler för texter (*Inga medicinska påståenden*, inga emojis, inga andra appar eller "bäst") och har inga kakor,
   analysverktyg, externa typsnitt eller skript. Domänen och HTTPS ställs in under repots Settings → Pages, inte med en
   `CNAME`-fil.

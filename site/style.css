@@ -556,6 +556,132 @@ a.play:hover {
   color: var(--muted);
 }
 
+/* Tablets and foldables: the same slim frame as the phone, around the app's 900 dp wide screens in two panes. The
+   tablet lies in landscape; the foldable stands open with its hinge as a faint line down the middle. */
+
+.device-stage {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 20px;
+  width: calc(100% + 48px);
+  margin-top: auto;
+  padding: 0 24px 40px;
+}
+
+.device-scene {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 70%;
+  object-fit: cover;
+  object-position: center 60%;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 45%);
+  mask-image: linear-gradient(to bottom, transparent, #000 45%);
+}
+
+.device-figure {
+  position: relative;
+  margin: 0;
+}
+
+.device-figure:first-of-type {
+  flex: 0 1 560px;
+}
+
+.device-figure:last-of-type {
+  flex: 0 1 380px;
+}
+
+.device-figure figcaption {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: rgba(17, 20, 16, 0.55);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: #ffffff;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.tablet,
+.foldable {
+  padding: 10px;
+  border-radius: 30px;
+  background: #1d1f1c;
+  box-shadow:
+    inset 0 0 0 1.5px #3a3d38,
+    0 1px 2px rgba(0, 0, 0, 0.2),
+    0 30px 60px -20px rgba(0, 0, 0, 0.45);
+}
+
+.foldable {
+  position: relative;
+  border-radius: 26px;
+}
+
+.tablet-screen,
+.foldable-screen {
+  position: relative;
+  overflow: hidden;
+  border-radius: 21px;
+  background: #f7f4ec;
+}
+
+.tablet-screen {
+  aspect-ratio: 3 / 2;
+}
+
+.foldable-screen {
+  aspect-ratio: 852 / 880;
+  border-radius: 17px;
+}
+
+.foldable-screen::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 10px;
+  transform: translateX(-50%);
+  background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.05) 45%, rgba(255, 255, 255, 0.12) 55%, transparent);
+}
+
+.tablet-screen img,
+.foldable-screen img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+@media (max-width: 599px) {
+  .device-stage {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .device-figure:first-of-type,
+  .device-figure:last-of-type {
+    flex: none;
+    width: 86%;
+  }
+
+  .device-figure:last-of-type {
+    width: 78%;
+  }
+
+  .device-scene {
+    height: 45%;
+  }
+}
+
 /* Tiles rise into place once, as they scroll in. Browsers without scroll-driven animations show them as they are. */
 
 @media (prefers-reduced-motion: no-preference) {
@@ -605,8 +731,14 @@ a.play:hover {
 
   .tile-image,
   .hero-stage,
+  .device-stage,
   .gallery {
     width: calc(100% + 96px);
+  }
+
+  .device-stage {
+    gap: 40px;
+    padding: 0 48px 56px;
   }
 
   .tile-row {
