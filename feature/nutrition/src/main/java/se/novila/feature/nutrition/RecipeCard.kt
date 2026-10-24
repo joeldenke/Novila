@@ -80,6 +80,8 @@ fun RecipeCard(
                     ingredients = stringArrayResource(text.ingredients).toList(),
                     steps = stringArrayResource(text.steps).toList(),
                     onLog = { actions.onLog(recipe) },
+                    redMeat = recipe.redMeat,
+                    fish = recipe.fish,
                 )
             }
         }
@@ -133,6 +135,8 @@ private fun OwnRecipeDetails(recipe: OwnRecipe, onLog: () -> Unit) {
         steps = recipe.steps,
         onLog = onLog,
         treats = recipe.contents.treats,
+        redMeat = recipe.contents.redMeat,
+        fish = recipe.contents.fish,
     )
 }
 
@@ -145,11 +149,19 @@ private fun RecipeDetails(
     steps: List<String>,
     onLog: () -> Unit,
     treats: Int = 0,
+    redMeat: Int = 0,
+    fish: Int = 0,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.s)) {
         val gives = portions.filterValues { it > 0 }
             .map { (group, count) -> stringResource(R.string.recipe_portion, foodName(group), count) } +
             listOfNotNull(
+                fish.takeIf { it > 0 }?.let {
+                    stringResource(R.string.recipe_portion, stringResource(R.string.food_fish), it)
+                },
+                redMeat.takeIf { it > 0 }?.let {
+                    stringResource(R.string.recipe_portion, stringResource(R.string.food_red_meat), it)
+                },
                 treats.takeIf { it > 0 }?.let {
                     stringResource(R.string.recipe_portion, stringResource(R.string.food_treats), it)
                 },

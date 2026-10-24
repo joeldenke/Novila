@@ -1,10 +1,12 @@
 package se.novila.feature.training
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performSemanticsAction
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -38,6 +40,20 @@ class CardioCardTest {
         composeRule.onNodeWithText("Swimming").performClick()
         composeRule.onNodeWithText("I did it").performClick()
         assertEquals(listOf(CardioLog(CardioType.Running, 35), CardioLog(CardioType.Swimming, 35)), logged)
+    }
+
+    @Test fun `the effort is optional, logged with the session and asked again for the next`() {
+        val logged = mutableListOf<CardioLog>()
+        composeRule.setContent {
+            NovilaTheme { CardioCard(CardioToday(), run, onLog = { logged += it }, onUndo = {}) }
+        }
+        composeRule.onNodeWithContentDescription("How hard was it?")
+            .performSemanticsAction(SemanticsActions.SetProgress) { it(7f) }
+        composeRule.onNodeWithText("7 of 10", substring = true).assertExists()
+        composeRule.onNodeWithText("I did it").performClick()
+        composeRule.onNodeWithText("Optional", substring = true).assertExists()
+        composeRule.onNodeWithText("I did it").performClick()
+        assertEquals(listOf(CardioLog(CardioType.Running, 30, effort = 7), CardioLog(CardioType.Running, 30)), logged)
     }
 
     @Test fun `a logged session can be taken back`() {

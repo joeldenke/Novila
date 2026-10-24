@@ -31,6 +31,7 @@ import se.novila.model.MAX_DRINKS
 import se.novila.model.MealPick
 import se.novila.model.QuickPicks
 import se.novila.model.averageNutrition
+import se.novila.model.fishDaysThisWeek
 import se.novila.navigation.SharedScreen
 import se.novila.recipes.FoodPreferences
 import se.novila.recipes.RecipeSuggestions
@@ -57,11 +58,11 @@ enum class NutritionSheet { Food, Drinks }
  * The Nutrition tab: the shown [day]'s nutrition score with its breakdown, then the quick ways to log (food, a glass
  * of water in one tap, any other drink) and the ways into the rest ([navigation]): today's [recipes] for what is still
  * missing, chosen for [foodPreferences], the scores over time from the [history] (a week up to the shown day) and the
- * food preferences. Food ([onLogMeal], [onPortions], [onTreats]) and drinks ([drinkActions]) are logged in a sheet
- * ([NutritionSheet]), [openSheet] at first, each with the [quickPicks] to log again with one tap and a star that
- * keeps a meal first ([onToggleFavorite]). [today] is the day it really is: the user can go back to an earlier day
- * ([onSelectDay]) and fill in what was forgotten. When the introduction was skipped ([setupIncomplete]), a quiet card
- * under the day picker leads to finishing the setup ([onCompleteSetup]).
+ * food preferences. Food ([onLogMeal], [onPortions], [onTreats], [onRedMeat], [onFish]) and drinks ([drinkActions])
+ * are logged in a sheet ([NutritionSheet]), [openSheet] at first, each with the [quickPicks] to log again with one tap
+ * and a star that keeps a meal first ([onToggleFavorite]). [today] is the day it really is: the user can go back to an
+ * earlier day ([onSelectDay]) and fill in what was forgotten. When the introduction was skipped ([setupIncomplete]), a
+ * quiet card under the day picker leads to finishing the setup ([onCompleteSetup]).
  */
 @Composable
 fun NutritionScreen(
@@ -86,6 +87,8 @@ fun NutritionScreen(
     setupIncomplete: Boolean = false,
     onCompleteSetup: () -> Unit = {},
     sky: NovilaSky = NovilaSky.Day,
+    onRedMeat: (Int) -> Unit = {},
+    onFish: (Int) -> Unit = {},
 ) {
     val isToday = day.date == today
     var sheet by rememberSaveable(openSheet) { mutableStateOf(openSheet) }
@@ -123,7 +126,19 @@ fun NutritionScreen(
             title = stringResource(R.string.nutrition_sheet_food),
             onDismiss = { sheet = null },
         ) {
-            FoodSheet(day, goals, onPortions, onTreats, onLogMeal, isToday, quickPicks.meals, onToggleFavorite)
+            FoodSheet(
+                day = day,
+                goals = goals,
+                onPortions = onPortions,
+                onTreats = onTreats,
+                onLogMeal = onLogMeal,
+                isToday = isToday,
+                picks = quickPicks.meals,
+                onToggleFavorite = onToggleFavorite,
+                onRedMeat = onRedMeat,
+                onFish = onFish,
+                fishDays = fishDaysThisWeek(history.days.filter { it.date != day.date } + day, day.date),
+            )
         }
 
         NutritionSheet.Drinks -> NovilaBottomSheet(
@@ -151,11 +166,14 @@ internal fun FoodSheet(
     isToday: Boolean,
     picks: List<MealPick> = emptyList(),
     onToggleFavorite: (String) -> Unit = {},
+    onRedMeat: (Int) -> Unit = {},
+    onFish: (Int) -> Unit = {},
+    fishDays: Int? = null,
 ) {
     QuickPicksCard(picks, onLogMeal, onToggleFavorite)
     MealLogCard(onLogMeal)
-    FoodLogCard(day, onPortions, onTreats, isToday)
-    ScoreBreakdownCard(day, goals, isToday)
+    FoodLogCard(day, onPortions, onTreats, isToday, onRedMeat, onFish)
+    ScoreBreakdownCard(day, goals, isToday, fishDays)
 }
 
 /** Food and other drinks open their sheets; water, logged most often, is one tap. */

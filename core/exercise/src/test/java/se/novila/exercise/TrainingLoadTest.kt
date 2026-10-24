@@ -34,6 +34,13 @@ class TrainingLoadTest {
         assertEquals(1, load.rated)
     }
 
+    @Test fun `cardio logged with an effort counts with it, and is rated`() {
+        val run = Exercise(ExerciseType.Running, today.minusDays(1), 30.minutes, effort = 8)
+        val load = trainingLoad(listOf(run, walk(daysAgo = 2)), emptyMap(), today)!!
+        assertEquals(30 * 8 + 30 * assumedEffort(ExerciseKind.Cardio), load.week)
+        assertEquals(1, load.rated)
+    }
+
     @Test fun `the effort after a strength session doesn't rate a walk the same day`() {
         val load = trainingLoad(listOf(walk(daysAgo = 0)), mapOf(today to 9), today)!!
         assertEquals(30 * assumedEffort(ExerciseKind.Cardio), load.week)
@@ -51,8 +58,21 @@ class TrainingLoadTest {
         val days = listOf(1L, 3L, 5L)
         val history = days.map(::strength) + earlierWeeks(weeks = 3, days = days, make = ::strength)
         val load = trainingLoad(history, emptyMap(), today)!!
-        assertEquals(load.week, load.usualWeek)
+        // The weighted average is close to the plain one when the weeks are alike.
+        assertEquals(load.week.toDouble(), load.usualWeek!!.toDouble(), load.week * 0.15)
         assertEquals(LoadComparison.Usual, load.comparison)
+    }
+
+    @Test fun `recent weeks weigh most in the usual week`() {
+        // Three weeks ago a big week, then two easy ones; against the same three weeks the other way round.
+        val days = listOf(1L, 3L, 5L)
+        val bigFirst = listOf(strength(1)) + days.map { strength(it + 21, minutes = 90) } +
+            days.map { strength(it + 14) } + days.map { strength(it + 7) }
+        val bigLast = listOf(strength(1)) + days.map { strength(it + 21) } +
+            days.map { strength(it + 14) } + days.map { strength(it + 7, minutes = 90) }
+        val faded = trainingLoad(bigFirst, emptyMap(), today)!!.usualWeek!!
+        val recent = trainingLoad(bigLast, emptyMap(), today)!!.usualWeek!!
+        assertTrue(recent > faded)
     }
 
     @Test fun `a much harder week is heavier than usual, and an easier one lighter`() {

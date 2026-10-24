@@ -2,7 +2,6 @@ package se.novila.feature.sleep
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,6 +16,7 @@ import se.novila.designsystem.component.NovilaHeroPart
 import se.novila.designsystem.component.NovilaHeroRing
 import se.novila.designsystem.component.NovilaHeroText
 import se.novila.designsystem.component.NovilaSky
+import se.novila.designsystem.component.novilaActionWidth
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.sleep.R
 import se.novila.model.DayEntry
@@ -74,13 +74,13 @@ internal fun SleepOverview(
                 text = stringResource(R.string.sleep_change_night),
                 onClick = onLog,
                 role = NovilaTheme.pillars.sleep,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.novilaActionWidth(),
             )
         } else {
             NovilaAccentButton(
                 text = stringResource(R.string.sleep_log_night),
                 onClick = onLog,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.novilaActionWidth(),
             )
         }
     }

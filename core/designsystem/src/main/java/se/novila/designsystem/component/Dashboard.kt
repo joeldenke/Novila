@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -52,6 +53,9 @@ data class NovilaHeroSegment(
     val onClick: (() -> Unit)? = null,
     val clickLabel: String? = null,
 )
+
+/** From this width beside the rings, the hero card's parts stand in a row. */
+private val HeroLegendRowWidth = 360.dp
 
 /**
  * The pine hero card at the top of the dashboard: concentric rings, one per part, around a score
@@ -107,13 +111,23 @@ fun NovilaHeroCard(
                     Text(unit, style = NovilaTheme.typography.labelSmall, color = hero.content.copy(alpha = 0.8f))
                 }
             }
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.m),
-            ) {
-                val percent = rememberPercentFormat()
-                segments.forEach { segment ->
-                    LegendRow(segment, percent.format(segment.progress.coerceIn(0f, 1f)), hero.content)
+            val percent = rememberPercentFormat()
+            BoxWithConstraints(Modifier.weight(1f)) {
+                // On a wide card the parts stand side by side next to the rings instead of stacked.
+                if (maxWidth >= HeroLegendRowWidth) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.l)) {
+                        segments.forEach { segment ->
+                            Box(Modifier.weight(1f)) {
+                                LegendRow(segment, percent.format(segment.progress.coerceIn(0f, 1f)), hero.content)
+                            }
+                        }
+                    }
+                } else {
+                    Column(verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.m)) {
+                        segments.forEach { segment ->
+                            LegendRow(segment, percent.format(segment.progress.coerceIn(0f, 1f)), hero.content)
+                        }
+                    }
                 }
             }
         }

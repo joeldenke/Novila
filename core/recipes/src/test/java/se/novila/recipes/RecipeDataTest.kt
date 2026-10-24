@@ -60,6 +60,27 @@ class RecipeDataTest {
         }
     }
 
+    @Test fun `a recipe with red meat counts it apart from the other protein`() {
+        Recipe.entries.forEach { recipe ->
+            assertTrue(
+                "${recipe.name}: red meat and FoodKind.Meat must go together",
+                (recipe.redMeat > 0) == (FoodKind.Meat in recipe.kinds),
+            )
+            assertTrue("${recipe.name} has too much red meat", recipe.redMeat in 0..1)
+        }
+    }
+
+    @Test fun `a recipe's fish is counted apart from the other protein`() {
+        Recipe.entries.forEach { recipe ->
+            assertTrue(
+                "${recipe.name}: fish without FoodKind.FishSeafood",
+                recipe.fish == 0 || FoodKind.FishSeafood in recipe.kinds,
+            )
+            assertTrue("${recipe.name} has too much fish", recipe.fish in 0..1)
+        }
+        assertTrue(Recipe.entries.count { it.fish > 0 } >= 5)
+    }
+
     @Test fun `a diet never contains an animal family it does not allow`() {
         val fishAndMeat = setOf(FoodKind.FishSeafood, FoodKind.Meat, FoodKind.Poultry)
         val meat = setOf(FoodKind.Meat, FoodKind.Poultry)

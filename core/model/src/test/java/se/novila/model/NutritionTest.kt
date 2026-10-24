@@ -2,6 +2,7 @@ package se.novila.model
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.time.LocalDate
 
@@ -50,5 +51,35 @@ class NutritionTest {
         val almost = DayEntry(date, food = FoodLog(5, meals = 3, protein = 3, wholeGrain = 3))
         assertEquals(NextPortion(FoodGroup.Water, 2), almost.nextPortion())
         assertNull(almost.withPortions(FoodGroup.Water, WATER_GOAL).nextPortion())
+    }
+
+    @Test fun `red meat counts as half a protein portion and costs points beyond one a day`() {
+        // Three protein portions of fish, beans or eggs fill the group; three of red meat count as one and a half.
+        val fish = DayEntry(date, food = FoodLog(protein = 3)).nutritionScore()!!
+        val meat = DayEntry(date, food = FoodLog(redMeat = 3)).nutritionScore()!!
+        assertEquals(20, fish.total)
+        assertEquals(10, meat.parts.single { it.group == FoodGroup.Protein }.points.toInt())
+        // Two portions beyond the free one cost five points each.
+        assertEquals(10, meat.redMeatPenalty)
+        assertEquals(0, meat.total)
+        // One a day costs nothing.
+        val one = DayEntry(date, food = FoodLog(protein = 2, redMeat = 1)).nutritionScore()!!
+        assertEquals(0, one.redMeatPenalty)
+        assertEquals(17, one.total)
+        // Red meat alone counts as something logged.
+        assertEquals(0, DayEntry(date, food = FoodLog(redMeat = 1)).nutritionScore()?.redMeatPenalty)
+    }
+
+    @Test fun `fish counts as protein in full and is counted over the week`() {
+        val fish = DayEntry(date, food = FoodLog(fish = 3)).nutritionScore()!!
+        assertEquals(20, fish.total)
+        // With the protein filled by fish, the next step is another group.
+        val fed = DayEntry(date, food = FoodLog(meals = 3, fish = 3))
+        assertEquals(FoodGroup.Vegetables, fed.nextPortion()?.group)
+        // Fish on two of the last seven days; the one eight days ago doesn't count.
+        val days = listOf(0L, 3L, 8L).map { DayEntry(date.minusDays(it), food = FoodLog(fish = 1)) } +
+            DayEntry(date.minusDays(1), food = FoodLog(protein = 2))
+        assertEquals(2, fishDaysThisWeek(days, date))
+        assertTrue(fishDaysThisWeek(days, date) >= FISH_TIMES_A_WEEK)
     }
 }

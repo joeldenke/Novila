@@ -31,8 +31,10 @@ import se.novila.model.QuickPicks
 import se.novila.model.parseMeal
 import se.novila.model.recentDrinks
 import se.novila.model.withDrink
+import se.novila.model.withFish
 import se.novila.model.withMeal
 import se.novila.model.withPortions
+import se.novila.model.withRedMeat
 import se.novila.model.withTreats
 import se.novila.model.withoutLastDrink
 import se.novila.recipes.FoodPreferences
@@ -134,6 +136,10 @@ class NutritionViewModel(
     fun changePortions(group: FoodGroup, delta: Int) = store.update(day.value) { it.withPortions(group, delta) }
 
     fun changeTreats(delta: Int) = store.update(day.value) { it.withTreats(delta) }
+
+    fun changeRedMeat(delta: Int) = store.update(day.value) { it.withRedMeat(delta) }
+
+    fun changeFish(delta: Int) = store.update(day.value) { it.withFish(delta) }
 
     /**
      * Logs [ml] of [kind] on the shown day, at the time it is now on today. On an earlier day the time isn't known,

@@ -36,10 +36,11 @@ POM
 }
 
 # The plain Kotlin modules :core:anatomy, :core:exercise, :core:coach and what the coach builds on
-# (:core:recovery, :core:model, :core:sleep), with no Android, so no Gradle needed.
+# (:core:recovery, :core:model, :core:sleep, :core:science), with no Android, so no Gradle needed.
 sources() {
   find "$ROOT/core/anatomy/src/main" "$ROOT/core/exercise/src/main" "$ROOT/core/coach/src/main" \
-    "$ROOT/core/recovery/src/main" "$ROOT/core/model/src/main" "$ROOT/core/sleep/src/main" -name '*.kt'
+    "$ROOT/core/recovery/src/main" "$ROOT/core/model/src/main" "$ROOT/core/sleep/src/main" \
+    "$ROOT/core/science/src/main" -name '*.kt'
   find "$ROOT/tools/anatomy/src" -name '*.kt'
 }
 

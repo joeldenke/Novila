@@ -424,7 +424,7 @@ private fun Answer(title: String, value: String?) {
 
 /** Words for the Borg CR10 scale. */
 @Composable
-private fun effortLabel(effort: Int): String = stringResource(
+internal fun effortLabel(effort: Int): String = stringResource(
     when {
         effort <= 2 -> R.string.workout_effort_easy
         effort <= 4 -> R.string.workout_effort_moderate

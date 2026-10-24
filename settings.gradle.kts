@@ -55,6 +55,7 @@ include(":core:navigation")
 include(":core:recipes")
 include(":core:recovery")
 include(":core:reminders")
+include(":core:science")
 include(":core:sleep")
 include(":core:ui")
 

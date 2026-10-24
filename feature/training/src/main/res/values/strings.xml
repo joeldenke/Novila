@@ -475,6 +475,8 @@
     <string name="cardio_log">I did it</string>
     <string name="cardio_log_more">Log another</string>
     <string name="cardio_undo">Undo</string>
+    <string name="cardio_effort_title">How hard was it?</string>
+    <string name="cardio_effort_hint">Optional. Drag the slider, and the week\'s training load counts the session as it was.</string>
 
     <!-- The week at a glance on Training -->
     <string name="overview_title">This week</string>

@@ -4,6 +4,8 @@ import se.novila.model.FoodGroup
 import se.novila.model.MealLog
 import se.novila.model.foodGroupOf
 import se.novila.model.foodWords
+import se.novila.model.isFish
+import se.novila.model.isRedMeat
 import se.novila.model.isSweet
 import se.novila.model.knownFoods
 
@@ -19,6 +21,8 @@ const val MAX_PORTIONS_PER_GROUP = 2
 fun parseIngredients(ingredients: List<String>): MealLog {
     val portions = mutableMapOf<FoodGroup, Int>()
     var treats = 0
+    var redMeat = 0
+    var fish = 0
     val unknown = mutableListOf<String>()
     val counted = mutableSetOf<String>()
     for (word in ingredients.flatMap(::foodWords)) {
@@ -28,10 +32,12 @@ fun parseIngredients(ingredients: List<String>): MealLog {
             group == FoodGroup.Water -> Unit
             group != null -> portions[group] = minOf((portions[group] ?: 0) + 1, MAX_PORTIONS_PER_GROUP)
             isSweet(word) -> treats++
+            isRedMeat(word) -> redMeat = minOf(redMeat + 1, MAX_PORTIONS_PER_GROUP)
+            isFish(word) -> fish = minOf(fish + 1, MAX_PORTIONS_PER_GROUP)
             word !in ALLERGENS -> unknown += word
         }
     }
-    return MealLog(portions, treats, unknown)
+    return MealLog(portions, treats, unknown, redMeat, fish)
 }
 
 /**

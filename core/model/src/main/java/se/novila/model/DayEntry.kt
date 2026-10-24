@@ -13,8 +13,11 @@ const val MAX_SLEEP_HOURS = 12f
 /** Cardio the user can log by hand ("I did it"). The names match the training program's exercise types. */
 enum class CardioType { Walking, Running, Cycling, Swimming }
 
-/** A cardio session logged by hand. */
-data class CardioLog(val type: CardioType, val minutes: Int)
+/**
+ * A cardio session logged by hand, with how hard it felt when the user said so ([effort], RPE 1–10 on the Borg CR10
+ * scale, null when not given), so the training load counts it as it was instead of as a moderate session.
+ */
+data class CardioLog(val type: CardioType, val minutes: Int, val effort: Int? = null)
 
 /**
  * What may have affected a night, logged with it the morning after. Most are about the evening before: caffeine late
@@ -119,7 +122,12 @@ data class DayEntry(
     fun withCardio(log: CardioLog): DayEntry {
         val room = MAX_CARDIO_MINUTES - cardioMinutes
         if (room <= 0) return this
-        return copy(cardio = cardio + log.copy(minutes = log.minutes.coerceIn(1, room)))
+        return copy(
+            cardio = cardio + log.copy(
+                minutes = log.minutes.coerceIn(1, room),
+                effort = log.effort?.coerceIn(1, MAX_EFFORT),
+            ),
+        )
     }
 
     /** Takes back the last cardio session logged by hand. */
@@ -146,28 +154,41 @@ private fun diaryLine(text: String): String =
     text.replace("\r\n", " ").replace('\n', ' ').replace('\r', ' ').replace(';', ',').trim().take(MAX_DIARY_LENGTH)
 
 /**
- * Simple versioned text format without Android dependencies, so it can be unit tested and migrated.
- * v7: "v7;water;sleep;mood;vegetables;meals;protein;wholeGrain;treats;strengthMinutes;cardio;effort;pain;rehabPhase;
- * bedtime;wakeTime;sleepQuality;sleepFactors;energy;stress;diary;drinks", where cardio is comma-separated
- * "type:minutes" (empty when none), pain is empty when not given, the times are minutes after midnight (empty when
- * not given) and the factors are comma-separated names (a new factor needs no new version: an older app skips names
- * it doesn't know). Every version only appends fields, so older versions decode
- * with the same indices and the newer fields default; v6 appends energy (0 = not set, 1–5), stress (0 = not set,
- * 1–5) and the diary line, which encode keeps free of semicolons so it never breaks the format. v7 appends drinks,
- * comma-separated "kind:ml:time" with the time in minutes after midnight (empty when not known). From v7 the water
- * field is empty: water is a drink. Before v7 it was glasses of water, read as that many glasses without a time.
- * Older versions are still read: v6 (before drinks), v5 (before energy, stress and the diary line), v4 (before
- * bedtimes, sleep quality and factors), v3 (before cardio logging and feedback after a session), v2 (before session
- * mode) with no strength sessions either, and v1 (before food logging) with nothing eaten logged either.
+ * Simple versioned text format without Android dependencies, so it can be unit tested and migrated. v9:
+ * "v9;water;sleep;mood;vegetables;meals;protein;wholeGrain;treats;strengthMinutes;cardio;effort;pain;rehabPhase;
+ * bedtime;wakeTime;sleepQuality;sleepFactors;energy;stress;diary;drinks;redMeat;fish", where cardio is comma-separated
+ * "type:minutes:effort" (empty when none, the effort empty when not given; before v9 "type:minutes"), pain is empty
+ * when not given, the times are minutes after midnight (empty when not given) and the factors are comma-separated
+ * names (a new factor needs no new version: an older app skips names it doesn't know). Every version only appends
+ * fields, so older versions decode with the same indices and the newer fields default; v6 appends energy (0 = not set,
+ * 1–5), stress (0 = not set, 1–5) and the diary line, which encode keeps free of semicolons so it never breaks the
+ * format. v7 appends drinks, comma-separated "kind:ml:time" with the time in minutes after midnight (empty when not
+ * known). From v7 the water field is empty: water is a drink. Before v7 it was glasses of water, read as that many
+ * glasses without a time. v8 appends portions of red meat and charcuterie, which before were logged as protein. v9
+ * appends portions of fish and seafood, which before were logged as protein too, and gives each cardio session its
+ * effort. Older versions are still read: v8 (before fish and cardio efforts, read as none), v7 (before red meat, read
+ * as none), v6 (before drinks), v5 (before energy, stress and the diary line), v4 (before bedtimes, sleep quality and
+ * factors), v3 (before cardio logging and feedback after a session), v2 (before session mode) with no strength
+ * sessions either, and v1 (before food logging) with nothing eaten logged either.
  */
 object DayEntryCodec {
-    private const val VERSION = "v7"
-    private val FIELDS = mapOf("v1" to 4, "v2" to 9, "v3" to 10, "v4" to 14, "v5" to 18, "v6" to 21, VERSION to 22)
+    private const val VERSION = "v9"
+    private val FIELDS = mapOf(
+        "v1" to 4,
+        "v2" to 9,
+        "v3" to 10,
+        "v4" to 14,
+        "v5" to 18,
+        "v6" to 21,
+        "v7" to 22,
+        "v8" to 23,
+        VERSION to 24,
+    )
 
     fun encode(entry: DayEntry): String {
         val day = listOf(VERSION, "", entry.sleepHours, entry.mood)
         val food = with(entry.food) { listOf(vegetables, meals, protein, wholeGrain, treats) }
-        val cardio = entry.cardio.joinToString(",") { "${it.type.name}:${it.minutes}" }
+        val cardio = entry.cardio.joinToString(",") { "${it.type.name}:${it.minutes}:${it.effort ?: ""}" }
         val training = listOf(entry.strengthMinutes, cardio, entry.effort, entry.pain ?: "", entry.rehabPhase)
         val night = listOf(
             entry.bedtime?.let(::minutes) ?: "",
@@ -177,7 +198,8 @@ object DayEntryCodec {
         )
         val moment = listOf(entry.energy, entry.stress, diaryLine(entry.diary))
         val drinks = entry.drinks.joinToString(",") { "${it.kind.name}:${it.ml}:${it.time?.let(::minutes) ?: ""}" }
-        return (day + food + training + night + moment + drinks).joinToString(";")
+        val laterFood = listOf(entry.food.redMeat, entry.food.fish)
+        return (day + food + training + night + moment + drinks + laterFood).joinToString(";")
     }
 
     private fun minutes(time: LocalTime) = time.hour * 60 + time.minute
@@ -191,10 +213,18 @@ object DayEntryCodec {
         fun int(index: Int) = parts.getOrNull(index)?.toIntOrNull() ?: 0
         return DayEntry(
             date = date,
-            drinks = if (parts[0] == VERSION) drinks(parts[21]) else glassesOfWater(int(1)),
+            drinks = if (parts[0] in DRINK_VERSIONS) drinks(parts[21]) else glassesOfWater(int(1)),
             sleepHours = parts[2].toFloatOrNull() ?: 0f,
             mood = int(3),
-            food = FoodLog(vegetables = int(4), meals = int(5), protein = int(6), wholeGrain = int(7), treats = int(8)),
+            food = FoodLog(
+                vegetables = int(4),
+                meals = int(5),
+                protein = int(6),
+                wholeGrain = int(7),
+                treats = int(8),
+                redMeat = int(22),
+                fish = int(23),
+            ),
             strengthMinutes = int(9),
             cardio = cardio(parts.getOrNull(10)),
             effort = int(11).coerceIn(0, MAX_EFFORT),
@@ -222,11 +252,16 @@ object DayEntryCodec {
     private fun factors(raw: String?): Set<SleepFactor> =
         raw.orEmpty().split(',').mapNotNull { name -> SleepFactor.entries.firstOrNull { it.name == name } }.toSet()
 
-    /** Unknown types (from a later version) and unreadable minutes are skipped. */
+    /** The versions whose drinks are in their own field, after water became a drink. */
+    private val DRINK_VERSIONS = setOf("v7", "v8", VERSION)
+
+    /** Unknown types (from a later version), unreadable minutes and efforts out of range are skipped. */
     private fun cardio(raw: String?): List<CardioLog> = raw.orEmpty().split(',').mapNotNull { part ->
-        val type = CardioType.entries.firstOrNull { it.name == part.substringBefore(':') }
-        val minutes = part.substringAfter(':', "").toIntOrNull()?.takeIf { it > 0 }
-        if (type != null && minutes != null) CardioLog(type, minutes) else null
+        val fields = part.split(':')
+        val type = CardioType.entries.firstOrNull { it.name == fields[0] }
+        val minutes = fields.getOrNull(1)?.toIntOrNull()?.takeIf { it > 0 }
+        val effort = fields.getOrNull(2)?.toIntOrNull()?.takeIf { it in 1..MAX_EFFORT }
+        if (type != null && minutes != null) CardioLog(type, minutes, effort) else null
     }
 }
 

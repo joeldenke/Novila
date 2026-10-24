@@ -1,19 +1,23 @@
 package se.novila.exercise
 
+import se.novila.science.ewma
+import se.novila.science.ewmaFactor
+import se.novila.science.populationStandardDeviation
 import java.time.LocalDate
 import kotlin.math.roundToInt
-import kotlin.math.sqrt
 
 /** This week against the user's usual: lighter, about the same, heavier, or not known yet. */
 enum class LoadComparison { Lighter, Usual, Heavier, Unknown }
 
 /**
  * The training load of the last seven days (session RPE, Foster): each session's effort (RPE 1–10) times its minutes,
- * summed per day. [week] is the seven days' load, [usualWeek] the average week of the [USUAL_WEEKS] weeks before (null
- * until the history reaches that far), and [monotony] the days' mean load over their standard deviation (null with
- * fewer than [MIN_SESSIONS_FOR_MONOTONY] sessions). [strain] is the week times its monotony. [sessions] were trained
- * in the week, [rated] of them with the user's own effort; the others count with a moderate effort for their kind
- * ([assumedEffort]).
+ * summed per day. [week] is the seven days' load, [usualWeek] the usual week of the [USUAL_WEEKS] weeks before (null
+ * until the history reaches that far): seven times the exponentially weighted average day (Williams et al. 2017), so
+ * recent weeks weigh most and an old week fades out instead of dropping off all at once. The usual weeks never
+ * include the current one, so a hard week can't raise its own yardstick, and [monotony] the days' mean load over
+ * their standard deviation (null with fewer than [MIN_SESSIONS_FOR_MONOTONY] sessions). [strain] is the week times
+ * its monotony. [sessions] were trained in the week, [rated] of them with the user's own effort (after a strength
+ * session, or with cardio logged by hand); the others count with a moderate effort for their kind ([assumedEffort]).
  *
  * The ratio of the week to the usual (acute to chronic, ACWR) is debated as a predictor of injury, so it only gives
  * calm guidance ([comparison]: "heavier than usual"), never a warning.
@@ -61,19 +65,23 @@ fun trainingLoad(history: List<Exercise>, efforts: Map<LocalDate, Int>, today: L
     val usualStart = weekStart.minusWeeks(USUAL_WEEKS)
     // The usual is only known once the history reaches back to the weeks it averages.
     val reachesBack = history.any { it.date < weekStart.minusWeeks(USUAL_WEEKS - 1) }
-    val usual = history.filter { it.date >= usualStart && it.date < weekStart }.sumOf(load) / USUAL_WEEKS
+    val usualDays = (0 until USUAL_WEEKS * DAYS_PER_WEEK).map { offset ->
+        val date = usualStart.plusDays(offset)
+        history.filter { it.date == date }.sumOf(load).toDouble()
+    }
+    val usual = (ewma(usualDays, ewmaFactor(usualDays.size)) ?: 0.0) * DAYS_PER_WEEK
     return TrainingLoad(
         week = days.sum().roundToInt(),
         usualWeek = usual.toInt().takeIf { reachesBack },
         monotony = monotony(days).takeIf { week.size >= MIN_SESSIONS_FOR_MONOTONY },
         sessions = week.size,
-        rated = week.count { it.type.kind == ExerciseKind.Strength && (efforts[it.date] ?: 0) > 0 },
+        rated = week.count { ownEffort(it, efforts) != null },
     )
 }
 
 /**
- * The effort a session counts with: the user's own for a strength session, otherwise a moderate one for its kind
- * on the CR10 scale, since Novila only asks after strength sessions.
+ * The effort a session counts with: the user's own when they gave one (with the session, or for the day's strength
+ * session), otherwise a moderate one for its kind on the CR10 scale.
  */
 fun assumedEffort(kind: ExerciseKind): Int = when (kind) {
     ExerciseKind.Strength -> 5
@@ -81,16 +89,17 @@ fun assumedEffort(kind: ExerciseKind): Int = when (kind) {
     ExerciseKind.Mobility -> 2
 }
 
-private fun effortOf(exercise: Exercise, efforts: Map<LocalDate, Int>): Int {
-    val own = efforts[exercise.date]?.takeIf { it > 0 && exercise.type.kind == ExerciseKind.Strength }
-    return own ?: assumedEffort(exercise.type.kind)
-}
+private fun effortOf(exercise: Exercise, efforts: Map<LocalDate, Int>): Int =
+    ownEffort(exercise, efforts) ?: assumedEffort(exercise.type.kind)
+
+/** The effort the user gave for [exercise], or null. The day's effort only ever rates its strength session. */
+private fun ownEffort(exercise: Exercise, efforts: Map<LocalDate, Int>): Int? = exercise.effort?.takeIf { it > 0 }
+    ?: efforts[exercise.date]?.takeIf { it > 0 && exercise.type.kind == ExerciseKind.Strength }
 
 /** Mean over the (population) standard deviation; days that are all the same count as very uniform. */
 private fun monotony(days: List<Double>): Double {
-    val mean = days.average()
-    val spread = sqrt(days.sumOf { (it - mean) * (it - mean) } / days.size)
-    return if (spread == 0.0) MAX_MONOTONY else (mean / spread).coerceAtMost(MAX_MONOTONY)
+    val spread = populationStandardDeviation(days)
+    return if (spread == 0.0) MAX_MONOTONY else (days.average() / spread).coerceAtMost(MAX_MONOTONY)
 }
 
 private const val DAYS_PER_WEEK = 7L

@@ -9,7 +9,7 @@ CI är därför den enda sanningen om att något bygger och fungerar.
 - Jetpack Compose med eget designsystem ovanpå Material 3 1.5 (beta), compileSdk/targetSdk 37, minSdk 26
 - Navigation 3 (`androidx.navigation3`) med en back stack per flik: Idag, Träning, Sömn, Kost
 - Alla versioner i `gradle/libs.versions.toml`. Hårdkoda aldrig versioner i byggfiler.
-- Data lokalt i Preferences DataStore via `HealthStore`, kodat av `DayEntryCodec` (versionerat format, v7 sedan drycker)
+- Data lokalt i Preferences DataStore via `HealthStore`, kodat av `DayEntryCodec` (versionerat format, v9 sedan fisk och ansträngning per konditionspass)
 - DI med [Metro](https://zacsweers.github.io/metro/) (`dev.zacsweers.metro`, Kotlin-kompilatorplugin, ingen KSP).
   Varje skärm har en egen ViewModel (`StateFlow`) i sin feature, skapad av Metro och scopad till sin Navigation 3-entry.
   Ingen delad ViewModel. Skärmarna i `feature/*` är tillståndslösa.
@@ -82,7 +82,7 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
   (`HealthConnectExerciseSource`, träningspass) och `SleepSource` (`HealthConnectSleepSource`, nätter), behörigheterna i modulens manifest (`HEALTH_PERMISSIONS`, frågas i en
   dialog via `rememberHealthPermissionRequest`) och integritetsskärmen (`HealthDataInfoActivity`)
 - Ren Kotlin, utan Android (`novila.jvm.library`, testas på sekunder):
-  - `:core:model` – `DayEntry` (`DayEntryCodec`), cykeln (`Cycle.kt`: `CycleLog`, `cyclePhase`, se *Cykeln* under Regler), sömnens regelbundenhet (`sleepRegularity`: Sleep Regularity Index och social jetlag över fyra veckor), kroppsklockan (`bodyClock`: mitten av sömnen på lediga dagar minus det man sover ikapp, MSFsc, och läggtiden som passar sömnmålet; aldrig en typ), sömnskulden (`sleepDebt`: två veckor mot sömnmålet, den senaste veckan helt och veckan före till hälften), kost, drycker (`Drink`, se *Drycker* under Regler), dagens balans, insikter, dagens sista logg (`LatestLog`) och uppmuntran (`cheers`), `analyzeSleep` (se *Sömnens samband*
+  - `:core:model` – `DayEntry` (`DayEntryCodec`), cykeln (`Cycle.kt`: `CycleLog`, `cyclePhase`, se *Cykeln* under Regler), sömnens regelbundenhet (`sleepRegularity`: Sleep Regularity Index och social jetlag över fyra veckor), kroppsklockan (`bodyClock`: mitten av sömnen på lediga dagar minus det man sover ikapp, MSFsc, och läggtiden som passar sömnmålet; aldrig en typ), sömnskulden (`sleepDebt`: två veckor mot sömnmålet, varje natt med halveringstid en vecka, och en lång natt betalar tillbaka hälften av sin extra tid), kost, drycker (`Drink`, se *Drycker* under Regler), dagens balans, insikter, dagens sista logg (`LatestLog`) och uppmuntran (`cheers`), `analyzeSleep` (se *Sömnens samband*
     under Regler), `History` (dagarna över en
     `HistoryRange` i perioder, plus lika många dagar före att jämföra med; Sömn och Kost läser den via `HealthStore`), `Profile`, `Goals` (egna mål för
     steg, sömn och vatten; balans, insikter och kostpoäng mäts mot dem) och `AppSettings` (`ThemeMode`)
@@ -97,14 +97,16 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
     timed step som notis (`WorkoutNotifications`): nedräkningen tyst, och nästa set med ljud när tiden är slut.
     Avklarade pass sparas som `strengthMinutes` per dag,
     med ansträngning (RPE 1–10), smärta (0–10) och rehabfas om användaren svarar. Konditionspass loggas för hand
-    ("Jag gjorde det", `DayEntry.cardio`). `ExerciseRepository` håller passen från en källa (Health Connect) i minnet, och
+    ("Jag gjorde det", `DayEntry.cardio`), med en valfri ansträngning per pass (`CardioLog.effort`). `ExerciseRepository` håller passen från en källa (Health Connect) i minnet, och
     `TrainingHistory` slår ihop dem med appens egna (per dag och slag räknas den sida som har mest tid, så samma
-    promenad räknas en gång). Det blir generatorns historik.
+    promenad räknas en gång, och vinner klockans inspelning behåller den ansträngningen användaren gav). Det blir
+    generatorns historik.
     `trainingMinutesByDate` (i `:core:data`) ger minuterna per dag på samma sätt, för Träningens *Trender*
     (`TrainingTrendsScreen`: vecka, fyra veckor eller år med `TrainingHistoryCard`); klockans pass finns bara för de
     fem veckor som läses, så längre bak räknas det som loggats i Novila.
     `trainingLoad` är veckans belastning (session-RPE, Foster: ansträngning × minuter, monotoni och strain) mot de tre
-    veckorna innan; pass utan användarens ansträngning räknas som måttliga, och jämförelsen är bara lugn vägledning,
+    veckorna innan; ett pass räknas med användarens egen ansträngning (efter styrkepasset eller med konditionspasset),
+    pass utan den räknas som måttliga, och jämförelsen är bara lugn vägledning,
     aldrig en varning (ACWR är omstritt som skadeprediktor).
     `Progression` höjer varje övning steg för steg (dubbel progression): passläget frågar hur många repetitioner
     varje set blev (`Workout.done`), resultaten sparas i `CoachStore` (`ExerciseLog`), och nådde alla set målet blir
@@ -119,9 +121,10 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
     i en dag utan egen sömn; användarens egen logg vinner alltid. Sömn och Idag visar dagarna så via
     `SavedDays.showing`, som aldrig sparar något.
   - `:core:recovery` – återhämtning från en klocka oberoende av källa: `RecoveryDay` (vilopuls och HRV per dag),
-    `RecoverySource`, `RecoveryRepository` (bara i minnet) och `analyzeRecovery`, som jämför dagens värden med
-    användarens egen baslinje (medianen av de senaste dagarna) och ger `RecoveryStatus`. Träning och coachen sänker
-    dagens pass när läget är lågt.
+    `RecoverySource`, `RecoveryRepository` (bara i minnet) och `analyzeRecovery`, som jämför medlet av de tre senaste
+    dagarna med användarens egen baslinje (`Baseline`, dagarna före dem) och ger `RecoveryStatus`: HRV som
+    ln(RMSSD) och vilopulsen, var och en sämre när den ligger mer än en av användarens egna standardavvikelser ut
+    (Plews, Buchheit). Träning och coachen sänker dagens pass när läget är lågt.
   - `:core:coach` – coachen, helt på enheten: `CoachPreferences` (mål, en till sex dagar i veckan, egna veckodagar
     eller dagar som coachen sprider ut (`trainingDays`), tid per pass, fokus, hänsyn, redskap användaren har,
     rehabområde och fas; utan redskap blir passen kroppsvikt), `CoachCatalog`
@@ -141,10 +144,18 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
     `dailyCoach` (`DailyCoach`, `CoachAdvice`), som väger delarna mot varandra och är deterministisk och enhetstestad.
     Dagsformen (`readiness`, `Readiness`) läser natten, sömnskulden (från fyra timmar), återhämtningen,
     träningsbelastningen och cykelns symtom som
-    signaler som drar ner, upp eller inte alls, och räknar dem: två ner är en lugn dag, en ner en dag som planerat,
-    ingen ner och två upp en kropp som verkar redo. Den visas aldrig som en poäng, bara med sina skäl i coachens
+    signaler som drar ner, upp eller inte alls, och räknar delarna de kommer från (`ReadinessDomain`: sömn,
+    återhämtning, belastning, cykel), så natten och sömnskulden räknas som en: två delar ner är en lugn dag, en ner
+    en dag som planerat, ingen ner och två upp en kropp som verkar redo. Den visas aldrig som en poäng, bara med sina skäl i coachens
     mening på Idag (`CoachAdvice.CalmDay`, `ReadyDay`); det som inte är känt räknas aldrig som dåligt.
     Se *Ingen AI* under Regler.
+  - `:core:science` – statistiken och måtten som de andra modulerna delar, ren Kotlin och testad mot tabellvärden:
+    t- och chi²-fördelningarna, Welchs t-test med Welch–Satterthwaites frihetsgrader, `adjustedTest` (skillnaden
+    justerad för en stratum som helgen, minsta kvadrat), Benjamini–Hochberg, Kruskal–Wallis, `linearTrend`,
+    exponentiellt viktade medel (`ewma`), avklingning (`decayWeight`), en persons baslinje (`Baseline`) och
+    potensmedel (`powerMean`). Bara funktioner utan tillstånd, så den används som beroende (`implementation`) och
+    aldrig genom Metro. Ny statistik eller ett nytt mått läggs här, med källa i KDoc och test, inte i den modul som
+    först behöver det.
   - `:core:breathing` – de guidade andningsövningarna som data: `BreathingSession` (faser med längd i sekunder och
     antal rundor), `BreathingCatalog` (lugn andning, boxandning, 4-7-8) och `momentAt`, som deterministiskt räknar ut
     runda, fas, sekunder kvar och hur långt in i fasen man är vid en förfluten tid. `breathScale` ger cirkelns storlek.
@@ -397,11 +408,19 @@ där pluginet `firebase@firebase` inte alltid installeras.
   det. Lägg en `@Preview` med `NovilaEntryLayout.Rows` för nya startsidor.
 - **Adaptiv layout:** appen ska fungera på surfplattor, vikbara och i liggande läge. Från `NovilaRailMinWidth`
   (600 dp, storleksklassen *medium*) ligger flikarna i en `NovilaNavigationRail` i stället för bottenraden, och
-  `ScreenList` centrerar innehållet på högst 640 dp. Flikarnas startsidor ger det som stöder översikten (ingångarna,
-  insikterna) till `ScreenList(aside = …)`: på en telefon följer det efter i samma lista, och från 700 dp bredd blir
-  det en egen ruta bredvid (*supporting pane*), två rutor på högst 1040 dp tillsammans, så inga kort eller knappar
-  dras ut över skärmen. `NovilaEntries` lägger två till fyra rutor per rad efter bredden.
-  Lägg en `@Preview` med `widthDp = 900` för nya startsidor. Följ skillen `adaptive`.
+  `ScreenList` centrerar innehållet på högst 640 dp. Flikarnas startsidor följer Material 3:s *supporting pane*: det
+  som stöder översikten (ingångarna, insikterna, loggningen) ges till `ScreenList(aside = …)`. På en telefon och en
+  stående surfplatta följer det efter i samma lista; från 760 dp (ett *expanded* fönster utan rälsen) blir det en fast
+  ruta på 360 dp bredvid en flexibel huvudruta (högst 840 dp), med 24 dp marginaler och mellanrum. På en uppfälld
+  vikbar delar rutorna sig vid vecket (`LocalNovilaFold`, som `NovilaApp` läser med `rememberNovilaFold` ur
+  `material3-adaptive`), så inget kort ligger över det. Byggarna vet genom `ScreenListScope.twoPanes` var de är, så
+  ett kort kan flytta till stödrutan eller bara visas där det får plats (dagens övningar på Träning). Knappar dras
+  aldrig ut: huvudknappar på breda kort tar `Modifier.novilaActionWidth()` (hela bredden på en telefon, annars högst
+  `NovilaMaxButtonWidth` vid slutet), *Din dag* blir rutor sida vid sida på ett brett kort (`NovilaTaskList`) och listor som
+  passets övningar två spalter (`NovilaColumns`).
+  `NovilaEntries` lägger två till fyra rutor per rad efter bredden. Lägg previews för nya startsidor med
+  `widthDp = 900`, en liggande surfplatta (`widthDp = 1200, heightDp = 800`) och en uppfälld vikbar
+  (`widthDp = 852` i `NovilaUnfolded`). Följ skillen `adaptive`.
 - **Coachens inställningar:** `CoachScreen` är bara inställningar (mål, dagar och veckodagar, tid, fokus, redskap,
   hänsyn och coachens skäl), öppnad från Träning och från *Mina mål*. Veckan och "Föreslå ett annat program" ligger
   på veckans program (`TrainingProgramScreen`), där övningarna syns, med en väg till inställningarna.
@@ -450,8 +469,13 @@ där pluginet `firebase@firebase` inte alltid installeras.
   indikatorn står still när sidan gör det, så previews och skärmdumpar visar slutläget.
 - **Sömnens samband:** `analyzeSleep` (`SleepAnalysis`) parar varje natt med dagen före (kostpoäng, vatten mot målet,
   träning, sött) och med orsakerna användaren angav för natten (`SleepFactor`), över de senaste 90 nätterna. Ett
-  samband (`SleepLink`) visas bara med minst `MIN_NIGHTS` nätter på varje sida, en skillnad som märks (20 min eller ett
-  halvt steg i kvalitet) och Welchs t ≥ 2, och alltid med antalet nätter och "samband, inte bevis". En dag utan loggar
+  samband (`SleepLink`) visas bara med minst `MIN_NIGHTS` nätter på varje sida och en skillnad som märks (20 min eller
+  ett halvt steg i kvalitet), både som den var och justerad för nätter före lediga dagar (`adjustedTest`, så helgens
+  sovmorgon inte tillskrivs fredagens alkohol). Alla jämförelser (vanor × längd och kvalitet) justeras tillsammans med
+  Benjamini–Hochberg till `FALSE_DISCOVERY_RATE` (10 %); ett samband som visades i går får stå kvar till
+  `KEEP_DISCOVERY_RATE` (20 %), så det inte kommer och går. Samband mellan delarna (`connections`) följer samma regler,
+  och veckodagsmönstret kräver först att veckodagarna skiljer sig (Kruskal–Wallis). Visas alltid med antalet nätter och
+  "samband, inte bevis". En dag utan loggar
   är okänd, aldrig en dag utan träning. Veckans förändring (`SleepChange`) visas bara tillsammans med det som ändrades
   med den, och säger om de tidigare nätterna bekräftar det. Ändra trösklarna bara medvetet: `SleepAnalysisTest`.
 - **Veckor i rad och milstolpar:** `achievements` i `:core:model` (testat i `AchievementsTest`) räknar vanor i hela
@@ -461,7 +485,15 @@ där pluginet `firebase@firebase` inte alltid installeras.
   (`SavedDays.dates`). Visas bara på sin egen skärm, öppnad från insikterna på Idag: inga notiser, inga röda siffror,
   ingen svit på Idag och inget som tas bort. Belöna aldrig mer träning, längre pass eller mindre sömn.
 - **Kostpoäng:** `nutritionScore()` (0–100) viktar livsmedelsgrupper efter Livsmedelsverkets kostråd (`FoodGroup`) med
-  avdrag för sött och snacks. Ändra vikterna bara medvetet: `NutritionTest` och dagens balans bygger på dem.
+  avdrag för sött och snacks. Rött kött och chark loggas för sig (`FoodLog.redMeat`): en portion räknas som en halv
+  portion protein, och varje portion utöver en om dagen drar fem poäng (högst tio), eftersom rådet är högst 350 g i
+  veckan och fisk, baljväxter, ägg eller fågel oftare. Fisk och skaldjur loggas också för sig (`FoodLog.fish`) och
+  räknas fullt som protein; poängens delar visar dagarna med fisk de senaste sju dagarna mot `FISH_TIMES_A_WEEK` (två,
+  rådet är två till tre gånger i veckan), aldrig som ett avdrag. Ändra vikterna bara medvetet: `NutritionTest` och dagens balans
+  bygger på dem.
+- **Dagens balans:** `balance` är ett potensmedel med exponenten ½ av sömn, kost och rörelse (`BALANCE_EXPONENT`), inte
+  ett vanligt medel, så en del inte kan väga upp en annan (som FN:s Human Development Index): full sömn och ingen mat
+  är en fjärdedel, hälften av varje är hälften. Ändra exponenten bara medvetet: `DailyBalanceTest`.
 - **Drycker:** vätska loggas som `Drink` (slag, ml, klockslag) i `DayEntry.drinks`, per glas, flaska eller valfri mängd
   (`DrinksCard` på Kost). Vatten, kaffe, te och mjölk räknas mot vattenmålet (`DrinkKind.hydrates`, `waterGlasses` är
   hela glas à `Goals.GLASS_ML`); juice, läsk och energidryck loggas men räknas inte. Koffein från kl. 14 räknas som sent

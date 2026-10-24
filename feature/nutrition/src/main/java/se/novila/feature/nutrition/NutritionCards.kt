@@ -24,6 +24,7 @@ import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.nutrition.R
 import se.novila.model.DayEntry
+import se.novila.model.FISH_TIMES_A_WEEK
 import se.novila.model.FoodGroup
 import se.novila.model.Goals
 import se.novila.model.dailyGoal
@@ -104,7 +105,7 @@ private fun scores(week: List<DayEntry>, shown: DayEntry, goals: Goals): List<No
  * weights follow. Last in the food sheet, under what is logged.
  */
 @Composable
-fun ScoreBreakdownCard(today: DayEntry, goals: Goals, isToday: Boolean = true) {
+fun ScoreBreakdownCard(today: DayEntry, goals: Goals, isToday: Boolean = true, fishDays: Int? = null) {
     val nutrition = NovilaTheme.pillars.nutrition
     val score = today.nutritionScore(goals)
     NovilaCard(
@@ -134,6 +135,25 @@ fun ScoreBreakdownCard(today: DayEntry, goals: Goals, isToday: Boolean = true) {
                 color = NovilaTheme.colors.onSurfaceVariant,
             )
         }
+        if (fishDays != null) {
+            NovilaMeter(
+                label = stringResource(R.string.nutrition_fish_week),
+                value = stringResource(R.string.fraction, fishDays, FISH_TIMES_A_WEEK),
+                progress = (fishDays.toFloat() / FISH_TIMES_A_WEEK).coerceAtMost(1f),
+                role = nutrition,
+            )
+        }
+        val redMeatPenalty = score?.redMeatPenalty ?: 0
+        if (redMeatPenalty > 0) {
+            NovilaText(
+                stringResource(
+                    if (isToday) R.string.nutrition_red_meat_penalty else R.string.nutrition_red_meat_penalty_day,
+                    redMeatPenalty,
+                ),
+                style = NovilaTheme.typography.bodySmall,
+                color = NovilaTheme.colors.onSurfaceVariant,
+            )
+        }
         NovilaText(
             stringResource(R.string.nutrition_about),
             style = NovilaTheme.typography.bodySmall,
@@ -143,8 +163,8 @@ fun ScoreBreakdownCard(today: DayEntry, goals: Goals, isToday: Boolean = true) {
 }
 
 /**
- * Steppers for each food group and for treats, for today or an earlier day. Water is logged as drinks
- * ([DrinksCard]).
+ * Steppers for each food group, for red meat and charcuterie, and for treats, for today or an earlier day. Water is
+ * logged as drinks ([DrinksCard]).
  */
 @Composable
 fun FoodLogCard(
@@ -152,6 +172,8 @@ fun FoodLogCard(
     onPortions: (FoodGroup, Int) -> Unit,
     onTreats: (Int) -> Unit,
     isToday: Boolean = true,
+    onRedMeat: (Int) -> Unit = {},
+    onFish: (Int) -> Unit = {},
 ) {
     val nutrition = NovilaTheme.pillars.nutrition
     NovilaCard(title = stringResource(if (isToday) R.string.food_log_title else R.string.food_log_title_day)) {
@@ -171,6 +193,36 @@ fun FoodLogCard(
                     decrementEnabled = count > 0,
                 )
             }
+            val fish = stringResource(R.string.food_fish)
+            NovilaStepper(
+                title = fish,
+                value = stringResource(
+                    if (isToday) R.string.food_treats_value else R.string.food_treats_value_day,
+                    today.food.fish,
+                ),
+                onDecrement = { onFish(-1) },
+                onIncrement = { onFish(+1) },
+                decrementDescription = stringResource(R.string.food_remove, fish),
+                incrementDescription = stringResource(R.string.food_add, fish),
+                role = nutrition,
+                hint = stringResource(R.string.serving_fish),
+                decrementEnabled = today.food.fish > 0,
+            )
+            val redMeat = stringResource(R.string.food_red_meat)
+            NovilaStepper(
+                title = redMeat,
+                value = stringResource(
+                    if (isToday) R.string.food_treats_value else R.string.food_treats_value_day,
+                    today.food.redMeat,
+                ),
+                onDecrement = { onRedMeat(-1) },
+                onIncrement = { onRedMeat(+1) },
+                decrementDescription = stringResource(R.string.food_remove, redMeat),
+                incrementDescription = stringResource(R.string.food_add, redMeat),
+                role = nutrition,
+                hint = stringResource(R.string.serving_red_meat),
+                decrementEnabled = today.food.redMeat > 0,
+            )
             val treats = stringResource(R.string.food_treats)
             NovilaStepper(
                 title = treats,

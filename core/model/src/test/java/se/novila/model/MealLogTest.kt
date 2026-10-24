@@ -69,7 +69,7 @@ class MealLogTest {
     }
 
     @Test fun `two portions of the same group are counted`() {
-        assertEquals(mapOf(FoodGroup.Meals to 1, FoodGroup.Protein to 2), parseMeal("Lunch: kyckling, lax").portions)
+        assertEquals(mapOf(FoodGroup.Meals to 1, FoodGroup.Protein to 2), parseMeal("Lunch: kyckling, ägg").portions)
     }
 
     @Test fun `a blank meal adds nothing`() {
@@ -83,9 +83,27 @@ class MealLogTest {
         val added = logged.withMeal(parseMeal("Middag: lax, bär, glass"))
 
         assertEquals(3, added.portions(FoodGroup.Vegetables))
-        assertEquals(1, added.portions(FoodGroup.Protein))
+        assertEquals(1, added.food.fish)
         assertEquals(1, added.portions(FoodGroup.Meals))
         assertEquals(2, added.food.treats)
         assertEquals(logged.date, added.date)
+    }
+
+    @Test fun `red meat and charcuterie are logged apart from the other protein`() {
+        val meal = parseMeal("Middag: köttbullar, potatis, lingon, kyckling")
+        assertEquals(1, meal.redMeat)
+        assertEquals(1, meal.portions[FoodGroup.Protein])
+        assertTrue(meal.unknown.isEmpty())
+        val added = day.withMeal(parseMeal("Lunch: korv, bröd"))
+        assertEquals(1, added.food.redMeat)
+        assertEquals(0, added.portions(FoodGroup.Protein))
+    }
+
+    @Test fun `fish and seafood are logged apart so the week's fish can be counted`() {
+        val meal = parseMeal("Middag: torsk, räkor, potatis, bönor")
+        assertEquals(2, meal.fish)
+        assertEquals(1, meal.portions[FoodGroup.Protein])
+        assertTrue(meal.unknown.isEmpty())
+        assertEquals(2, day.withMeal(meal).food.fish)
     }
 }
