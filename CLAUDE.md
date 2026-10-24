@@ -9,7 +9,7 @@ CI är därför den enda sanningen om att något bygger och fungerar.
 - Jetpack Compose med eget designsystem ovanpå Material 3 1.5 (beta), compileSdk/targetSdk 37, minSdk 26
 - Navigation 3 (`androidx.navigation3`) med en back stack per flik: Idag, Träning, Sömn, Kost
 - Alla versioner i `gradle/libs.versions.toml`. Hårdkoda aldrig versioner i byggfiler.
-- Data lokalt i Preferences DataStore via `HealthStore`, kodat av `DayEntryCodec` (versionerat format, v8 sedan rött kött och chark)
+- Data lokalt i Preferences DataStore via `HealthStore`, kodat av `DayEntryCodec` (versionerat format, v9 sedan fisk och ansträngning per konditionspass)
 - DI med [Metro](https://zacsweers.github.io/metro/) (`dev.zacsweers.metro`, Kotlin-kompilatorplugin, ingen KSP).
   Varje skärm har en egen ViewModel (`StateFlow`) i sin feature, skapad av Metro och scopad till sin Navigation 3-entry.
   Ingen delad ViewModel. Skärmarna i `feature/*` är tillståndslösa.
@@ -97,14 +97,16 @@ Moduler. Namespace och paket följer sökvägen (`:core:ui` → `se.novila.ui`, 
     timed step som notis (`WorkoutNotifications`): nedräkningen tyst, och nästa set med ljud när tiden är slut.
     Avklarade pass sparas som `strengthMinutes` per dag,
     med ansträngning (RPE 1–10), smärta (0–10) och rehabfas om användaren svarar. Konditionspass loggas för hand
-    ("Jag gjorde det", `DayEntry.cardio`). `ExerciseRepository` håller passen från en källa (Health Connect) i minnet, och
+    ("Jag gjorde det", `DayEntry.cardio`), med en valfri ansträngning per pass (`CardioLog.effort`). `ExerciseRepository` håller passen från en källa (Health Connect) i minnet, och
     `TrainingHistory` slår ihop dem med appens egna (per dag och slag räknas den sida som har mest tid, så samma
-    promenad räknas en gång). Det blir generatorns historik.
+    promenad räknas en gång, och vinner klockans inspelning behåller den ansträngningen användaren gav). Det blir
+    generatorns historik.
     `trainingMinutesByDate` (i `:core:data`) ger minuterna per dag på samma sätt, för Träningens *Trender*
     (`TrainingTrendsScreen`: vecka, fyra veckor eller år med `TrainingHistoryCard`); klockans pass finns bara för de
     fem veckor som läses, så längre bak räknas det som loggats i Novila.
     `trainingLoad` är veckans belastning (session-RPE, Foster: ansträngning × minuter, monotoni och strain) mot de tre
-    veckorna innan; pass utan användarens ansträngning räknas som måttliga, och jämförelsen är bara lugn vägledning,
+    veckorna innan; ett pass räknas med användarens egen ansträngning (efter styrkepasset eller med konditionspasset),
+    pass utan den räknas som måttliga, och jämförelsen är bara lugn vägledning,
     aldrig en varning (ACWR är omstritt som skadeprediktor).
     `Progression` höjer varje övning steg för steg (dubbel progression): passläget frågar hur många repetitioner
     varje set blev (`Workout.done`), resultaten sparas i `CoachStore` (`ExerciseLog`), och nådde alla set målet blir
@@ -477,7 +479,9 @@ där pluginet `firebase@firebase` inte alltid installeras.
 - **Kostpoäng:** `nutritionScore()` (0–100) viktar livsmedelsgrupper efter Livsmedelsverkets kostråd (`FoodGroup`) med
   avdrag för sött och snacks. Rött kött och chark loggas för sig (`FoodLog.redMeat`): en portion räknas som en halv
   portion protein, och varje portion utöver en om dagen drar fem poäng (högst tio), eftersom rådet är högst 350 g i
-  veckan och fisk, baljväxter, ägg eller fågel oftare. Ändra vikterna bara medvetet: `NutritionTest` och dagens balans
+  veckan och fisk, baljväxter, ägg eller fågel oftare. Fisk och skaldjur loggas också för sig (`FoodLog.fish`) och
+  räknas fullt som protein; poängens delar visar dagarna med fisk de senaste sju dagarna mot `FISH_TIMES_A_WEEK` (två,
+  rådet är två till tre gånger i veckan), aldrig som ett avdrag. Ändra vikterna bara medvetet: `NutritionTest` och dagens balans
   bygger på dem.
 - **Dagens balans:** `balance` är ett potensmedel med exponenten ½ av sömn, kost och rörelse (`BALANCE_EXPONENT`), inte
   ett vanligt medel, så en del inte kan väga upp en annan (som FN:s Human Development Index): full sömn och ingen mat
