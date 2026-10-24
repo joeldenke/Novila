@@ -57,7 +57,7 @@ enum class NutritionSheet { Food, Drinks }
  * The Nutrition tab: the shown [day]'s nutrition score with its breakdown, then the quick ways to log (food, a glass
  * of water in one tap, any other drink) and the ways into the rest ([navigation]): today's [recipes] for what is still
  * missing, chosen for [foodPreferences], the scores over time from the [history] (a week up to the shown day) and the
- * food preferences. Food ([onLogMeal], [onPortions], [onTreats]) and drinks ([drinkActions]) are logged in a sheet
+ * food preferences. Food ([onLogMeal], [onPortions], [onTreats], [onRedMeat]) and drinks ([drinkActions]) are logged in a sheet
  * ([NutritionSheet]), [openSheet] at first, each with the [quickPicks] to log again with one tap and a star that
  * keeps a meal first ([onToggleFavorite]). [today] is the day it really is: the user can go back to an earlier day
  * ([onSelectDay]) and fill in what was forgotten. When the introduction was skipped ([setupIncomplete]), a quiet card
@@ -86,6 +86,7 @@ fun NutritionScreen(
     setupIncomplete: Boolean = false,
     onCompleteSetup: () -> Unit = {},
     sky: NovilaSky = NovilaSky.Day,
+    onRedMeat: (Int) -> Unit = {},
 ) {
     val isToday = day.date == today
     var sheet by rememberSaveable(openSheet) { mutableStateOf(openSheet) }
@@ -118,7 +119,17 @@ fun NutritionScreen(
             title = stringResource(R.string.nutrition_sheet_food),
             onDismiss = { sheet = null },
         ) {
-            FoodSheet(day, goals, onPortions, onTreats, onLogMeal, isToday, quickPicks.meals, onToggleFavorite)
+            FoodSheet(
+                day = day,
+                goals = goals,
+                onPortions = onPortions,
+                onTreats = onTreats,
+                onLogMeal = onLogMeal,
+                isToday = isToday,
+                picks = quickPicks.meals,
+                onToggleFavorite = onToggleFavorite,
+                onRedMeat = onRedMeat,
+            )
         }
 
         NutritionSheet.Drinks -> NovilaBottomSheet(
@@ -146,10 +157,11 @@ internal fun FoodSheet(
     isToday: Boolean,
     picks: List<MealPick> = emptyList(),
     onToggleFavorite: (String) -> Unit = {},
+    onRedMeat: (Int) -> Unit = {},
 ) {
     QuickPicksCard(picks, onLogMeal, onToggleFavorite)
     MealLogCard(onLogMeal)
-    FoodLogCard(day, onPortions, onTreats, isToday)
+    FoodLogCard(day, onPortions, onTreats, isToday, onRedMeat)
     ScoreBreakdownCard(day, goals, isToday)
 }
 

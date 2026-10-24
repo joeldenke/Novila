@@ -120,7 +120,7 @@ internal class ExportTooNewException : Exception("written by a later version of 
  * The export as JSON: `{"app": "Novila", "format": 1, "version": 42, "exported": "2026-10-23", "files": {...}}`,
  * where `version` is the build that wrote it and each file
  * is its preference file's name and each value a one-entry object with its type, e.g.
- * `"2026-10-22": {"string": "v7;..."}` or `"steps": {"int": 8000}`. The values are stored exactly as the app stores
+ * `"2026-10-22": {"string": "v8;..."}` or `"steps": {"int": 8000}`. The values are stored exactly as the app stores
  * them, so an import gives back the same data. A [FORMAT] higher than this version knows is refused, and only the
  * files the app has are read.
  */

@@ -81,7 +81,12 @@ private fun addsIn(meal: MealLog): String {
     } else {
         listOf(stringResource(R.string.meal_portion, stringResource(R.string.food_treats), meal.treats))
     }
-    return (portions + treats).joinToString(stringResource(R.string.meal_summary_separator))
+    val redMeat = if (meal.redMeat == 0) {
+        emptyList()
+    } else {
+        listOf(stringResource(R.string.meal_portion, stringResource(R.string.food_red_meat), meal.redMeat))
+    }
+    return (portions + redMeat + treats).joinToString(stringResource(R.string.meal_summary_separator))
 }
 
 @Preview(showBackground = true)

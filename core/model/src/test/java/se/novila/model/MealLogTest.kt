@@ -88,4 +88,14 @@ class MealLogTest {
         assertEquals(2, added.food.treats)
         assertEquals(logged.date, added.date)
     }
+
+    @Test fun `red meat and charcuterie are logged apart from the other protein`() {
+        val meal = parseMeal("Middag: köttbullar, potatis, lingon, kyckling")
+        assertEquals(1, meal.redMeat)
+        assertEquals(1, meal.portions[FoodGroup.Protein])
+        assertTrue(meal.unknown.isEmpty())
+        val added = day.withMeal(parseMeal("Lunch: korv, bröd"))
+        assertEquals(1, added.food.redMeat)
+        assertEquals(0, added.portions(FoodGroup.Protein))
+    }
 }
