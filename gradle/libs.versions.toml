@@ -5,6 +5,8 @@ composeBom = "2026.09.00"
 # Material 3 1.5 (beta) ahead of the BOM, for the expressive and adaptive components the
 # design system builds on (flexible app bars, button groups, unified bottom sheet state).
 material3 = "1.5.0-beta01"
+# Where a foldable's fold or hinge runs (currentWindowAdaptiveInfo), so two panes split along it. See NovilaFold.
+material3Adaptive = "1.3.0"
 androidxCore = "1.19.1"
 androidxActivity = "1.13.0"
 androidxLifecycle = "2.11.0"
@@ -95,6 +97,7 @@ compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeB
 compose-ui = { module = "androidx.compose.ui:ui" }
 compose-foundation = { module = "androidx.compose.foundation:foundation" }
 compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
+compose-material3-adaptive = { module = "androidx.compose.material3.adaptive:adaptive", version.ref = "material3Adaptive" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 

@@ -3,13 +3,16 @@ package se.novila.feature.today
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import se.novila.coach.DailyCoach
 import se.novila.designsystem.component.NovilaAccentButton
 import se.novila.designsystem.component.NovilaButton
 import se.novila.designsystem.component.NovilaCard
 import se.novila.designsystem.component.NovilaProgressBar
+import se.novila.designsystem.component.NovilaTaskList
 import se.novila.designsystem.component.NovilaTaskRow
+import se.novila.designsystem.component.NovilaTaskTile
 import se.novila.designsystem.component.NovilaText
 import se.novila.designsystem.theme.NovilaColorRole
 import se.novila.designsystem.theme.NovilaTheme
@@ -49,12 +52,22 @@ fun DayChecklistCard(checklist: DayChecklist, actions: ChecklistActions, coach: 
         }
         coach?.let { CoachLine(it) }
         val next = checklist.next
-        checklist.tasks.forEach { task -> TaskRow(task, isNext = task == next, actions) }
+        // Rows on a phone; on a wide card the four tasks stand side by side as tiles.
+        NovilaTaskList(checklist.tasks.size) { index, tile, tileModifier ->
+            val task = checklist.tasks[index]
+            TaskRow(task, isNext = task == next, actions, tile, tileModifier)
+        }
     }
 }
 
 @Composable
-private fun TaskRow(task: DayTask, isNext: Boolean, actions: ChecklistActions) {
+private fun TaskRow(
+    task: DayTask,
+    isNext: Boolean,
+    actions: ChecklistActions,
+    tile: Boolean,
+    modifier: Modifier = Modifier,
+) {
     val pillars = NovilaTheme.pillars
     when (task) {
         is DayTask.Sleep -> Task(
@@ -64,6 +77,8 @@ private fun TaskRow(task: DayTask, isNext: Boolean, actions: ChecklistActions) {
             role = pillars.sleep,
             action = stringResource(R.string.checklist_sleep_action) to actions.onOpenSleep,
             isNext = isNext,
+            tile = tile,
+            modifier = modifier,
         )
 
         is DayTask.Training -> {
@@ -87,6 +102,8 @@ private fun TaskRow(task: DayTask, isNext: Boolean, actions: ChecklistActions) {
                 role = pillars.training,
                 action = stringResource(R.string.checklist_training_action) to actions.onOpenTraining,
                 isNext = isNext,
+                tile = tile,
+                modifier = modifier,
             )
         }
 
@@ -103,6 +120,8 @@ private fun TaskRow(task: DayTask, isNext: Boolean, actions: ChecklistActions) {
             role = pillars.nutrition,
             action = stringResource(R.string.checklist_nutrition_action) to actions.onOpenNutrition,
             isNext = isNext,
+            tile = tile,
+            modifier = modifier,
         )
 
         is DayTask.Water -> Task(
@@ -112,6 +131,8 @@ private fun TaskRow(task: DayTask, isNext: Boolean, actions: ChecklistActions) {
             role = pillars.nutrition,
             action = stringResource(R.string.checklist_water_action) to actions.onAddWater,
             isNext = isNext,
+            tile = tile,
+            modifier = modifier,
         )
     }
 }
@@ -125,22 +146,23 @@ private fun Task(
     role: NovilaColorRole,
     action: Pair<String, () -> Unit>,
     isNext: Boolean,
+    tile: Boolean,
+    modifier: Modifier = Modifier,
 ) {
-    NovilaTaskRow(
-        title = title,
-        done = task.done,
-        summary = summary,
-        stateDescription = stringResource(
-            if (task.done) R.string.checklist_task_done else R.string.checklist_task_todo,
-        ),
-        role = role,
-        action = if (task.done) {
-            null
-        } else {
-            {
-                val (text, onClick) = action
-                if (isNext) NovilaAccentButton(text, onClick) else NovilaButton(text, onClick, role = role)
-            }
-        },
+    val stateDescription = stringResource(
+        if (task.done) R.string.checklist_task_done else R.string.checklist_task_todo,
     )
+    val button: (@Composable () -> Unit)? = if (task.done) {
+        null
+    } else {
+        {
+            val (text, onClick) = action
+            if (isNext) NovilaAccentButton(text, onClick) else NovilaButton(text, onClick, role = role)
+        }
+    }
+    if (tile) {
+        NovilaTaskTile(title, task.done, modifier, summary, stateDescription, role, button)
+    } else {
+        NovilaTaskRow(title, task.done, modifier, summary, stateDescription, role, button)
+    }
 }
