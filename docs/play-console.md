@@ -214,7 +214,7 @@ Vanor räknas i hela veckor, inte i dagar, så en missad dag bryter ingenting. M
 
 Träning
 - Veckans program efter WHO:s råd om kondition och styrka, efter dina dagar, din tid och redskapen du har, eller bara kroppsvikt
-- Passläge med set, vila och nedräkning, också på din Wear OS-klocka
+- Passläge med set, vila och nedräkning
 - En ritad figur visar varje övning och musklerna som arbetar
 - Svårigheten ökar steg för steg när du klarar dina set
 - Skonsam träning i tre nivåer med fokus på knä, ländrygg, axel, nacke eller höft
@@ -264,7 +264,7 @@ Habits count in whole weeks, not days, so a missed day breaks nothing. More trai
 
 Training
 - A weekly programme following WHO guidance on cardio and strength, fitted to your days, your time and the equipment you have, or just bodyweight
-- Workout mode with sets, rests and countdowns, also on your Wear OS watch
+- Workout mode with sets, rests and countdowns
 - A drawn figure shows every exercise and the muscles at work
 - Difficulty rises step by step as you complete your sets
 - Gentle training in three levels focused on the knee, lower back, shoulder, neck or hip

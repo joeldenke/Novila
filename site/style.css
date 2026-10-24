@@ -438,7 +438,7 @@ a.play:hover {
   color: var(--muted);
 }
 
-/* Facts in the night tile */
+/* Facts in the night tile, and on a light one in the name's tile */
 
 .facts {
   display: grid;
@@ -467,6 +467,24 @@ a.play:hover {
 
 .fact .fact-title {
   color: #ecede6;
+}
+
+.tile-name {
+  padding-bottom: 56px;
+}
+
+.tile-name .facts {
+  background: var(--outline);
+  border: 1px solid var(--outline);
+}
+
+.tile-name .fact {
+  background: var(--page);
+  color: var(--muted);
+}
+
+.tile-name .fact .fact-title {
+  color: var(--text);
 }
 
 /* The small things */
@@ -725,7 +743,8 @@ a.play:hover {
     padding-top: 88px;
   }
 
-  .tile-night {
+  .tile-night,
+  .tile-name {
     padding-bottom: 80px;
   }
 

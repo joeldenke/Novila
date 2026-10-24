@@ -76,11 +76,6 @@ Novila is installed through Google Play, and Health Connect is part of Android m
 diagnostics with Google, Google Play may give the developer crash reports, which do not contain what you log in
 Novila.
 
-### On the watch
-
-If you use Novila on a Wear OS watch, it runs a strength session there and nothing more: it saves nothing, reads
-nothing from Health Connect and shares nothing with the phone.
-
 ### For adults
 
 Novila is made for adults and is not directed at children.
@@ -161,11 +156,6 @@ ersätts det Novila har i telefonen.
 Novila installeras via Google Play, och Health Connect är en del av Android som Google gör.
 De följer [Googles integritetspolicy](https://policies.google.com/privacy?hl=sv). Delar du användning och
 diagnostik med Google kan Google Play ge utvecklaren kraschrapporter, som inte innehåller det du loggar i Novila.
-
-### På klockan
-
-Använder du Novila på en Wear OS-klocka kör den ett styrkepass där och inget mer: den sparar inget, läser inget från
-Health Connect och delar inget med telefonen.
 
 ### För vuxna
 
