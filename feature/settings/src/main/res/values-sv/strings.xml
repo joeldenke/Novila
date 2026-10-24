@@ -55,34 +55,13 @@
     <string name="settings_about">Om Novila</string>
     <string name="settings_version">Version</string>
     <string name="settings_privacy">Integritetspolicy</string>
-    <string name="settings_privacy_summary">Ingen reklam, inga analysverktyg och inga nätverksanrop. Din hälsodata stannar i telefonen.</string>
+    <string name="settings_privacy_summary">Ingen reklam, inga analysverktyg och inga nätverksanrop. Öppnas på novila.app i webbläsaren.</string>
     <string name="settings_licenses">Öppna licenser</string>
     <string name="settings_licenses_summary">Biblioteken Novila bygger på, med sina licenser.</string>
 
-    <!-- Integritetspolicy, även docs/privacy-policy.md: ändra båda, och datumet -->
-    <string name="privacy_title">Integritetspolicy</string>
-    <string name="privacy_intro">Novila är byggd så att din hälsodata stannar hos dig. Den här policyn säger vad appen hanterar, var det sparas, vem som kan se det och vad du kan göra åt det.</string>
-    <string name="privacy_what_title">Vad Novila hanterar</string>
-    <string name="privacy_what_body">Det du själv fyller i: ditt namn, födelseår, längd, vikt och kroppsmått, din sömn (med det som kan ha påverkat natten, till exempel mens), kost (med måltiderna du skriver med egna ord och stjärnmärker, för snabbloggning), dryck och dina pass, med repetitionerna du gjorde och ansträngning och smärta efter ett pass, dina svar till tränings- och sömncoachen, dina matpreferenser, även allergier, och recepten du själv skriver, om du slår på Mens och träning även dina mensdagar och symtomen du loggar, som raderas när du stänger av den, och dina mål, påminnelser och inställningar. Om du tillåter det även det Novila läser från Health Connect, se nedan. Allt är frivilligt, och Novila fungerar utan namn och utan konto.</string>
-    <string name="privacy_where_title">Var det sparas</string>
-    <string name="privacy_where_body">Bara i den här telefonen, krypterat med en nyckel från telefonens Android Keystore. Novila har inget konto och ingen server, och appen har ingen åtkomst till internet, så inget du loggar kan skickas någonstans. Novilas data lämnas utanför Androids säkerhetskopiering och överföringar till en ny telefon.</string>
-    <string name="privacy_health_connect_title">Health Connect</string>
-    <string name="privacy_health_connect_body">Om du tillåter det läser Novila dagens steg och aktiva kalorier, dina träningspass de senaste fem veckorna, din sömn upp till två år bakåt samt din vilopuls och hjärtfrekvensvariabilitet de senaste två veckorna. Datan läses bara när appen är öppen, används bara för att visa din dag och planera din träning och finns bara i minnet: Novila sparar den aldrig, skriver aldrig till Health Connect och delar den aldrig. Novilas användning av data från Health Connect följer Health Connects behörighetspolicy, inklusive kraven på begränsad användning (Limited Use). Du kan när som helst stänga av åtkomsten i Health Connect.</string>
-    <string name="privacy_shared_title">Delas inte med någon</string>
-    <string name="privacy_shared_body">Novila har ingen reklam, inga analysverktyg och ingen spårning. Din data säljs inte, delas inte med någon och används inte för reklam. Utvecklaren får aldrig del av den.</string>
-    <string name="privacy_screen_title">Notiser, widgeten och rutan</string>
-    <string name="privacy_screen_body">Påminnelser du slår på visar en kort notis, och widgeten visar, om du lägger till den, dagens balans, sömn, kost och vatten på hemskärmen. Rutan i snabbinställningarna visar, om du lägger till den, dagens glas vatten, men inte på låsskärmen. Den som ser din telefon kan se dem. Du kan när som helst stänga av påminnelserna och ta bort widgeten och rutan.</string>
-    <string name="privacy_control_title">Du bestämmer</string>
-    <string name="privacy_control_body">Du kan se och ändra det du har loggat i appen. Radera all data under Inställningar tar bort din hälsodata från telefonen på en gång, och avinstallerar du Novila försvinner allt. Ingen kopia finns någon annanstans, om du inte själv har sparat en (nedan), så det finns inget mer för utvecklaren att radera eller lämna ut. Data i Health Connect hanteras i Health Connect.</string>
-    <string name="privacy_copy_title">Din egen kopia</string>
-    <string name="privacy_copy_body">Under Inställningar kan du spara en kopia av dina data som en fil och läsa in den igen, till exempel i en ny telefon. Du väljer var filen sparas med Androids egen filväljare, och Novila skickar den aldrig någonstans. Kopian innehåller det du har fyllt i i Novila, inte det som läses från Health Connect, och den är inte krypterad, så spara den där bara du kommer åt den. Sparar du den i en molntjänst gäller den tjänstens villkor för filen. När du läser in en kopia ersätts det Novila har i telefonen.</string>
-    <string name="privacy_google_title">Google Play och Android</string>
-    <string name="privacy_google_body">Novila installeras via Google Play, och Health Connect är en del av Android som Google gör. De följer Googles integritetspolicy. Delar du användning och diagnostik med Google kan Google Play ge utvecklaren kraschrapporter, som inte innehåller det du loggar i Novila.</string>
-    <string name="privacy_adults_title">För vuxna</string>
-    <string name="privacy_adults_body">Novila är gjord för vuxna och riktar sig inte till barn.</string>
-    <string name="privacy_contact_title">Frågor och ändringar</string>
-    <string name="privacy_contact_body">Frågor om integritet skickas till utvecklarens kontaktadress på Novilas sida i Google Play. Du kan också klaga hos Integritetsskyddsmyndigheten (IMY). Ändras policyn kommer den nya versionen med en uppdatering av appen, med datum nedan.</string>
-    <string name="privacy_updated">Uppdaterad 23 oktober 2026</string>
+    <!-- De publika sidorna på novila.app, gjorda av docs/privacy-policy.md och docs/terms-of-use.md -->
+    <string name="privacy_url">https://novila.app/sv/integritet/</string>
+    <string name="terms_url">https://novila.app/sv/villkor/</string>
 
     <!-- Licenser -->
     <string name="licenses_title">Öppna licenser</string>
@@ -232,24 +211,5 @@
 
     <!-- Terms of use -->
     <string name="settings_terms">Användarvillkor</string>
-    <string name="settings_terms_summary">Vad Novila är och inte är, med enkla ord.</string>
-    <string name="terms_title">Användarvillkor</string>
-    <string name="terms_intro">Villkoren säger vad Novila är, vad du kan förvänta dig av appen och vad den inte är. Du behöver inte godkänna något för att använda appen, och inget här begränsar de rättigheter du har enligt lag som konsument.</string>
-    <string name="terms_about_title">Vad Novila är</string>
-    <string name="terms_about_body">Novila är en gratis app för träning, sömn och kost som ger allmänna råd för vardagshälsan. Den planerar och förklarar med fasta regler i din telefon, utifrån det du loggar och det du låter den läsa från Health Connect. Den har inget konto, ingen prenumeration och ingen reklam.</string>
-    <string name="terms_health_title">Inte vård</string>
-    <string name="terms_health_body">Novila är inte en medicinteknisk produkt och ställer inga diagnoser, behandlar inte och förebygger inte sjukdomar. Råden ersätter inte en läkare, fysioterapeut eller annan vård. Prata med någon av dem innan du börjar träna om du har en sjukdom eller skada, är gravid eller känner dig osäker, och sluta och sök vård om något gör ondare än appens smärtgräns eller inte känns rätt. Den skonsamma träningen är allmän träning, inte en plan från en fysioterapeut. Läs även hälsoansvarsfriskrivningen under Inställningar.</string>
-    <string name="terms_use_title">Att använda appen</string>
-    <string name="terms_use_body">Novila är gjord för vuxna. Du använder råden med ditt eget omdöme och i din egen takt, och du ansvarar för det du fyller i och för kopiorna av dina data som du sparar. Försök inte ta sönder appen, kopiera den eller använda den för att skada andra.</string>
-    <string name="terms_data_title">Dina data</string>
-    <string name="terms_data_body">Det du loggar stannar i din telefon och är ditt. Hur Novila hanterar det står i integritetspolicyn under Inställningar.</string>
-    <string name="terms_warranty_title">Som den är</string>
-    <string name="terms_warranty_body">Novila utvecklas med omsorg och testas, men den är gratis och ges som den är: den kan innehålla fel, ändras eller sluta finnas, och den kan inte veta allt om din kropp. Så långt svensk lag tillåter ansvarar utvecklaren inte för indirekta skador, till exempel förlorad data, som kommer av att appen används. Spara en kopia av dina data ibland. Inget här begränsar ett ansvar som lagen inte tillåter att begränsa.</string>
-    <string name="terms_rights_title">Rättigheter</string>
-    <string name="terms_rights_body">Appen, dess texter, illustrationer och övningar tillhör utvecklaren. Novila använder även öppen källkod under sina egna licenser, som finns under Inställningar, Öppna licenser.</string>
-    <string name="terms_changes_title">Ändringar</string>
-    <string name="terms_changes_body">Ändras villkoren kommer den nya versionen med en uppdatering av appen, med datum nedan. Det är villkoren i den version du använder som gäller.</string>
-    <string name="terms_law_title">Lag och frågor</string>
-    <string name="terms_law_body">Svensk lag gäller. Frågor skickas till utvecklarens kontaktadress på Novilas sida i Google Play. Som konsument kan du också vända dig till Allmänna reklamationsnämnden (ARN).</string>
-    <string name="terms_updated">Uppdaterad 23 oktober 2026</string>
+    <string name="settings_terms_summary">Vad Novila är och inte är, med enkla ord. Öppnas på novila.app i webbläsaren.</string>
 </resources>

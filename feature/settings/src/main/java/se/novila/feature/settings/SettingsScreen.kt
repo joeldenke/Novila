@@ -371,13 +371,13 @@ private fun AboutCard(version: AppVersion, actions: SettingsActions) {
             title = stringResource(R.string.settings_privacy),
             summary = stringResource(R.string.settings_privacy_summary),
             onClick = actions.onOpenPrivacy,
-            trailing = { Chevron() },
+            trailing = { OpensInBrowser() },
         )
         NovilaListRow(
             title = stringResource(R.string.settings_terms),
             summary = stringResource(R.string.settings_terms_summary),
             onClick = actions.onOpenTerms,
-            trailing = { Chevron() },
+            trailing = { OpensInBrowser() },
         )
         NovilaListRow(
             title = stringResource(R.string.settings_licenses),
@@ -398,6 +398,16 @@ internal fun Chevron() {
     // The row's title already says where it leads.
     NovilaIcon(
         painter = painterResource(R.drawable.ic_chevron),
+        contentDescription = null,
+        tint = NovilaTheme.colors.onSurfaceVariant,
+    )
+}
+
+@Composable
+private fun OpensInBrowser() {
+    // The row's summary already says that it opens in the browser.
+    NovilaIcon(
+        painter = painterResource(R.drawable.ic_open_in_new),
         contentDescription = null,
         tint = NovilaTheme.colors.onSurfaceVariant,
     )
