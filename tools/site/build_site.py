@@ -3,7 +3,7 @@
 
 The site has a home page, the privacy policy and the terms of use, in English (at the root) and Swedish (under /sv).
 The home pages are written by hand in site/; the policy and the terms are made from docs/privacy-policy.md and
-docs/terms-of-use.md, the same texts as in the app, so they are only ever changed in one place. The scenes are the
+docs/terms-of-use.md, the only copy of each: the app links here instead of showing them. The scenes are the
 site's own (site/images); the fonts are copied from the app, and the phones, the tablet and the foldable show the
 app's own screens from its screenshot references, so the site looks like the app.
 

@@ -128,15 +128,18 @@ class SettingsScreenTest {
         assertEquals(1, shows)
     }
 
-    @Test fun `the privacy policy and the licenses open from About`() {
+    @Test fun `the privacy policy, the terms and the licenses open from About`() {
         var privacy = 0
+        var terms = 0
         var licenses = 0
-        show(SettingsActions(onOpenPrivacy = { privacy++ }, onOpenLicenses = { licenses++ }))
+        show(SettingsActions(onOpenPrivacy = { privacy++ }, onOpenTerms = { terms++ }, onOpenLicenses = { licenses++ }))
 
         scrollTo("Privacy policy").performClick()
+        scrollTo("Terms of use").performClick()
         scrollTo("Open source licenses").performClick()
 
         assertEquals(1, privacy)
+        assertEquals(1, terms)
         assertEquals(1, licenses)
     }
 

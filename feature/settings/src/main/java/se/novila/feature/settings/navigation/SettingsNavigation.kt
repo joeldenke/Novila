@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
@@ -42,7 +43,6 @@ import se.novila.feature.settings.LicensesScreen
 import se.novila.feature.settings.MyGoalsActions
 import se.novila.feature.settings.MyGoalsScreen
 import se.novila.feature.settings.MyGoalsViewModel
-import se.novila.feature.settings.PrivacyPolicyScreen
 import se.novila.feature.settings.ProfileActions
 import se.novila.feature.settings.ProfileScreen
 import se.novila.feature.settings.ProfileViewModel
@@ -53,7 +53,6 @@ import se.novila.feature.settings.RemindersViewModel
 import se.novila.feature.settings.SettingsActions
 import se.novila.feature.settings.SettingsScreen
 import se.novila.feature.settings.SettingsViewModel
-import se.novila.feature.settings.TermsScreen
 import se.novila.healthconnect.HealthConnectSource
 import se.novila.healthconnect.HealthDataInfoScreen
 import se.novila.healthconnect.rememberHealthPermissionRequest
@@ -73,12 +72,6 @@ import se.novila.ui.R as UiR
 
 /** The health disclaimer. */
 @Serializable data object DisclaimerRoute : NavKey
-
-/** Novila's privacy policy, which Google Play requires inside the app. */
-@Serializable data object PrivacyPolicyRoute : NavKey
-
-/** Novila's terms of use. */
-@Serializable data object TermsRoute : NavKey
 
 /** The open-source licenses of everything the app ships. */
 @Serializable data object LicensesRoute : NavKey
@@ -104,7 +97,8 @@ import se.novila.ui.R as UiR
 /**
  * Settings and the screens opened from it. Settings, the profile (with the measurements), My goals, the goals, the
  * food preferences, the cycle and the reminders have their own ViewModels, scoped to their entries; the others are
- * static text. Navigation inside goes through [navigator], on whichever tab Settings was opened from. My goals leads
+ * static text, apart from the privacy policy and the terms of use, which are pages on novila.app opened in the
+ * browser. Navigation inside goes through [navigator], on whichever tab Settings was opened from. My goals leads
  * to the training and the sleep coach, which other features own, through [onOpenTrainingCoach] and [onOpenSleepCoach]
  * from `:app`.
  */
@@ -157,8 +151,8 @@ fun EntryProviderScope<NavKey>.settingsEntries(
                 onInstallHealth = { HealthConnectSource.openInstall(context) },
                 onOpenHealthInfo = { navigator.navigate(HealthDataRoute) },
                 onOpenDisclaimer = { navigator.navigate(DisclaimerRoute) },
-                onOpenPrivacy = { navigator.navigate(PrivacyPolicyRoute) },
-                onOpenTerms = { navigator.navigate(TermsRoute) },
+                onOpenPrivacy = { openWebPage(context, context.getString(R.string.privacy_url)) },
+                onOpenTerms = { openWebPage(context, context.getString(R.string.terms_url)) },
                 onOpenLicenses = { navigator.navigate(LicensesRoute) },
                 onDeleteData = viewModel::deleteAllData,
                 onExportData = { exportFile.launch(exportFileName(LocalDate.now())) },
@@ -218,8 +212,6 @@ fun EntryProviderScope<NavKey>.settingsEntries(
         )
     }
     entry<DisclaimerRoute> { DisclaimerScreen(contentPadding = contentPadding) }
-    entry<PrivacyPolicyRoute> { PrivacyPolicyScreen(contentPadding = contentPadding) }
-    entry<TermsRoute> { TermsScreen(contentPadding = contentPadding) }
     entry<LicensesRoute> {
         val libraries by produceLibraries(licensesResId)
         LicensesScreen(libraries = libraries, contentPadding = contentPadding)
@@ -232,8 +224,6 @@ fun settingsTitle(route: NavKey?): String? = when (route) {
     SettingsRoute -> stringResource(UiR.string.settings_title)
     HealthDataRoute -> stringResource(HealthConnectR.string.health_info_title)
     DisclaimerRoute -> stringResource(R.string.disclaimer_title)
-    PrivacyPolicyRoute -> stringResource(R.string.privacy_title)
-    TermsRoute -> stringResource(R.string.terms_title)
     LicensesRoute -> stringResource(R.string.licenses_title)
     ProfileRoute -> stringResource(R.string.profile_title)
     MyGoalsRoute -> stringResource(R.string.my_goals_title)
@@ -341,6 +331,19 @@ private fun openLanguageSettings(context: Context) {
         context.startActivity(intent)
     } catch (e: ActivityNotFoundException) {
         Log.w("Settings", "No per-app language settings", e)
+    }
+}
+
+/**
+ * A page on novila.app (the privacy policy or the terms of use, in the app's language), opened in the user's browser.
+ * Novila itself has no network access: the browser fetches the page, and the site has no cookies, analytics or scripts.
+ * Google Play asks for the privacy policy to be reachable from inside the app, which this link is.
+ */
+private fun openWebPage(context: Context, url: String) {
+    try {
+        context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
+    } catch (e: ActivityNotFoundException) {
+        Log.w("Settings", "No browser for $url", e)
     }
 }
 

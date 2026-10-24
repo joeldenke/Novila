@@ -4,7 +4,7 @@ Underlag för att fylla i Play Console när Novila publiceras, och för att hål
 klistra in är på engelska, som formulären. Allt här bygger på hur appen fungerar i dag (oktober 2026): ingen
 `INTERNET`-behörighet, inga SDK:er som skickar data, Health Connect bara i förgrunden och bara i minnet.
 
-**Ändras något av det, ändras svaren här, i integritetspolicyn (`docs/privacy-policy.md` och `privacy_*`-strängarna)
+**Ändras något av det, ändras svaren här, i integritetspolicyn (`docs/privacy-policy.md`)
 och i Play Console i samma PR/release.** Typiska utlösare: en ny Health Connect-typ, Google Health API-källan
 (`INTERNET`), en kraschrapporterare eller analys-SDK, en ändring i exporten (till exempel att Health Connect-data
 kommer med, eller att appen själv skickar filen någonstans), en cache på disk för Health Connect-data.
@@ -22,8 +22,9 @@ kommer med, eller att appen själv skickar filen någonstans), en cache på disk
 
 ## Integritetspolicy
 
-- Play kräver en publik adress (vanlig webbsida, inte PDF eller redigerbart dokument) och samma policy i appen.
-  I appen: Inställningar → *Integritetspolicy* (`PrivacyPolicyScreen`). Publikt: texten i `docs/privacy-policy.md`.
+- Play kräver en publik adress (vanlig webbsida, inte PDF eller redigerbart dokument) och att policyn går att nå i
+  appen. I appen: Inställningar → *Integritetspolicy*, som öppnar adressen nedan i webbläsaren på appens språk
+  (`privacy_url`). Texten finns bara i `docs/privacy-policy.md`.
 - Adressen är `https://novila.app/privacy/` (svenska: `https://novila.app/sv/integritet/`), publicerad av
   workflowen `Website` med GitHub Pages ur `docs/privacy-policy.md`. Samma adress anges även i Health
   Connect-deklarationen. Flytta den aldrig.
@@ -33,8 +34,8 @@ kommer med, eller att appen själv skickar filen någonstans), en cache på disk
 ## Användarvillkor
 
 Play kräver inga användarvillkor för en gratis app utan konto, och Play Console har inget fält för dem. De finns ändå
-i appen (Inställningar → *Användarvillkor*, `TermsScreen`) och som publik text i `docs/terms-of-use.md`, publicerad
-på `https://novila.app/terms/` (svenska: `https://novila.app/sv/villkor/`). Inget i dem ändrar svaren nedan.
+som publik text i `docs/terms-of-use.md`, publicerad på `https://novila.app/terms/` (svenska:
+`https://novila.app/sv/villkor/`), och appen länkar dit (Inställningar → *Användarvillkor*, `terms_url`). Inget i dem ändrar svaren nedan.
 
 ## App content: svar
 

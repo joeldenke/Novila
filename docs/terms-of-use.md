@@ -1,8 +1,9 @@
 # Novila – Terms of use / Användarvillkor
 
-Det här är användarvillkoren som en publik sida, bredvid integritetspolicyn (`docs/privacy-policy.md`). Samma text
-visas i appen under Inställningar → *Användarvillkor* (`TermsScreen`, strängarna `terms_*` i `:feature:settings`).
-Ändra båda samtidigt, och datumet.
+Det här är användarvillkoren som en publik sida, bredvid integritetspolicyn (`docs/privacy-policy.md`):
+`tools/site/build_site.py` gör `https://novila.app/terms/` och `https://novila.app/sv/villkor/` av dem. Appen visar
+ingen egen kopia; Inställningar → *Användarvillkor* öppnar sidan i webbläsaren på appens språk (`terms_url` i
+`:feature:settings`). Ändra texten här, och datumet.
 
 Villkoren är inget avtal att godkänna: appen frågar aldrig, och tvingande konsumentlag går alltid före. De säger vad
 appen är (allmänna råd, inte vård), att den ges som den är och vilken lag som gäller. Låt någon med juridisk kunskap
@@ -12,7 +13,7 @@ läsa texten innan den publiceras.
 
 ## English
 
-*Updated 23 October 2026*
+*Updated 24 October 2026*
 
 These terms say what Novila is, what you can expect of it and what it is not. You don't have to accept anything to use the app, and nothing here limits the rights you have by law as a consumer.
 
@@ -30,7 +31,7 @@ Novila is made for adults. You use the advice with your own judgment and at your
 
 ### Your data
 
-What you log stays on your phone and is yours. How Novila handles it is in the privacy policy under Settings.
+What you log stays on your phone and is yours. How Novila handles it is in the [privacy policy](https://novila.app/privacy/), linked from Settings.
 
 ### As it is
 
@@ -42,7 +43,7 @@ The app, its texts, illustrations and exercises belong to the developer. Novila 
 
 ### Changes
 
-If these terms change, the new version comes with an app update, with its date below. The terms that apply are the ones in the version you use.
+If these terms change, the new version is published on this page, with its date above, and applies from that date.
 
 ### Law and questions
 
@@ -52,7 +53,7 @@ Swedish law applies. Questions go to the developer's contact address on Novila's
 
 ## Svenska
 
-*Uppdaterad 23 oktober 2026*
+*Uppdaterad 24 oktober 2026*
 
 Villkoren säger vad Novila är, vad du kan förvänta dig av appen och vad den inte är. Du behöver inte godkänna något för att använda appen, och inget här begränsar de rättigheter du har enligt lag som konsument.
 
@@ -70,7 +71,7 @@ Novila är gjord för vuxna. Du använder råden med ditt eget omdöme och i din
 
 ### Dina data
 
-Det du loggar stannar i din telefon och är ditt. Hur Novila hanterar det står i integritetspolicyn under Inställningar.
+Det du loggar stannar i din telefon och är ditt. Hur Novila hanterar det står i [integritetspolicyn](https://novila.app/sv/integritet/), som Inställningar länkar till.
 
 ### Som den är
 
@@ -82,7 +83,7 @@ Appen, dess texter, illustrationer och övningar tillhör utvecklaren. Novila an
 
 ### Ändringar
 
-Ändras villkoren kommer den nya versionen med en uppdatering av appen, med datum nedan. Det är villkoren i den version du använder som gäller.
+Ändras villkoren publiceras den nya versionen på den här sidan, med datum ovan, och gäller från det datumet.
 
 ### Lag och frågor
 
