@@ -556,8 +556,8 @@ a.play:hover {
   color: var(--muted);
 }
 
-/* Tablets and foldables: the same slim frame as the phone, around the app's 900 dp wide screens. The tablet stands
-   in portrait; the foldable lies open with its hinge as a faint line down the middle. */
+/* Tablets and foldables: the same slim frame as the phone, around the app's 900 dp wide screens in two panes. The
+   tablet lies in landscape; the foldable stands open with its hinge as a faint line down the middle. */
 
 .device-stage {
   position: relative;
@@ -588,11 +588,11 @@ a.play:hover {
 }
 
 .device-figure:first-of-type {
-  flex: 0 1 380px;
+  flex: 0 1 560px;
 }
 
 .device-figure:last-of-type {
-  flex: 0 1 420px;
+  flex: 0 1 380px;
 }
 
 .device-figure figcaption {
@@ -633,8 +633,8 @@ a.play:hover {
 }
 
 .tablet-screen {
-  aspect-ratio: 4 / 5;
-  padding-top: 3%;
+  aspect-ratio: 3 / 2;
+  padding-top: 2%;
 }
 
 .foldable-screen {
@@ -675,8 +675,8 @@ a.play:hover {
     width: 86%;
   }
 
-  .device-figure:first-of-type {
-    width: 70%;
+  .device-figure:last-of-type {
+    width: 78%;
   }
 
   .device-scene {

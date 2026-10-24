@@ -38,10 +38,10 @@ SCREENS = {
     "se.novila.feature.sleep.SleepScreenKt.SleepScreenPreview.H1000dp_WITH_BACKGROUND.png",
     "nutrition": "feature/nutrition/src/test/screenshots/"
     "se.novila.feature.nutrition.NutritionScreenKt.NutritionScreenPreview.H1200dp_WITH_BACKGROUND.png",
-    "tablet": "feature/training/src/test/screenshots/"
+    "tablet": "feature/today/src/test/screenshots/"
+    "se.novila.feature.today.TodayScreenKt.TodayScreenTabletPreview.W900dp_H1000dp.png",
+    "foldable": "feature/training/src/test/screenshots/"
     "se.novila.feature.training.TrainingScreenKt.TrainingScreenTabletPreview.W900dp_H1200dp_WITH_BACKGROUND.png",
-    "foldable": "feature/sleep/src/test/screenshots/"
-    "se.novila.feature.sleep.SleepScreenKt.SleepScreenTabletPreview.W900dp_H900dp_WITH_BACKGROUND.png",
 }
 
 LANGUAGES = {
