@@ -33,6 +33,8 @@ data class Exercise(
     val type: ExerciseType,
     val date: LocalDate,
     val duration: Duration,
+    /** How hard the user said it was (RPE 1–10, Borg CR10), or null when they didn't say or a source recorded it. */
+    val effort: Int? = null,
 ) {
     /** The workout's minutes as WHO counts them towards the cardio guideline: a vigorous minute counts as two. */
     val moderateMinutes: Long get() = duration.inWholeMinutes * type.intensity.moderateMinutes

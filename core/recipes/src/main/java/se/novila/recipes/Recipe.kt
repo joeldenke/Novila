@@ -2,6 +2,7 @@ package se.novila.recipes
 
 import se.novila.model.DayEntry
 import se.novila.model.FoodGroup
+import se.novila.model.withFish
 import se.novila.model.withPortions
 import se.novila.model.withRedMeat
 
@@ -57,6 +58,8 @@ enum class RecipeTime {
  *   the user's ([Diet] is ordered from most to least inclusive), so a vegan recipe fits everyone.
  * - [minutes]: preparation and cooking time, used for [RecipeTime] and the user's time limit.
  * - [redMeat]: portions of red meat or charcuterie (any recipe with [FoodKind.Meat]), counted apart from [protein].
+ * - [fish]: portions of fish or seafood, counted apart from [protein] so the week's fish can be told; a recipe with
+ *   only a little fish ([FoodKind.FishSeafood] as a topping) may give none.
  * - [vegetables], [protein] and [wholeGrain]: portions one serving gives in the nutrition score's groups (vegetables
  *   at about 100 g, potatoes are not vegetables in the dietary advice). [portions] adds meals from [slot]; water is
  *   always 0.
@@ -84,6 +87,7 @@ enum class Recipe(
     val allergens: Set<Allergen>,
     val kinds: Set<FoodKind>,
     val redMeat: Int = 0,
+    val fish: Int = 0,
 ) {
     OvernightOats(
         MealSlot.Breakfast,
@@ -230,10 +234,11 @@ enum class Recipe(
         Diet.Pescetarian,
         minutes = 30,
         vegetables = 2,
-        protein = 1,
+        protein = 0,
         wholeGrain = 0,
         allergens = setOf(Allergen.Fish),
         kinds = setOf(FoodKind.FishSeafood, FoodKind.Vegetables, FoodKind.Potatoes, FoodKind.Fats),
+        fish = 1,
     ),
     ChickpeaCurry(
         MealSlot.Main,
@@ -270,10 +275,11 @@ enum class Recipe(
         Diet.Pescetarian,
         minutes = 20,
         vegetables = 2,
-        protein = 1,
+        protein = 0,
         wholeGrain = 1,
         allergens = setOf(Allergen.Gluten, Allergen.Fish),
         kinds = setOf(FoodKind.FishSeafood, FoodKind.Grains, FoodKind.Vegetables, FoodKind.Fats),
+        fish = 1,
     ),
     BeanSoup(
         MealSlot.Main,
@@ -321,20 +327,22 @@ enum class Recipe(
         Diet.Pescetarian,
         minutes = 30,
         vegetables = 2,
-        protein = 1,
+        protein = 0,
         wholeGrain = 0,
         allergens = setOf(Allergen.Fish, Allergen.Milk),
         kinds = setOf(FoodKind.FishSeafood, FoodKind.Vegetables, FoodKind.Potatoes, FoodKind.Dairy),
+        fish = 1,
     ),
     ShrimpPasta(
         MealSlot.Main,
         Diet.Pescetarian,
         minutes = 15,
         vegetables = 2,
-        protein = 1,
+        protein = 0,
         wholeGrain = 1,
         allergens = setOf(Allergen.Gluten, Allergen.Crustaceans),
         kinds = setOf(FoodKind.FishSeafood, FoodKind.Grains, FoodKind.Vegetables, FoodKind.Fats),
+        fish = 1,
     ),
     TofuVegetableCurry(
         MealSlot.Main,
@@ -382,10 +390,11 @@ enum class Recipe(
         Diet.Pescetarian,
         minutes = 25,
         vegetables = 1,
-        protein = 1,
+        protein = 0,
         wholeGrain = 0,
         allergens = setOf(Allergen.Fish, Allergen.Milk),
         kinds = setOf(FoodKind.FishSeafood, FoodKind.Potatoes, FoodKind.Vegetables, FoodKind.Dairy, FoodKind.Fats),
+        fish = 1,
     ),
     HalloumiSkewers(
         MealSlot.Main,
@@ -422,10 +431,11 @@ enum class Recipe(
         Diet.Pescetarian,
         minutes = 30,
         vegetables = 1,
-        protein = 1,
+        protein = 0,
         wholeGrain = 1,
         allergens = setOf(Allergen.Gluten, Allergen.Fish, Allergen.Eggs, Allergen.Milk),
         kinds = setOf(FoodKind.FishSeafood, FoodKind.Potatoes, FoodKind.Grains, FoodKind.Eggs, FoodKind.Dairy),
+        fish = 1,
     ),
     SpinachRicottaLasagna(
         MealSlot.Main,
@@ -464,11 +474,12 @@ enum class Recipe(
         Diet.Pescetarian,
         minutes = 20,
         vegetables = 2,
-        protein = 1,
+        protein = 0,
         wholeGrain = 1,
         // Soy sauce is brewed with wheat.
         allergens = setOf(Allergen.Crustaceans, Allergen.Soy, Allergen.Gluten),
         kinds = setOf(FoodKind.FishSeafood, FoodKind.Grains, FoodKind.Vegetables, FoodKind.Fats),
+        fish = 1,
     ),
     ChanaMasala(
         MealSlot.Main,
@@ -565,10 +576,11 @@ enum class Recipe(
         Diet.Pescetarian,
         minutes = 5,
         vegetables = 1,
-        protein = 1,
+        protein = 0,
         wholeGrain = 1,
         allergens = setOf(Allergen.Gluten, Allergen.Fish, Allergen.Milk),
         kinds = setOf(FoodKind.FishSeafood, FoodKind.Grains, FoodKind.Dairy, FoodKind.Vegetables),
+        fish = 1,
     ),
     ;
 
@@ -588,7 +600,8 @@ enum class Recipe(
     val time: RecipeTime get() = RecipeTime.of(minutes)
 }
 
-/** The day with one serving of [recipe] logged: its portions added to each food group, and its red meat. */
+/** The day with one serving of [recipe] logged: its portions added to each food group, its red meat and its fish. */
 fun DayEntry.withRecipe(recipe: Recipe): DayEntry =
     FoodGroup.entries.fold(this) { day, group -> day.withPortions(group, recipe.portions(group)) }
         .withRedMeat(recipe.redMeat)
+        .withFish(recipe.fish)

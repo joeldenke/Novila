@@ -206,7 +206,9 @@ private fun givesText(recipe: OwnRecipe): String {
         ?.let { stringResource(R.string.recipe_portion, stringResource(R.string.food_treats), it) }
     val redMeat = recipe.contents.redMeat.takeIf { it > 0 }
         ?.let { stringResource(R.string.recipe_portion, stringResource(R.string.food_red_meat), it) }
-    val gives = portions + listOfNotNull(redMeat, treats)
+    val fish = recipe.contents.fish.takeIf { it > 0 }
+        ?.let { stringResource(R.string.recipe_portion, stringResource(R.string.food_fish), it) }
+    val gives = portions + listOfNotNull(fish, redMeat, treats)
     return if (gives.isEmpty()) {
         stringResource(R.string.own_recipe_gives_nothing)
     } else {
