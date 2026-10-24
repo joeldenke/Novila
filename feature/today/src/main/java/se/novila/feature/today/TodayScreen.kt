@@ -22,6 +22,7 @@ import se.novila.designsystem.component.NovilaReveal
 import se.novila.designsystem.component.NovilaScaffold
 import se.novila.designsystem.component.NovilaSky
 import se.novila.designsystem.component.NovilaText
+import se.novila.designsystem.component.NovilaUnfolded
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.exercise.TrainingLoad
 import se.novila.feature.today.R
@@ -249,6 +250,16 @@ private fun TodayScreenPreview() = TodayScreenContent()
 @Preview(widthDp = 900, heightDp = 1000)
 @Composable
 private fun TodayScreenTabletPreview() = TodayScreenContent()
+
+/** A landscape tablet: the day in the wide pane, the insights in the supporting pane next to it. */
+@Preview(widthDp = 1200, heightDp = 800)
+@Composable
+private fun TodayScreenLandscapePreview() = TodayScreenContent()
+
+/** An unfolded phone: the two panes split along the fold, so no card lies across it. */
+@Preview(widthDp = 852, heightDp = 880)
+@Composable
+private fun TodayScreenFoldablePreview() = NovilaUnfolded { TodayScreenContent() }
 
 /** A short night and a heavy week: the coach suggests a calm day and says why. */
 @Preview(heightDp = 1400)

@@ -22,6 +22,7 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import se.novila.R
+import se.novila.designsystem.component.LocalNovilaFold
 import se.novila.designsystem.component.LocalNovilaSharedTransitionScope
 import se.novila.designsystem.component.NovilaEntryLayout
 import se.novila.designsystem.component.NovilaIconButton
@@ -33,6 +34,7 @@ import se.novila.designsystem.component.NovilaRailMinWidth
 import se.novila.designsystem.component.NovilaScaffold
 import se.novila.designsystem.component.NovilaTopAppBar
 import se.novila.designsystem.component.NovilaTransitions
+import se.novila.designsystem.component.rememberNovilaFold
 import se.novila.designsystem.theme.NovilaColorRole
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.feature.breathing.navigation.BreathingRoute
@@ -94,12 +96,15 @@ fun NovilaApp(
         EntryLayout.Rows -> NovilaEntryLayout.Rows
     }
     NovilaTheme(darkTheme = darkTheme, dynamicColor = dynamicColor, entryLayout = layout) {
-        if (onboarded) {
-            Tabs(shortcut, onShortcutShown)
-        } else {
-            // The intro comes first; a shortcut tapped before it is done leads nowhere afterwards.
-            LaunchedEffect(shortcut) { if (shortcut != null) onShortcutShown() }
-            Intro()
+        // On an unfolded phone, two-pane screens split along the fold.
+        CompositionLocalProvider(LocalNovilaFold provides rememberNovilaFold()) {
+            if (onboarded) {
+                Tabs(shortcut, onShortcutShown)
+            } else {
+                // The intro comes first; a shortcut tapped before it is done leads nowhere afterwards.
+                LaunchedEffect(shortcut) { if (shortcut != null) onShortcutShown() }
+                Intro()
+            }
         }
     }
 }

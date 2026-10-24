@@ -1,10 +1,16 @@
 package se.novila.designsystem.component
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.toggleable
@@ -18,6 +24,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
@@ -144,6 +151,90 @@ fun NovilaTaskRow(
                 )
             }
         }
+        action?.invoke()
+    }
+}
+
+/** A card this wide lays its tasks out as tiles, two to a row, and from [FourTilesWidth] all four in one row. */
+private val TwoTilesWidth = 440.dp
+private val FourTilesWidth = 600.dp
+
+/**
+ * The [count] tasks of a card, each drawn by [task]: rows on a phone, and on a wide card tiles side by side, with
+ * `tile` true and a [Modifier] that sizes the tile. The rows keep a card's own spacing, so on a phone the card looks
+ * as if they were placed in it directly.
+ */
+@Composable
+fun NovilaTaskList(
+    count: Int,
+    modifier: Modifier = Modifier,
+    task: @Composable (index: Int, tile: Boolean, tileModifier: Modifier) -> Unit,
+) {
+    BoxWithConstraints(modifier.fillMaxWidth()) {
+        val columns = when {
+            maxWidth >= FourTilesWidth -> 4
+            maxWidth >= TwoTilesWidth -> 2
+            else -> 1
+        }
+        val spacing = NovilaTheme.spacing
+        if (columns == 1) {
+            Column(verticalArrangement = Arrangement.spacedBy(spacing.s)) {
+                repeat(count) { task(it, false, Modifier) }
+            }
+        } else {
+            Column(verticalArrangement = Arrangement.spacedBy(spacing.m)) {
+                (0 until count).chunked(columns).forEach { row ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min),
+                        horizontalArrangement = Arrangement.spacedBy(spacing.m),
+                    ) {
+                        row.forEach { task(it, true, Modifier.weight(1f).fillMaxHeight()) }
+                        // A last row that isn't full keeps the tiles the same width as above.
+                        repeat(columns - row.size) { Spacer(Modifier.weight(1f)) }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * A [NovilaTaskRow] as a tile, for a card wide enough to lay the day's tasks side by side: the check, the [title]
+ * and [summary] stacked, and the [action] at the bottom, so the tiles in a row line their buttons up.
+ */
+@Composable
+fun NovilaTaskTile(
+    title: String,
+    done: Boolean,
+    modifier: Modifier = Modifier,
+    summary: String? = null,
+    stateDescription: String? = null,
+    role: NovilaColorRole = NovilaTheme.pillars.training,
+    action: @Composable (() -> Unit)? = null,
+) {
+    val shape = NovilaTheme.shapes.medium
+    Column(
+        modifier = modifier
+            .clip(shape)
+            .border(1.dp, NovilaTheme.surfaces.cardOutline, shape)
+            .padding(NovilaTheme.spacing.m)
+            .semantics(mergeDescendants = true) {
+                if (stateDescription != null) this.stateDescription = stateDescription
+            },
+        verticalArrangement = Arrangement.spacedBy(NovilaTheme.spacing.xs),
+    ) {
+        Check(done, role)
+        NovilaText(
+            title,
+            style = NovilaTheme.typography.titleSmall,
+            color = if (done) NovilaTheme.colors.onSurfaceVariant else NovilaTheme.colors.onSurface,
+        )
+        NovilaText(
+            summary.orEmpty(),
+            style = NovilaTheme.typography.bodyMedium,
+            color = NovilaTheme.colors.onSurfaceVariant,
+            modifier = Modifier.weight(1f),
+        )
         action?.invoke()
     }
 }

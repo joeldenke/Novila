@@ -21,6 +21,7 @@ import se.novila.designsystem.component.NovilaEntryLayout
 import se.novila.designsystem.component.NovilaQuickActions
 import se.novila.designsystem.component.NovilaReveal
 import se.novila.designsystem.component.NovilaSky
+import se.novila.designsystem.component.NovilaUnfolded
 import se.novila.designsystem.theme.NovilaTheme
 import se.novila.exercise.ExerciseState
 import se.novila.model.CardioLog
@@ -65,10 +66,39 @@ fun TrainingScreen(
     var loggingCycle by rememberSaveable(openCycleSheet) { mutableStateOf(openCycleSheet) }
     val cycle = state.cycle
     val connected = movement is MovementState.Connected
+    val log: LazyListScope.() -> Unit = {
+        item(key = "log") {
+            NovilaReveal(order = 1) {
+                NovilaQuickActions(
+                    title = stringResource(R.string.training_log_title),
+                    icon = painterResource(UiR.drawable.ic_training),
+                    role = NovilaTheme.pillars.training,
+                ) {
+                    NovilaButton(
+                        text = stringResource(R.string.overview_log_other),
+                        onClick = actions.onOpenCardioLog,
+                        modifier = Modifier.weight(1f).fillMaxHeight(),
+                    )
+                    if (cycle != null) {
+                        NovilaButton(
+                            text = stringResource(R.string.cycle_log),
+                            onClick = { loggingCycle = true },
+                            modifier = Modifier.weight(1f).fillMaxHeight(),
+                        )
+                    }
+                }
+            }
+        }
+    }
     ScreenList(
         contentPadding = contentPadding,
         modifier = modifier,
         aside = {
+            // Next to the week, the watch's numbers and the logging support the plan instead of following it.
+            if (twoPanes) {
+                if (connected) healthData(movement, recovery, exercise, state, actions)
+                log()
+            }
             item(key = "entries") {
                 NovilaReveal(order = 2) { NovilaEntries(trainingHubEntries(state, actions)) }
             }
@@ -95,29 +125,24 @@ fun TrainingScreen(
                 NovilaReveal(order = 1) { LighterSessionCard(onChoose = actions.cycle.onChooseSession) }
             }
         }
-        // Connected, the watch's numbers belong with today's plan; until then the card waits at the bottom.
-        if (connected) healthData(movement, recovery, exercise, state, actions)
-        item(key = "log") {
-            NovilaReveal(order = 1) {
-                NovilaQuickActions(
-                    title = stringResource(R.string.training_log_title),
-                    icon = painterResource(UiR.drawable.ic_training),
-                    role = NovilaTheme.pillars.training,
-                ) {
-                    NovilaButton(
-                        text = stringResource(R.string.overview_log_other),
-                        onClick = actions.onOpenCardioLog,
-                        modifier = Modifier.weight(1f).fillMaxHeight(),
-                    )
-                    if (cycle != null) {
-                        NovilaButton(
-                            text = stringResource(R.string.cycle_log),
-                            onClick = { loggingCycle = true },
-                            modifier = Modifier.weight(1f).fillMaxHeight(),
+        if (twoPanes) {
+            // A wide pane has room for today's exercises, so they show without opening the session.
+            if (plan is TodayPlan.Workout) {
+                item(key = "session") {
+                    NovilaReveal(order = 1) {
+                        StrengthSessionCard(
+                            session = plan.session,
+                            onOpenExercise = actions.onOpenExercise,
+                            onStart = null,
+                            next = false,
                         )
                     }
                 }
             }
+        } else {
+            // Connected, the watch's numbers belong with today's plan; until then the card waits at the bottom.
+            if (connected) healthData(movement, recovery, exercise, state, actions)
+            log()
         }
     }
     if (loggingCycle && cycle != null) {
@@ -269,6 +294,21 @@ private fun TrainingScreenTabletPreview() = TrainingScreenContent(
     strengthDay,
     exercise = ExerciseState.Connected(TrainingPreviewData.workouts),
 )
+
+/** A landscape tablet: the week and today's exercises in the wide pane, the watch, logging and ways in beside it. */
+@Preview(showBackground = true, widthDp = 1200, heightDp = 800)
+@Composable
+private fun TrainingScreenLandscapePreview() = TrainingScreenContent(
+    strengthDay,
+    exercise = ExerciseState.Connected(TrainingPreviewData.workouts),
+)
+
+/** An unfolded phone: the two panes split along the fold. */
+@Preview(showBackground = true, widthDp = 852, heightDp = 880)
+@Composable
+private fun TrainingScreenFoldablePreview() = NovilaUnfolded {
+    TrainingScreenContent(strengthDay, exercise = ExerciseState.Connected(TrainingPreviewData.workouts))
+}
 
 /** Friday's run in the evening, not logged yet: one tap logs it. */
 @Preview(showBackground = true, heightDp = 1600)

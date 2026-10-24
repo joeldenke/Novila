@@ -397,11 +397,18 @@ där pluginet `firebase@firebase` inte alltid installeras.
   det. Lägg en `@Preview` med `NovilaEntryLayout.Rows` för nya startsidor.
 - **Adaptiv layout:** appen ska fungera på surfplattor, vikbara och i liggande läge. Från `NovilaRailMinWidth`
   (600 dp, storleksklassen *medium*) ligger flikarna i en `NovilaNavigationRail` i stället för bottenraden, och
-  `ScreenList` centrerar innehållet på högst 640 dp. Flikarnas startsidor ger det som stöder översikten (ingångarna,
-  insikterna) till `ScreenList(aside = …)`: på en telefon följer det efter i samma lista, och från 700 dp bredd blir
-  det en egen ruta bredvid (*supporting pane*), två rutor på högst 1040 dp tillsammans, så inga kort eller knappar
-  dras ut över skärmen. `NovilaEntries` lägger två till fyra rutor per rad efter bredden.
-  Lägg en `@Preview` med `widthDp = 900` för nya startsidor. Följ skillen `adaptive`.
+  `ScreenList` centrerar innehållet på högst 640 dp. Flikarnas startsidor följer Material 3:s *supporting pane*: det
+  som stöder översikten (ingångarna, insikterna, loggningen) ges till `ScreenList(aside = …)`. På en telefon och en
+  stående surfplatta följer det efter i samma lista; från 760 dp (ett *expanded* fönster utan rälsen) blir det en fast
+  ruta på 360 dp bredvid en flexibel huvudruta (högst 840 dp), med 24 dp marginaler och mellanrum. På en uppfälld
+  vikbar delar rutorna sig vid vecket (`LocalNovilaFold`, som `NovilaApp` läser med `rememberNovilaFold` ur
+  `material3-adaptive`), så inget kort ligger över det. Byggarna vet genom `ScreenListScope.twoPanes` var de är, så
+  ett kort kan flytta till stödrutan eller bara visas där det får plats (dagens övningar på Träning). Knappar dras
+  aldrig ut: huvudknappar på breda kort tar `Modifier.novilaActionWidth()` (hela bredden på en telefon, annars högst
+  `NovilaMaxButtonWidth` vid slutet), och *Din dag* blir rutor sida vid sida på ett brett kort (`NovilaTaskList`).
+  `NovilaEntries` lägger två till fyra rutor per rad efter bredden. Lägg previews för nya startsidor med
+  `widthDp = 900`, en liggande surfplatta (`widthDp = 1200, heightDp = 800`) och en uppfälld vikbar
+  (`widthDp = 852` i `NovilaUnfolded`). Följ skillen `adaptive`.
 - **Coachens inställningar:** `CoachScreen` är bara inställningar (mål, dagar och veckodagar, tid, fokus, redskap,
   hänsyn och coachens skäl), öppnad från Träning och från *Mina mål*. Veckan och "Föreslå ett annat program" ligger
   på veckans program (`TrainingProgramScreen`), där övningarna syns, med en väg till inställningarna.

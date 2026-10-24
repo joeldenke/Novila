@@ -12,6 +12,8 @@ dependencies {
     // implementation: Material 3 stays inside this module. NovilaTheme and the Novila* components expose only
     // Novila types, so other modules can't import Material and it can be replaced component by component.
     implementation(libs.compose.material3)
+    // NovilaFold: where a foldable's fold runs, read from the window's posture. Inside this module like Material 3.
+    implementation(libs.compose.material3.adaptive)
     // NovilaGlanceTheme: the same color schemes for the home-screen widget. Only modules with a widget use it.
     implementation(libs.androidx.glance.material3)
     // NovilaGlanceHero loads the bundled font with ResourcesCompat. Declared directly: the debug build only got
